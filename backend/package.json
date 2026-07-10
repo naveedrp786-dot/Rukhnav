@@ -27,6 +27,7 @@
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
     "mysql2": "^3.22.6",
+    "nodemailer": "^9.0.3",
     "winston": "^3.19.0"
   },
   "devDependencies": {

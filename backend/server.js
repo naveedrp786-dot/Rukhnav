@@ -10,6 +10,8 @@ const app = express();
 
 // Database Connection
 require("./config/db");
+// Start Reminder Scheduler
+require("./scheduler/reminderScheduler");
 
 // Security Middleware
 app.use(helmet());

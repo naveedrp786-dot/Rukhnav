@@ -20,12 +20,12 @@ exports.register = async (req, res) => {
     try {
 
         const {
-            full_name,
-            email,
-            phone,
-            password,
-            address
-        } = req.body;
+    first_name,
+    last_name,
+    email,
+    phone,
+    password
+} = req.body;
 
         // Check if email already exists
         const [existingUser] = await db.query(
