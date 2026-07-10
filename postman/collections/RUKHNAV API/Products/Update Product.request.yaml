@@ -1,0 +1,21 @@
+$kind: http-request
+name: Update Product
+method: PUT
+url: 'http://localhost:3000/products/1'
+headers:
+  - key: Authorization
+    value: 'Bearer {{adminToken}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+        "product_name": "Updated Product",
+        "category": "Electronics",
+        "description": "Updated description",
+        "price": 1199,
+        "stock": 40,
+        "image": "updated.jpg",
+        "status": "active"
+    }

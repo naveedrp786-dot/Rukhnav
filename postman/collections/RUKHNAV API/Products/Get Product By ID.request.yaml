@@ -1,0 +1,4 @@
+$kind: http-request
+name: Get Product By ID
+method: GET
+url: 'http://localhost:3000/products/1'

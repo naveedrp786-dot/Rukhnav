@@ -1,0 +1,14 @@
+$kind: http-request
+name: Login Admin
+method: POST
+url: 'http://localhost:3000/admin/login'
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+        "email": "admin@rukhnav.com",
+        "password": "Admin123"
+    }

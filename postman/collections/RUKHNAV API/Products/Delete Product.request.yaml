@@ -1,0 +1,7 @@
+$kind: http-request
+name: Delete Product
+method: DELETE
+url: 'http://localhost:3000/products/1'
+headers:
+  - key: Authorization
+    value: 'Bearer {{adminToken}}'

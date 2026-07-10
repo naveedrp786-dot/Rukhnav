@@ -1,0 +1,23 @@
+# Node dependencies
+backend/node_modules/
+
+# Environment variables
+backend/.env
+
+# Uploaded files
+backend/uploads/
+
+# Logs
+backend/logs/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Postman temporary files
+.postman/
+
+# npm logs
+npm-debug.log*

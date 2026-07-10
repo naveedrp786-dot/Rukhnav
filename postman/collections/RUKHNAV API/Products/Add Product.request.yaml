@@ -1,0 +1,21 @@
+$kind: http-request
+name: Add Product
+method: POST
+url: 'http://localhost:3000/products'
+headers:
+  - key: Authorization
+    value: 'Bearer {{adminToken}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+        "product_name": "Sample Product",
+        "category": "Electronics",
+        "description": "A sample product description",
+        "price": 999,
+        "stock": 50,
+        "image": "sample.jpg",
+        "status": "active"
+    }

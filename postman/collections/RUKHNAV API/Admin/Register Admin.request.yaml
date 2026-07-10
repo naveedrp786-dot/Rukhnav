@@ -1,0 +1,16 @@
+$kind: http-request
+name: Register Admin
+method: POST
+url: 'http://localhost:3000/admin/register'
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+        "full_name": "Muhammad Naveed",
+        "email": "admin@rukhnav.com",
+        "password": "Admin123",
+        "role": "superadmin"
+    }
