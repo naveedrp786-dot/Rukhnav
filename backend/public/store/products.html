@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Products | RUKHNAV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css"><link rel="stylesheet" href="css/store.css"><link rel="stylesheet" href="css/responsive.css"></head>
+<body><div id="announcement"></div><div id="header"></div>
+<main class="page">
+<section class="page-hero"><span>RUKHNAV Store</span><h1>Shop all products</h1><p>Explore herbal cosmetics, skin care and hair-care products.</p></section>
+<section class="catalog">
+<aside id="filters" class="filters"><div class="filter-title"><h2>Filters</h2><button id="clearFilters">Clear</button></div>
+<label>Category</label><select id="categoryFilter"><option value="">All categories</option></select>
+<label>Availability</label><select id="stockFilter"><option value="">All</option><option value="in">In stock</option><option value="out">Out of stock</option></select>
+<label>Minimum price</label><input id="minPrice" type="number" min="0">
+<label>Maximum price</label><input id="maxPrice" type="number" min="0">
+<button id="applyFilters" class="btn primary">Apply filters</button></aside>
+<div class="catalog-main"><div class="toolbar"><div><b id="productCount">0 products</b><small id="queryLabel"></small></div><div><button id="mobileFilters" class="filter-mobile"><i class="fa-solid fa-sliders"></i> Filters</button><select id="sort"><option value="featured">Featured</option><option value="newest">Newest</option><option value="price_low">Price low to high</option><option value="price_high">Price high to low</option></select></div></div>
+<div id="catalogLoading" class="state"><div class="spinner"></div><p>Loading products</p></div><div id="catalogEmpty" class="state hidden"><i class="fa-solid fa-magnifying-glass"></i><h3>No products found</h3></div><div id="catalogGrid" class="products hidden"></div><div id="pagination" class="pagination"></div></div>
+</section></main>
+<div id="footer"></div><div id="toast" class="toast-region"></div><div id="overlay" class="overlay"></div>
+<script src="js/api.js"></script><script src="js/theme.js"></script><script src="js/components.js"></script><script src="js/store.js"></script><script src="js/products.js"></script></body></html>

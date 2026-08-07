@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Orders | RUKHNAV</title>
+<meta name="description" content="View and track your RUKHNAV orders.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css">
+<link rel="stylesheet" href="css/orders.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="orders-page">
+    <section class="orders-page-heading">
+        <div>
+            <span>My RUKHNAV</span>
+            <h1>Your orders</h1>
+            <p>Review purchases, payments, delivery progress and shipment tracking.</p>
+        </div>
+
+        <div class="orders-heading-actions">
+            <a href="account.html" class="account-home-link">
+                <i class="fa-solid fa-user"></i>
+                Back to Account
+            </a>
+
+            <a href="products.html" class="continue-shopping-link">
+                <i class="fa-solid fa-bag-shopping"></i>
+                Continue shopping
+            </a>
+        </div>
+    </section>
+
+    <section id="ordersAuthState" class="orders-state hidden">
+        <div class="orders-state-icon">
+            <i class="fa-regular fa-user"></i>
+        </div>
+        <h2>Sign in to view your orders</h2>
+        <p>Your order history and tracking information are linked to your RUKHNAV account.</p>
+        <a href="account.html?return=orders.html" class="btn primary">Sign in</a>
+    </section>
+
+    <section id="ordersLoading" class="orders-state">
+        <div class="spinner"></div>
+        <h2>Loading your orders</h2>
+    </section>
+
+    <section id="ordersEmptyState" class="orders-state hidden">
+        <div class="orders-state-icon">
+            <i class="fa-solid fa-box-open"></i>
+        </div>
+        <h2>No orders yet</h2>
+        <p>When you place an order, it will appear here with payment and delivery updates.</p>
+        <a href="products.html" class="btn primary">Start shopping</a>
+    </section>
+
+    <section id="ordersWorkspace" class="orders-workspace hidden">
+        <div class="orders-toolbar">
+            <div class="orders-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="ordersSearch" type="search" placeholder="Search by order number, city or tracking number">
+            </div>
+
+            <div class="orders-filters">
+                <select id="ordersStatusFilter">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+
+                <select id="ordersDateFilter">
+                    <option value="">All dates</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="365">Last year</option>
+                </select>
+
+                <button id="refreshOrdersButton" type="button" class="btn secondary">
+                    <i class="fa-solid fa-rotate"></i>
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="orders-summary-strip">
+            <article><span>Total orders</span><strong id="ordersTotalCount">0</strong></article>
+            <article><span>Active</span><strong id="ordersActiveCount">0</strong></article>
+            <article><span>Delivered</span><strong id="ordersDeliveredCount">0</strong></article>
+            <article><span>Cancelled</span><strong id="ordersCancelledCount">0</strong></article>
+        </div>
+
+        <div id="ordersResultsText" class="orders-results-text"></div>
+        <div id="ordersList" class="orders-list"></div>
+    </section>
+</main>
+
+<div id="footer"></div>
+<div id="toast" class="toast-region"></div>
+<div id="overlay" class="overlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js"></script>
+<script src="js/store.js"></script>
+<script src="js/orders.js"></script>
+</body>
+</html>

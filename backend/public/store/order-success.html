@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Order Confirmed | RUKHNAV</title>
+<meta name="description" content="Your RUKHNAV order has been received.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css">
+<link rel="stylesheet" href="css/checkout.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="order-success-page">
+    <section id="orderSuccessLoading" class="checkout-state">
+        <div class="spinner"></div>
+        <h2>Loading order confirmation</h2>
+    </section>
+
+    <section id="orderSuccessContent" class="order-success-card hidden">
+        <div class="success-check"><i class="fa-solid fa-check"></i></div>
+        <span>Order received</span>
+        <h1>Thank you for shopping with RUKHNAV</h1>
+        <p>Your order has been sent to the ERP for confirmation, payment review and fulfilment.</p>
+
+        <div class="success-number">
+            <small>Order number</small>
+            <strong id="successOrderNumber">—</strong>
+            <button id="copyOrderNumber" type="button">
+                <i class="fa-regular fa-copy"></i> Copy
+            </button>
+        </div>
+
+        <div class="success-grid">
+            <div><span>Order status</span><strong id="successOrderStatus">Pending</strong></div>
+            <div><span>Payment status</span><strong id="successPaymentStatus">Pending</strong></div>
+            <div><span>Payment method</span><strong id="successPaymentMethod">—</strong></div>
+            <div><span>Total</span><strong id="successGrandTotal">—</strong></div>
+        </div>
+
+        <div id="successItems" class="success-items"></div>
+
+        <div class="success-actions">
+            <a id="viewOrderButton" href="orders.html" class="btn primary">View My Orders</a>
+            <a href="products.html" class="btn secondary">Continue Shopping</a>
+        </div>
+
+        <div class="success-next">
+            <i class="fa-solid fa-truck-fast"></i>
+            <div>
+                <strong>What happens next?</strong>
+                <p>RUKHNAV will confirm the order, verify any manual payment and update shipment tracking in your Customer Centre.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="footer"></div>
+<div id="toast" class="toast-region"></div>
+<div id="overlay" class="overlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js"></script>
+<script src="js/store.js"></script>
+<script src="js/order-success.js"></script>
+</body>
+</html>

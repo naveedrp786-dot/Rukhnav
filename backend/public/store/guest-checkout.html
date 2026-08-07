@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guest Checkout | RUKHNAV</title>
+<meta name="description" content="Order RUKHNAV products securely without creating an account.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css">
+<link rel="stylesheet" href="css/guest-checkout.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="guest-checkout-page">
+    <section class="guest-checkout-heading">
+        <div>
+            <span>Fast & Secure</span>
+            <h1>Checkout without creating an account</h1>
+            <p>Enter your delivery details, confirm your product and place the order in a few simple steps.</p>
+        </div>
+
+        <div class="guest-trust-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Secure guest checkout</span>
+        </div>
+    </section>
+
+    <section id="guestCheckoutLoading" class="guest-checkout-state">
+        <div class="spinner"></div>
+        <h2>Preparing your order</h2>
+        <p>Checking the latest product price and stock.</p>
+    </section>
+
+    <section id="guestCheckoutError" class="guest-checkout-state hidden">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <h2>Checkout could not be loaded</h2>
+        <p id="guestCheckoutErrorText">The selected product is unavailable.</p>
+        <a href="products.html" class="btn primary">Browse products</a>
+    </section>
+
+    <section id="guestCheckoutContent" class="guest-checkout-layout hidden">
+        <form id="guestCheckoutForm" class="guest-checkout-form">
+            <article class="guest-card">
+                <div class="guest-card-heading">
+                    <span>1</span>
+                    <div>
+                        <h2>Delivery information</h2>
+                        <p>No account or password is required.</p>
+                    </div>
+                </div>
+
+                <div class="guest-form-grid">
+                    <label class="guest-field guest-field-full">
+                        <span>Full name *</span>
+                        <input id="guestFullName" type="text" autocomplete="name" required>
+                    </label>
+
+                    <label class="guest-field">
+                        <span>Mobile number *</span>
+                        <input id="guestPhone" type="tel" autocomplete="tel" placeholder="+923001234567" required>
+                    </label>
+
+                    <label class="guest-field">
+                        <span>Email address</span>
+                        <input id="guestEmail" type="email" autocomplete="email" placeholder="Optional">
+                    </label>
+
+                    <label class="guest-field guest-field-full">
+                        <span>Delivery address *</span>
+                        <textarea id="guestAddress" rows="3" autocomplete="street-address" required></textarea>
+                    </label>
+
+                    <label class="guest-field">
+                        <span>City *</span>
+                        <input id="guestCity" type="text" autocomplete="address-level2" required>
+                    </label>
+
+                    <label class="guest-field">
+                        <span>Postal code</span>
+                        <input id="guestPostalCode" type="text" autocomplete="postal-code">
+                    </label>
+
+                    <label class="guest-field guest-field-full">
+                        <span>Order notes</span>
+                        <textarea id="guestOrderNotes" rows="2" placeholder="Optional delivery instructions"></textarea>
+                    </label>
+                </div>
+            </article>
+
+            <article class="guest-card">
+                <div class="guest-card-heading">
+                    <span>2</span>
+                    <div>
+                        <h2>Payment method</h2>
+                        <p>Select your preferred available option.</p>
+                    </div>
+                </div>
+
+                <div id="guestPaymentMethods" class="guest-payment-methods">
+                    <label>
+                        <input type="radio" name="guestPaymentMethod" value="cash_on_delivery" checked>
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <span>
+                            <strong>Cash on Delivery</strong>
+                            <small>Pay when your parcel arrives</small>
+                        </span>
+                    </label>
+
+                    <label>
+                        <input type="radio" name="guestPaymentMethod" value="bank_transfer">
+                        <i class="fa-solid fa-building-columns"></i>
+                        <span>
+                            <strong>Bank Transfer</strong>
+                            <small>Order remains pending until payment is verified</small>
+                        </span>
+                    </label>
+
+                    <label>
+                        <input type="radio" name="guestPaymentMethod" value="easypaisa">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                        <span>
+                            <strong>Easypaisa</strong>
+                            <small>Enter payment reference after transfer</small>
+                        </span>
+                    </label>
+
+                    <label>
+                        <input type="radio" name="guestPaymentMethod" value="jazzcash">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                        <span>
+                            <strong>JazzCash</strong>
+                            <small>Enter payment reference after transfer</small>
+                        </span>
+                    </label>
+                </div>
+
+                <div id="manualPaymentFields" class="guest-form-grid hidden">
+                    <label class="guest-field">
+                        <span>Payment phone</span>
+                        <input id="guestPaymentPhone" type="tel">
+                    </label>
+
+                    <label class="guest-field">
+                        <span>Transaction reference</span>
+                        <input id="guestTransactionId" type="text">
+                    </label>
+                </div>
+            </article>
+
+            <article class="guest-card guest-legal-card">
+                <label>
+                    <input id="guestAcceptTerms" type="checkbox" required>
+                    <span>
+                        I agree to the
+                        <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a>.
+                    </span>
+                </label>
+
+                <label>
+                    <input id="guestAcceptPrivacy" type="checkbox" required>
+                    <span>
+                        I agree to the
+                        <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+                    </span>
+                </label>
+            </article>
+
+            <div id="guestCheckoutMessage" class="guest-checkout-message" role="alert" aria-live="polite"></div>
+
+            <button id="placeGuestOrderButton" type="submit" class="guest-place-order-button">
+                <i class="fa-solid fa-lock"></i>
+                Place Order
+            </button>
+
+            <p class="guest-account-note">
+                Already have an account?
+                <a href="account.html?return=guest-checkout.html">Sign in</a>
+                to earn points and track orders in your Customer Centre.
+            </p>
+        </form>
+
+        <aside class="guest-order-summary">
+            <h2>Order summary</h2>
+
+            <div id="guestOrderItems"></div>
+
+            <div class="guest-summary-row">
+                <span>Products subtotal</span>
+                <strong id="guestSubtotal">Rs. 0</strong>
+            </div>
+
+            <div class="guest-summary-row">
+                <span>Delivery</span>
+                <strong id="guestDelivery">Rs. 0</strong>
+            </div>
+
+            <div class="guest-summary-total">
+                <span>Total</span>
+                <strong id="guestGrandTotal">Rs. 0</strong>
+            </div>
+
+            <div class="guest-summary-security">
+                <i class="fa-solid fa-shield-heart"></i>
+                <p>Price and stock are verified by the server when you place the order.</p>
+            </div>
+        </aside>
+    </section>
+</main>
+
+<div id="footer"></div>
+<div id="toast" class="toast-region"></div>
+<div id="overlay" class="overlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js"></script>
+<script src="js/store.js"></script>
+<script src="js/guest-checkout.js"></script>
+</body>
+</html>
