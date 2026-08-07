@@ -1,2 +1,160 @@
 "use strict";
-document.addEventListener("DOMContentLoaded",async()=>{while(!Object.keys(Store.settings).length)await new Promise(r=>setTimeout(r,20));const f=Store.settings.footer||{},b=Store.settings.branding||{};document.getElementById("heroEyebrow").textContent=b.tagline||"Nature, Beauty & Care";document.getElementById("newsletterTitle").textContent=f.newsletter_title||"Beauty tips, new arrivals and special offers";document.getElementById("newsletterText").textContent=f.newsletter_text||"Join the RUKHNAV community.";try{const d=await API.get(API.page("home")),s=d.sections||d.page?.sections||[],h=s.find(x=>["hero","hero_banner","home_hero"].includes(String(x.section_key).toLowerCase()));if(h){if(h.eyebrow)document.getElementById("heroEyebrow").textContent=h.eyebrow;if(h.title)document.getElementById("heroTitle").textContent=h.title;if(h.content||h.subtitle)document.getElementById("heroText").textContent=h.content||h.subtitle}}catch{}try{const d=await API.get(API.products),a=Array.isArray(d.products)?d.products:Array.isArray(d.data)?d.data:Array.isArray(d)?d:[];document.getElementById("homeLoading").classList.add("hidden");if(!a.length)return document.getElementById("homeEmpty").classList.remove("hidden");const g=document.getElementById("homeProducts");g.innerHTML=a.slice(0,10).map(x=>Store.card(x)).join("");g.classList.remove("hidden");Store.bindCards(g)}catch{document.getElementById("homeLoading").classList.add("hidden");document.getElementById("homeEmpty").classList.remove("hidden")}document.getElementById("newsletterForm").addEventListener("submit",e=>{e.preventDefault();Store.toast("Thank you for subscribing.");e.target.reset()})});
+
+document.addEventListener("DOMContentLoaded", async () => {
+    // Wait until Store.settings is initialized by the shared store runtime.
+    while (
+        !window.Store ||
+        !Store.settings ||
+        !Object.keys(Store.settings).length
+    ) {
+        await new Promise(resolve => setTimeout(resolve, 20));
+    }
+
+    const footer =
+        Store.settings.footer || {};
+
+    // IMPORTANT:
+    // Homepage hero text is controlled exclusively by
+    // website-cms-bridge.js via /api/website/settings.
+    //
+    // Do not write to:
+    //   #heroEyebrow
+    //   #heroTitle
+    //   #heroText
+    //
+    // This prevents the legacy page-home API from overwriting
+    // values published from Admin -> Website Management.
+
+    const newsletterTitle =
+        document.getElementById("newsletterTitle");
+
+    const newsletterText =
+        document.getElementById("newsletterText");
+
+    if (
+        newsletterTitle &&
+        footer.newsletter_title
+    ) {
+        newsletterTitle.textContent =
+            footer.newsletter_title;
+    }
+
+    if (
+        newsletterText &&
+        footer.newsletter_text
+    ) {
+        newsletterText.textContent =
+            footer.newsletter_text;
+    }
+
+    // Load homepage products.
+    try {
+        const response =
+            await API.get(
+                API.products
+            );
+
+        const products =
+            Array.isArray(response.products)
+                ? response.products
+                : Array.isArray(response.data)
+                    ? response.data
+                    : Array.isArray(response)
+                        ? response
+                        : [];
+
+        const loading =
+            document.getElementById(
+                "homeLoading"
+            );
+
+        const empty =
+            document.getElementById(
+                "homeEmpty"
+            );
+
+        const grid =
+            document.getElementById(
+                "homeProducts"
+            );
+
+        if (loading) {
+            loading.classList.add(
+                "hidden"
+            );
+        }
+
+        if (!products.length) {
+            if (empty) {
+                empty.classList.remove(
+                    "hidden"
+                );
+            }
+
+            return;
+        }
+
+        if (grid) {
+            grid.innerHTML =
+                products
+                    .slice(0, 10)
+                    .map(
+                        product =>
+                            Store.card(
+                                product
+                            )
+                    )
+                    .join("");
+
+            grid.classList.remove(
+                "hidden"
+            );
+
+            Store.bindCards(
+                grid
+            );
+        }
+    } catch {
+        const loading =
+            document.getElementById(
+                "homeLoading"
+            );
+
+        const empty =
+            document.getElementById(
+                "homeEmpty"
+            );
+
+        if (loading) {
+            loading.classList.add(
+                "hidden"
+            );
+        }
+
+        if (empty) {
+            empty.classList.remove(
+                "hidden"
+            );
+        }
+    }
+
+    const newsletterForm =
+        document.getElementById(
+            "newsletterForm"
+        );
+
+    if (newsletterForm) {
+        newsletterForm.addEventListener(
+            "submit",
+            event => {
+                event.preventDefault();
+
+                Store.toast(
+                    "Thank you for subscribing."
+                );
+
+                event.target.reset();
+            }
+        );
+    }
+});
