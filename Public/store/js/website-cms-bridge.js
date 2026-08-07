@@ -13,371 +13,1034 @@ window.RukhnavModernCMS = {
     },
 
     asset(value = "") {
-        const path = String(value || "").trim();
-        if (!path) return "";
-        if (/^(https?:)?\/\//i.test(path) || path.startsWith("data:")) {
-            return path;
+        const assetPath = String(value || "").trim();
+
+        if (!assetPath) {
+            return "";
         }
-        return path.startsWith("/") ? path : path;
+
+        if (
+            /^(https?:)?\/\//i.test(assetPath) ||
+            assetPath.startsWith("data:")
+        ) {
+            return assetPath;
+        }
+
+        return assetPath;
     },
 
     setText(selector, value) {
-        const el = document.querySelector(selector);
-        if (el && value !== undefined && value !== null && String(value).trim() !== "") {
-            el.textContent = value;
-        }
-    },
+        const element =
+            document.querySelector(selector);
 
-    setLink(selector, label, url) {
-        const el = document.querySelector(selector);
-        if (!el) return;
-        if (label !== undefined && label !== null && String(label).trim()) {
-            const icon = el.querySelector("i");
-            el.textContent = label;
-            if (icon) {
-                el.append(" ");
-                el.appendChild(icon);
-            }
+        if (
+            element &&
+            value !== undefined &&
+            value !== null &&
+            String(value).trim() !== ""
+        ) {
+            element.textContent = value;
         }
-        if (url) el.href = url;
     },
 
     setVisible(selector, enabled) {
-        const el = document.querySelector(selector);
-        if (el) el.hidden = enabled === false;
+        const element =
+            document.querySelector(selector);
+
+        if (element) {
+            element.hidden =
+                enabled === false;
+        }
     },
 
     applyTheme(settings) {
-        const theme = settings.theme || {};
-        const root = document.documentElement;
+        const theme =
+            settings.theme || {};
 
-        const vars = {
+        const root =
+            document.documentElement;
+
+        const variables = {
             "--primary": theme.primary_color,
             "--secondary": theme.secondary_color,
             "--accent": theme.accent_color,
             "--background": theme.background_color,
             "--surface": theme.surface_color,
             "--text": theme.text_color,
-            "--muted": theme.muted_color,
-            "--radius": theme.border_radius !== undefined ? `${theme.border_radius}px` : null,
-            "--button-radius": theme.button_radius !== undefined ? `${theme.button_radius}px` : null,
-            "--heading": theme.heading_font ? `"${theme.heading_font}", serif` : null,
-            "--body": theme.body_font ? `"${theme.body_font}", sans-serif` : null
+            "--muted":
+                theme.muted_color ||
+                theme.muted_text_color,
+            "--radius":
+                theme.border_radius !== undefined
+                    ? `${theme.border_radius}px`
+                    : null,
+            "--button-radius":
+                theme.button_radius !== undefined
+                    ? `${theme.button_radius}px`
+                    : null,
+            "--heading":
+                theme.heading_font
+                    ? `"${theme.heading_font}", serif`
+                    : null,
+            "--body":
+                theme.body_font
+                    ? `"${theme.body_font}", sans-serif`
+                    : null
         };
 
-        Object.entries(vars).forEach(([key, value]) => {
-            if (value) root.style.setProperty(key, value);
-        });
+        Object.entries(
+            variables
+        ).forEach(
+            ([key, value]) => {
+                if (value) {
+                    root.style.setProperty(
+                        key,
+                        value
+                    );
+                }
+            }
+        );
 
-        let style = document.getElementById("rukhnavCmsCustomCss");
+        let style =
+            document.getElementById(
+                "rukhnavCmsCustomCss"
+            );
+
         if (!style) {
-            style = document.createElement("style");
-            style.id = "rukhnavCmsCustomCss";
-            document.head.appendChild(style);
+            style =
+                document.createElement(
+                    "style"
+                );
+
+            style.id =
+                "rukhnavCmsCustomCss";
+
+            document.head.appendChild(
+                style
+            );
         }
-        style.textContent = settings.advanced?.custom_css || "";
+
+        style.textContent =
+            settings.advanced
+                ?.custom_css || "";
     },
 
     applyBranding(settings) {
-        const branding = settings.branding || {};
+        const branding =
+            settings.branding || {};
 
-        document.querySelectorAll(".brand img, .footer-brand img").forEach(img => {
-            if (branding.logo_url) img.src = this.asset(branding.logo_url);
-            img.alt = branding.brand_name || "RUKHNAV";
-        });
+        document
+            .querySelectorAll(
+                ".brand img, .footer-brand img"
+            )
+            .forEach(img => {
+                if (
+                    branding.logo_url
+                ) {
+                    img.src =
+                        this.asset(
+                            branding.logo_url
+                        );
+                }
 
-        document.querySelectorAll(".brand strong, .footer-brand > strong, .mobile-menu .top strong").forEach(el => {
-            if (branding.brand_name) el.textContent = branding.brand_name;
-        });
+                img.alt =
+                    branding.brand_name ||
+                    "RUKHNAV";
+            });
 
-        if (branding.favicon_url) {
-            let icon = document.querySelector('link[rel="icon"]');
+        document
+            .querySelectorAll(
+                ".brand strong, .footer-brand > strong, .mobile-menu .top strong"
+            )
+            .forEach(element => {
+                if (
+                    branding.brand_name
+                ) {
+                    element.textContent =
+                        branding.brand_name;
+                }
+            });
+
+        if (
+            branding.favicon_url
+        ) {
+            let icon =
+                document.querySelector(
+                    'link[rel="icon"]'
+                );
+
             if (!icon) {
-                icon = document.createElement("link");
+                icon =
+                    document.createElement(
+                        "link"
+                    );
+
                 icon.rel = "icon";
-                document.head.appendChild(icon);
+
+                document.head.appendChild(
+                    icon
+                );
             }
-            icon.href = this.asset(branding.favicon_url);
+
+            icon.href =
+                this.asset(
+                    branding.favicon_url
+                );
         }
     },
 
     applyHeader(settings) {
-        const header = settings.header || {};
+        const header =
+            settings.header || {};
 
-        const announcement = document.getElementById("announcement");
+        const announcement =
+            document.getElementById(
+                "announcement"
+            );
+
         if (announcement) {
-            announcement.hidden = header.announcement_enabled === false;
-            if (header.announcement_text) {
-                announcement.textContent = header.announcement_text;
+            announcement.hidden =
+                header
+                    .announcement_enabled ===
+                false;
+
+            if (
+                header.announcement_text
+            ) {
+                announcement.textContent =
+                    header.announcement_text;
             }
         }
 
-        const searchInput = document.getElementById("searchInput");
-        if (searchInput && header.search_placeholder) {
-            searchInput.placeholder = header.search_placeholder;
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+        if (
+            searchInput &&
+            header.search_placeholder
+        ) {
+            searchInput.placeholder =
+                header.search_placeholder;
         }
 
-        const navigation = Array.isArray(settings.navigation)
-            ? settings.navigation
-                .filter(item => item.enabled !== false)
-                .sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0))
-            : [];
+        const navigation =
+            Array.isArray(
+                settings.navigation
+            )
+                ? settings.navigation
+                    .filter(
+                        item =>
+                            item.enabled !==
+                            false
+                    )
+                    .sort(
+                        (a, b) =>
+                            Number(
+                                a.sort_order ||
+                                0
+                            ) -
+                            Number(
+                                b.sort_order ||
+                                0
+                            )
+                    )
+                : [];
 
-        const nav = document.querySelector(".categories-nav > div");
-        if (nav && navigation.length) {
-            nav.innerHTML = navigation.map(item => `
-                <a href="${this.escape(item.url || "#")}">
-                    ${this.escape(item.label || "Link")}
-                </a>
-            `).join("");
+        const nav =
+            document.querySelector(
+                ".categories-nav > div"
+            );
+
+        if (
+            nav &&
+            navigation.length
+        ) {
+            nav.innerHTML =
+                navigation
+                    .map(
+                        item => `
+                            <a href="${this.escape(
+                                item.url ||
+                                "#"
+                            )}">
+                                ${this.escape(
+                                    item.label ||
+                                    "Link"
+                                )}
+                            </a>
+                        `
+                    )
+                    .join("");
         }
     },
 
     applyHero(settings) {
-        const home = settings.home || {};
+        const home =
+            settings.home || {};
 
-        this.setVisible(".hero", home.hero_enabled);
-        this.setText("#heroEyebrow", home.hero_eyebrow);
-        this.setText("#heroTitle", home.hero_title);
-        this.setText("#heroText", home.hero_text);
+        this.setVisible(
+            ".hero",
+            home.hero_enabled
+        );
 
-        const primary = document.querySelector(".hero-actions .primary");
-        const secondary = document.querySelector(".hero-actions .secondary");
+        this.setText(
+            "#heroEyebrow",
+            home.hero_eyebrow
+        );
+
+        this.setText(
+            "#heroTitle",
+            home.hero_title
+        );
+
+        this.setText(
+            "#heroText",
+            home.hero_text
+        );
+
+        const primary =
+            document.querySelector(
+                ".hero-actions .primary"
+            );
+
+        const secondary =
+            document.querySelector(
+                ".hero-actions .secondary"
+            );
 
         if (primary) {
-            if (home.hero_primary_label) primary.textContent = home.hero_primary_label;
-            if (home.hero_primary_url) primary.href = home.hero_primary_url;
+            if (
+                home.hero_primary_label
+            ) {
+                primary.textContent =
+                    home
+                        .hero_primary_label;
+            }
+
+            if (
+                home.hero_primary_url
+            ) {
+                primary.href =
+                    home
+                        .hero_primary_url;
+            }
         }
 
         if (secondary) {
-            if (home.hero_secondary_label) secondary.textContent = home.hero_secondary_label;
-            if (home.hero_secondary_url) secondary.href = home.hero_secondary_url;
+            if (
+                home.hero_secondary_label
+            ) {
+                secondary.textContent =
+                    home
+                        .hero_secondary_label;
+            }
+
+            if (
+                home.hero_secondary_url
+            ) {
+                secondary.href =
+                    home
+                        .hero_secondary_url;
+            }
         }
 
-        const trust = document.querySelector(".trust");
+        const trust =
+            document.querySelector(
+                ".trust"
+            );
+
         const trustItems = [
             home.hero_trust_1,
             home.hero_trust_2,
             home.hero_trust_3
         ].filter(Boolean);
 
-        if (trust && trustItems.length) {
-            const icons = ["fa-leaf", "fa-truck-fast", "fa-shield-heart"];
-            trust.innerHTML = trustItems.map((item, index) => `
-                <b><i class="fa-solid ${icons[index] || "fa-circle-check"}"></i> ${this.escape(item)}</b>
-            `).join("");
+        if (
+            trust &&
+            trustItems.length
+        ) {
+            const icons = [
+                "fa-leaf",
+                "fa-truck-fast",
+                "fa-shield-heart"
+            ];
+
+            trust.innerHTML =
+                trustItems
+                    .map(
+                        (item, index) => `
+                            <b>
+                                <i class="fa-solid ${
+                                    icons[index] ||
+                                    "fa-circle-check"
+                                }"></i>
+                                ${this.escape(
+                                    item
+                                )}
+                            </b>
+                        `
+                    )
+                    .join("");
         }
 
-        const heroArt = document.querySelector(".hero-art");
-        const bottle = document.querySelector(".hero-art .bottle");
+        const heroArt =
+            document.querySelector(
+                ".hero-art"
+            );
 
-        if (heroArt && home.hero_image_url) {
+        const bottle =
+            document.querySelector(
+                ".hero-art .bottle"
+            );
+
+        if (
+            heroArt &&
+            home.hero_image_url
+        ) {
             heroArt.innerHTML = `
-                <img class="cms-modern-hero-image"
-                     src="${this.escape(this.asset(home.hero_image_url))}"
-                     alt="${this.escape(home.hero_image_alt || home.hero_title || "RUKHNAV hero")}">
+                <img
+                    class="cms-modern-hero-image"
+                    src="${this.escape(
+                        this.asset(
+                            home.hero_image_url
+                        )
+                    )}"
+                    alt="${this.escape(
+                        home.hero_image_alt ||
+                        home.hero_title ||
+                        "RUKHNAV hero"
+                    )}"
+                >
             `;
         } else if (bottle) {
-            const brand = settings.branding?.brand_name || "RUKHNAV";
-            const small = bottle.querySelector("small");
-            const strong = bottle.querySelector("strong");
-            if (small) small.textContent = brand;
-            if (strong && home.hero_artwork_text) strong.textContent = home.hero_artwork_text;
+            const brand =
+                settings.branding
+                    ?.brand_name ||
+                "RUKHNAV";
+
+            const small =
+                bottle.querySelector(
+                    "small"
+                );
+
+            const strong =
+                bottle.querySelector(
+                    "strong"
+                );
+
+            if (small) {
+                small.textContent =
+                    brand;
+            }
+
+            if (
+                strong &&
+                home.hero_artwork_text
+            ) {
+                strong.textContent =
+                    home
+                        .hero_artwork_text;
+            }
         }
     },
 
     applyBenefits(settings) {
-        const home = settings.home || {};
-        this.setVisible(".benefits", home.benefits_enabled);
+        const home =
+            settings.home || {};
 
-        document.querySelectorAll(".benefits article").forEach((article, index) => {
-            const number = index + 1;
-            const title = home[`benefit_${number}_title`];
-            const text = home[`benefit_${number}_text`];
+        this.setVisible(
+            ".benefits",
+            home.benefits_enabled
+        );
 
-            const b = article.querySelector("b");
-            const span = article.querySelector("span");
+        document
+            .querySelectorAll(
+                ".benefits article"
+            )
+            .forEach(
+                (article, index) => {
+                    const number =
+                        index + 1;
 
-            if (b && title) b.textContent = title;
-            if (span && text) span.textContent = text;
-        });
+                    const title =
+                        home[
+                            `benefit_${number}_title`
+                        ];
+
+                    const text =
+                        home[
+                            `benefit_${number}_text`
+                        ];
+
+                    const titleEl =
+                        article.querySelector(
+                            "b"
+                        );
+
+                    const textEl =
+                        article.querySelector(
+                            "span"
+                        );
+
+                    if (
+                        titleEl &&
+                        title
+                    ) {
+                        titleEl.textContent =
+                            title;
+                    }
+
+                    if (
+                        textEl &&
+                        text
+                    ) {
+                        textEl.textContent =
+                            text;
+                    }
+                }
+            );
     },
 
     applyCategories(settings) {
-        const home = settings.home || {};
-        const section = document.querySelector(".section:has(.categories)");
-        if (!section) return;
+        const home =
+            settings.home || {};
 
-        section.hidden = home.categories_enabled === false;
+        const section =
+            document.querySelector(
+                ".section:has(.categories)"
+            );
 
-        this.setText(".section:has(.categories) .section-head span", home.categories_eyebrow);
-        this.setText(".section:has(.categories) .section-head h2", home.categories_title);
-
-        const viewAll = section.querySelector(".section-head > a");
-        if (viewAll) {
-            if (home.categories_button_label) {
-                viewAll.innerHTML = `${this.escape(home.categories_button_label)} <i class="fa-solid fa-arrow-right"></i>`;
-            }
-            if (home.categories_button_url) viewAll.href = home.categories_button_url;
+        if (!section) {
+            return;
         }
 
-        const cards = Array.isArray(home.category_cards)
-            ? home.category_cards.filter(item => item.enabled !== false)
-            : [];
+        section.hidden =
+            home.categories_enabled ===
+            false;
 
-        const grid = section.querySelector(".categories");
-        if (grid && cards.length) {
-            grid.innerHTML = cards.map(item => `
-                <a href="${this.escape(item.url || "products.html")}">
-                    ${
-                        item.image_url
-                            ? `<img class="cms-category-image" src="${this.escape(this.asset(item.image_url))}" alt="${this.escape(item.title || "Category")}">`
-                            : `<i class="fa-solid ${this.escape(item.icon || "fa-leaf")}"></i>`
-                    }
-                    <b>${this.escape(item.title || "Category")}</b>
-                    <span>${this.escape(item.text || "")}</span>
-                </a>
-            `).join("");
+        this.setText(
+            ".section:has(.categories) .section-head span",
+            home.categories_eyebrow
+        );
+
+        this.setText(
+            ".section:has(.categories) .section-head h2",
+            home.categories_title
+        );
+
+        const viewAll =
+            section.querySelector(
+                ".section-head > a"
+            );
+
+        if (viewAll) {
+            if (
+                home
+                    .categories_button_label
+            ) {
+                viewAll.innerHTML =
+                    `${this.escape(
+                        home
+                            .categories_button_label
+                    )} <i class="fa-solid fa-arrow-right"></i>`;
+            }
+
+            if (
+                home
+                    .categories_button_url
+            ) {
+                viewAll.href =
+                    home
+                        .categories_button_url;
+            }
+        }
+
+        const cards =
+            Array.isArray(
+                home.category_cards
+            )
+                ? home.category_cards
+                    .filter(
+                        item =>
+                            item.enabled !==
+                            false
+                    )
+                : [];
+
+        const grid =
+            section.querySelector(
+                ".categories"
+            );
+
+        // Preserve the existing storefront category cards
+        // when Website Management has no category_cards configured.
+        if (
+            grid &&
+            cards.length
+        ) {
+            grid.innerHTML =
+                cards
+                    .map(
+                        item => `
+                            <a href="${this.escape(
+                                item.url ||
+                                "products.html"
+                            )}">
+                                ${
+                                    item.image_url
+                                        ? `<img class="cms-category-image" src="${this.escape(
+                                            this.asset(
+                                                item.image_url
+                                            )
+                                        )}" alt="${this.escape(
+                                            item.title ||
+                                            "Category"
+                                        )}">`
+                                        : `<i class="fa-solid ${this.escape(
+                                            item.icon ||
+                                            "fa-leaf"
+                                        )}"></i>`
+                                }
+                                <b>${this.escape(
+                                    item.title ||
+                                    "Category"
+                                )}</b>
+                                <span>${this.escape(
+                                    item.text ||
+                                    ""
+                                )}</span>
+                            </a>
+                        `
+                    )
+                    .join("");
         }
     },
 
     applyFeatured(settings) {
-        const home = settings.home || {};
-        const section = document.querySelector(".section:has(#homeProducts)");
-        if (!section) return;
+        const home =
+            settings.home || {};
 
-        section.hidden = home.featured_enabled === false;
-        this.setText(".section:has(#homeProducts) .section-head span", home.featured_eyebrow);
-        this.setText(".section:has(#homeProducts) .section-head h2", home.featured_title);
+        const section =
+            document.querySelector(
+                ".section:has(#homeProducts)"
+            );
 
-        const viewAll = section.querySelector(".section-head > a");
+        if (!section) {
+            return;
+        }
+
+        section.hidden =
+            home.featured_enabled ===
+            false;
+
+        this.setText(
+            ".section:has(#homeProducts) .section-head span",
+            home.featured_eyebrow
+        );
+
+        this.setText(
+            ".section:has(#homeProducts) .section-head h2",
+            home.featured_title
+        );
+
+        const viewAll =
+            section.querySelector(
+                ".section-head > a"
+            );
+
         if (viewAll) {
-            if (home.featured_button_label) {
-                viewAll.innerHTML = `${this.escape(home.featured_button_label)} <i class="fa-solid fa-arrow-right"></i>`;
+            if (
+                home
+                    .featured_button_label
+            ) {
+                viewAll.innerHTML =
+                    `${this.escape(
+                        home
+                            .featured_button_label
+                    )} <i class="fa-solid fa-arrow-right"></i>`;
             }
-            if (home.featured_button_url) viewAll.href = home.featured_button_url;
+
+            if (
+                home
+                    .featured_button_url
+            ) {
+                viewAll.href =
+                    home
+                        .featured_button_url;
+            }
         }
     },
 
     applyStory(settings) {
-        const home = settings.home || {};
-        this.setVisible(".story", home.story_enabled);
-        this.setText(".story > div:first-child > span", home.story_eyebrow);
-        this.setText(".story h2", home.story_title);
-        this.setText(".story p", home.story_text);
+        const home =
+            settings.home || {};
 
-        const button = document.querySelector(".story .btn");
+        this.setVisible(
+            ".story",
+            home.story_enabled
+        );
+
+        this.setText(
+            ".story > div:first-child > span",
+            home.story_eyebrow
+        );
+
+        this.setText(
+            ".story h2",
+            home.story_title
+        );
+
+        this.setText(
+            ".story p",
+            home.story_text
+        );
+
+        const button =
+            document.querySelector(
+                ".story .btn"
+            );
+
         if (button) {
-            if (home.story_button_label) button.textContent = home.story_button_label;
-            if (home.story_button_url) button.href = home.story_button_url;
+            if (
+                home.story_button_label
+            ) {
+                button.textContent =
+                    home
+                        .story_button_label;
+            }
+
+            if (
+                home.story_button_url
+            ) {
+                button.href =
+                    home
+                        .story_button_url;
+            }
         }
 
-        document.querySelectorAll(".story-points b span").forEach((span, index) => {
-            const value = home[`story_point_${index + 1}`];
-            if (value) span.textContent = value;
-        });
+        const points =
+            document.querySelectorAll(
+                ".story-points b"
+            );
+
+        points.forEach(
+            (point, index) => {
+                const value =
+                    home[
+                        `story_point_${index + 1}`
+                    ];
+
+                if (!value) {
+                    return;
+                }
+
+                const icon =
+                    point.querySelector(
+                        "i"
+                    );
+
+                point.textContent =
+                    "";
+
+                if (icon) {
+                    point.appendChild(
+                        icon
+                    );
+
+                    point.append(
+                        " "
+                    );
+                }
+
+                point.append(
+                    value
+                );
+            }
+        );
     },
 
     applyNewsletter(settings) {
-        const home = settings.home || {};
-        this.setVisible(".newsletter", home.newsletter_enabled);
-        this.setText(".newsletter > div > div > span", home.newsletter_eyebrow);
-        this.setText(".newsletter h2", home.newsletter_title);
-        this.setText(".newsletter p", home.newsletter_text);
+        const home =
+            settings.home || {};
 
-        const input = document.getElementById("newsletterEmail");
-        if (input && home.newsletter_placeholder) {
-            input.placeholder = home.newsletter_placeholder;
+        this.setVisible(
+            ".newsletter",
+            home.newsletter_enabled
+        );
+
+        this.setText(
+            ".newsletter > div > div > span",
+            home.newsletter_eyebrow
+        );
+
+        this.setText(
+            ".newsletter h2",
+            home.newsletter_title
+        );
+
+        this.setText(
+            ".newsletter p",
+            home.newsletter_text
+        );
+
+        const input =
+            document.getElementById(
+                "newsletterEmail"
+            );
+
+        if (
+            input &&
+            home.newsletter_placeholder
+        ) {
+            input.placeholder =
+                home
+                    .newsletter_placeholder;
         }
 
-        const button = document.getElementById("newsletterButton");
-        if (button && home.newsletter_button_label) {
-            button.textContent = home.newsletter_button_label;
+        // Current storefront HTML does not require
+        // a newsletterButton id, so target the form button.
+        const button =
+            document.querySelector(
+                "#newsletterForm button"
+            );
+
+        if (
+            button &&
+            home.newsletter_button_label
+        ) {
+            button.textContent =
+                home
+                    .newsletter_button_label;
         }
     },
 
     applyFooter(settings) {
-        const footer = settings.footer || {};
-        const contact = settings.contact || {};
+        const footer =
+            settings.footer || {};
 
-        this.setText(".footer-brand p", footer.short_description);
-        this.setText(".footer-bottom span:first-child", footer.copyright_text);
+        const contact =
+            settings.contact || {};
 
-        document.querySelectorAll(".footer-col").forEach(column => {
-            const heading = column.querySelector("h3")?.textContent?.trim().toLowerCase();
-            if (heading !== "contact") return;
+        this.setText(
+            ".footer-brand p",
+            footer.short_description
+        );
 
-            const email = column.querySelector('a[href^="mailto:"]');
-            if (email && contact.support_email) {
-                email.href = `mailto:${contact.support_email}`;
-                email.textContent = contact.support_email;
-            }
+        this.setText(
+            ".footer-bottom span:first-child",
+            footer.copyright_text
+        );
 
-            const whatsapp = [...column.querySelectorAll("a")].find(a =>
-                a.textContent.trim().toLowerCase() === "whatsapp"
-            );
-            if (whatsapp && contact.whatsapp_number) {
-                whatsapp.href = `https://wa.me/${String(contact.whatsapp_number).replace(/\D/g, "")}`;
-            }
-        });
+        document
+            .querySelectorAll(
+                ".footer-col"
+            )
+            .forEach(column => {
+                const heading =
+                    column
+                        .querySelector(
+                            "h3"
+                        )
+                        ?.textContent
+                        ?.trim()
+                        .toLowerCase();
+
+                if (
+                    heading !==
+                    "contact"
+                ) {
+                    return;
+                }
+
+                const email =
+                    column.querySelector(
+                        'a[href^="mailto:"]'
+                    );
+
+                if (
+                    email &&
+                    contact.support_email
+                ) {
+                    email.href =
+                        `mailto:${contact.support_email}`;
+
+                    email.textContent =
+                        contact.support_email;
+                }
+
+                const whatsapp =
+                    [
+                        ...column
+                            .querySelectorAll(
+                                "a"
+                            )
+                    ].find(
+                        link =>
+                            link
+                                .textContent
+                                .trim()
+                                .toLowerCase() ===
+                            "whatsapp"
+                    );
+
+                if (
+                    whatsapp &&
+                    contact.whatsapp_number
+                ) {
+                    whatsapp.href =
+                        `https://wa.me/${String(
+                            contact.whatsapp_number
+                        ).replace(
+                            /\D/g,
+                            ""
+                        )}`;
+                }
+            });
     },
 
     applySEO(settings) {
-        const seo = settings.seo || {};
-        if (seo.site_title) document.title = seo.site_title;
+        const seo =
+            settings.seo || {};
 
-        const description = document.querySelector('meta[name="description"]');
-        if (description && seo.site_description) {
-            description.content = seo.site_description;
+        if (seo.site_title) {
+            document.title =
+                seo.site_title;
+        }
+
+        const description =
+            document.querySelector(
+                'meta[name="description"]'
+            );
+
+        if (
+            description &&
+            seo.site_description
+        ) {
+            description.content =
+                seo.site_description;
         }
     },
 
     applyMaintenance(settings) {
-        const advanced = settings.advanced || {};
-        if (!advanced.maintenance_mode) return;
+        const advanced =
+            settings.advanced || {};
+
+        if (
+            !advanced
+                .maintenance_mode
+        ) {
+            return;
+        }
 
         document.body.innerHTML = `
             <main style="min-height:100vh;display:grid;place-items:center;padding:40px;text-align:center;background:var(--background)">
                 <section>
                     <h1 style="font-family:var(--heading);font-size:52px;color:var(--primary)">
-                        ${this.escape(settings.branding?.brand_name || "RUKHNAV")}
+                        ${this.escape(
+                            settings.branding
+                                ?.brand_name ||
+                            "RUKHNAV"
+                        )}
                     </h1>
-                    <p>${this.escape(advanced.maintenance_message || "We are improving the store. Please check back soon.")}</p>
+                    <p>
+                        ${this.escape(
+                            advanced
+                                .maintenance_message ||
+                            "We are improving the store. Please check back soon."
+                        )}
+                    </p>
                 </section>
             </main>
         `;
     },
 
     apply(settings = {}) {
-        this.settings = settings;
-        this.applyTheme(settings);
-        this.applyBranding(settings);
-        this.applyHeader(settings);
-        this.applyHero(settings);
-        this.applyBenefits(settings);
-        this.applyCategories(settings);
-        this.applyFeatured(settings);
-        this.applyStory(settings);
-        this.applyNewsletter(settings);
-        this.applyFooter(settings);
-        this.applySEO(settings);
-        this.applyMaintenance(settings);
+        this.settings =
+            settings;
+
+        this.applyTheme(
+            settings
+        );
+
+        this.applyBranding(
+            settings
+        );
+
+        this.applyHeader(
+            settings
+        );
+
+        this.applyHero(
+            settings
+        );
+
+        this.applyBenefits(
+            settings
+        );
+
+        this.applyCategories(
+            settings
+        );
+
+        this.applyFeatured(
+            settings
+        );
+
+        this.applyStory(
+            settings
+        );
+
+        this.applyNewsletter(
+            settings
+        );
+
+        this.applyFooter(
+            settings
+        );
+
+        this.applySEO(
+            settings
+        );
+
+        this.applyMaintenance(
+            settings
+        );
     },
 
     async load() {
         try {
-            const response = await fetch("/api/website/settings", {
-                headers: {Accept: "application/json"},
-                cache: "no-store"
-            });
+            const response =
+                await fetch(
+                    "/api/website/settings",
+                    {
+                        headers: {
+                            Accept:
+                                "application/json"
+                        },
+                        cache:
+                            "no-store"
+                    }
+                );
 
-            const data = await response.json();
+            const data =
+                await response.json();
 
-            if (!response.ok || data.success === false) {
-                throw new Error(data.message || "Unable to load website settings.");
+            if (
+                !response.ok ||
+                data.success === false
+            ) {
+                throw new Error(
+                    data.message ||
+                    "Unable to load website settings."
+                );
             }
 
-            this.apply(data.settings || data);
+            this.apply(
+                data.settings ||
+                data
+            );
         } catch (error) {
             console.warn(
                 "Website Management settings are unavailable. The original modern storefront remains unchanged.",
@@ -387,12 +1050,28 @@ window.RukhnavModernCMS = {
     }
 };
 
-window.addEventListener("message", event => {
-    if (event.data?.type === "RUKHNAV_CMS_PREVIEW") {
-        RukhnavModernCMS.apply(event.data.settings || {});
+window.addEventListener(
+    "message",
+    event => {
+        if (
+            event.data?.type ===
+            "RUKHNAV_CMS_PREVIEW"
+        ) {
+            RukhnavModernCMS.apply(
+                event.data.settings ||
+                {}
+            );
+        }
     }
-});
+);
 
-document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => RukhnavModernCMS.load(), 120);
-});
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+        setTimeout(
+            () =>
+                RukhnavModernCMS.load(),
+            120
+        );
+    }
+);
