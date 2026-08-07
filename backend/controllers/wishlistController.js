@@ -84,27 +84,27 @@ exports.getWishlist = async (req, res) => {
 
         const [wishlist] = await db.query(
 
-            `SELECT
-                w.id AS wishlist_id,
-                p.id AS product_id,
-                p.product_name,
-                p.price,
-                p.image,
-                p.stock,
-                p.status,
-                w.created_at
+    `SELECT
+        w.id AS wishlist_id,
+        p.id AS product_id,
+        p.product_name,
+        p.selling_price AS price,
+        p.image,
+        p.stock_quantity AS stock,
+        p.status,
+        w.created_at
 
-             FROM wishlist w
+     FROM wishlist w
 
-             JOIN products p
-             ON w.product_id = p.id
+     JOIN products p
+        ON w.product_id = p.id
 
-             WHERE w.customer_id = ?
+     WHERE w.customer_id = ?
 
-             ORDER BY w.created_at DESC`,
-            [customer_id]
+     ORDER BY w.created_at DESC`,
+    [customer_id]
 
-        );
+);
 
         res.json({
             success: true,

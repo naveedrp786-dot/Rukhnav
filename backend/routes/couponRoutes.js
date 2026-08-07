@@ -1,16 +1,33 @@
+"use strict";
+
 const express = require("express");
 const router = express.Router();
 
-const couponController = require("../controllers/couponController");
-const adminAuth = require("../middleware/adminAuth");
+const couponController =
+    require("../controllers/couponController");
 
-// Public Route
+const adminAuth =
+    require("../middleware/adminAuth");
+
+// Public validation preview.
 router.post(
     "/apply",
     couponController.applyCoupon
 );
 
-// Admin Routes
+// Protected administration routes.
+router.get(
+    "/dashboard",
+    adminAuth,
+    couponController.getDashboard
+);
+
+router.get(
+    "/",
+    adminAuth,
+    couponController.getCoupons
+);
+
 router.post(
     "/",
     adminAuth,
@@ -18,9 +35,9 @@ router.post(
 );
 
 router.get(
-    "/",
+    "/:id",
     adminAuth,
-    couponController.getCoupons
+    couponController.getCouponById
 );
 
 router.put(

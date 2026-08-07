@@ -1,0 +1,1306 @@
+/* =========================================
+   RUKHNAV ERP - Customer Loyalty
+========================================= */
+
+.hidden {
+    display: none !important;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.loyalty-page {
+    padding-bottom: 35px;
+}
+
+/* =========================================
+   Page Header
+========================================= */
+
+.loyalty-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.loyalty-header h1 {
+    margin: 0;
+    color: #172033;
+}
+
+.loyalty-header p {
+    margin: 7px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.page-label,
+.section-label {
+    display: inline-block;
+    margin-bottom: 7px;
+    color: #1f6f54;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* =========================================
+   Buttons
+========================================= */
+
+.primary-btn,
+.secondary-btn,
+.action-button {
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.primary-btn,
+.secondary-btn {
+    min-height: 40px;
+    padding: 9px 14px;
+    font-size: 13px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.primary-btn {
+    border: 1px solid #1f6f54;
+    background: #1f6f54;
+    color: #ffffff;
+}
+
+.primary-btn:hover {
+    border-color: #195e47;
+    background: #195e47;
+    transform: translateY(-1px);
+}
+
+.secondary-btn {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+}
+
+.secondary-btn:hover {
+    border-color: #d4af37;
+    background: #fffaf0;
+    color: #8a6500;
+}
+
+.primary-btn:disabled,
+.secondary-btn:disabled,
+.action-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.small-btn {
+    min-height: 38px;
+    padding: 7px 11px;
+    font-size: 12px;
+}
+
+/* =========================================
+   Summary Cards
+========================================= */
+
+.loyalty-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        4,
+        minmax(0, 1fr)
+    );
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.loyalty-summary-card {
+    min-width: 0;
+    padding: 19px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow:
+        0 8px 22px
+        rgba(15, 23, 42, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.loyalty-summary-card span {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.loyalty-summary-card h2 {
+    margin: 5px 0 3px;
+    color: #172033;
+    font-size: 22px;
+    overflow-wrap: anywhere;
+}
+
+.loyalty-summary-card small {
+    color: #8b95a7;
+    font-size: 11px;
+}
+
+.summary-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+}
+
+.summary-icon.customers {
+    background: #eaf8f1;
+    color: #16835a;
+}
+
+.summary-icon.points {
+    background: #fff4d6;
+    color: #b77900;
+}
+
+.summary-icon.gold {
+    background: #fff8df;
+    color: #c28a00;
+}
+
+.summary-icon.platinum {
+    background: #edf1f7;
+    color: #526174;
+}
+
+/* =========================================
+   General Sections
+========================================= */
+
+.loyalty-section,
+.loyalty-panel {
+    margin-bottom: 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow:
+        0 8px 24px
+        rgba(15, 23, 42, 0.05);
+}
+
+.loyalty-section {
+    padding: 20px;
+}
+
+.loyalty-panel {
+    overflow: hidden;
+}
+
+.section-heading,
+.panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.section-heading {
+    margin-bottom: 18px;
+}
+
+.panel-heading {
+    padding: 20px 20px 16px;
+}
+
+.section-heading h2,
+.panel-heading h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 20px;
+}
+
+.section-heading p {
+    margin: 5px 0 0;
+    color: #7a8495;
+    font-size: 12px;
+}
+
+/* =========================================
+   Category Cards
+========================================= */
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        4,
+        minmax(0, 1fr)
+    );
+    gap: 16px;
+}
+
+.category-card {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+}
+
+.category-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+}
+
+.category-card.bronze::before {
+    background: #a66d3f;
+}
+
+.category-card.silver::before {
+    background: #98a2b3;
+}
+
+.category-card.gold::before {
+    background: #d4af37;
+}
+
+.category-card.platinum::before {
+    background:
+        linear-gradient(
+            90deg,
+            #6d7f94,
+            #d7dee8,
+            #71849b
+        );
+}
+
+.category-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.category-emblem {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.category-card.bronze .category-emblem {
+    background: #f5e9df;
+    color: #955b31;
+}
+
+.category-card.silver .category-emblem {
+    background: #f0f2f5;
+    color: #667085;
+}
+
+.category-card.gold .category-emblem {
+    background: #fff5cc;
+    color: #a97300;
+}
+
+.category-card.platinum .category-emblem {
+    background: #edf1f6;
+    color: #526174;
+}
+
+.category-title {
+    min-width: 0;
+}
+
+.category-title h3 {
+    margin: 0;
+    color: #172033;
+    font-size: 18px;
+}
+
+.category-title span {
+    color: #7a8495;
+    font-size: 11px;
+}
+
+.category-description {
+    min-height: 48px;
+    margin: 14px 0;
+    color: #657084;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.category-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-bottom: 14px;
+}
+
+.category-metric {
+    padding: 10px;
+    border-radius: 10px;
+    background: #f7f9fc;
+}
+
+.category-metric span {
+    display: block;
+    color: #7a8495;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.category-metric strong {
+    display: block;
+    margin-top: 4px;
+    color: #263244;
+    font-size: 14px;
+}
+
+.category-benefits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 58px;
+}
+
+.benefit-chip {
+    padding: 5px 8px;
+    border: 1px solid #dce3eb;
+    border-radius: 20px;
+    background: #f8fafc;
+    color: #536174;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.benefit-chip.enabled {
+    border-color: #c8e8d9;
+    background: #edf9f3;
+    color: #18704e;
+}
+
+.category-card-footer {
+    margin-top: 15px;
+    padding-top: 13px;
+    border-top: 1px solid #edf0f4;
+}
+
+.edit-category-button {
+    width: 100%;
+    min-height: 37px;
+}
+
+/* =========================================
+   Toolbar
+========================================= */
+
+.loyalty-toolbar {
+    padding: 17px 20px;
+    border-top: 1px solid #eef1f4;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.loyalty-search {
+    width: min(440px, 100%);
+    min-height: 42px;
+    padding: 0 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.loyalty-search:focus-within {
+    border-color: #1f6f54;
+    box-shadow:
+        0 0 0 3px
+        rgba(31, 111, 84, 0.1);
+}
+
+.loyalty-search i {
+    color: #8b95a7;
+}
+
+.loyalty-search input {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #374151;
+    font-size: 13px;
+}
+
+.loyalty-search input:focus {
+    box-shadow: none;
+}
+
+.loyalty-filters {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.filter-select,
+.rows-select {
+    width: auto;
+    min-height: 40px;
+    padding: 0 33px 0 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #374151;
+    font-size: 12px;
+}
+
+/* =========================================
+   Loading and Empty States
+========================================= */
+
+.loyalty-state {
+    min-height: 190px;
+    padding: 35px 20px;
+    text-align: center;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+}
+
+.loyalty-state h3 {
+    margin: 3px 0 0;
+    color: #344054;
+    font-size: 15px;
+}
+
+.loyalty-state p {
+    max-width: 430px;
+    margin: 0;
+    color: #8791a2;
+    font-size: 12px;
+}
+
+.compact-state {
+    min-height: 130px;
+}
+
+.loyalty-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #dcefe7;
+    border-top-color: #1f6f54;
+    border-radius: 50%;
+    animation:
+        loyaltySpin 0.8s linear infinite;
+}
+
+@keyframes loyaltySpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.empty-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #f1f4f8;
+    color: #7b8798;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+}
+
+/* =========================================
+   Customer Table
+========================================= */
+
+.loyalty-table-wrap,
+.history-table-wrap {
+    overflow-x: auto;
+}
+
+.loyalty-table,
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.loyalty-table {
+    min-width: 1050px;
+}
+
+.loyalty-table thead,
+.history-table thead {
+    background: #f7f9fc;
+}
+
+.loyalty-table th,
+.history-table th {
+    padding: 13px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #657084;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.loyalty-table td,
+.history-table td {
+    padding: 14px;
+    border-bottom: 1px solid #edf0f4;
+    color: #3d4858;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.loyalty-table tbody tr:hover,
+.history-table tbody tr:hover {
+    background: #fbfcfd;
+}
+
+.customer-cell {
+    min-width: 210px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.customer-avatar {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background:
+        linear-gradient(
+            135deg,
+            #1f6f54,
+            #319675
+        );
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.customer-details strong {
+    display: block;
+    color: #243041;
+    font-size: 12px;
+}
+
+.customer-details span {
+    display: block;
+    max-width: 190px;
+    margin-top: 3px;
+    overflow: hidden;
+    color: #8490a1;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.membership-badge,
+.access-badge,
+.transaction-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.membership-badge.bronze {
+    background: #f5e9df;
+    color: #955b31;
+}
+
+.membership-badge.silver {
+    background: #eff1f4;
+    color: #626d7d;
+}
+
+.membership-badge.gold {
+    background: #fff4ca;
+    color: #956800;
+}
+
+.membership-badge.platinum {
+    background: #e9eef4;
+    color: #4d6075;
+}
+
+.access-badge.enabled {
+    background: #e9f8f0;
+    color: #16734f;
+}
+
+.access-badge.locked {
+    background: #f2f4f7;
+    color: #778396;
+}
+
+.points-value {
+    color: #936b00;
+    font-weight: 800;
+}
+
+.money-value {
+    color: #176f50;
+    font-weight: 700;
+}
+
+.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.action-button {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #dfe4ea;
+    background: #ffffff;
+    color: #566273;
+    display: grid;
+    place-items: center;
+}
+
+.action-button:hover {
+    border-color: #1f6f54;
+    background: #edf8f3;
+    color: #1f6f54;
+}
+
+.action-button.adjust:hover {
+    border-color: #d4af37;
+    background: #fff8e1;
+    color: #9b7000;
+}
+
+/* =========================================
+   Pagination
+========================================= */
+
+.loyalty-pagination {
+    min-height: 66px;
+    padding: 13px 20px;
+    border-top: 1px solid #e5e7eb;
+    color: #707b8c;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.pagination-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.current-page {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 9px;
+    background: #1f6f54;
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* =========================================
+   Modals
+========================================= */
+
+.loyalty-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    padding: 20px;
+    display: grid;
+    place-items: center;
+}
+
+.loyalty-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        rgba(15, 23, 42, 0.62);
+    backdrop-filter: blur(3px);
+}
+
+.loyalty-modal-card {
+    position: relative;
+    z-index: 1;
+    width: min(620px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow:
+        0 25px 70px
+        rgba(15, 23, 42, 0.28);
+}
+
+.wide-modal {
+    width: min(980px, 100%);
+}
+
+.loyalty-modal-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-title-group h2 {
+    margin: 0;
+    color: #202b3c;
+    font-size: 18px;
+}
+
+.modal-title-group p {
+    margin: 4px 0 0;
+    color: #7b8798;
+    font-size: 11px;
+}
+
+.modal-title-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 17px;
+}
+
+.gold-icon {
+    background: #fff5d2;
+    color: #a97600;
+}
+
+.history-icon {
+    background: #eaf2ff;
+    color: #3168c6;
+}
+
+.category-icon {
+    background: #eaf8f1;
+    color: #1f6f54;
+}
+
+.modal-close-button {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #f1f3f6;
+    color: #667085;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.modal-close-button:hover {
+    background: #feeceb;
+    color: #b42318;
+}
+
+.loyalty-modal-body {
+    padding: 20px;
+}
+
+.loyalty-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+}
+
+/* =========================================
+   Modal Forms
+========================================= */
+
+.current-points-box {
+    margin-bottom: 18px;
+    padding: 14px;
+    border: 1px solid #eee3bd;
+    border-radius: 12px;
+    background: #fffbeb;
+    display: grid;
+    grid-template-columns: repeat(
+        3,
+        1fr
+    );
+    gap: 12px;
+}
+
+.current-points-box div {
+    min-width: 0;
+}
+
+.current-points-box span {
+    display: block;
+    color: #806d3d;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.current-points-box strong {
+    display: block;
+    margin-top: 5px;
+    color: #4b3b12;
+    font-size: 15px;
+}
+
+.loyalty-form-group {
+    margin-bottom: 16px;
+}
+
+.loyalty-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #3d4858;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.loyalty-form-group input,
+.loyalty-form-group textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #344054;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.loyalty-form-group textarea {
+    min-height: 95px;
+    resize: vertical;
+}
+
+.loyalty-form-group input:focus,
+.loyalty-form-group textarea:focus {
+    border-color: #1f6f54;
+    outline: 0;
+    box-shadow:
+        0 0 0 3px
+        rgba(31, 111, 84, 0.1);
+}
+
+.loyalty-form-group input[readonly] {
+    background: #f5f7fa;
+    color: #667085;
+}
+
+.loyalty-form-group small {
+    display: block;
+    margin-top: 6px;
+    color: #8993a2;
+    font-size: 10px;
+}
+
+.required {
+    color: #d92d20;
+}
+
+.checkbox-option {
+    margin-bottom: 17px;
+    padding: 12px;
+    border: 1px solid #e1e6ec;
+    border-radius: 10px;
+    background: #fafbfc;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.checkbox-option input {
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    accent-color: #1f6f54;
+}
+
+.checkbox-option strong,
+.checkbox-option small {
+    display: block;
+}
+
+.checkbox-option strong {
+    color: #3d4858;
+    font-size: 12px;
+}
+
+.checkbox-option small {
+    margin-top: 3px;
+    color: #8490a1;
+    font-size: 10px;
+}
+
+.category-form-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        2,
+        minmax(0, 1fr)
+    );
+    gap: 0 16px;
+}
+
+.category-form-grid .full-width {
+    grid-column: 1 / -1;
+}
+
+.benefit-options {
+    padding-top: 5px;
+}
+
+.benefit-options h3 {
+    margin: 0 0 11px;
+    color: #344054;
+    font-size: 13px;
+}
+
+.benefit-option-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        3,
+        minmax(0, 1fr)
+    );
+    gap: 9px;
+}
+
+.benefit-checkbox {
+    min-height: 42px;
+    padding: 10px;
+    border: 1px solid #dfe4ea;
+    border-radius: 10px;
+    background: #fafbfc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.benefit-checkbox:hover {
+    border-color: #b7d9ca;
+    background: #f2faf6;
+}
+
+.benefit-checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: #1f6f54;
+}
+
+.benefit-checkbox span {
+    color: #4d596a;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* =========================================
+   History
+========================================= */
+
+.history-summary {
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: repeat(
+        4,
+        minmax(0, 1fr)
+    );
+    gap: 10px;
+}
+
+.history-summary-card {
+    padding: 12px;
+    border: 1px solid #e2e7ed;
+    border-radius: 10px;
+    background: #f9fafb;
+}
+
+.history-summary-card span {
+    display: block;
+    color: #7a8495;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.history-summary-card strong {
+    display: block;
+    margin-top: 5px;
+    color: #2d3949;
+    font-size: 14px;
+}
+
+.history-table {
+    min-width: 820px;
+}
+
+.transaction-badge.positive {
+    background: #eaf8f1;
+    color: #14734e;
+}
+
+.transaction-badge.negative {
+    background: #fff0ef;
+    color: #b42318;
+}
+
+.transaction-points.positive {
+    color: #15803d;
+    font-weight: 800;
+}
+
+.transaction-points.negative {
+    color: #b42318;
+    font-weight: 800;
+}
+
+/* =========================================
+   Toast Notifications
+========================================= */
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 20000;
+    width: min(360px, calc(100% - 40px));
+    display: grid;
+    gap: 10px;
+}
+
+.loyalty-toast {
+    padding: 13px 15px;
+    border-radius: 11px;
+    background: #ffffff;
+    box-shadow:
+        0 15px 35px
+        rgba(15, 23, 42, 0.2);
+    color: #344054;
+    font-size: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    animation:
+        toastSlide 0.25s ease;
+}
+
+.loyalty-toast.success {
+    border-left: 4px solid #16a34a;
+}
+
+.loyalty-toast.error {
+    border-left: 4px solid #dc2626;
+}
+
+.loyalty-toast.info {
+    border-left: 4px solid #2563eb;
+}
+
+.loyalty-toast i {
+    margin-top: 2px;
+}
+
+.loyalty-toast.success i {
+    color: #16a34a;
+}
+
+.loyalty-toast.error i {
+    color: #dc2626;
+}
+
+.loyalty-toast.info i {
+    color: #2563eb;
+}
+
+@keyframes toastSlide {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* =========================================
+   Responsive Layout
+========================================= */
+
+@media (max-width: 1250px) {
+
+    .loyalty-summary-grid,
+    .category-grid {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+    }
+
+}
+
+@media (max-width: 900px) {
+
+    .loyalty-header,
+    .loyalty-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .header-actions,
+    .loyalty-filters {
+        width: 100%;
+        margin-left: 0;
+        flex-wrap: wrap;
+    }
+
+    .loyalty-search {
+        width: 100%;
+    }
+
+    .history-summary {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+    }
+
+    .benefit-option-grid {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .loyalty-summary-grid,
+    .category-grid,
+    .category-form-grid,
+    .current-points-box,
+    .history-summary,
+    .benefit-option-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-form-grid .full-width {
+        grid-column: auto;
+    }
+
+    .header-actions,
+    .loyalty-filters {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .header-actions button,
+    .loyalty-filters select,
+    .loyalty-filters button {
+        width: 100%;
+    }
+
+    .loyalty-section {
+        padding: 15px;
+    }
+
+    .panel-heading,
+    .loyalty-toolbar {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .loyalty-pagination {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .pagination-actions {
+        justify-content: space-between;
+    }
+
+    .loyalty-modal {
+        padding: 10px;
+    }
+
+    .loyalty-modal-card {
+        max-height: calc(100vh - 20px);
+    }
+
+    .loyalty-modal-header,
+    .loyalty-modal-body,
+    .loyalty-modal-footer {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+}

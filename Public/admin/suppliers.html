@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Suppliers | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/purchasing-v5.css">
+    <link rel="stylesheet" href="css/suppliers.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Shared Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Shared Topbar -->
+        <div id="topbar-container"></div>
+
+        <section class="supplier-page purchasing-v5-page">
+
+            <!-- Page Header -->
+            <div class="page-header supplier-page-header">
+
+                <div>
+                    <h1>Suppliers</h1>
+
+                    <p>
+                        Manage supplier information, contacts,
+                        balances and account status.
+                    </p>
+                </div>
+
+                <div class="header-actions">
+
+                    <a
+                        href="inactiveSuppliers.html"
+                        class="secondary-btn"
+                    >
+                        <i class="fa-solid fa-box-archive"></i>
+                        Inactive Suppliers
+                    </a>
+
+                    <button
+                        type="button"
+                        id="addSupplierBtn"
+                        class="primary-btn"
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        Add Supplier
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="supplier-summary-cards">
+
+                <div class="supplier-summary-card">
+
+                    <div class="summary-icon green">
+                        <i class="fa-solid fa-truck-field"></i>
+                    </div>
+
+                    <div>
+                        <span>Total Suppliers</span>
+                        <h2 id="totalSuppliers">0</h2>
+                        <small>Active and inactive</small>
+                    </div>
+
+                </div>
+
+                <div class="supplier-summary-card">
+
+                    <div class="summary-icon blue">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Active Suppliers</span>
+                        <h2 id="activeSuppliers">0</h2>
+                        <small>Available for purchases</small>
+                    </div>
+
+                </div>
+
+                <div class="supplier-summary-card">
+
+                    <div class="summary-icon gold">
+                        <i class="fa-solid fa-box-archive"></i>
+                    </div>
+
+                    <div>
+                        <span>Inactive Suppliers</span>
+                        <h2 id="inactiveSuppliers">0</h2>
+                        <small>Hidden from operations</small>
+                    </div>
+
+                </div>
+
+                <div class="supplier-summary-card">
+
+                    <div class="summary-icon purple">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+
+                    <div>
+                        <span>Total Balance</span>
+                        <h2 id="totalBalance">Rs. 0</h2>
+                        <small>Current supplier balance</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Main Panel -->
+            <div class="supplier-panel">
+
+                <!-- Toolbar -->
+                <div class="supplier-toolbar">
+
+                    <div class="supplier-search">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Search by supplier, contact, phone, email or city..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                    <div class="supplier-toolbar-actions">
+
+                        <select
+                            id="pageSizeSelect"
+                            class="rows-select"
+                            aria-label="Rows per page"
+                        >
+                            <option value="10">10 rows</option>
+                            <option value="20">20 rows</option>
+                            <option value="50">50 rows</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            id="refreshButton"
+                            class="secondary-btn"
+                        >
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Loading State -->
+                <div
+                    id="loadingState"
+                    class="supplier-state"
+                >
+                    <div class="supplier-spinner"></div>
+
+                    <h3>Loading suppliers</h3>
+
+                    <p>Please wait while supplier records are loaded.</p>
+                </div>
+
+                <!-- Empty State -->
+                <div
+                    id="emptyState"
+                    class="supplier-state hidden"
+                >
+                    <i class="fa-solid fa-truck-field empty-icon"></i>
+
+                    <h3>No suppliers found</h3>
+
+                    <p>
+                        Add a supplier or change your search term.
+                    </p>
+                </div>
+
+                <!-- Table -->
+                <div
+                    id="tableWrap"
+                    class="supplier-table-wrap hidden"
+                >
+                    <table class="supplier-table">
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Supplier</th>
+                                <th>Contact Person</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>City</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="supplierTableBody"></tbody>
+
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div
+                    id="pagination"
+                    class="supplier-pagination hidden"
+                >
+                    <span id="paginationInfo">
+                        Showing 0 to 0 of 0 entries
+                    </span>
+
+                    <div class="pagination-actions">
+
+                        <button
+                            type="button"
+                            id="prevButton"
+                            class="secondary-btn small-btn"
+                        >
+                            <i class="fa-solid fa-chevron-left"></i>
+                            Previous
+                        </button>
+
+                        <span
+                            id="pageNumber"
+                            class="current-page"
+                        >
+                            1
+                        </span>
+
+                        <button
+                            type="button"
+                            id="nextButton"
+                            class="secondary-btn small-btn"
+                        >
+                            Next
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Shared Footer -->
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+<!-- Add / Edit Supplier Modal -->
+<div
+    id="supplierModal"
+    class="supplier-modal hidden"
+    aria-hidden="true"
+>
+
+    <div
+        class="supplier-modal-backdrop"
+        data-close-supplier-modal
+    ></div>
+
+    <div
+        class="supplier-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="supplierModalTitle"
+    >
+
+        <div class="supplier-modal-header">
+
+            <div class="modal-heading">
+
+                <div class="modal-heading-icon">
+                    <i class="fa-solid fa-truck-field"></i>
+                </div>
+
+                <div>
+                    <h2 id="supplierModalTitle">
+                        Add Supplier
+                    </h2>
+
+                    <p>
+                        Enter supplier contact and account information.
+                    </p>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="closeSupplierModal"
+                class="modal-close"
+                aria-label="Close"
+            >
+                &times;
+            </button>
+
+        </div>
+
+        <form id="supplierForm">
+
+            <div class="supplier-modal-body">
+
+                <input
+                    type="hidden"
+                    id="supplierId"
+                >
+
+                <div class="supplier-form-grid">
+
+                    <div class="form-group">
+                        <label for="supplierName">
+                            Supplier Name
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="supplierName"
+                            placeholder="Enter supplier name"
+                            maxlength="150"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactPerson">
+                            Contact Person
+                        </label>
+
+                        <input
+                            type="text"
+                            id="contactPerson"
+                            placeholder="Enter contact person"
+                            maxlength="150"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supplierPhone">
+                            Phone
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="supplierPhone"
+                            placeholder="0300 1234567"
+                            maxlength="50"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supplierEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="supplierEmail"
+                            placeholder="supplier@example.com"
+                            maxlength="150"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supplierCity">
+                            City
+                        </label>
+
+                        <input
+                            type="text"
+                            id="supplierCity"
+                            placeholder="Enter city"
+                            maxlength="100"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supplierCountry">
+                            Country
+                        </label>
+
+                        <input
+                            type="text"
+                            id="supplierCountry"
+                            value="Pakistan"
+                            maxlength="100"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taxNumber">
+                            Tax / NTN Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="taxNumber"
+                            placeholder="Enter tax number"
+                            maxlength="100"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="openingBalance">
+                            Opening Balance
+                        </label>
+
+                        <input
+                            type="number"
+                            id="openingBalance"
+                            placeholder="0.00"
+                            value="0"
+                            min="0"
+                            step="0.01"
+                        >
+                    </div>
+
+                    <div
+                        id="currentBalanceGroup"
+                        class="form-group hidden"
+                    >
+                        <label for="currentBalance">
+                            Current Balance
+                        </label>
+
+                        <input
+                            type="number"
+                            id="currentBalance"
+                            placeholder="0.00"
+                            min="0"
+                            step="0.01"
+                        >
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="supplierAddress">
+                            Address
+                        </label>
+
+                        <textarea
+                            id="supplierAddress"
+                            placeholder="Enter complete supplier address"
+                            rows="3"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="supplierNotes">
+                            Notes
+                        </label>
+
+                        <textarea
+                            id="supplierNotes"
+                            placeholder="Add optional supplier notes"
+                            rows="3"
+                        ></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="supplier-modal-footer">
+
+                <button
+                    type="button"
+                    id="cancelSupplierButton"
+                    class="secondary-btn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    id="saveSupplierButton"
+                    class="primary-btn"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Supplier
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Deactivate Confirmation Modal -->
+<div
+    id="deactivateModal"
+    class="confirm-modal hidden"
+    aria-hidden="true"
+>
+
+    <div
+        class="confirm-backdrop"
+        data-close-confirm-modal
+    ></div>
+
+    <div class="confirm-card">
+
+        <div class="confirm-header">
+
+            <div class="confirm-heading">
+
+                <div class="confirm-icon">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+
+                <div>
+                    <h3>Deactivate Supplier</h3>
+
+                    <p>
+                        The supplier will move to Inactive Suppliers.
+                    </p>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="closeConfirmModal"
+                class="modal-close"
+            >
+                &times;
+            </button>
+
+        </div>
+
+        <div class="confirm-body">
+
+            <div class="confirm-warning">
+                Existing purchases and transaction history will remain safe.
+            </div>
+
+            <p>
+                Are you sure you want to deactivate
+                <strong id="confirmSupplierName"></strong>?
+            </p>
+
+        </div>
+
+        <div class="confirm-footer">
+
+            <button
+                type="button"
+                id="cancelDeactivateButton"
+                class="secondary-btn"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                id="confirmDeactivateButton"
+                class="primary-btn danger-button"
+            >
+                Deactivate Supplier
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Toast Container -->
+<div
+    id="toastContainer"
+    class="toast-container"
+></div>
+<script src="js/profile.js"></script>
+<script src="js/suppliers.js"></script>
+
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+</html>

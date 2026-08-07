@@ -1,0 +1,70 @@
+/* =====================================================
+   RUKHNAV ERP - Executive Dashboard
+===================================================== */
+
+.executive-dashboard-page{display:flex;flex-direction:column;gap:24px}
+.executive-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+.executive-header h1{margin:0;color:#222b3a;font-size:32px;display:flex;align-items:center;gap:12px}
+.executive-header h1 i{color:#d0a43a}
+.executive-header p{margin:10px 0 0;color:#6f7784;line-height:1.6}
+.page-label{display:inline-block;margin-bottom:8px;color:#147653;font-size:11px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.primary-btn,.secondary-btn{border-radius:10px;padding:11px 16px;font:inherit;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;transition:.2s ease}
+.primary-btn{border:none;background:#177650;color:#fff;box-shadow:0 8px 18px rgba(23,118,80,.2)}
+.secondary-btn{border:1px solid #d9dde3;background:#fff;color:#394150}
+.primary-btn:hover,.secondary-btn:hover{transform:translateY(-2px)}
+.primary-btn:disabled,.secondary-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.dashboard-message{display:none;padding:14px 16px;border-radius:12px;font-size:14px;font-weight:700}
+.dashboard-message.show{display:block}
+.dashboard-message.error{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.dashboard-message.success{background:#ecfdf3;color:#047857;border:1px solid #a7f3d0}
+
+.dashboard-loading{min-height:300px;background:#fff;border:1px solid #e3e6eb;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#6d7480}
+.dashboard-spinner{width:44px;height:44px;border:4px solid #e6e9ee;border-top-color:#d1a63d;border-radius:50%;animation:dashSpin .8s linear infinite}
+@keyframes dashSpin{to{transform:rotate(360deg)}}
+.hidden{display:none!important}
+.dashboard-content{display:flex;flex-direction:column;gap:24px}
+
+.executive-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.executive-kpi-card{background:#fff;border:1px solid #e3e6eb;border-radius:16px;padding:20px;display:flex;align-items:center;gap:15px;box-shadow:0 10px 28px rgba(26,35,48,.05)}
+.kpi-icon{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.kpi-icon.sales{background:#ecfdf3;color:#15803d}.kpi-icon.today{background:#fff7dc;color:#a66a00}.kpi-icon.orders{background:#e0f2fe;color:#0369a1}.kpi-icon.customers{background:#ede9fe;color:#6d28d9}.kpi-icon.products{background:#e0e7ff;color:#4338ca}.kpi-icon.stock{background:#fee2e2;color:#b91c1c}.kpi-icon.purchases{background:#fce7f3;color:#be185d}.kpi-icon.suppliers{background:#f3f4f6;color:#374151}
+.executive-kpi-card span{display:block;color:#727986;font-size:12px;font-weight:800}
+.executive-kpi-card h2{margin:5px 0 3px;color:#222b3a;font-size:24px}
+.executive-kpi-card small{color:#949aa4;font-size:11px}
+
+.executive-panel{background:#fff;border:1px solid #e3e6eb;border-radius:16px;padding:22px;box-shadow:0 10px 28px rgba(26,35,48,.05)}
+.panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.panel-heading span{display:block;color:#147653;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.panel-heading h2{margin:5px 0 0;color:#202838;font-size:21px}
+.panel-link{color:#a97817;font-weight:800;text-decoration:none;font-size:13px}
+
+.quick-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.quick-action{min-height:90px;border:1px solid #e2e6ea;border-radius:12px;background:#f9fbfa;text-decoration:none;color:#27303f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:13px;font-weight:800;transition:.2s ease}
+.quick-action i{font-size:22px;color:#d1a23a}
+.quick-action:hover{transform:translateY(-3px);border-color:#d2a23a;background:#fffdf7}
+
+.executive-chart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.chart-wrap{position:relative;height:310px}.chart-wrap.compact{height:280px}
+
+.executive-two-column{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+.table-responsive{width:100%;overflow-x:auto;border:1px solid #e7eaee;border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+thead{background:#f6f8f7}
+th{padding:13px 14px;text-align:left;font-size:11px;font-weight:900;text-transform:uppercase;color:#69717e;border-bottom:1px solid #e1e5e9;white-space:nowrap}
+td{padding:14px;border-bottom:1px solid #edf0f2;color:#3f4754;font-size:13px}
+tbody tr:hover{background:#fffdf8}
+.status-badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900}
+.status-paid,.status-completed,.status-active{background:#dcfce7;color:#15803d}.status-pending,.status-partial,.status-ordered{background:#fff3cd;color:#9a6700}.status-cancelled,.status-inactive{background:#fee2e2;color:#b91c1c}.status-draft{background:#e5e7eb;color:#374151}
+
+.financial-status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.financial-status-grid>div{border:1px solid #e5e8ec;border-radius:12px;padding:16px;background:#fafbfb}
+.financial-status-grid span{display:block;color:#737b87;font-size:12px;font-weight:800}
+.financial-status-grid strong{display:block;margin:6px 0;color:#222b3a;font-size:18px}
+.financial-status-grid small{color:#969da6;font-size:11px}
+.dashboard-updated{text-align:right;color:#8a919c;font-size:12px;padding-bottom:6px}
+
+@media(max-width:1100px){.executive-chart-grid,.executive-two-column{grid-template-columns:1fr}}
+@media(max-width:680px){.executive-header h1{font-size:26px}.executive-panel{padding:17px}.executive-chart-grid{gap:14px}.chart-wrap,.chart-wrap.compact{height:260px}.financial-status-grid{grid-template-columns:1fr}}

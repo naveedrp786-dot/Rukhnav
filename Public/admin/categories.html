@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+
+    <title>Categories | RUKHNAV ERP</title>
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp-ui-v5.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/categories.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page categories-v5-page">
+
+            <header class="erp-v5-hero">
+
+                <div class="erp-v5-hero__copy">
+
+                    <span class="erp-v5-eyebrow">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        Catalog Management
+
+                    </span>
+
+                    <h1>Product Categories</h1>
+
+                    <p>
+                        Organize the product catalog, manage category images,
+                        control storefront visibility and maintain clear
+                        product navigation.
+                    </p>
+
+                </div>
+
+                <div class="erp-v5-hero__actions">
+
+                    <a
+                        href="/admin/products.html"
+                        class="erp-v5-btn erp-v5-btn--light"
+                    >
+
+                        <i class="fa-solid fa-boxes-stacked"></i>
+
+                        View Products
+
+                    </a>
+
+                    <button
+                        type="button"
+                        id="refreshCategoriesButton"
+                        class="erp-v5-btn erp-v5-btn--light"
+                    >
+
+                        <i class="fa-solid fa-rotate"></i>
+
+                        Refresh
+
+                    </button>
+
+                    <button
+                        type="button"
+                        id="addCategoryBtn"
+                        class="erp-v5-btn erp-v5-btn--gold"
+                    >
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        Add Category
+
+                    </button>
+
+                </div>
+
+            </header>
+
+            <div
+                id="categoryMessage"
+                class="category-message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+            <section class="erp-v5-summary-grid category-summary-grid">
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                    </div>
+
+                    <span>Total Categories</span>
+
+                    <strong id="totalCategories">0</strong>
+
+                    <small>All catalog categories</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+                    <span>Active</span>
+
+                    <strong id="activeCategories">0</strong>
+
+                    <small>Visible and available categories</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-circle-pause"></i>
+
+                    </div>
+
+                    <span>Inactive</span>
+
+                    <strong id="inactiveCategories">0</strong>
+
+                    <small>Hidden category records</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-filter"></i>
+
+                    </div>
+
+                    <span>Visible Results</span>
+
+                    <strong id="visibleCategories">0</strong>
+
+                    <small>Categories matching filters</small>
+
+                </article>
+
+            </section>
+
+            <section class="erp-v5-panel categories-panel">
+
+                <div class="erp-v5-panel-heading">
+
+                    <div>
+
+                        <span class="erp-v5-section-label">
+
+                            Category Directory
+
+                        </span>
+
+                        <h2>All Categories</h2>
+
+                        <p id="categoryResultText">
+                            Loading category records.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="clearCategoryFiltersButton"
+                        class="erp-v5-btn erp-v5-btn--soft"
+                    >
+
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+
+                        Clear Filters
+
+                    </button>
+
+                </div>
+
+                <div class="category-filter-bar">
+
+                    <div class="erp-v5-field category-search-field">
+
+                        <label for="searchInput">
+
+                            Search categories
+
+                        </label>
+
+                        <div class="erp-v5-input-icon">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                id="searchInput"
+                                type="search"
+                                placeholder="Category name or description"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="categoryStatusFilter">
+
+                            Category status
+
+                        </label>
+
+                        <select id="categoryStatusFilter">
+
+                            <option value="">
+                                All statuses
+                            </option>
+
+                            <option value="active">
+                                Active
+                            </option>
+
+                            <option value="inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div id="categoryLoadingState" class="category-state">
+
+                    <div class="category-spinner"></div>
+
+                    <h3>Loading categories</h3>
+
+                    <p>
+                        Please wait while category records are retrieved.
+                    </p>
+
+                </div>
+
+                <div id="categoryEmptyState" class="category-state hidden">
+
+                    <div class="category-empty-icon">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                    </div>
+
+                    <h3>No categories found</h3>
+
+                    <p>
+                        Add a category or clear the current filters.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="emptyAddCategoryButton"
+                        class="erp-v5-btn erp-v5-btn--gold"
+                    >
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        Add Category
+
+                    </button>
+
+                </div>
+
+                <div
+                    id="categoryTableWrapper"
+                    class="erp-v5-table-wrap hidden"
+                >
+
+                    <table
+                        class="erp-v5-table categories-table"
+                        aria-label="Product categories"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Image</th>
+
+                                <th>Category</th>
+
+                                <th>Description</th>
+
+                                <th>Status</th>
+
+                                <th>Updated</th>
+
+                                <th class="category-actions-heading">
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="categoryTableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </section>
+
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+
+<!-- =====================================================
+     Add / Edit Category Modal
+===================================================== -->
+
+<div
+    id="categoryModal"
+    class="category-modal hidden"
+    aria-hidden="true"
+>
+
+    <div
+        class="category-modal-backdrop"
+        data-close-category-modal
+    ></div>
+
+    <div
+        class="category-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+    >
+
+        <div class="category-dialog-header">
+
+            <div>
+
+                <span class="category-modal-eyebrow">
+
+                    Catalog Category
+
+                </span>
+
+                <h2 id="modalTitle">
+
+                    Add Category
+
+                </h2>
+
+                <p>
+                    Enter category details and an optional storefront image.
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                id="closeModal"
+                class="category-modal-close"
+                aria-label="Close category modal"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <form
+            id="categoryForm"
+            enctype="multipart/form-data"
+        >
+
+            <div class="category-dialog-body">
+
+                <div class="category-form-grid">
+
+                    <div class="erp-v5-field category-name-field">
+
+                        <label for="categoryName">
+
+                            Category Name
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="categoryName"
+                            maxlength="150"
+                            placeholder="Enter category name"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="status">
+
+                            Status
+
+                        </label>
+
+                        <select id="status">
+
+                            <option value="active">
+                                Active
+                            </option>
+
+                            <option value="inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="erp-v5-field">
+
+                    <label for="description">
+
+                        Description
+
+                    </label>
+
+                    <textarea
+                        id="description"
+                        rows="4"
+                        maxlength="1000"
+                        placeholder="Describe this product category"
+                    ></textarea>
+
+                </div>
+
+                <div class="category-image-section">
+
+                    <div class="erp-v5-field">
+
+                        <label for="categoryImage">
+
+                            Category Image
+
+                        </label>
+
+                        <label
+                            class="category-image-picker"
+                            for="categoryImage"
+                        >
+
+                            <input
+                                type="file"
+                                id="categoryImage"
+                                accept="image/jpeg,image/png,image/webp"
+                            >
+
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                            <strong>
+                                Select category image
+                            </strong>
+
+                            <span>
+                                JPG, PNG or WEBP
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    <div
+                        id="imagePreview"
+                        class="category-image-preview"
+                    >
+
+                        <div class="category-preview-placeholder">
+
+                            <i class="fa-regular fa-image"></i>
+
+                            <span>No image selected</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="category-dialog-footer">
+
+                <button
+                    type="button"
+                    id="cancelCategoryButton"
+                    class="erp-v5-btn erp-v5-btn--soft"
+                >
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    id="saveCategoryButton"
+                    class="erp-v5-btn erp-v5-btn--gold"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Category
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     Delete Confirmation
+===================================================== -->
+
+<div
+    id="deleteCategoryModal"
+    class="category-modal hidden"
+    aria-hidden="true"
+>
+
+    <div
+        class="category-modal-backdrop"
+        data-close-delete-modal
+    ></div>
+
+    <div
+        class="category-dialog category-delete-dialog"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div class="category-dialog-header">
+
+            <div class="delete-category-heading">
+
+                <div class="delete-category-icon">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="category-modal-eyebrow">
+
+                        Permanent Action
+
+                    </span>
+
+                    <h2>Delete Category</h2>
+
+                    <p id="deleteCategoryName">
+                        Category
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="closeDeleteCategoryModal"
+                class="category-modal-close"
+                aria-label="Close delete confirmation"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="category-dialog-body">
+
+            <div class="category-delete-warning">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <p>
+                    Deletion may fail when products or other records still
+                    reference this category. Set it to inactive when you
+                    need to preserve category history.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="category-dialog-footer">
+
+            <button
+                type="button"
+                id="cancelDeleteCategoryButton"
+                class="erp-v5-btn erp-v5-btn--soft"
+            >
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                id="confirmDeleteCategoryButton"
+                class="erp-v5-btn category-danger-button"
+            >
+
+                <i class="fa-solid fa-trash-can"></i>
+
+                Delete Category
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div
+    id="categoryToastContainer"
+    class="category-toast-container"
+></div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/categories.js"></script>
+
+</body>
+</html>

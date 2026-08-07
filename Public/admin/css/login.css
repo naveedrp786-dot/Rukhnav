@@ -1,0 +1,463 @@
+/* ==========================================
+   RUKHNAV ERP Login
+========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: "Poppins", sans-serif;
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(
+        135deg,
+        #0f5132,
+        #198754,
+        #d4af37
+    );
+
+    overflow: hidden;
+
+}
+
+/* ==========================================
+   Login Container
+========================================== */
+
+.login-container {
+
+    width: 100%;
+    padding: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+/* ==========================================
+   Login Card
+========================================== */
+
+.login-card {
+
+    width: 420px;
+
+    background: rgba(255,255,255,.15);
+
+    backdrop-filter: blur(15px);
+
+    border-radius: 20px;
+
+    padding: 40px;
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.25);
+
+    border: 1px solid rgba(255,255,255,.25);
+
+}
+
+/* ==========================================
+   Logo Section
+========================================== */
+
+.logo-section {
+
+    text-align: center;
+
+    margin-bottom: 35px;
+
+}
+
+.logo {
+
+    width: 90px;
+
+    height: 90px;
+
+    object-fit: contain;
+
+    margin-bottom: 15px;
+
+}
+
+.logo-section h1 {
+
+    color: #fff;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+}
+
+.logo-section p {
+
+    color: rgba(255,255,255,.85);
+
+    margin-top: 8px;
+
+    font-size: 15px;
+
+}
+
+/* ==========================================
+   Inputs
+========================================== */
+
+.input-group {
+
+    margin-bottom: 20px;
+
+}
+
+.input-group label {
+
+    display: block;
+
+    color: #fff;
+
+    margin-bottom: 8px;
+
+    font-weight: 500;
+
+}
+
+.input-group input {
+
+    width: 100%;
+
+    height: 48px;
+
+    border: none;
+
+    outline: none;
+
+    border-radius: 10px;
+
+    padding: 0 15px;
+
+    font-size: 15px;
+
+}
+
+/* ==========================================
+   Password
+========================================== */
+
+.password-box {
+
+    display: flex;
+
+    align-items: center;
+
+    background: #fff;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+}
+
+.password-box input {
+
+    flex: 1;
+
+    border: none;
+
+}
+
+.password-box button {
+
+    width: 55px;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+}
+
+/* ==========================================
+   Options
+========================================== */
+
+.login-options {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin: 20px 0;
+
+    color: white;
+
+    font-size: 14px;
+
+}
+
+.login-options a {
+
+    color: #fff;
+
+    text-decoration: none;
+
+}
+
+.login-options a:hover {
+
+    text-decoration: underline;
+
+}
+/* ==========================================
+   Login Button
+========================================== */
+
+.login-btn {
+
+    width: 100%;
+
+    height: 52px;
+
+    margin-top: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        #198754,
+        #146c43
+    );
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 10px;
+
+    transition: all .3s ease;
+
+}
+
+.login-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+
+    background: linear-gradient(
+        135deg,
+        #157347,
+        #0f5132
+    );
+
+}
+
+.login-btn:active {
+
+    transform: scale(.98);
+
+}
+
+/* ==========================================
+   Loader
+========================================== */
+
+.loader {
+
+    width: 18px;
+
+    height: 18px;
+
+    border: 3px solid rgba(255,255,255,.4);
+
+    border-top: 3px solid #ffffff;
+
+    border-radius: 50%;
+
+    animation: spin .8s linear infinite;
+
+}
+
+.hidden {
+
+    display: none;
+
+}
+
+@keyframes spin {
+
+    from {
+
+        transform: rotate(0deg);
+
+    }
+
+    to {
+
+        transform: rotate(360deg);
+
+    }
+
+}
+
+/* ==========================================
+   Error Message
+========================================== */
+
+.error-message {
+
+    margin-top: 18px;
+
+    text-align: center;
+
+    color: #ffdddd;
+
+    font-size: 14px;
+
+    min-height: 22px;
+
+    font-weight: 500;
+
+}
+
+/* ==========================================
+   Card Animation
+========================================== */
+
+.login-card {
+
+    animation: fadeIn .8s ease;
+
+}
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(25px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+
+    }
+
+}
+
+/* ==========================================
+   Input Focus
+========================================== */
+
+.input-group input:focus {
+
+    border: 2px solid #d4af37;
+
+    box-shadow: 0 0 10px rgba(212,175,55,.35);
+
+}
+
+.password-box:focus-within {
+
+    border: 2px solid #d4af37;
+
+    box-shadow: 0 0 10px rgba(212,175,55,.35);
+
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media (max-width: 768px) {
+
+    .login-card {
+
+        width: 100%;
+
+        padding: 30px;
+
+    }
+
+    .logo {
+
+        width: 70px;
+
+        height: 70px;
+
+    }
+
+    .logo-section h1 {
+
+        font-size: 24px;
+
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    body {
+
+        padding: 15px;
+
+    }
+
+    .login-card {
+
+        padding: 25px;
+
+        border-radius: 15px;
+
+    }
+
+    .logo-section h1 {
+
+        font-size: 22px;
+
+    }
+
+    .login-options {
+
+        flex-direction: column;
+
+        gap: 12px;
+
+        align-items: flex-start;
+
+    }
+
+}

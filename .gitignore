@@ -1,23 +1,60 @@
-# Node dependencies
-backend/node_modules/
+# ==============================
+# RUKHNAV - Git Ignore
+# ==============================
 
-# Environment variables
+# Secrets / environment files
+.env
+.env.*
 backend/.env
+backend/.env.*
+!backend/.env.production.example
 
-# Uploaded files
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Database / local backups
+backend/backups/
+backups/
+*.sql
+*.dump
+
+# Runtime uploads
 backend/uploads/
+uploads/
 
 # Logs
-backend/logs/
+*.log
+npm-debug.log*
+logs/
 
 # macOS
 .DS_Store
+**/.DS_Store
 
-# VS Code
+# Editors
 .vscode/
+.idea/
 
-# Postman temporary files
+# Archives
+*.zip
+*.tar
+*.tar.gz
+
+# Temporary / backup source files
+*.before-*
+*.backup.js
+*.PATCH.js
+
+# Coverage
+coverage/
+
+# Additional private/local files
+backend/environment-files/
+backend/resetAdminPassword.js
 .postman/
+postman/
 
-# npm logs
-npm-debug.log*
+# Redundant root Node package files
+/package.json
+/package-lock.json

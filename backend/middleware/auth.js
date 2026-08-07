@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
             token,
             process.env.JWT_SECRET || "rukhnav_secret_key"
         );
-
+        console.log(decoded);
         req.user = decoded;
         next();
     } catch (err) {

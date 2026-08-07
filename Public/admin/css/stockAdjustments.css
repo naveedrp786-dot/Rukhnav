@@ -1,0 +1,259 @@
+
+.stock-adjustments-page{
+    gap:20px;
+}
+
+.adjustment-summary-grid{
+    grid-template-columns:repeat(4,minmax(180px,1fr));
+}
+
+.adjustment-records-panel{
+    min-width:0;
+}
+
+.adjustment-filter-bar{
+    display:grid;
+    grid-template-columns:minmax(280px,1.5fr) minmax(170px,.7fr) minmax(170px,.7fr);
+    gap:12px;
+    margin-bottom:17px;
+    padding:14px;
+    border:1px solid #eee7da;
+    border-radius:14px;
+    background:var(--v5-card-soft);
+}
+
+.adjustment-search-field{
+    min-width:0;
+}
+
+.adjustment-table{
+    min-width:1100px;
+}
+
+.adjustment-table .status-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:max-content;
+    padding:6px 9px;
+    border-radius:999px;
+    font-size:9px;
+    font-weight:900;
+}
+
+.status-completed{
+    color:#176b38;
+    background:#e8f6ec;
+}
+
+.status-cancelled{
+    color:#9b2f28;
+    background:#fde9e7;
+}
+
+.adjustment-table .btn{
+    width:34px;
+    height:34px;
+    margin-right:4px;
+    border:1px solid #ded6c8;
+    border-radius:9px;
+    display:inline-grid;
+    place-items:center;
+    color:#5b5347;
+    background:#fff;
+    cursor:pointer;
+}
+
+.adjustment-table .btn:hover{
+    color:var(--v5-green);
+    border-color:#b8cdbf;
+    background:#eff7f2;
+}
+
+.adjustment-empty{
+    padding:42px!important;
+    color:var(--v5-muted)!important;
+    text-align:center;
+}
+
+.adjustment-empty i{
+    margin-right:6px;
+    color:var(--v5-gold-dark);
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:5000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:22px;
+    background:rgba(14,17,13,.66);
+    backdrop-filter:blur(4px);
+}
+
+.modal.show,
+.modal.open{
+    display:flex;
+}
+
+.modal-content{
+    width:min(780px,100%);
+    max-height:calc(100vh - 44px);
+    overflow:auto;
+    border:1px solid var(--v5-border);
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 30px 90px rgba(0,0,0,.28);
+}
+
+.modal-lg{
+    width:min(860px,100%);
+}
+
+.modal-header,
+.modal-footer{
+    position:sticky;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:18px 21px;
+    background:#fff;
+}
+
+.modal-header{
+    top:0;
+    border-bottom:1px solid #ece5d8;
+}
+
+.modal-footer{
+    bottom:0;
+    justify-content:flex-end;
+    border-top:1px solid #ece5d8;
+}
+
+.modal-header h2{
+    margin:4px 0 0;
+    color:var(--v5-text);
+}
+
+.modal-eyebrow{
+    color:var(--v5-gold-dark);
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+.modal-close-button{
+    width:38px;
+    height:38px;
+    border:1px solid #ddd5c7;
+    border-radius:10px;
+    display:grid;
+    place-items:center;
+    color:#5d5549;
+    background:#fff;
+    cursor:pointer;
+}
+
+.modal-body{
+    padding:22px;
+}
+
+.adjustment-form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:13px;
+}
+
+.adjustment-product-field{
+    grid-column:1/-1;
+}
+
+.adjustment-remarks-field{
+    margin-top:14px;
+}
+
+.required{
+    color:#ad3c32;
+}
+
+.adjustment-warning{
+    margin-top:14px;
+    padding:12px 14px;
+    border:1px solid #ecd58b;
+    border-radius:10px;
+    color:#765600;
+    background:#fff7d8;
+    font-weight:800;
+}
+
+.adjustment-detail-card{
+    padding:16px;
+    border:1px solid #e8e0d2;
+    border-radius:14px;
+    background:#fffdf8;
+}
+
+.adjustment-detail-card + .adjustment-detail-card{
+    margin-top:15px;
+}
+
+.adjustment-detail-card .erp-v5-section-label{
+    display:block;
+    margin-bottom:12px;
+}
+
+.adjustment-view-grid{
+    margin-top:4px;
+}
+
+.erp-v5-field input[readonly],
+.erp-v5-field textarea[readonly]{
+    color:#5e564a;
+    background:#f7f3eb;
+}
+
+@media(max-width:950px){
+    .adjustment-summary-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media(max-width:760px){
+    .adjustment-filter-bar,
+    .adjustment-form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .adjustment-product-field{
+        grid-column:auto;
+    }
+
+    .modal{
+        padding:10px;
+    }
+
+    .modal-content,
+    .modal-lg{
+        max-height:calc(100vh - 20px);
+    }
+
+    .modal-footer{
+        flex-wrap:wrap;
+    }
+
+    .modal-footer .erp-v5-btn{
+        flex:1 1 160px;
+    }
+}
+
+@media(max-width:620px){
+    .adjustment-summary-grid{
+        grid-template-columns:1fr;
+    }
+}

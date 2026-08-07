@@ -1,15 +1,54 @@
+"use strict";
+
 const express = require("express");
 const router = express.Router();
 
-const categoryController = require("../controllers/categoryController");
-const adminAuth = require("../middleware/adminAuth");
+const adminAuth =
+    require("../middleware/adminAuth");
 
-// Public
-router.get("/", categoryController.getCategories);
+const uploadCategory =
+    require("../middleware/uploadCategory");
 
-// Admin
-router.post("/", adminAuth, categoryController.addCategory);
-router.put("/:id", adminAuth, categoryController.updateCategory);
-router.delete("/:id", adminAuth, categoryController.deleteCategory);
+const categoryController =
+    require("../controllers/categoryController");
+
+// ==========================================
+// Public Category Routes
+// ==========================================
+
+// Storefront can display active categories
+router.get(
+    "/",
+    categoryController.getCategories
+);
+
+router.get(
+    "/:id",
+    categoryController.getCategory
+);
+
+// ==========================================
+// Protected Admin Routes
+// ==========================================
+
+router.post(
+    "/",
+    adminAuth,
+    uploadCategory.single("image"),
+    categoryController.createCategory
+);
+
+router.put(
+    "/:id",
+    adminAuth,
+    uploadCategory.single("image"),
+    categoryController.updateCategory
+);
+
+router.delete(
+    "/:id",
+    adminAuth,
+    categoryController.deleteCategory
+);
 
 module.exports = router;

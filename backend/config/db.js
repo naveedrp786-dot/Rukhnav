@@ -1,29 +1,52 @@
-console.log("DB_HOST:", process.env.DB_HOST);
-console.log("DB_USER:", process.env.DB_USER);
-console.log("DB_PASSWORD:", process.env.DB_PASSWORD);
-console.log("DB_NAME:", process.env.DB_NAME);
-
 const mysql = require("mysql2");
 
-const connection = mysql.createPool({
+const useSsl =
+    String(process.env.DB_SSL || "")
+        .trim()
+        .toLowerCase() === "true";
+
+const poolOptions = {
     host: process.env.DB_HOST || "localhost",
+    port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "",
     database: process.env.DB_NAME || "rukhnav",
     waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
+    connectionLimit: Number(
+        process.env.DB_CONNECTION_LIMIT || 10
+    ),
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
+};
 
-// Test connection
+if (useSsl) {
+    poolOptions.ssl = {
+        rejectUnauthorized:
+            String(
+                process.env.DB_SSL_REJECT_UNAUTHORIZED ||
+                "true"
+            ).toLowerCase() !== "false"
+    };
+}
+
+const connection =
+    mysql.createPool(poolOptions);
+
 connection.getConnection((err, conn) => {
     if (err) {
-        console.error("❌ MySQL Connection Failed");
-        console.error(err.message);
-    } else {
-        console.log("✅ MySQL Connected Successfully");
-        conn.release();
+        console.error(
+            "MySQL connection failed:",
+            err.message
+        );
+        return;
     }
+
+    console.log(
+        `MySQL connected: ${process.env.DB_NAME || "rukhnav"}`
+    );
+
+    conn.release();
 });
 
 module.exports = connection.promise();

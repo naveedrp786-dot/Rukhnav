@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme & Store Settings | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="css/erp.css">
+    <link rel="stylesheet" href="css/website-theme-settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content website-theme-page">
+            <header class="theme-page-header">
+                <div>
+                    <span class="page-label">Website Management</span>
+                    <h1><i class="fa-solid fa-palette"></i> Theme & Store Settings</h1>
+                    <p>Control storefront branding, colors, navigation behavior, payments, contact details, social links and SEO.</p>
+                </div>
+
+                <div class="header-actions">
+                    <a href="website-management.html" class="secondary-btn">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Content Builder
+                    </a>
+
+                    <button type="button" id="refreshSettingsBtn" class="secondary-btn">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+
+                    <a href="/store/index.html" target="_blank" class="primary-btn">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        Open Website
+                    </a>
+                </div>
+            </header>
+
+            <div id="settingsMessage" class="settings-message" role="alert" aria-live="polite"></div>
+
+            <div id="settingsLoading" class="settings-loading">
+                <div class="settings-spinner"></div>
+                <h3>Loading website settings</h3>
+            </div>
+
+            <div id="settingsWorkspace" class="settings-workspace hidden">
+                <aside class="settings-navigation">
+                    <button class="settings-tab active" data-group="branding"><i class="fa-solid fa-crown"></i><span>Branding</span></button>
+                    <button class="settings-tab" data-group="theme"><i class="fa-solid fa-swatchbook"></i><span>Theme</span></button>
+                    <button class="settings-tab" data-group="header"><i class="fa-solid fa-window-maximize"></i><span>Header</span></button>
+                    <button class="settings-tab" data-group="footer"><i class="fa-solid fa-shoe-prints"></i><span>Footer</span></button>
+                    <button class="settings-tab" data-group="store"><i class="fa-solid fa-store"></i><span>Store</span></button>
+                    <button class="settings-tab" data-group="payments"><i class="fa-solid fa-credit-card"></i><span>Payments</span></button>
+                    <button class="settings-tab" data-group="contact"><i class="fa-solid fa-address-book"></i><span>Contact</span></button>
+                    <button class="settings-tab" data-group="social"><i class="fa-solid fa-share-nodes"></i><span>Social</span></button>
+                    <button class="settings-tab" data-group="seo"><i class="fa-solid fa-magnifying-glass-chart"></i><span>SEO</span></button>
+                </aside>
+
+                <section class="settings-editor">
+                    <div class="editor-heading">
+                        <div>
+                            <span id="activeGroupLabel">Branding</span>
+                            <h2 id="activeGroupTitle">Brand Identity</h2>
+                            <p id="activeGroupDescription">Configure the name, tagline, logo and favicon used across the storefront.</p>
+                        </div>
+                    </div>
+
+                    <form id="settingsForm">
+                        <div id="settingsFields" class="settings-fields"></div>
+
+                        <div class="settings-form-actions">
+                            <button type="button" id="resetGroupBtn" class="danger-btn">
+                                <i class="fa-solid fa-arrow-rotate-left"></i>
+                                Restore Defaults
+                            </button>
+
+                            <button type="submit" id="saveSettingsBtn" class="primary-btn">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Save Settings
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <aside class="settings-preview">
+                    <div class="preview-heading">
+                        <span>Live Style Preview</span>
+                        <h2>Storefront Sample</h2>
+                    </div>
+
+                    <div id="previewFrame" class="storefront-preview">
+                        <div id="previewAnnouncement" class="preview-announcement">Free delivery on qualifying orders</div>
+                        <div class="preview-header">
+                            <div id="previewLogo" class="preview-logo">RUKHNAV</div>
+                            <div id="previewSearch" class="preview-search">Search RUKHNAV products</div>
+                            <div class="preview-icons"><i class="fa-regular fa-user"></i><i class="fa-regular fa-heart"></i><i class="fa-solid fa-cart-shopping"></i></div>
+                        </div>
+                        <div class="preview-category-bar">Beauty · Hair Care · Skin Care · Herbal Collection</div>
+                        <div class="preview-hero">
+                            <span id="previewTagline">Nature, Beauty & Care</span>
+                            <h3>Discover the RUKHNAV collection</h3>
+                            <button>Shop Now</button>
+                        </div>
+                        <div class="preview-products">
+                            <article><div></div><strong>Herbal Shampoo</strong><small>Rs. 1,250</small></article>
+                            <article><div></div><strong>Natural Face Wash</strong><small>Rs. 950</small></article>
+                            <article><div></div><strong>Herbal Cream</strong><small>Rs. 1,100</small></article>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+<script src="/admin/js/website-theme-settings.js"></script>
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+</html>

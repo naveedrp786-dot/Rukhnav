@@ -1,66 +1,65 @@
+"use strict";
+
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs");
+const crypto = require("crypto");
+const {
+    getUploadDirectory
+} = require("../config/storage");
 
-// Ensure upload directory exists
-const uploadDir = "uploads/profiles";
+const uploadDir =
+    getUploadDirectory("profiles");
 
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+const allowed = new Map([
+    ["image/jpeg", ".jpg"],
+    ["image/png", ".png"],
+    ["image/webp", ".webp"]
+]);
 
-// Storage
 const storage = multer.diskStorage({
-
-    destination(req, file, cb) {
-        cb(null, uploadDir);
+    destination(req, file, callback) {
+        callback(null, uploadDir);
     },
 
-    filename(req, file, cb) {
+    filename(req, file, callback) {
+        const extension =
+            allowed.get(file.mimetype) ||
+            path.extname(file.originalname)
+                .toLowerCase();
 
-        const uniqueName =
-            Date.now() +
-            "-" +
-            Math.round(Math.random() * 1e9) +
-            path.extname(file.originalname);
-
-        cb(null, uniqueName);
+        callback(
+            null,
+            `customer-${req.user?.id || "unknown"}-${Date.now()}-${crypto.randomBytes(6).toString("hex")}${extension}`
+        );
     }
-
 });
 
-// File filter
-const fileFilter = (req, file, cb) => {
-
-    console.log("Original Name:", file.originalname);
-    console.log("Extension:", path.extname(file.originalname));
-    console.log("MIME Type:", file.mimetype);
-
-    const allowedExtensions = [
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp"
-    ];
-
-    const ext = path.extname(file.originalname).toLowerCase();
-
-    if (allowedExtensions.includes(ext)) {
-        return cb(null, true);
-    }
-
-    cb(new Error("Only JPG, JPEG, PNG and WEBP images are allowed."));
-};
-
-// Upload middleware
 module.exports = multer({
-
     storage,
-
-    fileFilter,
-
     limits: {
-    fileSize: 10 * 1024 * 1024 // 10 MB
-}
+        fileSize: 5 * 1024 * 1024,
+        files: 1
+    },
+    fileFilter(req, file, callback) {
+        const extension =
+            path.extname(file.originalname)
+                .toLowerCase();
 
+        const validExtension =
+            [".jpg", ".jpeg", ".png", ".webp"]
+                .includes(extension);
+
+        if (
+            !allowed.has(file.mimetype) ||
+            !validExtension
+        ) {
+            return callback(
+                new Error(
+                    "Only JPG, JPEG, PNG and WEBP images are allowed."
+                )
+            );
+        }
+
+        callback(null, true);
+    }
 });

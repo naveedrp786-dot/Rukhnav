@@ -28,9 +28,13 @@ async function sendEmail(to, subject, html) {
 
         console.log("✅ Email Sent:", info.messageId);
 
+        return true;
+
     } catch (error) {
 
         console.error("❌ Email Error:", error.message);
+
+        return false;
 
     }
 

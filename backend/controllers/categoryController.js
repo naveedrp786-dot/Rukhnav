@@ -1,16 +1,19 @@
 const db = require("../config/db");
 
-// ==========================
+// ==========================================
 // Get All Categories
-// ==========================
+// ==========================================
+
 exports.getCategories = async (req, res) => {
+
     try {
 
         const [categories] = await db.query(
-            `SELECT *
-             FROM categories
-             WHERE status='active'
-             ORDER BY category_name`
+            `
+            SELECT *
+            FROM categories
+            ORDER BY id DESC
+            `
         );
 
         res.json({
@@ -18,22 +21,65 @@ exports.getCategories = async (req, res) => {
             categories
         });
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error(error);
+        console.error(err);
 
         res.status(500).json({
             success: false,
-            message: error.message
+            message: "Server Error"
         });
 
     }
+
 };
 
-// ==========================
+// ==========================================
+// Get Category By ID
+// ==========================================
+
+exports.getCategory = async (req, res) => {
+
+    try {
+
+        const [rows] = await db.query(
+            "SELECT * FROM categories WHERE id=?",
+            [req.params.id]
+        );
+
+        if (rows.length === 0) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Category not found"
+            });
+
+        }
+
+        res.json({
+            success: true,
+            category: rows[0]
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+
+    }
+
+};
+
+// ==========================================
 // Add Category
-// ==========================
-exports.addCategory = async (req, res) => {
+// ==========================================
+
+exports.createCategory = async (req, res) => {
+
     try {
 
         const {
@@ -42,61 +88,85 @@ exports.addCategory = async (req, res) => {
             status
         } = req.body;
 
-        if (!category_name) {
-            return res.status(400).json({
-                success: false,
-                message: "Category name is required."
-            });
-        }
+        const image = req.file
+            ? req.file.filename
+            : null;
 
-        const [existing] = await db.query(
-            "SELECT id FROM categories WHERE category_name=?",
-            [category_name]
-        );
-
-        if (existing.length > 0) {
-            return res.status(409).json({
-                success: false,
-                message: "Category already exists."
-            });
-        }
-
-        const [result] = await db.query(
-            `INSERT INTO categories
-            (category_name,description,status)
-            VALUES (?,?,?)`,
+        await db.query(
+            `
+            INSERT INTO categories
+            (
+                category_name,
+                description,
+                image,
+                status
+            )
+            VALUES (?,?,?,?)
+            `,
             [
                 category_name,
                 description,
+                image,
                 status || "active"
             ]
         );
 
-        res.status(201).json({
+        res.json({
             success: true,
-            message: "Category added successfully",
-            categoryId: result.insertId
+            message: "Category created successfully."
         });
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error(error);
+    console.error(err);
 
-        res.status(500).json({
+    if (err.code === "ER_DUP_ENTRY") {
+
+        return res.status(409).json({
             success: false,
-            message: error.message
+            message: "Category already exists."
         });
 
     }
+
+    res.status(500).json({
+        success: false,
+        message: "Unable to create category."
+    });
+
+}
+
 };
 
-// ==========================
+// ==========================================
 // Update Category
-// ==========================
+// ==========================================
+
 exports.updateCategory = async (req, res) => {
+
     try {
 
-        const { id } = req.params;
+        const [rows] = await db.query(
+            "SELECT * FROM categories WHERE id=?",
+            [req.params.id]
+        );
+
+        if (rows.length === 0) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Category not found"
+            });
+
+        }
+
+        let image = rows[0].image;
+
+        if (req.file) {
+
+            image = req.file.filename;
+
+        }
 
         const {
             category_name,
@@ -104,78 +174,95 @@ exports.updateCategory = async (req, res) => {
             status
         } = req.body;
 
-        const [result] = await db.query(
-            `UPDATE categories
-             SET
+        await db.query(
+            `
+            UPDATE categories
+            SET
                 category_name=?,
                 description=?,
+                image=?,
                 status=?
-             WHERE id=?`,
+            WHERE id=?
+            `,
             [
                 category_name,
                 description,
+                image,
                 status,
-                id
+                req.params.id
             ]
         );
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Category not found"
-            });
-        }
-
         res.json({
             success: true,
-            message: "Category updated successfully"
+            message: "Category updated successfully."
         });
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error(error);
+    console.error(err);
 
-        res.status(500).json({
+    if (err.code === "ER_DUP_ENTRY") {
+
+        return res.status(409).json({
             success: false,
-            message: error.message
+            message: "Another category with this name already exists."
         });
 
     }
+
+    res.status(500).json({
+        success: false,
+        message: "Unable to update category."
+    });
+
+}
+
 };
 
-// ==========================
+// ==========================================
 // Delete Category
-// ==========================
+// ==========================================
+
 exports.deleteCategory = async (req, res) => {
+
     try {
 
-        const { id } = req.params;
-
-        const [result] = await db.query(
-            "DELETE FROM categories WHERE id=?",
-            [id]
+        const [rows] = await db.query(
+            "SELECT * FROM categories WHERE id=?",
+            [req.params.id]
         );
 
-        if (result.affectedRows === 0) {
+        if (rows.length === 0) {
+
             return res.status(404).json({
                 success: false,
-                message: "Category not found"
+                message: "Category not found."
             });
+
         }
+
+        await db.query(
+            "DELETE FROM categories WHERE id=?",
+            [req.params.id]
+        );
 
         res.json({
             success: true,
-            message: "Category deleted successfully"
+            message: "Category deleted successfully."
         });
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error(error);
+        console.error(err);
 
         res.status(500).json({
             success: false,
-            message: error.message
+            message: "Unable to delete category."
         });
 
     }
+
 };
+
+console.log("✅ Category Controller Loaded");

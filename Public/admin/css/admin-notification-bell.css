@@ -1,0 +1,214 @@
+
+.admin-notification-popover{
+    position:fixed;
+    z-index:100000;
+    display:none;
+    width:410px;
+    max-width:calc(100vw - 24px);
+    max-height:calc(100vh - 90px);
+    overflow:hidden;
+    border:1px solid #e5ddcf;
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 24px 72px rgba(20,48,35,.24);
+    font-family:inherit;
+}
+
+.admin-notification-popover.is-open{
+    display:block;
+}
+
+.admin-notification-popover__header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px;
+    border-bottom:1px solid #eee7dc;
+    background:#fffdf8;
+}
+
+.admin-notification-popover__header span{
+    display:block;
+    margin-bottom:3px;
+    color:#b57e16;
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.12em;
+}
+
+.admin-notification-popover__header h3{
+    margin:0;
+    color:#1e2d25;
+    font-size:19px;
+}
+
+.admin-notification-mark-all{
+    border:0;
+    border-radius:8px;
+    padding:8px 10px;
+    color:#205d41;
+    background:#edf5f0;
+    font-size:10px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.admin-notification-list{
+    max-height:450px;
+    overflow-y:auto;
+}
+
+.admin-notification-item{
+    position:relative;
+    width:100%;
+    display:grid;
+    grid-template-columns:42px 1fr;
+    gap:11px;
+    padding:14px 16px;
+    border:0;
+    border-bottom:1px solid #f0ebe3;
+    text-align:left;
+    background:#fff;
+    cursor:pointer;
+}
+
+.admin-notification-item:hover{
+    background:#faf8f3;
+}
+
+.admin-notification-item.is-unread{
+    background:#fffdf5;
+}
+
+.admin-notification-item__icon{
+    width:42px;
+    height:42px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    color:#246346;
+    background:#eaf4ed;
+}
+
+.admin-notification-item--warning
+.admin-notification-item__icon{
+    color:#966711;
+    background:#fff1c9;
+}
+
+.admin-notification-item--danger
+.admin-notification-item__icon{
+    color:#aa3730;
+    background:#fde9e7;
+}
+
+.admin-notification-item--success
+.admin-notification-item__icon{
+    color:#216a46;
+    background:#e7f5ec;
+}
+
+.admin-notification-item__content{
+    min-width:0;
+}
+
+.admin-notification-item__content strong,
+.admin-notification-item__content small,
+.admin-notification-item__content em{
+    display:block;
+}
+
+.admin-notification-item__content strong{
+    color:#25352d;
+    font-size:12px;
+}
+
+.admin-notification-item__content small{
+    margin-top:3px;
+    color:#756e64;
+    font-size:10px;
+    line-height:1.45;
+}
+
+.admin-notification-item__content em{
+    margin-top:5px;
+    color:#9b9387;
+    font-size:9px;
+    font-style:normal;
+}
+
+.admin-notification-item__dot{
+    position:absolute;
+    top:17px;
+    right:14px;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#daa126;
+}
+
+.admin-notification-loading,
+.admin-notification-empty,
+.admin-notification-error{
+    min-height:180px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    padding:24px;
+    text-align:center;
+    color:#766f65;
+}
+
+.admin-notification-loading i,
+.admin-notification-empty i{
+    color:#256648;
+    font-size:22px;
+}
+
+.admin-notification-error i{
+    color:#b33c34;
+    font-size:22px;
+}
+
+.admin-notification-empty span,
+.admin-notification-error span{
+    font-size:10px;
+}
+
+.admin-notification-popover__footer{
+    padding:12px;
+    border-top:1px solid #eee7dc;
+    text-align:center;
+    background:#faf8f3;
+}
+
+.admin-notification-popover__footer a{
+    color:#225f42;
+    font-size:11px;
+    font-weight:900;
+    text-decoration:none;
+}
+
+.admin-live-notification-badge{
+    min-width:20px!important;
+    height:20px!important;
+    padding:0 5px!important;
+    border-radius:999px!important;
+    place-items:center!important;
+    color:#fff!important;
+    background:#e8443d!important;
+    font-size:10px!important;
+    font-weight:900!important;
+    line-height:1!important;
+}
+
+@media(max-width:620px){
+    .admin-notification-popover{
+        right:10px!important;
+        left:10px!important;
+        width:auto!important;
+    }
+}

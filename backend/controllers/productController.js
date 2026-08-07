@@ -1,8 +1,6 @@
 const db = require("../config/db");
 
-// ==========================
-// Get All Products
-// ==========================
+
 // ==========================
 // Get Products
 // ==========================
@@ -10,112 +8,180 @@ exports.getProducts = async (req, res) => {
 
     try {
 
-        // Query Parameters
         const {
-    search,
-    category,
-    minPrice,
-    maxPrice,
-    sort,
-    page = 1,
-    limit = 10
-} = req.query;
+            search,
+            category,
+            minPrice,
+            maxPrice,
+            sort,
+            page = 1,
+            limit = 10
+        } = req.query;
 
-        const offset = (page - 1) * limit;
+        const offset = (Number(page) - 1) * Number(limit);
 
         let sql = `
-SELECT
-    p.*,
+        SELECT
 
-    IFNULL(ROUND(AVG(r.rating),1),0) AS averageRating,
+    p.id,
+    p.product_name,
+    p.category,
+    p.brand,
+    p.description,
+    p.ingredients,
+    p.directions,
+    p.warnings,
+    p.selling_price,
+    p.cost_price,
+    p.discount_price,
 
-    COUNT(r.id) AS totalReviews
+    COALESCE(
+        (
+            SELECT image_url
+            FROM product_images
+            WHERE product_id = p.id
+            ORDER BY sort_order
+            LIMIT 1
+        ),
+        p.image
+    ) AS image,
 
-FROM products p
+    p.status,
+    p.is_featured,
+    p.stock_quantity,
+    p.low_stock_level,
+    p.unit,
+    p.weight,
+    p.manufacturing_date,
+    p.expiry_date,
+    p.shelf_life,
+    p.batch_number,
+    p.sku,
+    p.stock_status,
+    p.created_at,
+    p.updated_at,
 
-LEFT JOIN reviews r
-ON p.id = r.product_id
-`;
-        let countSql = "SELECT COUNT(*) AS total FROM products";
+            IFNULL(ROUND(AVG(r.rating),1),0) AS averageRating,
+
+            COUNT(r.id) AS totalReviews
+
+        FROM products p
+
+        LEFT JOIN reviews r
+        ON p.id = r.product_id
+        `;
+
+        let countSql = `
+        SELECT COUNT(*) AS total
+        FROM products p
+        `;
 
         let conditions = [];
         let values = [];
+        // Show only active products on normal Products page
+conditions.push("p.status != 'Inactive'");
 
-        // Search by Product Name
-        // Search by Product Name
-if (search) {
-    conditions.push("p.product_name LIKE ?");
-    values.push(`%${search}%`);
-}
+        // Search
+        if (search) {
 
-// Filter by Category
-if (category) {
-    conditions.push("p.category = ?");
-    values.push(category);
-}
+            conditions.push("p.product_name LIKE ?");
 
-// Filter by Minimum Price
-if (minPrice) {
-    conditions.push("p.price >= ?");
-    values.push(Number(minPrice));
-}
+            values.push(`%${search}%`);
 
-// Filter by Maximum Price
-if (maxPrice) {
-    conditions.push("p.price <= ?");
-    values.push(Number(maxPrice));
-}
+        }
 
-        // Apply WHERE clause
+        // Category
+        if (category) {
+
+            conditions.push("p.category = ?");
+
+            values.push(category);
+
+        }
+
+        // Minimum Price
+        if (minPrice) {
+
+            conditions.push("p.selling_price >= ?");
+
+            values.push(Number(minPrice));
+
+        }
+
+        // Maximum Price
+        if (maxPrice) {
+
+            conditions.push("p.selling_price <= ?");
+
+            values.push(Number(maxPrice));
+
+        }
+
+        // WHERE
         if (conditions.length > 0) {
 
-    sql += " WHERE " + conditions.join(" AND ");
-    countSql += " WHERE " + conditions.join(" AND ");
+            const whereClause = " WHERE " + conditions.join(" AND ");
 
-}
+            sql += whereClause;
 
-sql += " GROUP BY p.id";
+            countSql += whereClause;
 
-        // Order & Pagination
+        }
+
+        sql += `
+        GROUP BY p.id
+        `;
+
         // Sorting
-if (sort === "price_asc") {
+        switch (sort) {
 
-    sql += " ORDER BY price ASC";
+            case "price_asc":
+                sql += " ORDER BY p.selling_price ASC";
+                break;
 
-} else if (sort === "price_desc") {
+            case "price_desc":
+                sql += " ORDER BY p.selling_price DESC";
+                break;
 
-    sql += " ORDER BY price DESC";
+            case "oldest":
+                sql += " ORDER BY p.id ASC";
+                break;
 
-} else if (sort === "oldest") {
+            default:
+                sql += " ORDER BY p.id DESC";
 
-    sql += " ORDER BY id ASC";
+        }
 
-} else {
+        // Pagination
+        sql += " LIMIT ? OFFSET ?";
 
-    // Default & newest
-    sql += " ORDER BY id DESC";
+        const queryValues = [
 
-}
+            ...values,
 
-// Pagination
-sql += " LIMIT ? OFFSET ?";
+            Number(limit),
 
-        const queryValues = [...values, Number(limit), Number(offset)];
+            Number(offset)
 
-        // Get Products
+        ];
+
+        // Products
         const [products] = await db.query(
             sql,
             queryValues
         );
 
-        // Get Total Products
+        // Total Count
         const [[totalResult]] = await db.query(
             countSql,
             values
         );
 
         const totalProducts = totalResult.total;
-        const totalPages = Math.ceil(totalProducts / limit);
+
+        const totalPages = Math.ceil(
+            totalProducts / Number(limit)
+        );
 
         return res.json({
 
@@ -138,6 +204,7 @@ sql += " LIMIT ? OFFSET ?";
         return res.status(500).json({
 
             success: false,
+
             message: error.message
 
         });
@@ -184,131 +251,175 @@ exports.getProductById = async (req, res) => {
 };
 
 // ==========================
+// ==========================
 // Add Product
 // ==========================
 exports.addProduct = async (req, res) => {
+
     try {
 
         const {
             product_name,
+            sku,
             category,
             description,
-            price,
-            stock,
+            selling_price,
+            stock_quantity,
             status
         } = req.body;
 
-        const image = req.file
-            ? `/uploads/products/${req.file.filename}`
-            : null;
-
-        if (!product_name || !price) {
-            return res.status(400).json({
-                success: false,
-                message: "Product name and price are required."
-            });
-        }
-
         const [result] = await db.query(
+
             `INSERT INTO products
-            (product_name, category, description, price, stock, image, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [
+            (
                 product_name,
+                sku,
                 category,
                 description,
-                price,
-                stock,
-                image,
-                status || "active"
+                selling_price,
+                stock_quantity,
+                status
+            )
+            VALUES (?,?,?,?,?,?,?)`,
+
+            [
+                product_name,
+                sku,
+                category,
+                description,
+                selling_price,
+                stock_quantity,
+                status
             ]
+
         );
 
-        res.status(201).json({
+        const productId = result.insertId;
+
+        if (req.files && req.files.length > 0) {
+
+            for (const file of req.files) {
+
+                await db.query(
+
+    `INSERT INTO product_images
+    (product_id,image_url)
+    VALUES (?,?)`,
+
+    [
+        productId,
+        file.filename
+    ]
+
+);
+
+            }
+
+        }
+
+        res.json({
+
             success: true,
-            message: "Product added successfully",
-            productId: result.insertId,
-            image
-        });
 
-    } catch (error) {
+            message: "Product created successfully."
 
-        console.error(error);
-
-        res.status(500).json({
-            success: false,
-            message: error.message
         });
 
     }
+
+    catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+
+            success: false,
+
+            message: err.message
+
+        });
+
+    }
+
 };
 
 // ==========================
 // Update Product
 // ==========================
 exports.updateProduct = async (req, res) => {
+
     try {
+
+        console.log("========== UPDATE PRODUCT ==========");
+        console.log("BODY:", req.body);
+        console.log("FILES:", req.files);
 
         const { id } = req.params;
 
         const {
             product_name,
+            sku,
             category,
             description,
-            price,
-            stock,
+            selling_price,
+            stock_quantity,
             status
         } = req.body;
 
-        let image = null;
+        const [existing] = await db.query(
+            "SELECT image FROM products WHERE id=?",
+            [id]
+        );
 
-        if (req.file) {
-            image = `/uploads/products/${req.file.filename}`;
-        } else {
-
-            const [oldProduct] = await db.query(
-                "SELECT image FROM products WHERE id=?",
-                [id]
-            );
-
-            if (oldProduct.length > 0) {
-                image = oldProduct[0].image;
-            }
+        if (existing.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found."
+            });
         }
 
-        const [result] = await db.query(
+        let image = existing[0].image;
+
+        if (req.files && req.files.length > 0) {
+            image = req.files[0].filename;
+        }
+
+        console.log("IMAGE TO SAVE:", image);
+
+        await db.query(
             `UPDATE products
              SET
                 product_name=?,
+                sku=?,
                 category=?,
                 description=?,
-                price=?,
-                stock=?,
+                selling_price=?,
+                stock_quantity=?,
                 image=?,
                 status=?
              WHERE id=?`,
             [
                 product_name,
+                sku,
                 category,
                 description,
-                price,
-                stock,
+                selling_price,
+                stock_quantity,
                 image,
                 status,
                 id
             ]
         );
+        const [check] = await db.query(
+    "SELECT image FROM products WHERE id = ?",
+    [id]
+);
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Product not found"
-            });
-        }
+console.log("DATABASE IMAGE:", check[0].image);
 
         res.json({
             success: true,
-            message: "Product updated successfully"
+            message: "Product updated successfully."
         });
 
     } catch (error) {
@@ -321,36 +432,53 @@ exports.updateProduct = async (req, res) => {
         });
 
     }
+
 };
 
 // ==========================
-// Delete Product
+// Deactivate Product
 // ==========================
 exports.deleteProduct = async (req, res) => {
+
     try {
 
-        const { id } = req.params;
+        const productId = Number(req.params.id);
+
+        if (!productId) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid product ID."
+            });
+
+        }
 
         const [result] = await db.query(
-            "DELETE FROM products WHERE id = ?",
-            [id]
+            `
+            UPDATE products
+            SET status = 'Inactive'
+            WHERE id = ?
+            `,
+            [productId]
         );
 
         if (result.affectedRows === 0) {
+
             return res.status(404).json({
                 success: false,
-                message: "Product not found"
+                message: "Product not found."
             });
+
         }
 
         return res.json({
             success: true,
-            message: "Product deleted successfully"
+            message: "Product moved to Inactive Products."
         });
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Deactivate Product Error:", error);
 
         return res.status(500).json({
             success: false,
@@ -358,6 +486,173 @@ exports.deleteProduct = async (req, res) => {
         });
 
     }
+
+};
+
+// ==========================
+// Get Inactive Products
+// ==========================
+exports.getInactiveProducts = async (req, res) => {
+
+    try {
+
+        const [products] = await db.query(
+            `
+            SELECT
+                id,
+                product_name,
+                sku,
+                category,
+                selling_price,
+                stock_quantity,
+                stock_status,
+                status,
+                image,
+                created_at
+            FROM products
+            WHERE status = 'Inactive'
+            ORDER BY id DESC
+            `
+        );
+
+        return res.json({
+            success: true,
+            products
+        });
+
+    } catch (error) {
+
+        console.error("Get Inactive Products Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+
+};
+
+
+// ==========================
+// Restore Product
+// ==========================
+exports.restoreProduct = async (req, res) => {
+
+    try {
+
+        const productId = Number(req.params.id);
+
+        const [result] = await db.query(
+            `
+            UPDATE products
+            SET status = 'Active'
+            WHERE id = ?
+            `,
+            [productId]
+        );
+
+        if (result.affectedRows === 0) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Product not found."
+            });
+
+        }
+
+        return res.json({
+            success: true,
+            message: "Product restored successfully."
+        });
+
+    } catch (error) {
+
+        console.error("Restore Product Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+
+};
+
+
+// ==========================
+// Permanently Delete Product
+// ==========================
+exports.permanentDeleteProduct = async (req, res) => {
+
+    try {
+
+        const productId = Number(req.params.id);
+
+        if (!productId) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid product ID."
+            });
+
+        }
+
+        const [product] = await db.query(
+            `
+            SELECT id, product_name
+            FROM products
+            WHERE id = ?
+            `,
+            [productId]
+        );
+
+        if (product.length === 0) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Product not found."
+            });
+
+        }
+
+        await db.query(
+            `
+            DELETE FROM products
+            WHERE id = ?
+            `,
+            [productId]
+        );
+
+        return res.json({
+            success: true,
+            message: "Product permanently deleted."
+        });
+
+    } catch (error) {
+
+        console.error("Permanent Delete Product Error:", error);
+
+        if (
+            error.code === "ER_ROW_IS_REFERENCED_2" ||
+            error.errno === 1451
+        ) {
+
+            return res.status(409).json({
+                success: false,
+                message:
+                    "This product has transaction history and cannot be permanently deleted. Restore it or keep it inactive."
+            });
+
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+
 };
 
 // ==========================

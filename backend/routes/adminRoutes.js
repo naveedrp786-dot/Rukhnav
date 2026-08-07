@@ -1,8 +1,14 @@
+const uploadAdmin = require("../middleware/uploadAdmin");
 const express = require("express");
 const router = express.Router();
-
 const adminController = require("../controllers/adminController");
 const adminAuth = require("../middleware/adminAuth");
+const { sendEmail } = require("../services/emailService");
+const { createCoupon } = require("../services/couponService");
+const { calculateRewardPoints } = require("../services/rewardService");
+
+// Your other admin routes...
+
 
 // Public Routes
 router.post("/register", adminController.register);
@@ -19,9 +25,14 @@ router.get("/dashboard", adminAuth, (req, res) => {
 
 });
 
-// 👇 ADD THE NEW ROUTE HERE
-router.get("/dashboard/stats", adminAuth, adminController.dashboardStats);
+// Logged-in Admin Profile
+router.get(
+    "/profile",
+    adminAuth,
+    adminController.getProfile
+);
 
+// 👇 ADD THE NEW ROUTE HERE
 router.get("/dashboard/stats", adminAuth, adminController.dashboardStats);
 
 router.get(
@@ -30,17 +41,100 @@ router.get(
     adminController.monthlySales
 );
 
-router.get("/orders", adminAuth, adminController.getAllOrders);
-
-router.put("/orders/:id/status", adminAuth, adminController.updateOrderStatus);
-
-router.get("/all", adminAuth, adminController.getAllAdmins);
+// Admin CRUD Routes
+router.get("/admins", adminAuth, adminController.getAdmins);
+router.get("/admins/:id", adminAuth, adminController.getAdminById);
+router.post(
+    "/admins",
+    adminAuth,
+    uploadAdmin.single("profile_image"),
+    adminController.createAdmin
+);
+router.put(
+    "/admins/:id",
+    adminAuth,
+    uploadAdmin.single("profile_image"),
+    adminController.updateAdmin
+);
+router.delete("/admins/:id", adminAuth, adminController.deleteAdmin);
 
 router.get("/test", (req, res) => {
     res.json({
         success: true,
         message: "Admin route is working"
     });
+});
+
+router.get("/test-email", async (req, res) => {
+
+    const sent = await sendEmail(
+
+        "inforukhnav@gmail.com", // Change if you want to send to another address
+
+        "Welcome to RUKHNAV",
+
+        `
+        <h1>🌿 RUKHNAV Cosmetics</h1>
+
+        <h2>Congratulations!</h2>
+
+        <p>Your email service is working successfully.</p>
+
+        <hr>
+
+        <p>This email was sent from your Node.js backend.</p>
+        `
+
+    );
+
+    res.json({
+        success: sent
+    });
+
+});
+
+
+
+router.get("/test-coupon", async (req, res) => {
+
+    try {
+
+        const coupon = await createCoupon(
+            4,   // Customer ID
+            20   // 20% discount
+        );
+
+        res.json({
+            success: true,
+            coupon
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+
+    }
+
+});
+
+router.get("/test-points", (req, res) => {
+
+    const amount = 4850;
+
+    const points = calculateRewardPoints(amount);
+
+    res.json({
+
+        orderAmount: amount,
+        rewardPoints: points
+
+    });
+
 });
 
 module.exports = router;

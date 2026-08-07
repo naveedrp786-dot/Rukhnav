@@ -1,0 +1,1179 @@
+/*======================================================
+    RUKHNAV ERP
+    Tables
+======================================================*/
+
+@import url("variables.css");
+
+
+/*======================================================
+    Table Wrapper
+======================================================*/
+
+.table-wrapper{
+
+    background:var(--card-bg);
+
+    border-radius:var(--card-radius);
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow-sm);
+
+    border:1px solid var(--border);
+
+}
+
+
+
+/*======================================================
+    Responsive Table
+======================================================*/
+
+.table-responsive{
+
+    width:100%;
+
+    overflow-x:auto;
+
+}
+
+
+
+/*======================================================
+    Table
+======================================================*/
+
+.table-rukhnav{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:900px;
+
+}
+
+
+
+/*======================================================
+    Table Header
+======================================================*/
+
+.table-rukhnav thead{
+
+    background:var(--primary);
+
+    color:#fff;
+
+}
+
+.table-rukhnav thead th{
+
+    padding:18px 20px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+    letter-spacing:.3px;
+
+}
+
+
+
+/*======================================================
+    Table Body
+======================================================*/
+
+.table-rukhnav tbody td{
+
+    padding:18px 20px;
+
+    border-bottom:1px solid var(--border);
+
+    color:var(--text-dark);
+
+    font-size:14px;
+
+    vertical-align:middle;
+
+}
+
+
+
+/*======================================================
+    Zebra Rows
+======================================================*/
+
+.table-rukhnav tbody tr:nth-child(even){
+
+    background:#fafafa;
+
+}
+
+
+
+/*======================================================
+    Hover Effect
+======================================================*/
+
+.table-rukhnav tbody tr{
+
+    transition:var(--transition);
+
+}
+
+.table-rukhnav tbody tr:hover{
+
+    background:#eefaf3;
+
+}
+
+
+
+/*======================================================
+    Last Row
+======================================================*/
+
+.table-rukhnav tbody tr:last-child td{
+
+    border-bottom:none;
+
+}
+
+
+
+/*======================================================
+    Table Image
+======================================================*/
+
+.table-image{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:12px;
+
+    object-fit:cover;
+
+    border:2px solid var(--border);
+
+}
+
+
+
+/*======================================================
+    Table Avatar
+======================================================*/
+
+.table-avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid var(--primary);
+
+}
+/*======================================================
+    Sticky Header
+======================================================*/
+
+.table-sticky thead th{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:10;
+
+}
+
+
+
+/*======================================================
+    Sortable Columns
+======================================================*/
+
+.table-sort{
+
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:var(--transition);
+
+}
+
+.table-sort:hover{
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.table-sort i{
+
+    margin-left:8px;
+
+    font-size:12px;
+
+}
+
+
+
+/*======================================================
+    Column Alignment
+======================================================*/
+
+.text-center{
+
+    text-align:center;
+
+}
+
+.text-right{
+
+    text-align:right;
+
+}
+
+
+
+/*======================================================
+    Action Buttons
+======================================================*/
+
+.table-actions{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+/*======================================================
+    View Button
+======================================================*/
+
+.btn-view{
+
+    width:36px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#0d6efd;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.btn-view:hover{
+
+    transform:translateY(-2px);
+
+    opacity:.9;
+
+}
+
+
+
+/*======================================================
+    Edit Button
+======================================================*/
+
+.btn-edit{
+
+    width:36px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--warning);
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.btn-edit:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+
+/*======================================================
+    Delete Button
+======================================================*/
+
+.btn-delete{
+
+    width:36px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--danger);
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.btn-delete:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+
+/*======================================================
+    Status Badge
+======================================================*/
+
+.table-status{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:6px 14px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+}
+
+
+
+/*======================================================
+    Active Status
+======================================================*/
+
+.status-active{
+
+    background:rgba(25,135,84,.12);
+
+    color:var(--success);
+
+}
+
+
+
+/*======================================================
+    Inactive Status
+======================================================*/
+
+.status-inactive{
+
+    background:rgba(220,53,69,.12);
+
+    color:var(--danger);
+
+}
+
+
+
+/*======================================================
+    Pending Status
+======================================================*/
+
+.status-pending{
+
+    background:rgba(255,193,7,.15);
+
+    color:#a66a00;
+
+}
+
+
+
+/*======================================================
+    Processing Status
+======================================================*/
+
+.status-processing{
+
+    background:rgba(13,110,253,.12);
+
+    color:#0d6efd;
+
+}
+
+
+
+/*======================================================
+    Shipped Status
+======================================================*/
+
+.status-shipped{
+
+    background:rgba(111,66,193,.12);
+
+    color:#6f42c1;
+
+}
+
+
+
+/*======================================================
+    Delivered Status
+======================================================*/
+
+.status-delivered{
+
+    background:rgba(25,135,84,.12);
+
+    color:var(--success);
+
+}
+
+
+
+/*======================================================
+    Cancelled Status
+======================================================*/
+
+.status-cancelled{
+
+    background:rgba(220,53,69,.12);
+
+    color:var(--danger);
+
+}
+
+
+
+/*======================================================
+    Product Thumbnail
+======================================================*/
+
+.product-thumb{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:12px;
+
+    object-fit:cover;
+
+    border:2px solid var(--border);
+
+}
+
+
+
+/*======================================================
+    Price Cell
+======================================================*/
+
+.price{
+
+    font-weight:700;
+
+    color:var(--primary);
+
+}
+
+
+
+/*======================================================
+    Date Cell
+======================================================*/
+
+.date-cell{
+
+    color:var(--text-light);
+
+    white-space:nowrap;
+
+}
+/*======================================================
+    Table Toolbar
+======================================================*/
+
+.table-toolbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:20px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+/*======================================================
+    Left Section
+======================================================*/
+
+.table-toolbar-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+/*======================================================
+    Right Section
+======================================================*/
+
+.table-toolbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+/*======================================================
+    Search Box
+======================================================*/
+
+.table-search{
+
+    position:relative;
+
+}
+
+.table-search i{
+
+    position:absolute;
+
+    left:15px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:var(--text-light);
+
+}
+
+.table-search input{
+
+    width:280px;
+
+    height:42px;
+
+    padding:0 15px 0 42px;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    outline:none;
+
+    transition:var(--transition);
+
+}
+
+.table-search input:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(25,135,84,.12);
+
+}
+
+
+
+/*======================================================
+    Filter Dropdown
+======================================================*/
+
+.table-filter{
+
+    min-width:180px;
+
+    height:42px;
+
+    padding:0 14px;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    background:#fff;
+
+    cursor:pointer;
+
+}
+
+
+
+/*======================================================
+    Bulk Checkbox
+======================================================*/
+
+.bulk-checkbox{
+
+    width:18px;
+
+    height:18px;
+
+    accent-color:var(--primary);
+
+    cursor:pointer;
+
+}
+
+
+
+/*======================================================
+    Export Buttons
+======================================================*/
+
+.export-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+
+
+/*======================================================
+    Export Button
+======================================================*/
+
+.btn-export{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 16px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.btn-export:hover{
+
+    transform:translateY(-2px);
+
+    opacity:.95;
+
+}
+
+
+
+/*======================================================
+    Records Information
+======================================================*/
+
+.table-info{
+
+    padding:18px 20px;
+
+    color:var(--text-light);
+
+    font-size:14px;
+
+}
+
+
+
+/*======================================================
+    Pagination
+======================================================*/
+
+.pagination-rukhnav{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:20px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+/*======================================================
+    Pagination Button
+======================================================*/
+
+.page-btn{
+
+    width:40px;
+
+    height:40px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#fff;
+
+    border:1px solid var(--border);
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.page-btn:hover{
+
+    background:var(--primary);
+
+    color:#fff;
+
+}
+
+
+
+/*======================================================
+    Active Page
+======================================================*/
+
+.page-btn.active{
+
+    background:var(--primary);
+
+    color:#fff;
+
+    border-color:var(--primary);
+
+}
+
+
+
+/*======================================================
+    Disabled Page
+======================================================*/
+
+.page-btn:disabled{
+
+    opacity:.45;
+
+    cursor:not-allowed;
+
+}
+
+
+
+/*======================================================
+    Table Footer
+======================================================*/
+
+.table-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    border-top:1px solid var(--border);
+
+}
+
+
+
+/*======================================================
+    Selected Rows
+======================================================*/
+
+.selected-count{
+
+    font-weight:600;
+
+    color:var(--primary);
+
+}
+/*======================================================
+    Empty State
+======================================================*/
+
+.table-empty{
+
+    padding:60px 20px;
+
+    text-align:center;
+
+}
+
+.table-empty i{
+
+    font-size:70px;
+
+    color:var(--text-light);
+
+    margin-bottom:20px;
+
+}
+
+.table-empty h4{
+
+    margin-bottom:10px;
+
+    color:var(--text-dark);
+
+}
+
+.table-empty p{
+
+    color:var(--text-light);
+
+}
+
+
+
+/*======================================================
+    Loading Skeleton
+======================================================*/
+
+.table-skeleton{
+
+    height:20px;
+
+    border-radius:6px;
+
+    background:linear-gradient(
+        90deg,
+        #ececec 25%,
+        #f5f5f5 50%,
+        #ececec 75%
+    );
+
+    background-size:200% 100%;
+
+    animation:skeletonLoading 1.4s infinite;
+
+}
+
+@keyframes skeletonLoading{
+
+    from{
+
+        background-position:200% 0;
+
+    }
+
+    to{
+
+        background-position:-200% 0;
+
+    }
+
+}
+
+
+
+/*======================================================
+    Fade In Animation
+======================================================*/
+
+.table-wrapper{
+
+    animation:tableFade .35s ease;
+
+}
+
+@keyframes tableFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(18px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+
+/*======================================================
+    Row Animation
+======================================================*/
+
+.table-rukhnav tbody tr{
+
+    animation:rowFade .25s ease;
+
+}
+
+@keyframes rowFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateX(-8px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateX(0);
+
+    }
+
+}
+
+
+
+/*======================================================
+    Mobile Cards
+======================================================*/
+
+@media(max-width:768px){
+
+    .table-rukhnav{
+
+        min-width:100%;
+
+    }
+
+    .table-rukhnav thead{
+
+        display:none;
+
+    }
+
+    .table-rukhnav,
+
+    .table-rukhnav tbody,
+
+    .table-rukhnav tr,
+
+    .table-rukhnav td{
+
+        display:block;
+
+        width:100%;
+
+    }
+
+    .table-rukhnav tr{
+
+        margin-bottom:20px;
+
+        background:#fff;
+
+        border-radius:14px;
+
+        overflow:hidden;
+
+        box-shadow:var(--shadow-sm);
+
+        border:1px solid var(--border);
+
+    }
+
+    .table-rukhnav td{
+
+        display:flex;
+
+        justify-content:space-between;
+
+        align-items:center;
+
+        padding:14px 18px;
+
+        border-bottom:1px solid var(--border);
+
+    }
+
+    .table-rukhnav td:last-child{
+
+        border-bottom:none;
+
+    }
+
+}
+
+
+
+/*======================================================
+    Print
+======================================================*/
+
+@media print{
+
+    .table-toolbar,
+
+    .pagination-rukhnav,
+
+    .table-footer{
+
+        display:none;
+
+    }
+
+    .table-wrapper{
+
+        box-shadow:none;
+
+        border:none;
+
+    }
+
+}
+
+
+
+/*======================================================
+    Scrollbar
+======================================================*/
+
+.table-responsive::-webkit-scrollbar{
+
+    height:8px;
+
+}
+
+.table-responsive::-webkit-scrollbar-thumb{
+
+    background:var(--border);
+
+    border-radius:20px;
+
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover{
+
+    background:var(--primary);
+
+}
+
+
+
+/*======================================================
+    Utilities
+======================================================*/
+
+.cell-nowrap{
+
+    white-space:nowrap;
+
+}
+
+.cell-break{
+
+    word-break:break-word;
+
+}
+
+.cell-bold{
+
+    font-weight:700;
+
+}
+
+.cell-muted{
+
+    color:var(--text-light);
+
+}
+
+
+
+/*======================================================
+    END OF TABLES
+======================================================*/

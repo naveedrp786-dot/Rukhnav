@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupons | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="css/erp.css">
+    <link rel="stylesheet" href="css/coupons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content coupons-page">
+            <header class="page-header coupons-header">
+                <div>
+                    <span class="page-label">Finance</span>
+                    <h1>Coupon Management</h1>
+                    <p>Create, update and monitor promotional, loyalty and customer-specific coupons.</p>
+                </div>
+
+                <div class="header-actions">
+                    <button type="button" id="clearCouponFiltersButton" class="secondary-btn">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+
+                    <button type="button" id="createCouponButton" class="primary-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Create Coupon
+                    </button>
+
+                    <button type="button" id="refreshCouponsButton" class="secondary-btn">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <div id="couponsMessage" class="coupons-message" role="alert" aria-live="polite"></div>
+
+            <section class="coupon-summary-grid">
+                <article class="summary-card">
+                    <div class="summary-icon total"><i class="fa-solid fa-ticket"></i></div>
+                    <div><span>Total Coupons</span><h2 id="totalCoupons">0</h2><small>All coupon records</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon active"><i class="fa-solid fa-circle-check"></i></div>
+                    <div><span>Active</span><h2 id="activeCoupons">0</h2><small>Available for use</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon expired"><i class="fa-solid fa-calendar-xmark"></i></div>
+                    <div><span>Expired</span><h2 id="expiredCoupons">0</h2><small>Past expiry date</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon inactive"><i class="fa-solid fa-ban"></i></div>
+                    <div><span>Inactive</span><h2 id="inactiveCoupons">0</h2><small>Disabled coupons</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon exhausted"><i class="fa-solid fa-gauge-high"></i></div>
+                    <div><span>Usage Limit Reached</span><h2 id="exhaustedCoupons">0</h2><small>Fully consumed coupons</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon uses"><i class="fa-solid fa-chart-line"></i></div>
+                    <div><span>Total Uses</span><h2 id="totalUses">0</h2><small>All recorded uses</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon average"><i class="fa-solid fa-percent"></i></div>
+                    <div><span>Average Discount</span><h2 id="averageDiscountValue">0</h2><small>Average configured value</small></div>
+                </article>
+            </section>
+
+            <section class="coupons-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-label">Coupon Types</span>
+                        <h2>Type Breakdown</h2>
+                        <p>Coupon count and usage by business purpose.</p>
+                    </div>
+                </div>
+
+                <div id="couponTypeBreakdown" class="coupon-type-grid"></div>
+            </section>
+
+            <section class="coupons-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-label">Coupon Directory</span>
+                        <h2>Search and Filters</h2>
+                        <p>Find coupons by code, customer, type, discount method or status.</p>
+                    </div>
+                </div>
+
+                <form id="couponFiltersForm" class="coupon-filters" autocomplete="off">
+                    <div class="filter-field search-field">
+                        <label for="couponSearch">Search Coupons</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="search" id="couponSearch" placeholder="Code, type, customer, email or phone">
+                        </div>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="couponTypeFilter">Coupon Type</label>
+                        <select id="couponTypeFilter">
+                            <option value="">All Types</option>
+                            <option value="Birthday">Birthday</option>
+                            <option value="Anniversary">Anniversary</option>
+                            <option value="Loyalty">Loyalty</option>
+                            <option value="Promotion">Promotion</option>
+                            <option value="Welcome">Welcome</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="discountTypeFilter">Discount Type</label>
+                        <select id="discountTypeFilter">
+                            <option value="">All Discount Types</option>
+                            <option value="percentage">Percentage</option>
+                            <option value="fixed">Fixed Amount</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="couponStatusFilter">Status</label>
+                        <select id="couponStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="couponLimitFilter">Rows Per Page</label>
+                        <select id="couponLimitFilter">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button type="submit" class="primary-btn">
+                            <i class="fa-solid fa-filter"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="coupons-panel">
+                <div class="panel-heading table-panel-heading">
+                    <div>
+                        <span class="section-label">Coupon Records</span>
+                        <h2>All Coupons</h2>
+                        <p id="couponResultsText">Loading coupon records.</p>
+                    </div>
+
+                    <button type="button" id="exportCouponsButton" class="secondary-btn">
+                        <i class="fa-solid fa-file-export"></i>
+                        Export CSV
+                    </button>
+                </div>
+
+                <div id="couponsLoading" class="coupons-state">
+                    <div class="coupons-spinner"></div>
+                    <h3>Loading coupons</h3>
+                    <p>Please wait while coupon records are retrieved.</p>
+                </div>
+
+                <div id="couponsEmptyState" class="coupons-state hidden">
+                    <div class="state-icon"><i class="fa-solid fa-ticket-simple"></i></div>
+                    <h3>No coupons found</h3>
+                    <p>No coupon records match the selected filters.</p>
+                    <button type="button" id="emptyClearCouponFiltersButton" class="secondary-btn">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+                </div>
+
+                <div id="couponsTableWrapper" class="table-responsive hidden">
+                    <table class="coupons-table">
+                        <thead>
+                            <tr>
+                                <th>Coupon</th>
+                                <th>Type</th>
+                                <th>Customer</th>
+                                <th>Discount</th>
+                                <th>Minimum Order</th>
+                                <th>Usage</th>
+                                <th>Expiry</th>
+                                <th>Availability</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="couponsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="couponsPagination" class="coupons-pagination hidden">
+                    <div id="couponPaginationInformation" class="pagination-information">Showing 0 to 0 of 0 coupons</div>
+
+                    <div class="pagination-controls">
+                        <button type="button" id="couponFirstPageButton" class="pagination-button">
+                            <i class="fa-solid fa-angles-left"></i>
+                        </button>
+                        <button type="button" id="couponPreviousPageButton" class="pagination-button">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <span id="couponPaginationPages"></span>
+                        <button type="button" id="couponNextPageButton" class="pagination-button">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <button type="button" id="couponLastPageButton" class="pagination-button">
+                            <i class="fa-solid fa-angles-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div id="couponFormModal" class="coupon-modal" aria-hidden="true">
+    <div class="coupon-modal-overlay"></div>
+
+    <div class="coupon-modal-dialog" role="dialog" aria-modal="true">
+        <div class="coupon-modal-header">
+            <div>
+                <span class="modal-label">Coupon Editor</span>
+                <h2 id="couponFormTitle">Create Coupon</h2>
+            </div>
+
+            <button type="button" class="modal-close-button" data-close-modal="couponFormModal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="couponForm">
+            <div class="coupon-modal-body">
+                <input type="hidden" id="couponId">
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="couponCode">Coupon Code</label>
+                        <input type="text" id="couponCode" maxlength="50" required placeholder="WELCOME10">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponType">Coupon Type</label>
+                        <select id="couponType" required>
+                            <option value="Promotion">Promotion</option>
+                            <option value="Birthday">Birthday</option>
+                            <option value="Anniversary">Anniversary</option>
+                            <option value="Loyalty">Loyalty</option>
+                            <option value="Welcome">Welcome</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponDiscountType">Discount Type</label>
+                        <select id="couponDiscountType" required>
+                            <option value="percentage">Percentage</option>
+                            <option value="fixed">Fixed Amount</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponDiscountValue">Discount Value</label>
+                        <input type="number" id="couponDiscountValue" min="0.01" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponMinimumOrder">Minimum Order</label>
+                        <input type="number" id="couponMinimumOrder" min="0" step="0.01" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponUsageLimit">Usage Limit</label>
+                        <input type="number" id="couponUsageLimit" min="1" step="1" placeholder="Unlimited">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponExpiryDate">Expiry Date</label>
+                        <input type="date" id="couponExpiryDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponStatus">Status</label>
+                        <select id="couponStatus" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="couponCustomerId">Customer ID (optional)</label>
+                        <input type="number" id="couponCustomerId" min="1" step="1" placeholder="Leave blank for all customers">
+                    </div>
+                </div>
+            </div>
+
+            <div class="coupon-modal-footer">
+                <button type="button" class="secondary-btn" data-close-modal="couponFormModal">Cancel</button>
+                <button type="submit" id="saveCouponButton" class="primary-btn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Coupon
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="couponDetailsModal" class="coupon-modal" aria-hidden="true">
+    <div class="coupon-modal-overlay"></div>
+
+    <div class="coupon-modal-dialog" role="dialog" aria-modal="true">
+        <div class="coupon-modal-header">
+            <div>
+                <span class="modal-label">Coupon Details</span>
+                <h2 id="couponDetailsTitle">Coupon</h2>
+            </div>
+
+            <button type="button" class="modal-close-button" data-close-modal="couponDetailsModal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="couponDetailsLoading" class="modal-loading-state">
+            <div class="coupons-spinner"></div>
+            <p>Loading coupon details.</p>
+        </div>
+
+        <div id="couponDetailsContent" class="coupon-modal-body hidden">
+            <section class="coupon-detail-hero">
+                <div>
+                    <span class="coupon-code-large" id="detailsCouponCode">—</span>
+                    <h3 id="detailsCouponType">—</h3>
+                    <p id="detailsCouponCustomer">Available to all customers</p>
+                </div>
+
+                <span id="detailsCouponAvailability" class="coupon-status-badge">Active</span>
+            </section>
+
+            <div class="coupon-detail-grid">
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-percent"></i><h3>Discount</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Type</dt><dd id="detailsDiscountType">—</dd></div>
+                        <div><dt>Value</dt><dd id="detailsDiscountValue">—</dd></div>
+                        <div><dt>Minimum Order</dt><dd id="detailsMinimumOrder">PKR 0</dd></div>
+                    </dl>
+                </article>
+
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-chart-line"></i><h3>Usage</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Used Count</dt><dd id="detailsUsedCount">0</dd></div>
+                        <div><dt>Usage Limit</dt><dd id="detailsUsageLimit">Unlimited</dd></div>
+                        <div><dt>Last Used</dt><dd id="detailsUsedAt">—</dd></div>
+                    </dl>
+                </article>
+
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-calendar-days"></i><h3>Validity</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Expiry Date</dt><dd id="detailsExpiryDate">—</dd></div>
+                        <div><dt>Status</dt><dd id="detailsStatus">—</dd></div>
+                        <div><dt>Created</dt><dd id="detailsCreatedAt">—</dd></div>
+                    </dl>
+                </article>
+            </div>
+        </div>
+
+        <div class="coupon-modal-footer">
+            <button type="button" class="secondary-btn" data-close-modal="couponDetailsModal">Close</button>
+            <button type="button" id="editCouponFromDetailsButton" class="primary-btn">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Edit Coupon
+            </button>
+        </div>
+    </div>
+</div>
+<script src="js/coupons.js"></script>
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+</html>

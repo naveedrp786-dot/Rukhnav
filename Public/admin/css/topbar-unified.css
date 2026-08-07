@@ -1,0 +1,126 @@
+/* RUKHNAV ERP — one shared topbar on every admin page */
+#topbar-container{padding:30px 34px 0;box-sizing:border-box}
+.rukhnav-topbar{min-height:76px;width:100%;padding:12px 16px 12px 26px;border:1px solid #eef1f4;border-radius:17px;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;box-shadow:0 10px 30px rgba(18,34,27,.055);box-sizing:border-box}
+.rukhnav-topbar__page{min-width:210px;display:flex;align-items:center}
+.rukhnav-topbar__page h1{margin:0;color:#172033;font-size:25px;line-height:1.2;font-weight:800;letter-spacing:-.45px}
+.rukhnav-topbar__tools{display:flex;align-items:center;justify-content:flex-end;gap:14px;min-width:0}
+.rukhnav-topbar__search{width:min(290px,25vw);height:42px;padding:0 15px;border:1px solid #dfe4e9;border-radius:999px;background:#fafbfc;display:flex;align-items:center;gap:10px;box-sizing:border-box}
+.rukhnav-topbar__search i{color:#87909c;font-size:13px}
+.rukhnav-topbar__search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#172033;font:600 12px/1.2 inherit}
+.rukhnav-topbar__search input::placeholder{color:#8d949d;font-weight:500}
+.rukhnav-topbar__icon{width:43px;height:43px;border:0;border-radius:50%;background:#f6f7f8;color:#101820;display:grid;place-items:center;cursor:pointer;font-size:13px}
+.rukhnav-topbar__icon:hover{background:#edf5f1;color:#176a4c}
+.rukhnav-topbar__profile{min-width:210px;padding:5px 10px 5px 6px;display:flex;align-items:center;gap:11px}
+.rukhnav-topbar__profile img{width:43px;height:43px;border-radius:50%;object-fit:cover;background:#eef1f3;border:1px solid #e2e7ea}
+.rukhnav-topbar__profile div{min-width:0;display:flex;flex-direction:column;gap:2px}
+.rukhnav-topbar__profile strong{max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#172033;font-size:13px;font-weight:800}
+.rukhnav-topbar__profile span{color:#687383;font-size:10px;text-transform:capitalize}
+/* consistent breathing room between topbar and every page body */
+#topbar-container + .content,#topbar-container + section,#topbar-container + .erp-page{margin-top:0}
+.main>.content,.main>section.content{padding-top:28px}
+@media(max-width:900px){#topbar-container{padding:18px 18px 0}.rukhnav-topbar{padding-left:18px}.rukhnav-topbar__page{min-width:auto}.rukhnav-topbar__page h1{font-size:21px}.rukhnav-topbar__search{display:none}.rukhnav-topbar__profile{min-width:0}.rukhnav-topbar__profile strong{max-width:115px}}
+@media(max-width:560px){.rukhnav-topbar{gap:10px}.rukhnav-topbar__page h1{font-size:18px}.rukhnav-topbar__profile div{display:none}.rukhnav-topbar__profile{padding:0}.rukhnav-topbar__tools{gap:8px}}
+
+
+/* =========================================================
+   RUKHNAV ERP — Unified green page hero
+   Applied by componentLoader.js to the first management
+   heading on normal admin pages. No data/API logic changes.
+   ========================================================= */
+.rukhnav-page-hero{
+    position:relative;
+    overflow:hidden;
+    min-height:150px;
+    margin-bottom:20px!important;
+    padding:26px 30px!important;
+    border:1px solid rgba(255,255,255,.08)!important;
+    border-radius:20px!important;
+    background:linear-gradient(135deg,#174d35 0%,#1f6947 100%)!important;
+    box-shadow:0 16px 36px rgba(21,67,46,.16)!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:24px!important;
+    box-sizing:border-box!important;
+}
+.rukhnav-page-hero::after{
+    content:"";
+    position:absolute;
+    right:-62px;
+    top:-86px;
+    width:250px;
+    height:250px;
+    border-radius:50%;
+    background:rgba(255,255,255,.055);
+    pointer-events:none;
+}
+.rukhnav-page-hero>*{position:relative;z-index:1}
+.rukhnav-page-hero h1{
+    margin:4px 0 8px!important;
+    color:#fff!important;
+    font-size:clamp(28px,2.25vw,40px)!important;
+    line-height:1.08!important;
+    font-weight:800!important;
+    letter-spacing:-.7px!important;
+}
+.rukhnav-page-hero p{
+    max-width:760px;
+    margin:0!important;
+    color:rgba(255,255,255,.82)!important;
+    line-height:1.55!important;
+}
+.rukhnav-page-hero .page-label,
+.rukhnav-page-hero .erp-eyebrow,
+.rukhnav-page-hero .erp-v5-eyebrow,
+.rukhnav-page-hero [class*="eyebrow"]{
+    color:#f3c34c!important;
+    font-weight:800!important;
+    letter-spacing:.9px!important;
+}
+.rukhnav-page-hero__actions,
+.rukhnav-page-hero .header-actions,
+.rukhnav-page-hero .erp-header-actions,
+.rukhnav-page-hero .erp-v5-hero__actions{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    flex-wrap:wrap!important;
+    gap:10px!important;
+}
+.rukhnav-page-hero .primary-btn,
+.rukhnav-page-hero .erp-btn--gold,
+.rukhnav-page-hero button.primary-btn,
+.rukhnav-page-hero a.primary-btn{
+    background:#e2b62f!important;
+    border-color:#e2b62f!important;
+    color:#173226!important;
+    box-shadow:0 8px 18px rgba(0,0,0,.12)!important;
+}
+.rukhnav-page-hero .secondary-btn,
+.rukhnav-page-hero .erp-btn--light,
+.rukhnav-page-hero a.secondary-btn,
+.rukhnav-page-hero button.secondary-btn{
+    background:#fff!important;
+    border-color:rgba(255,255,255,.82)!important;
+    color:#174d35!important;
+}
+.rukhnav-page-hero .primary-btn:hover,
+.rukhnav-page-hero .erp-btn--gold:hover{filter:brightness(.97)}
+.rukhnav-page-hero .secondary-btn:hover,
+.rukhnav-page-hero .erp-btn--light:hover{background:#f8fbf9!important}
+
+@media(max-width:780px){
+    .rukhnav-page-hero{
+        min-height:0;
+        padding:22px!important;
+        align-items:flex-start!important;
+        flex-direction:column!important;
+    }
+    .rukhnav-page-hero__actions,
+    .rukhnav-page-hero .header-actions,
+    .rukhnav-page-hero .erp-header-actions,
+    .rukhnav-page-hero .erp-v5-hero__actions{
+        width:100%;
+        justify-content:flex-start!important;
+    }
+}

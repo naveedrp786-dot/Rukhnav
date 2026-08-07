@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+
+    <title>Inventory Dashboard | RUKHNAV ERP</title>
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp-ui-v5.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/inventory.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page inventory-v5-page">
+
+            <header class="erp-v5-hero">
+
+                <div class="erp-v5-hero__copy">
+
+                    <span class="erp-v5-eyebrow">
+
+                        <i class="fa-solid fa-warehouse"></i>
+
+                        Inventory Operations
+
+                    </span>
+
+                    <h1>Inventory Dashboard</h1>
+
+                    <p>
+                        Monitor available stock, low-stock alerts,
+                        out-of-stock products and recent inventory
+                        movements from one professional ERP workspace.
+                    </p>
+
+                </div>
+
+                <div class="erp-v5-hero__actions">
+
+                    <a
+                        href="/admin/stock.html"
+                        class="erp-v5-btn erp-v5-btn--light"
+                    >
+
+                        <i class="fa-solid fa-boxes-packing"></i>
+
+                        Add Stock
+
+                    </a>
+
+                    <a
+                        href="/admin/stockAdjustments.html"
+                        class="erp-v5-btn erp-v5-btn--light"
+                    >
+
+                        <i class="fa-solid fa-sliders"></i>
+
+                        Stock Adjustments
+
+                    </a>
+
+                    <button
+                        id="refreshInventoryButton"
+                        type="button"
+                        class="erp-v5-btn erp-v5-btn--gold"
+                        onclick="location.reload()"
+                    >
+
+                        <i class="fa-solid fa-rotate"></i>
+
+                        Refresh
+
+                    </button>
+
+                </div>
+
+            </header>
+
+            <section class="erp-v5-summary-grid inventory-summary-grid">
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-boxes-stacked"></i>
+
+                    </div>
+
+                    <span>Total Products</span>
+
+                    <strong id="totalProducts">0</strong>
+
+                    <small>Active inventory records</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-cubes"></i>
+
+                    </div>
+
+                    <span>Total Units</span>
+
+                    <strong id="totalStock">0</strong>
+
+                    <small>Available units in stock</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    </div>
+
+                    <span>Low Stock</span>
+
+                    <strong id="lowStock">0</strong>
+
+                    <small>Products requiring attention</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-circle-xmark"></i>
+
+                    </div>
+
+                    <span>Out of Stock</span>
+
+                    <strong id="outStock">0</strong>
+
+                    <small>Unavailable products</small>
+
+                </article>
+
+            </section>
+
+            <section class="inventory-dashboard-grid">
+
+                <article class="erp-v5-panel inventory-movements-panel">
+
+                    <div class="erp-v5-panel-heading">
+
+                        <div>
+
+                            <span class="erp-v5-section-label">
+
+                                Stock Movement History
+
+                            </span>
+
+                            <h2>Recent Inventory Transactions</h2>
+
+                            <p>
+                                Review the latest stock-in, stock-out and
+                                correction activity.
+                            </p>
+
+                        </div>
+
+                        <a
+                            href="/admin/stockAdjustments.html"
+                            class="erp-v5-btn erp-v5-btn--soft"
+                        >
+
+                            View Adjustments
+
+                        </a>
+
+                    </div>
+
+                    <div class="erp-v5-table-wrap">
+
+                        <table class="erp-v5-table inventory-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Date</th>
+
+                                    <th>Product</th>
+
+                                    <th>Type</th>
+
+                                    <th>Quantity</th>
+
+                                    <th>Previous</th>
+
+                                    <th>Current</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="transactionTable">
+
+                                <tr>
+
+                                    <td
+                                        colspan="6"
+                                        class="inventory-loading-cell"
+                                    >
+
+                                        Loading inventory transactions...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </article>
+
+                <article class="erp-v5-panel low-stock-panel">
+
+                    <div class="erp-v5-panel-heading">
+
+                        <div>
+
+                            <span class="erp-v5-section-label">
+
+                                Reorder Alerts
+
+                            </span>
+
+                            <h2>Low Stock Products</h2>
+
+                            <p>
+                                Products currently at or below their
+                                minimum stock level.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="erp-v5-table-wrap">
+
+                        <table class="erp-v5-table low-stock-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Product</th>
+
+                                    <th>Current</th>
+
+                                    <th>Minimum</th>
+
+                                    <th>Status</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="lowStockTable">
+
+                                <tr>
+
+                                    <td
+                                        colspan="4"
+                                        class="inventory-loading-cell"
+                                    >
+
+                                        Loading low-stock products...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+        </section>
+
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/inventory.js"></script>
+
+</body>
+</html>
