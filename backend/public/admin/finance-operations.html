@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Payments & Coupons | RUKHNAV ERP</title>
+<link rel="stylesheet" href="/admin/css/erp.css">
+<link rel="stylesheet" href="/admin/css/finance-part2.css">
+<link rel="stylesheet" href="/admin/css/finance-part3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+<div id="sidebar-container"></div>
+<main class="main">
+<div id="topbar-container"></div>
+<section class="content finance2-page">
+<header class="finance2-hero">
+<div>
+<span class="finance2-eyebrow">Finance Operations</span>
+<h1>Payments & Coupons</h1>
+<p>One finance workspace for customer collections, supplier payments, refunds, coupons and discount impact.</p>
+</div>
+<div class="finance2-actions">
+<a href="/admin/payments.html" class="f2-btn light"><i class="fa-solid fa-money-check-dollar"></i>Customer Payments</a>
+<a href="/admin/supplierPayments.html" class="f2-btn light"><i class="fa-solid fa-hand-holding-dollar"></i>Supplier Payments</a>
+<a href="/admin/coupons.html" class="f2-btn gold"><i class="fa-solid fa-ticket"></i>Coupons</a>
+</div>
+</header>
+
+<div id="operationsMessage" class="f2-message"></div>
+
+<section class="f2-summary-grid operations-summary">
+<article class="f2-summary-card"><span>Net Customer Collections</span><strong id="opsNetCollected">PKR 0</strong><small id="opsCustomerCount">0 payment records</small></article>
+<article class="f2-summary-card"><span>Pending Customer Payments</span><strong id="opsPending">PKR 0</strong><small>Awaiting verification or collection</small></article>
+<article class="f2-summary-card"><span>Customer Refunds</span><strong id="opsRefunded">PKR 0</strong><small>Completed refunded amount</small></article>
+<article class="f2-summary-card"><span>Supplier Payments</span><strong id="opsSupplierPaid">PKR 0</strong><small id="opsSupplierCount">0 supplier payments</small></article>
+<article class="f2-summary-card"><span>Active Coupons</span><strong id="opsActiveCoupons">0</strong><small id="opsCouponCount">0 coupons total</small></article>
+<article class="f2-summary-card"><span>Coupon Redemptions</span><strong id="opsCouponUses">0</strong><small>Recorded coupon uses</small></article>
+<article class="f2-summary-card"><span>Discount Impact</span><strong id="opsDiscountTotal">PKR 0</strong><small>Non-cancelled order discounts</small></article>
+<article class="f2-summary-card"><span>Finance Control</span><strong>Unified</strong><small>Payments and discounts under Finance</small></article>
+</section>
+
+<section class="finance-operation-grid">
+<a href="/admin/payments.html" class="finance-operation-card">
+<i class="fa-solid fa-money-check-dollar"></i>
+<div><span>Accounts Receivable</span><h2>Customer Payments</h2><p>Review COD, bank, JazzCash, Easypaisa and refund transactions.</p></div>
+<strong>Open <i class="fa-solid fa-arrow-right"></i></strong>
+</a>
+
+<a href="/admin/supplierPayments.html" class="finance-operation-card">
+<i class="fa-solid fa-hand-holding-dollar"></i>
+<div><span>Accounts Payable</span><h2>Supplier Payments</h2><p>Record and review payments against purchase obligations.</p></div>
+<strong>Open <i class="fa-solid fa-arrow-right"></i></strong>
+</a>
+
+<a href="/admin/coupons.html" class="finance-operation-card">
+<i class="fa-solid fa-ticket"></i>
+<div><span>Revenue Control</span><h2>Coupons & Discounts</h2><p>Manage promotional codes, limits, expiry, redemptions and discount exposure.</p></div>
+<strong>Open <i class="fa-solid fa-arrow-right"></i></strong>
+</a>
+
+<a href="/admin/finance-automation.html" class="finance-operation-card">
+<i class="fa-solid fa-gears"></i>
+<div><span>Accounting Automation</span><h2>Reconcile Journals</h2><p>Create missing accounting journals from historical payment records.</p></div>
+<strong>Open <i class="fa-solid fa-arrow-right"></i></strong>
+</a>
+</section>
+</section>
+<div id="footer-container"></div>
+</main>
+</div>
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/adminLayout.js"></script>
+<script src="/admin/js/finance-part2-common.js"></script>
+<script src="/admin/js/finance-operations.js"></script>
+</body>
+</html>

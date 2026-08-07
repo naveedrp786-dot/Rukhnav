@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+
+    <title>Inactive Products | RUKHNAV ERP</title>
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp-ui-v5.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/inactiveProducts.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page inactive-products-v5-page page-enter">
+
+            <header class="erp-v5-hero">
+
+                <div class="erp-v5-hero__copy">
+
+                    <span class="erp-v5-eyebrow">
+
+                        <i class="fa-solid fa-box-archive"></i>
+
+                        Catalog Archive
+
+                    </span>
+
+                    <h1>Inactive Products</h1>
+
+                    <p>
+                        Review archived products, restore items to the active
+                        catalog or permanently delete products that have no
+                        transaction history.
+                    </p>
+
+                </div>
+
+                <div class="erp-v5-hero__actions">
+
+                    <a
+                        href="/admin/products.html"
+                        class="erp-v5-btn erp-v5-btn--light"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        All Products
+
+                    </a>
+
+                    <button
+                        type="button"
+                        id="refreshButton"
+                        class="erp-v5-btn erp-v5-btn--gold"
+                    >
+
+                        <i class="fa-solid fa-rotate"></i>
+
+                        Refresh
+
+                    </button>
+
+                </div>
+
+            </header>
+
+            <section class="erp-v5-summary-grid inactive-summary-grid">
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-box-archive"></i>
+
+                    </div>
+
+                    <span>Inactive Products</span>
+
+                    <strong id="inactiveCount">0</strong>
+
+                    <small>Total archived catalog items</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-boxes-stacked"></i>
+
+                    </div>
+
+                    <span>Total Stock</span>
+
+                    <strong id="totalStock">0</strong>
+
+                    <small>Units inside inactive products</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-coins"></i>
+
+                    </div>
+
+                    <span>Inventory Value</span>
+
+                    <strong id="inventoryValue">PKR 0</strong>
+
+                    <small>Selling value of inactive stock</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    </div>
+
+                    <span>Last Refreshed</span>
+
+                    <strong id="lastUpdated">—</strong>
+
+                    <small>Current page data time</small>
+
+                </article>
+
+            </section>
+
+            <section class="erp-v5-panel inactive-products-panel">
+
+                <div class="erp-v5-panel-heading">
+
+                    <div>
+
+                        <span class="erp-v5-section-label">
+
+                            Archived Catalog
+
+                        </span>
+
+                        <h2>Inactive Product Records</h2>
+
+                        <p>
+                            Search archived products and choose whether to
+                            restore or permanently remove them.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="inactive-filter-bar">
+
+                    <div class="erp-v5-field inactive-search-field">
+
+                        <label for="searchInput">
+
+                            Search inactive products
+
+                        </label>
+
+                        <div class="erp-v5-input-icon">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="search"
+                                id="searchInput"
+                                placeholder="Product name, SKU or category"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="pageSizeSelect">
+
+                            Rows per page
+
+                        </label>
+
+                        <select id="pageSizeSelect">
+
+                            <option value="10">
+                                10 rows
+                            </option>
+
+                            <option value="20">
+                                20 rows
+                            </option>
+
+                            <option value="50">
+                                50 rows
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div id="loadingState" class="inactive-state">
+
+                    <div class="inactive-spinner"></div>
+
+                    <h3>Loading inactive products</h3>
+
+                    <p>
+                        Please wait while archived products are retrieved.
+                    </p>
+
+                </div>
+
+                <div id="emptyState" class="inactive-state hidden">
+
+                    <div class="empty-icon">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+                    <h3>No inactive products</h3>
+
+                    <p>
+                        Products that you deactivate will appear here.
+                    </p>
+
+                    <a
+                        href="/admin/products.html"
+                        class="erp-v5-btn erp-v5-btn--gold"
+                    >
+
+                        Go to Products
+
+                    </a>
+
+                </div>
+
+                <div
+                    class="erp-v5-table-wrap hidden"
+                    id="tableWrap"
+                >
+
+                    <table
+                        class="erp-v5-table inactive-product-table"
+                        aria-label="Inactive products"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Image</th>
+
+                                <th>Product</th>
+
+                                <th>SKU</th>
+
+                                <th>Category</th>
+
+                                <th>Price</th>
+
+                                <th>Stock</th>
+
+                                <th>Status</th>
+
+                                <th class="actions-heading">Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div
+                    class="inactive-pagination hidden"
+                    id="pagination"
+                >
+
+                    <div id="paginationInfo">
+                        Showing 0 entries
+                    </div>
+
+                    <div class="pagination-actions">
+
+                        <button
+                            type="button"
+                            class="erp-v5-btn erp-v5-btn--soft small-btn"
+                            id="prevButton"
+                        >
+
+                            <i class="fa-solid fa-chevron-left"></i>
+
+                            Previous
+
+                        </button>
+
+                        <span
+                            id="pageNumber"
+                            class="current-page"
+                        >
+
+                            1
+
+                        </span>
+
+                        <button
+                            type="button"
+                            class="erp-v5-btn erp-v5-btn--soft small-btn"
+                            id="nextButton"
+                        >
+
+                            Next
+
+                            <i class="fa-solid fa-chevron-right"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+
+<!-- =====================================================
+     Restore / Permanent Delete Confirmation
+===================================================== -->
+
+<div
+    class="confirm-modal hidden"
+    id="confirmModal"
+    aria-hidden="true"
+>
+
+    <div
+        class="confirm-backdrop"
+        data-close-modal
+    ></div>
+
+    <div class="confirm-card">
+
+        <div class="confirm-header">
+
+            <div class="confirm-heading">
+
+                <div class="confirm-icon">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                </div>
+
+                <div>
+
+                    <span class="modal-eyebrow">
+
+                        Product Archive Action
+
+                    </span>
+
+                    <h3 id="modalTitle">
+
+                        Confirm action
+
+                    </h3>
+
+                    <p id="modalProduct"></p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                id="modalClose"
+                aria-label="Close confirmation"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="confirm-body">
+
+            <div
+                class="confirm-warning"
+                id="modalWarning"
+            ></div>
+
+            <p id="modalMessage"></p>
+
+        </div>
+
+        <div class="confirm-footer">
+
+            <button
+                type="button"
+                class="erp-v5-btn erp-v5-btn--soft"
+                id="modalCancel"
+            >
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                id="modalConfirm"
+            >
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div
+    id="toastContainer"
+    class="toast-container"
+></div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/inactiveProducts.js"></script>
+
+</body>
+</html>

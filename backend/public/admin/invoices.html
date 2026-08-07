@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="css/erp.css">
+    <link rel="stylesheet" href="css/invoices.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content invoices-page">
+            <header class="page-header invoices-header">
+                <div>
+                    <span class="page-label">Sales</span>
+                    <h1>Invoice Management</h1>
+                    <p>Review invoices, balances, payments, customer records and printable PDFs.</p>
+                </div>
+
+                <div class="header-actions">
+                    <button type="button" id="clearInvoiceFiltersButton" class="secondary-btn">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+
+                    <button type="button" id="refreshInvoicesButton" class="primary-btn">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <div id="invoicesMessage" class="invoices-message" role="alert" aria-live="polite"></div>
+
+            <section class="invoice-summary-grid">
+                <article class="summary-card">
+                    <div class="summary-icon total"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <div><span>Total Invoices</span><h2 id="totalInvoices">0</h2><small>All invoice records</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon paid"><i class="fa-solid fa-circle-check"></i></div>
+                    <div><span>Paid</span><h2 id="paidInvoices">0</h2><small>Fully paid invoices</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon pending"><i class="fa-solid fa-clock"></i></div>
+                    <div><span>Pending</span><h2 id="pendingInvoices">0</h2><small>Awaiting payment</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon partial"><i class="fa-solid fa-chart-pie"></i></div>
+                    <div><span>Partial</span><h2 id="partialInvoices">0</h2><small>Partially paid invoices</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon cancelled"><i class="fa-solid fa-ban"></i></div>
+                    <div><span>Cancelled</span><h2 id="cancelledInvoices">0</h2><small>Cancelled invoices</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon billed"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <div><span>Total Billed</span><h2 id="totalBilled">PKR 0</h2><small>Gross invoice value</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon collected"><i class="fa-solid fa-wallet"></i></div>
+                    <div><span>Total Collected</span><h2 id="totalCollected">PKR 0</h2><small>Paid invoice value</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon balance"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <div><span>Outstanding</span><h2 id="totalBalance">PKR 0</h2><small>Remaining receivables</small></div>
+                </article>
+            </section>
+
+            <section class="invoices-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-label">Invoice Directory</span>
+                        <h2>Search and Filters</h2>
+                        <p>Find invoices by number, customer, payment status or date.</p>
+                    </div>
+                </div>
+
+                <form id="invoiceFiltersForm" class="invoice-filters" autocomplete="off">
+                    <div class="filter-field search-field">
+                        <label for="invoiceSearch">Search Invoices</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="search" id="invoiceSearch" placeholder="Invoice no., customer, phone or email">
+                        </div>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="invoiceStatusFilter">Status</label>
+                        <select id="invoiceStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Partial">Partial</option>
+                            <option value="Partially Paid">Partially Paid</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="invoiceDateFrom">Date From</label>
+                        <input type="date" id="invoiceDateFrom">
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="invoiceDateTo">Date To</label>
+                        <input type="date" id="invoiceDateTo">
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="invoiceLimitFilter">Rows Per Page</label>
+                        <select id="invoiceLimitFilter">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button type="submit" class="primary-btn">
+                            <i class="fa-solid fa-filter"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="invoices-panel">
+                <div class="panel-heading table-panel-heading">
+                    <div>
+                        <span class="section-label">Customer Billing</span>
+                        <h2>All Invoices</h2>
+                        <p id="invoiceResultsText">Loading invoice records.</p>
+                    </div>
+
+                    <button type="button" id="exportInvoicesButton" class="secondary-btn">
+                        <i class="fa-solid fa-file-export"></i>
+                        Export CSV
+                    </button>
+                </div>
+
+                <div id="invoicesLoading" class="invoices-state">
+                    <div class="invoices-spinner"></div>
+                    <h3>Loading invoices</h3>
+                    <p>Please wait while invoice records are retrieved.</p>
+                </div>
+
+                <div id="invoicesEmptyState" class="invoices-state hidden">
+                    <div class="state-icon"><i class="fa-regular fa-file-lines"></i></div>
+                    <h3>No invoices found</h3>
+                    <p>No invoice records match the selected filters.</p>
+                    <button type="button" id="emptyClearInvoiceFiltersButton" class="secondary-btn">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+                </div>
+
+                <div id="invoicesTableWrapper" class="table-responsive hidden">
+                    <table class="invoices-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Grand Total</th>
+                                <th>Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoicesTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="invoicesPagination" class="invoices-pagination hidden">
+                    <div id="invoicePaginationInformation" class="pagination-information">Showing 0 to 0 of 0 invoices</div>
+                    <div class="pagination-controls">
+                        <button type="button" id="invoiceFirstPageButton" class="pagination-button"><i class="fa-solid fa-angles-left"></i></button>
+                        <button type="button" id="invoicePreviousPageButton" class="pagination-button"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="invoicePaginationPages"></span>
+                        <button type="button" id="invoiceNextPageButton" class="pagination-button"><i class="fa-solid fa-chevron-right"></i></button>
+                        <button type="button" id="invoiceLastPageButton" class="pagination-button"><i class="fa-solid fa-angles-right"></i></button>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div id="invoiceDetailsModal" class="invoice-modal" aria-hidden="true">
+    <div class="invoice-modal-overlay"></div>
+
+    <div class="invoice-modal-dialog" role="dialog" aria-modal="true">
+        <div class="invoice-modal-header">
+            <div>
+                <span class="modal-label">Customer Invoice</span>
+                <h2 id="invoiceDetailsTitle">Invoice Details</h2>
+            </div>
+
+            <button type="button" class="modal-close-button" data-close-modal="invoiceDetailsModal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="invoiceDetailsLoading" class="modal-loading-state">
+            <div class="invoices-spinner"></div>
+            <p>Loading invoice details.</p>
+        </div>
+
+        <div id="invoiceDetailsContent" class="invoice-modal-body hidden">
+            <section class="invoice-preview-header">
+                <div class="invoice-brand">
+                    <div class="invoice-logo">R</div>
+                    <div>
+                        <span>RUKHNAV</span>
+                        <small>Herbal Cosmetics & Hair Care</small>
+                    </div>
+                </div>
+
+                <div class="invoice-heading">
+                    <span>Invoice</span>
+                    <h3 id="detailsInvoiceNumber">—</h3>
+                    <small id="detailsInvoiceDate">—</small>
+                </div>
+            </section>
+
+            <div class="invoice-detail-grid">
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-user"></i><h3>Bill To</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Customer</dt><dd id="detailsCustomerName">—</dd></div>
+                        <div><dt>Email</dt><dd id="detailsCustomerEmail">—</dd></div>
+                        <div><dt>Phone</dt><dd id="detailsCustomerPhone">—</dd></div>
+                        <div><dt>Address</dt><dd id="detailsCustomerAddress">—</dd></div>
+                    </dl>
+                </article>
+
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-file-invoice"></i><h3>Invoice Information</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Invoice ID</dt><dd id="detailsInvoiceId">—</dd></div>
+                        <div><dt>Order</dt><dd id="detailsOrderNumber">—</dd></div>
+                        <div><dt>Status</dt><dd id="detailsInvoiceStatus">—</dd></div>
+                        <div><dt>Payment Status</dt><dd id="detailsPaymentStatus">—</dd></div>
+                    </dl>
+                </article>
+            </div>
+
+            <section class="detail-section">
+                <div class="detail-section-heading">
+                    <div><span class="section-label">Products</span><h3>Invoice Items</h3></div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="invoice-items-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceItemsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="invoice-totals">
+                <div><span>Subtotal</span><strong id="detailsSubtotal">PKR 0</strong></div>
+                <div><span>Discount</span><strong id="detailsDiscount">PKR 0</strong></div>
+                <div><span>Tax</span><strong id="detailsTax">PKR 0</strong></div>
+                <div><span>Delivery</span><strong id="detailsDelivery">PKR 0</strong></div>
+                <div class="grand-total"><span>Grand Total</span><strong id="detailsGrandTotal">PKR 0</strong></div>
+                <div><span>Paid Amount</span><strong id="detailsPaidAmount">PKR 0</strong></div>
+                <div><span>Balance</span><strong id="detailsBalanceAmount">PKR 0</strong></div>
+            </section>
+        </div>
+
+        <div class="invoice-modal-footer">
+            <button type="button" class="secondary-btn" data-close-modal="invoiceDetailsModal">Close</button>
+            <button type="button" id="printInvoiceButton" class="secondary-btn">
+                <i class="fa-solid fa-print"></i>
+                Open PDF
+            </button>
+            <button type="button" id="downloadInvoiceButton" class="primary-btn">
+                <i class="fa-solid fa-download"></i>
+                Download PDF
+            </button>
+        </div>
+    </div>
+</div>
+<script src="js/invoices.js"></script>
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+</html>

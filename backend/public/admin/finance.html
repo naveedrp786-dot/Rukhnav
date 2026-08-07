@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Finance Dashboard | RUKHNAV ERP</title>
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/finance.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
+</head>
+
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content finance-page">
+            <header class="finance-hero">
+                <div>
+                    <span class="finance-eyebrow">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Financial Control
+                    </span>
+
+                    <h1>Finance Dashboard</h1>
+
+                    <p>
+                        Monitor collections, supplier outflows, operating
+                        expenses, account balances and daily cash movement.
+                    </p>
+                </div>
+
+                <div class="finance-hero-actions">
+                    <button
+                        id="newAccountButton"
+                        type="button"
+                        class="finance-btn finance-btn-light"
+                    >
+                        <i class="fa-solid fa-building-columns"></i>
+                        New Account
+                    </button>
+
+                    <button
+                        id="newTransactionButton"
+                        type="button"
+                        class="finance-btn finance-btn-gold"
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        Record Transaction
+                    </button>
+                </div>
+            </header>
+
+            <div
+                id="financeMessage"
+                class="finance-message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+            <section class="finance-summary-grid">
+                <article class="finance-summary-card balance">
+                    <i class="fa-solid fa-vault"></i>
+                    <span>Current Balance</span>
+                    <strong id="currentBalance">PKR 0</strong>
+                    <small>Opening balance + inflows − outflows</small>
+                </article>
+
+                <article class="finance-summary-card income">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    <span>Total Income</span>
+                    <strong id="totalIncome">PKR 0</strong>
+                    <small>Customer collections and manual income</small>
+                </article>
+
+                <article class="finance-summary-card outflow">
+                    <i class="fa-solid fa-arrow-trend-down"></i>
+                    <span>Total Outflow</span>
+                    <strong id="totalOutflow">PKR 0</strong>
+                    <small>Supplier payments and expenses</small>
+                </article>
+
+                <article class="finance-summary-card month">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>This Month Net</span>
+                    <strong id="monthNet">PKR 0</strong>
+                    <small id="monthBreakdown">Income PKR 0 · Outflow PKR 0</small>
+                </article>
+
+                <article class="finance-summary-card collections">
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span>Customer Collections</span>
+                    <strong id="customerCollections">PKR 0</strong>
+                    <small>Paid order transactions</small>
+                </article>
+
+                <article class="finance-summary-card suppliers">
+                    <i class="fa-solid fa-truck-field"></i>
+                    <span>Supplier Payments</span>
+                    <strong id="supplierPayments">PKR 0</strong>
+                    <small>Posted purchasing payments</small>
+                </article>
+
+                <article class="finance-summary-card today">
+                    <i class="fa-solid fa-sun"></i>
+                    <span>Today Income</span>
+                    <strong id="todayIncome">PKR 0</strong>
+                    <small>Collections and income posted today</small>
+                </article>
+
+                <article class="finance-summary-card today-out">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Today Outflow</span>
+                    <strong id="todayOutflow">PKR 0</strong>
+                    <small>Payments and expenses posted today</small>
+                </article>
+            </section>
+
+            <section class="finance-panel">
+                <div class="finance-panel-heading">
+                    <div>
+                        <span>Account Position</span>
+                        <h2>Cash, Bank & Wallet Accounts</h2>
+                        <p>
+                            Opening balance and manual cash-book movement by
+                            active finance account.
+                        </p>
+                    </div>
+
+                    <button
+                        id="refreshFinanceButton"
+                        type="button"
+                        class="finance-btn finance-btn-light"
+                    >
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+
+                <div
+                    id="financeAccountsGrid"
+                    class="finance-accounts-grid"
+                ></div>
+            </section>
+
+            <section class="finance-panel">
+                <div class="finance-panel-heading cashbook-heading">
+                    <div>
+                        <span>Cash Book</span>
+                        <h2>Manual Finance Transactions</h2>
+                        <p>
+                            Record operating income, expenses and adjustments.
+                            Order and supplier payments remain in their own
+                            protected ledgers.
+                        </p>
+                    </div>
+                </div>
+
+                <form
+                    id="financeFiltersForm"
+                    class="finance-filters"
+                >
+                    <label class="wide">
+                        <span>Search</span>
+                        <input
+                            id="financeSearch"
+                            type="search"
+                            placeholder="Transaction, reference, description or account"
+                        >
+                    </label>
+
+                    <label>
+                        <span>Type</span>
+                        <select id="financeTypeFilter">
+                            <option value="">All types</option>
+                            <option value="Income">Income</option>
+                            <option value="Expense">Expense</option>
+                            <option value="Adjustment">Adjustment</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Account</span>
+                        <select id="financeAccountFilter">
+                            <option value="">All accounts</option>
+                        </select>
+                    </label>
+
+                    <button
+                        type="submit"
+                        class="finance-btn finance-btn-gold"
+                    >
+                        <i class="fa-solid fa-filter"></i>
+                        Apply
+                    </button>
+                </form>
+
+                <div class="finance-table-wrap">
+                    <table class="finance-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Transaction</th>
+                                <th>Account</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="financeTransactionsBody">
+                            <tr>
+                                <td colspan="8">
+                                    Loading finance transactions...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="finance-pagination">
+                    <span id="financeResultsText">Loading records...</span>
+
+                    <div>
+                        <button
+                            id="financePreviousButton"
+                            type="button"
+                            class="finance-btn finance-btn-light"
+                        >
+                            Previous
+                        </button>
+
+                        <span id="financePageNumber">1</span>
+
+                        <button
+                            id="financeNextButton"
+                            type="button"
+                            class="finance-btn finance-btn-light"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div
+    id="financeTransactionModal"
+    class="finance-modal hidden"
+    aria-hidden="true"
+>
+    <div class="finance-modal-backdrop" data-close-finance-modal></div>
+
+    <div class="finance-modal-dialog">
+        <div class="finance-modal-header">
+            <div>
+                <span>Cash Book Entry</span>
+                <h2>Record Finance Transaction</h2>
+            </div>
+
+            <button
+                type="button"
+                data-close-finance-modal
+                aria-label="Close"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="financeTransactionForm">
+            <div class="finance-modal-body">
+                <div class="finance-form-grid">
+                    <label>
+                        <span>Transaction Type</span>
+                        <select id="financeTransactionType" required>
+                            <option value="Income">Income</option>
+                            <option value="Expense">Expense</option>
+                            <option value="Adjustment">Adjustment</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Date</span>
+                        <input
+                            id="financeTransactionDate"
+                            type="date"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        <span>Account</span>
+                        <select id="financeTransactionAccount" required></select>
+                    </label>
+
+                    <label id="financeExpenseCategoryField">
+                        <span>Expense Category</span>
+                        <select id="financeExpenseCategory"></select>
+                    </label>
+
+                    <label>
+                        <span>Amount</span>
+                        <input
+                            id="financeTransactionAmount"
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        <span>Reference Number</span>
+                        <input
+                            id="financeTransactionReference"
+                            type="text"
+                            maxlength="150"
+                            placeholder="Optional receipt or voucher number"
+                        >
+                    </label>
+
+                    <label class="full">
+                        <span>Description</span>
+                        <textarea
+                            id="financeTransactionDescription"
+                            rows="4"
+                            maxlength="1000"
+                            required
+                            placeholder="Explain the business purpose of this transaction."
+                        ></textarea>
+                    </label>
+                </div>
+            </div>
+
+            <div class="finance-modal-footer">
+                <button
+                    type="button"
+                    class="finance-btn finance-btn-light"
+                    data-close-finance-modal
+                >
+                    Cancel
+                </button>
+
+                <button
+                    id="saveFinanceTransactionButton"
+                    type="submit"
+                    class="finance-btn finance-btn-gold"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Post Transaction
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div
+    id="financeAccountModal"
+    class="finance-modal hidden"
+    aria-hidden="true"
+>
+    <div class="finance-modal-backdrop" data-close-account-modal></div>
+
+    <div class="finance-modal-dialog small">
+        <div class="finance-modal-header">
+            <div>
+                <span>Finance Setup</span>
+                <h2>Create Finance Account</h2>
+            </div>
+
+            <button
+                type="button"
+                data-close-account-modal
+                aria-label="Close"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="financeAccountForm">
+            <div class="finance-modal-body">
+                <div class="finance-form-grid">
+                    <label class="full">
+                        <span>Account Name</span>
+                        <input
+                            id="financeAccountName"
+                            type="text"
+                            maxlength="120"
+                            required
+                            placeholder="Example: HBL Current Account"
+                        >
+                    </label>
+
+                    <label>
+                        <span>Account Type</span>
+                        <select id="financeAccountType" required>
+                            <option value="Cash">Cash</option>
+                            <option value="Bank">Bank</option>
+                            <option value="Mobile Wallet">Mobile Wallet</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Opening Balance</span>
+                        <input
+                            id="financeOpeningBalance"
+                            type="number"
+                            step="0.01"
+                            value="0"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        <span>Institution</span>
+                        <input
+                            id="financeInstitutionName"
+                            type="text"
+                            maxlength="120"
+                            placeholder="HBL, Meezan, JazzCash..."
+                        >
+                    </label>
+
+                    <label>
+                        <span>Account Number</span>
+                        <input
+                            id="financeAccountNumber"
+                            type="text"
+                            maxlength="100"
+                        >
+                    </label>
+
+                    <label class="full">
+                        <span>Notes</span>
+                        <textarea
+                            id="financeAccountNotes"
+                            rows="3"
+                            maxlength="500"
+                        ></textarea>
+                    </label>
+                </div>
+            </div>
+
+            <div class="finance-modal-footer">
+                <button
+                    type="button"
+                    class="finance-btn finance-btn-light"
+                    data-close-account-modal
+                >
+                    Cancel
+                </button>
+
+                <button
+                    id="saveFinanceAccountButton"
+                    type="submit"
+                    class="finance-btn finance-btn-gold"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Create Account
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/adminLayout.js"></script>
+<script src="/admin/js/finance.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+.products-v5-page{background:transparent!important}
+.products-clear-filter{align-self:end}
+.product-table td strong,.product-table td small{display:block}
+.product-sku{margin-top:4px;color:#8a8276;font-size:10px}
+.product-image{width:56px;height:56px;border:1px solid #e2dacd;border-radius:10px;object-fit:cover;background:#f1eee8}
+.stock-good,.stock-low,.stock-out{display:inline-flex;min-width:42px;justify-content:center;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:900}
+.stock-good{color:#176b38;background:#e7f5eb}.stock-low{color:#765600;background:#fff3cf}.stock-out{color:#9b2f28;background:#fde9e7}
+.status{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:9px;font-weight:900}
+.status.active{color:#176b38;background:#e7f5eb}.status.inactive{color:#9b2f28;background:#fde9e7}
+.edit-btn,.delete-btn{width:35px;height:35px;border:0;border-radius:9px;margin-right:5px;cursor:pointer;transition:transform .18s ease}
+.edit-btn:hover,.delete-btn:hover{transform:translateY(-1px)}
+.edit-btn{color:#6d4d00;background:#ffe69d}.delete-btn{color:#9b2f28;background:#ffd9d5}
+
+.modal{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:18px;background:rgba(18,14,8,.66);backdrop-filter:blur(3px)}
+.modal.hidden{display:none}
+.product-modal-card{position:relative;width:min(920px,96vw);max-height:92vh;overflow:auto;box-sizing:border-box;padding:28px;border:1px solid #e5dccb;border-radius:18px;background:#fff;box-shadow:0 28px 70px rgba(20,15,8,.24)}
+.close{position:absolute;right:16px;top:16px;width:40px;height:40px;border:0;border-radius:50%;display:grid;place-items:center;color:#514a3f;background:#f2eee6;cursor:pointer}
+.product-modal-heading{padding-right:55px;margin-bottom:20px}.product-modal-heading h2{margin:4px 0 5px;color:#2d2921;font-size:28px}.product-modal-heading p{margin:0;color:#766f63}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.form-group{display:grid;gap:7px;margin-bottom:15px}.form-group label{color:#554e43;font-size:11px;font-weight:850}.form-group input,.form-group select,.form-group textarea{width:100%;box-sizing:border-box;border:1px solid #dcd3c3;border-radius:10px;padding:11px 12px;background:#fff;font:inherit;outline:none}.form-group textarea{min-height:125px;resize:vertical}.form-group small{color:#8a8276;font-size:10px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c99835;box-shadow:0 0 0 3px rgba(201,152,53,.12)}
+#productImages{padding:13px;border-style:dashed;background:#fffcf5;cursor:pointer}#productImages::file-selector-button{margin-right:10px;border:0;border-radius:8px;padding:9px 13px;color:#fff;background:#214f3a;font-weight:800;cursor:pointer}
+.preview-grid{width:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:12px;margin-top:12px}.preview-grid:empty{display:none}.preview-item{position:relative;overflow:hidden;border:2px solid #e3e8e5;border-radius:11px;background:#f7f9f8}.preview-item img{width:100%;height:125px;display:block;object-fit:cover}.preview-item.new-image,.preview-item.main-image{border-color:#c99835}.image-label,.main-image-badge{position:absolute;top:7px;left:7px;padding:5px 8px;border-radius:999px;color:#fff;background:#214f3a;font-size:9px;font-weight:900;text-transform:uppercase}.main-image-badge{background:#b47c18}.image-actions{display:flex;gap:6px;padding:7px;background:#fff}.image-actions button{min-height:30px;border:0;border-radius:6px;font-size:10px;font-weight:850;cursor:pointer}.set-main-image-btn{flex:1;color:#fff;background:#214f3a}.delete-image-btn{width:32px;color:#fff;background:#a43a32}.gallery-heading{grid-column:1/-1;display:flex;justify-content:space-between;gap:10px;padding-bottom:8px;border-bottom:1px solid #e7e0d4;color:#214f3a;font-weight:850}.gallery-heading small{color:#81796d;font-weight:400}.no-images-message{grid-column:1/-1;padding:18px;border:1px dashed #d6cdbd;border-radius:10px;color:#81796d;text-align:center;background:#faf8f3}
+.product-modal-actions{display:flex;justify-content:flex-end;gap:9px;padding-top:15px;border-top:1px solid #eee7da}
+@media(max-width:720px){.form-grid{grid-template-columns:1fr}.product-modal-card{padding:20px}.preview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.product-modal-actions{flex-direction:column-reverse}.product-modal-actions .erp-v5-btn{width:100%}}

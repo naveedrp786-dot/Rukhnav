@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finance Automation | RUKHNAV ERP</title>
+<link rel="stylesheet" href="/admin/css/erp.css">
+<link rel="stylesheet" href="/admin/css/finance-part2.css">
+<link rel="stylesheet" href="/admin/css/finance-part3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+<div id="sidebar-container"></div>
+<main class="main">
+<div id="topbar-container"></div>
+<section class="content finance2-page">
+<header class="finance2-hero">
+<div>
+<span class="finance2-eyebrow">Accounting Integration</span>
+<h1>Finance Automation</h1>
+<p>Control automatic posting and reconcile historical customer payments, refunds, supplier payments and cash-book entries.</p>
+</div>
+<div class="finance2-actions">
+<a href="/admin/finance-operations.html" class="f2-btn light"><i class="fa-solid fa-money-bill-transfer"></i>Payments & Coupons</a>
+<button id="reconcileButton" class="f2-btn gold"><i class="fa-solid fa-arrows-rotate"></i>Run Reconciliation</button>
+</div>
+</header>
+
+<div id="automationMessage" class="f2-message"></div>
+
+<section class="f2-summary-grid">
+<article class="f2-summary-card"><span>Automated Events</span><strong id="autoEvents">0</strong><small>Idempotent accounting source links</small></article>
+<article class="f2-summary-card"><span>Posted Journals</span><strong id="autoPosted">0</strong><small id="autoPostedValue">PKR 0 posted value</small></article>
+<article class="f2-summary-card"><span>Active Coupons</span><strong id="autoCoupons">0</strong><small id="autoCouponUses">0 redemptions</small></article>
+<article class="f2-summary-card"><span>Discount Impact</span><strong id="autoDiscountImpact">PKR 0</strong><small>Order discounts excluding cancellations</small></article>
+</section>
+
+<section class="f2-panel">
+<div class="f2-panel-heading"><div><span>Automation Controls</span><h2>Posting Settings</h2><p>Disable a source only when you intend to post it manually.</p></div></div>
+<div id="automationSettings" class="automation-settings"></div>
+</section>
+
+<section class="f2-panel">
+<div class="f2-panel-heading"><div><span>Accounting Trail</span><h2>Recent Automated Journals</h2></div></div>
+<div class="f2-table-wrap">
+<table class="f2-table">
+<thead><tr><th>Date</th><th>Source</th><th>Event</th><th>Journal</th><th>Narration</th><th>Value</th></tr></thead>
+<tbody id="automationRecent"><tr><td colspan="6">Loading...</td></tr></tbody>
+</table>
+</div>
+</section>
+</section>
+<div id="footer-container"></div>
+</main>
+</div>
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/adminLayout.js"></script>
+<script src="/admin/js/finance-part2-common.js"></script>
+<script src="/admin/js/finance-automation.js"></script>
+</body>
+</html>

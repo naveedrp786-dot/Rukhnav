@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Supplier Payments | RUKHNAV ERP</title>
+
+    <!-- Shared ERP stylesheet -->
+    <link
+        rel="stylesheet"
+        href="css/erp.css"
+    >
+
+    <!-- Page stylesheet -->
+    <link
+        rel="stylesheet"
+        href="css/supplierPayments.css"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- =====================================
+         Shared ERP Layout
+    ====================================== -->
+
+    <div class="dashboard">
+
+        <!-- Shared Sidebar -->
+
+        <div id="sidebar-container"></div>
+
+        <!-- Main Area -->
+
+        <main class="main">
+
+            <!-- Shared Topbar -->
+
+            <div id="topbar-container"></div>
+
+            <!-- =================================
+                 Page Content
+            ================================== -->
+
+            <section class="content supplier-payment-page">
+
+                <!-- Page Header -->
+
+                <div class="page-header supplier-payment-header">
+
+                    <div>
+
+                        <span class="page-label">
+                            Purchasing
+                        </span>
+
+                        <h1>
+                            Supplier Payments
+                        </h1>
+
+                        <p>
+                            Record and manage payments made
+                            against supplier purchase orders.
+                        </p>
+
+                    </div>
+
+                    <div class="header-actions">
+
+                        <a
+                            href="purchases.html"
+                            class="secondary-btn"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Purchase Orders
+                        </a>
+
+                        <button
+                            type="button"
+                            id="refreshButton"
+                            class="secondary-btn"
+                        >
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btnNewPayment"
+                            class="primary-btn"
+                        >
+                            <i class="fa-solid fa-plus"></i>
+                            New Payment
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- =================================
+                     Summary Cards
+                ================================== -->
+
+                <section class="payment-summary-cards">
+
+                    <article class="payment-summary-card">
+
+                        <div class="summary-icon green">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total Payments
+                            </span>
+
+                            <h2 id="totalPayments">
+                                0
+                            </h2>
+
+                            <small>
+                                Recorded payment transactions
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="payment-summary-card">
+
+                        <div class="summary-icon gold">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total Paid
+                            </span>
+
+                            <h2 id="totalPaid">
+                                Rs 0.00
+                            </h2>
+
+                            <small>
+                                Total amount paid to suppliers
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="payment-summary-card">
+
+                        <div class="summary-icon blue">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Paid This Month
+                            </span>
+
+                            <h2 id="paidThisMonth">
+                                Rs 0.00
+                            </h2>
+
+                            <small>
+                                Payments during current month
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="payment-summary-card">
+
+                        <div class="summary-icon red">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Outstanding Balance
+                            </span>
+
+                            <h2 id="outstandingBalance">
+                                Rs 0.00
+                            </h2>
+
+                            <small id="unpaidOrdersText">
+                                0 unpaid purchase orders
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+                <!-- =================================
+                     Payments Panel
+                ================================== -->
+
+                <section class="supplier-payment-panel">
+
+                    <!-- Toolbar -->
+
+                    <div class="supplier-payment-toolbar">
+
+                        <div class="supplier-payment-search">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="search"
+                                id="searchInput"
+                                placeholder="Search supplier, PO number or method..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                        <div class="payment-filters">
+
+                            <select
+                                id="paymentMethodFilter"
+                                class="filter-select"
+                            >
+
+                                <option value="">
+                                    All Payment Methods
+                                </option>
+
+                                <option value="Cash">
+                                    Cash
+                                </option>
+
+                                <option value="Card">
+                                    Card
+                                </option>
+
+                                <option value="Bank Transfer">
+                                    Bank Transfer
+                                </option>
+
+                                <option value="JazzCash">
+                                    JazzCash
+                                </option>
+
+                                <option value="EasyPaisa">
+                                    EasyPaisa
+                                </option>
+
+                                <option value="Credit">
+                                    Credit
+                                </option>
+
+                            </select>
+
+                            <input
+                                type="date"
+                                id="dateFrom"
+                                class="filter-date"
+                                title="From date"
+                            >
+
+                            <input
+                                type="date"
+                                id="dateTo"
+                                class="filter-date"
+                                title="To date"
+                            >
+
+                            <button
+                                type="button"
+                                id="clearFiltersButton"
+                                class="secondary-btn small-btn"
+                            >
+                                <i class="fa-solid fa-filter-circle-xmark"></i>
+                                Clear
+                            </button>
+
+                            <select
+                                id="pageSizeSelect"
+                                class="rows-select"
+                                title="Rows per page"
+                            >
+
+                                <option value="10">
+                                    10 rows
+                                </option>
+
+                                <option value="25">
+                                    25 rows
+                                </option>
+
+                                <option value="50">
+                                    50 rows
+                                </option>
+
+                                <option value="100">
+                                    100 rows
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Loading State -->
+
+                    <div
+                        id="loadingState"
+                        class="supplier-payment-state"
+                    >
+
+                        <div class="supplier-payment-spinner"></div>
+
+                        <h3>
+                            Loading supplier payments
+                        </h3>
+
+                        <p>
+                            Please wait while payment records
+                            are being loaded.
+                        </p>
+
+                    </div>
+
+                    <!-- Empty State -->
+
+                    <div
+                        id="emptyState"
+                        class="supplier-payment-state hidden"
+                    >
+
+                        <div class="empty-icon">
+                            <i class="fa-solid fa-money-check-dollar"></i>
+                        </div>
+
+                        <h3>
+                            No supplier payments found
+                        </h3>
+
+                        <p>
+                            Record a supplier payment or change
+                            your search filters.
+                        </p>
+
+                        <button
+                            type="button"
+                            id="emptyNewPaymentButton"
+                            class="primary-btn"
+                        >
+                            <i class="fa-solid fa-plus"></i>
+                            Record First Payment
+                        </button>
+
+                    </div>
+
+                    <!-- Payment Table -->
+
+                    <div
+                        id="tableWrap"
+                        class="supplier-payment-table-wrap hidden"
+                    >
+
+                        <table class="supplier-payment-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>#</th>
+
+                                    <th>
+                                        Payment Date
+                                    </th>
+
+                                    <th>
+                                        Supplier
+                                    </th>
+
+                                    <th>
+                                        Purchase Order
+                                    </th>
+
+                                    <th>
+                                        Payment Method
+                                    </th>
+
+                                    <th>
+                                        Amount
+                                    </th>
+
+                                    <th>
+                                        Remaining Balance
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="paymentTableBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                    <!-- Pagination -->
+
+                    <div
+                        id="pagination"
+                        class="supplier-payment-pagination hidden"
+                    >
+
+                        <div id="paginationInfo">
+                            Showing 0 to 0 of 0 entries
+                        </div>
+
+                        <div class="pagination-actions">
+
+                            <button
+                                type="button"
+                                id="prevButton"
+                                class="secondary-btn small-btn"
+                            >
+                                <i class="fa-solid fa-chevron-left"></i>
+                                Previous
+                            </button>
+
+                            <span
+                                id="pageNumber"
+                                class="current-page"
+                            >
+                                1
+                            </span>
+
+                            <button
+                                type="button"
+                                id="nextButton"
+                                class="secondary-btn small-btn"
+                            >
+                                Next
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+            <!-- Shared Footer -->
+
+            <div id="footer-container"></div>
+
+        </main>
+
+    </div>
+
+    <!-- =====================================
+         Record Payment Modal
+    ====================================== -->
+
+    <div
+        id="paymentModal"
+        class="payment-modal hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="payment-modal-backdrop"
+            data-close-payment-modal
+        ></div>
+
+        <div
+            class="payment-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="paymentModalTitle"
+        >
+
+            <div class="payment-modal-header">
+
+                <div class="modal-heading">
+
+                    <div class="modal-heading-icon">
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+                    </div>
+
+                    <div>
+
+                        <h2 id="paymentModalTitle">
+                            Record Supplier Payment
+                        </h2>
+
+                        <p>
+                            Select an outstanding purchase
+                            order and enter payment details.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="closePaymentModal"
+                    class="modal-close"
+                    aria-label="Close payment form"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+            <form id="paymentForm">
+
+                <div class="payment-modal-body">
+
+                    <div class="payment-form-grid">
+
+                        <!-- Purchase Order -->
+
+                        <div class="form-group full-width">
+
+                            <label for="purchaseId">
+                                Outstanding Purchase Order
+                                <span class="required">*</span>
+                            </label>
+
+                            <select
+                                id="purchaseId"
+                                required
+                            >
+
+                                <option value="">
+                                    Select purchase order
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- Supplier -->
+
+                        <div class="form-group">
+
+                            <label for="supplierName">
+                                Supplier
+                            </label>
+
+                            <input
+                                type="text"
+                                id="supplierName"
+                                readonly
+                                placeholder="Selected supplier"
+                            >
+
+                        </div>
+
+                        <!-- PO Number -->
+
+                        <div class="form-group">
+
+                            <label for="poNumber">
+                                PO Number
+                            </label>
+
+                            <input
+                                type="text"
+                                id="poNumber"
+                                readonly
+                                placeholder="Purchase order number"
+                            >
+
+                        </div>
+
+                        <!-- Purchase Total -->
+
+                        <div class="form-group">
+
+                            <label for="purchaseTotal">
+                                Purchase Total
+                            </label>
+
+                            <input
+                                type="text"
+                                id="purchaseTotal"
+                                value="Rs 0.00"
+                                readonly
+                            >
+
+                        </div>
+
+                        <!-- Already Paid -->
+
+                        <div class="form-group">
+
+                            <label for="alreadyPaid">
+                                Already Paid
+                            </label>
+
+                            <input
+                                type="text"
+                                id="alreadyPaid"
+                                value="Rs 0.00"
+                                readonly
+                            >
+
+                        </div>
+
+                        <!-- Remaining Balance -->
+
+                        <div class="form-group full-width">
+
+                            <label for="remainingBalance">
+                                Remaining Balance
+                            </label>
+
+                            <input
+                                type="text"
+                                id="remainingBalance"
+                                class="balance-input"
+                                value="Rs 0.00"
+                                readonly
+                            >
+
+                        </div>
+
+                        <!-- Payment Date -->
+
+                        <div class="form-group">
+
+                            <label for="paymentDate">
+                                Payment Date
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="paymentDate"
+                                required
+                            >
+
+                        </div>
+
+                        <!-- Payment Method -->
+
+                        <div class="form-group">
+
+                            <label for="paymentMethod">
+                                Payment Method
+                                <span class="required">*</span>
+                            </label>
+
+                            <select
+                                id="paymentMethod"
+                                required
+                            >
+
+                                <option value="Cash">Cash</option>
+<option value="Bank Transfer">Bank Transfer</option>
+<option value="Cheque">Cheque</option>
+<option value="Credit Card">Credit Card</option>
+<option value="Online Payment">Online Payment</option>
+<option value="Other">Other</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- Payment Amount -->
+
+                        <div class="form-group full-width">
+
+                            <label for="paymentAmount">
+                                Payment Amount
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="paymentAmount"
+                                min="0.01"
+                                step="0.01"
+                                placeholder="Enter payment amount"
+                                required
+                            >
+
+                            <small id="amountHelp">
+                                Amount cannot exceed the
+                                remaining purchase balance.
+                            </small>
+
+                        </div>
+
+                        <!-- Remarks -->
+
+                        <div class="form-group full-width">
+
+                            <label for="paymentRemarks">
+                                Remarks
+                            </label>
+
+                            <textarea
+                                id="paymentRemarks"
+                                rows="3"
+                                placeholder="Optional payment notes"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="payment-modal-footer">
+
+                    <button
+                        type="button"
+                        id="cancelPaymentButton"
+                        class="secondary-btn"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="savePaymentButton"
+                        class="primary-btn"
+                    >
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Record Payment
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================
+         View Payment Modal
+    ====================================== -->
+
+    <div
+        id="viewPaymentModal"
+        class="payment-modal hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="payment-modal-backdrop"
+            data-close-view-modal
+        ></div>
+
+        <div
+            class="payment-modal-card small-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="viewPaymentTitle"
+        >
+
+            <div class="payment-modal-header">
+
+                <div class="modal-heading">
+
+                    <div class="modal-heading-icon view">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+
+                    <div>
+
+                        <h2 id="viewPaymentTitle">
+                            Payment Details
+                        </h2>
+
+                        <p>
+                            Supplier payment transaction information.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="closeViewPaymentModal"
+                    class="modal-close"
+                    aria-label="Close payment details"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+            <div class="payment-modal-body">
+
+                <div class="payment-detail-list">
+
+                    <div class="payment-detail-row">
+
+                        <span>
+                            Payment ID
+                        </span>
+
+                        <strong id="viewPaymentId">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="payment-detail-row">
+
+                        <span>
+                            Payment Date
+                        </span>
+
+                        <strong id="viewPaymentDate">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="payment-detail-row">
+
+                        <span>
+                            Supplier
+                        </span>
+
+                        <strong id="viewSupplierName">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="payment-detail-row">
+
+                        <span>
+                            Purchase Order
+                        </span>
+
+                        <strong id="viewPONumber">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="payment-detail-row">
+
+                        <span>
+                            Payment Method
+                        </span>
+
+                        <strong id="viewPaymentMethod">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="payment-detail-row amount-row">
+
+                        <span>
+                            Amount Paid
+                        </span>
+
+                        <strong id="viewPaymentAmount">
+                            Rs 0.00
+                        </strong>
+
+                    </div>
+
+                    <div class="payment-detail-row">
+
+                        <span>
+                            Payment Status
+                        </span>
+
+                        <strong id="viewPaymentStatus">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="payment-detail-row remarks-row">
+
+                        <span>
+                            Remarks
+                        </span>
+
+                        <strong id="viewPaymentRemarks">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="payment-modal-footer">
+
+                <button
+                    type="button"
+                    id="closeViewPaymentButton"
+                    class="secondary-btn"
+                >
+                    Close
+                </button>
+
+                <button
+                    type="button"
+                    id="printPaymentButton"
+                    class="primary-btn"
+                >
+                    <i class="fa-solid fa-print"></i>
+                    Print Receipt
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Toast Notifications -->
+
+    <div
+        id="toastContainer"
+        class="toast-container"
+        aria-live="polite"
+    ></div>
+
+    <!-- =====================================
+         JavaScript
+    ====================================== -->
+<script src="/admin/js/supplierPayments.js"></script>
+
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+
+</html>

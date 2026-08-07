@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>New Purchase | RUKHNAV ERP</title>
+
+    <link
+        rel="stylesheet"
+        href="css/erp.css"
+    >
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/purchasing-v5.css">
+
+    <link
+        rel="stylesheet"
+        href="css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/newPurchase.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+    <div class="layout fade-in">
+
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Area -->
+        <main class="main">
+
+            <!-- Topbar -->
+            <div id="topbar-container"></div>
+
+            <section class="purchase-page purchasing-v5-page">
+
+                <!-- Page Header -->
+                <div class="purchase-page-header">
+
+                    <div class="page-heading">
+
+                        <div class="page-icon">
+                            <i class="fa-solid fa-cart-plus"></i>
+                        </div>
+
+                        <div>
+                            <h1>New Purchase Order</h1>
+
+                            <p>
+                                Create a supplier purchase order and add
+                                products to your inventory purchasing system.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="header-actions">
+
+                        <button
+                            type="button"
+                            class="erp-btn erp-btn-secondary"
+                            onclick="history.back()"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Purchase Information -->
+                <section class="section-card purchase-information-card">
+
+                    <div class="section-card-header">
+
+                        <div>
+                            <h2>
+                                <i class="fa-regular fa-calendar-check"></i>
+                                Purchase Information
+                            </h2>
+
+                            <p>
+                                Select purchase dates and payment method.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="purchase-information-grid">
+
+                        <div class="form-group">
+
+                            <label for="purchaseDate">
+                                Purchase Date
+                                <span class="required">*</span>
+                            </label>
+
+                            <div class="input-icon-wrapper">
+
+                                <i class="fa-regular fa-calendar"></i>
+
+                                <input
+                                    type="date"
+                                    id="purchaseDate"
+                                    class="form-control with-icon"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="expectedDate">
+                                Expected Delivery Date
+                            </label>
+
+                            <div class="input-icon-wrapper">
+
+                                <i class="fa-solid fa-truck-fast"></i>
+
+                                <input
+                                    type="date"
+                                    id="expectedDate"
+                                    class="form-control with-icon"
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="paymentMethod">
+                                Payment Method
+                            </label>
+
+                            <div class="input-icon-wrapper">
+
+                                <i class="fa-solid fa-credit-card"></i>
+
+                                <select
+                                    id="paymentMethod"
+                                    class="form-control with-icon"
+                                >
+                                    <option value="Cash">
+                                        Cash
+                                    </option>
+
+                                    <option value="Card">
+                                        Card
+                                    </option>
+
+                                    <option value="Bank Transfer">
+                                        Bank Transfer
+                                    </option>
+
+                                    <option value="JazzCash">
+                                        JazzCash
+                                    </option>
+
+                                    <option value="EasyPaisa">
+                                        EasyPaisa
+                                    </option>
+
+                                    <option value="Credit">
+                                        Credit
+                                    </option>
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- Main Purchase Grid -->
+                <div class="purchase-grid">
+
+                    <!-- Left Column -->
+                    <div class="purchase-main-column">
+
+                        <!-- Supplier Card -->
+                        <section class="section-card">
+
+                            <div class="section-card-header supplier-card-header">
+
+                                <div>
+                                    <h2>
+                                        <i class="fa-solid fa-building"></i>
+                                        Supplier Information
+                                    </h2>
+
+                                    <p>
+                                        Select an existing supplier or create
+                                        a new supplier.
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    id="btnNewSupplier"
+                                    class="erp-btn erp-btn-gold"
+                                >
+                                    <i class="fa-solid fa-plus"></i>
+                                    New Supplier
+                                </button>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="supplier">
+                                    Select Supplier
+                                    <span class="required">*</span>
+                                </label>
+
+                                <select
+                                    id="supplier"
+                                    class="form-control"
+                                >
+                                    <option value="">
+                                        Loading suppliers...
+                                    </option>
+                                </select>
+
+                            </div>
+
+                            <div
+                                id="supplierDetails"
+                                class="supplier-info"
+                            >
+                                <div class="supplier-placeholder">
+
+                                    <i class="fa-regular fa-building"></i>
+
+                                    <div>
+                                        <strong>
+                                            No supplier selected
+                                        </strong>
+
+                                        <span>
+                                            Select a supplier to view contact
+                                            and address information.
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <!-- Product Card -->
+                        <section class="section-card products-card">
+
+                            <div class="section-card-header products-header">
+
+                                <div>
+                                    <h2>
+                                        <i class="fa-solid fa-boxes-stacked"></i>
+                                        Purchase Products
+                                    </h2>
+
+                                    <p>
+                                        Add products, quantities and purchase
+                                        costs.
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    id="btnAddRow"
+                                    class="erp-btn erp-btn-primary"
+                                >
+                                    <i class="fa-solid fa-plus"></i>
+                                    Add Product
+                                </button>
+
+                            </div>
+
+                            <div class="purchase-table-wrapper">
+
+                                <table id="productTable">
+
+                                    <thead>
+                                        <tr>
+                                            <th class="product-column">
+                                                Product
+                                            </th>
+
+                                            <th class="quantity-column">
+                                                Quantity
+                                            </th>
+
+                                            <th class="cost-column">
+                                                Unit Cost
+                                            </th>
+
+                                            <th class="total-column">
+                                                Line Total
+                                            </th>
+
+                                            <th class="action-column">
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="productBody"></tbody>
+
+                                </table>
+
+                            </div>
+
+                            <div class="product-table-help">
+
+                                <i class="fa-solid fa-circle-info"></i>
+
+                                <span>
+                                    Select a product and enter the purchased
+                                    quantity and unit cost.
+                                </span>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                    <!-- Right Column -->
+                    <aside class="purchase-side-column">
+
+                        <!-- Summary -->
+                        <section class="section-card summary-card">
+
+                            <div class="section-card-header">
+
+                                <div>
+                                    <h2>
+                                        <i class="fa-solid fa-calculator"></i>
+                                        Purchase Summary
+                                    </h2>
+
+                                    <p>
+                                        Review purchase adjustments and total.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="summary-fields">
+
+                                <div class="summary-row">
+
+                                    <label for="discount">
+                                        <span>
+                                            <i class="fa-solid fa-tags"></i>
+                                            Discount
+                                        </span>
+                                    </label>
+
+                                    <div class="money-input">
+
+                                        <span>Rs</span>
+
+                                        <input
+                                            type="number"
+                                            id="discount"
+                                            value="0"
+                                            min="0"
+                                            step="0.01"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+                                <div class="summary-row">
+
+                                    <label for="tax">
+                                        <span>
+                                            <i class="fa-solid fa-percent"></i>
+                                            Tax
+                                        </span>
+                                    </label>
+
+                                    <div class="money-input">
+
+                                        <span>Rs</span>
+
+                                        <input
+                                            type="number"
+                                            id="tax"
+                                            value="0"
+                                            min="0"
+                                            step="0.01"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+                                <div class="summary-row">
+
+                                    <label for="shipping">
+                                        <span>
+                                            <i class="fa-solid fa-truck"></i>
+                                            Shipping
+                                        </span>
+                                    </label>
+
+                                    <div class="money-input">
+
+                                        <span>Rs</span>
+
+                                        <input
+                                            type="number"
+                                            id="shipping"
+                                            value="0"
+                                            min="0"
+                                            step="0.01"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="summary-divider"></div>
+
+                            <div class="grand-total">
+
+                                <div>
+                                    <span class="grand-total-label">
+                                        Grand Total
+                                    </span>
+
+                                    <small>
+                                        Final purchase order amount
+                                    </small>
+                                </div>
+
+                                <div class="grand-total-value">
+
+                                    <span>Rs</span>
+
+                                    <input
+                                        type="text"
+                                        id="grandTotal"
+                                        value="0.00"
+                                        readonly
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <!-- Remarks -->
+                        <section class="section-card">
+
+                            <div class="section-card-header">
+
+                                <div>
+                                    <h2>
+                                        <i class="fa-regular fa-note-sticky"></i>
+                                        Remarks
+                                    </h2>
+
+                                    <p>
+                                        Add optional purchase notes.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <textarea
+                                id="remarks"
+                                class="form-control remarks-field"
+                                rows="6"
+                                placeholder="Enter purchase remarks, supplier instructions or delivery notes..."
+                            ></textarea>
+
+                        </section>
+
+                        <!-- Action Buttons -->
+                        <section class="section-card action-card">
+
+                            <button
+                                type="button"
+                                id="btnSave"
+                                class="erp-btn erp-btn-save full-width"
+                            >
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Save Purchase Order
+                            </button>
+
+                            <button
+                                type="button"
+                                id="btnResetPurchase"
+                                class="erp-btn erp-btn-reset full-width"
+                                onclick="resetPurchaseForm()"
+                            >
+                                <i class="fa-solid fa-rotate-left"></i>
+                                Reset Form
+                            </button>
+
+                            <p class="keyboard-hint">
+                                <i class="fa-regular fa-keyboard"></i>
+                                Press
+                                <kbd>Ctrl</kbd>
+                                +
+                                <kbd>S</kbd>
+                                to save.
+                            </p>
+
+                        </section>
+
+                    </aside>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- Add Supplier Modal -->
+    <div
+        id="supplierModal"
+        class="supplier-modal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="supplier-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="supplierModalTitle"
+        >
+
+            <div class="supplier-modal-header">
+
+                <div class="modal-title-area">
+
+                    <div class="modal-title-icon">
+                        <i class="fa-solid fa-building-circle-check"></i>
+                    </div>
+
+                    <div>
+                        <h2 id="supplierModalTitle">
+                            Add New Supplier
+                        </h2>
+
+                        <p>
+                            Create a supplier and select it automatically.
+                        </p>
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="btnCloseSupplierModal"
+                    class="modal-close"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+            <form id="supplierForm">
+
+                <div class="supplier-form-grid">
+
+                    <div class="form-group full-width">
+
+                        <label for="newSupplierName">
+                            Supplier Name
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            id="newSupplierName"
+                            class="form-control"
+                            type="text"
+                            maxlength="150"
+                            placeholder="Enter supplier or company name"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="newContactPerson">
+                            Contact Person
+                        </label>
+
+                        <input
+                            id="newContactPerson"
+                            class="form-control"
+                            type="text"
+                            maxlength="150"
+                            placeholder="Contact person name"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="newSupplierPhone">
+                            Phone
+                        </label>
+
+                        <input
+                            id="newSupplierPhone"
+                            class="form-control"
+                            type="tel"
+                            maxlength="50"
+                            placeholder="+92 300 0000000"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="newSupplierEmail">
+                            Email
+                        </label>
+
+                        <input
+                            id="newSupplierEmail"
+                            class="form-control"
+                            type="email"
+                            maxlength="150"
+                            placeholder="supplier@example.com"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="newSupplierCity">
+                            City
+                        </label>
+
+                        <input
+                            id="newSupplierCity"
+                            class="form-control"
+                            type="text"
+                            maxlength="100"
+                            placeholder="City"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="newSupplierCountry">
+                            Country
+                        </label>
+
+                        <input
+                            id="newSupplierCountry"
+                            class="form-control"
+                            type="text"
+                            value="Pakistan"
+                            maxlength="100"
+                        >
+
+                    </div>
+
+                    <div class="form-group full-width">
+
+                        <label for="newSupplierAddress">
+                            Address
+                        </label>
+
+                        <textarea
+                            id="newSupplierAddress"
+                            class="form-control"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="Enter complete supplier address"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="supplier-modal-actions">
+
+                    <button
+                        type="button"
+                        id="btnCancelSupplier"
+                        class="erp-btn erp-btn-secondary"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="btnSaveSupplier"
+                        class="erp-btn erp-btn-save"
+                    >
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Save Supplier
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div id="footer-container"></div>
+    <script src="js/profile.js"></script>
+    <script src="js/newPurchase.js"></script>
+
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+
+</html>

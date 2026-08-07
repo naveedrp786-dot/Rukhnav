@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Review Management | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/reviews.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+    <main class="main">
+        <div id="topbar-container"></div>
+        <section class="content review-admin-page">
+            <header class="review-hero">
+                <div>
+                    <span class="review-eyebrow"><i class="fa-solid fa-star"></i> Sales / Customer Experience</span>
+                    <h1>Review Management</h1>
+                    <p>Review customer ratings and comments, find product feedback quickly, and moderate reviews when moderation is enabled.</p>
+                </div>
+                <button id="refreshReviews" class="review-btn review-btn-gold" type="button">
+                    <i class="fa-solid fa-rotate"></i> Refresh
+                </button>
+            </header>
+
+            <div id="reviewMessage" class="review-message" role="alert"></div>
+
+            <section class="review-summary-grid">
+                <article><span>Total Reviews</span><strong id="totalReviews">0</strong></article>
+                <article><span>Average Rating</span><strong id="averageRating">0.0</strong></article>
+                <article><span>5-Star Reviews</span><strong id="fiveStarReviews">0</strong></article>
+                <article><span>Pending</span><strong id="pendingReviews">0</strong></article>
+                <article><span>Approved</span><strong id="approvedReviews">0</strong></article>
+            </section>
+
+            <section class="review-panel review-filters">
+                <div>
+                    <label for="reviewSearch">Search</label>
+                    <input id="reviewSearch" type="search" placeholder="Customer, product, email, phone or comment">
+                </div>
+                <div>
+                    <label for="ratingFilter">Rating</label>
+                    <select id="ratingFilter">
+                        <option value="">All ratings</option>
+                        <option value="5">5 stars</option>
+                        <option value="4">4 stars</option>
+                        <option value="3">3 stars</option>
+                        <option value="2">2 stars</option>
+                        <option value="1">1 star</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="statusFilter">Status</label>
+                    <select id="statusFilter">
+                        <option value="">All statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+                <button id="applyReviewFilters" class="review-btn review-btn-dark" type="button">
+                    <i class="fa-solid fa-filter"></i> Apply Filters
+                </button>
+            </section>
+
+            <section class="review-panel">
+                <div class="review-panel-heading">
+                    <div><span>Customer Feedback</span><h2>All Reviews</h2></div>
+                    <small id="reviewCountLabel">Loading…</small>
+                </div>
+                <div class="review-table-wrap">
+                    <table class="review-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>Customer</th><th>Product</th><th>Rating</th><th>Comment</th><th>Status</th><th>Date</th><th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reviewsBody"></tbody>
+                    </table>
+                </div>
+                <div class="review-pagination">
+                    <button id="prevReviewPage" type="button">Previous</button>
+                    <span id="reviewPageLabel">Page 1</span>
+                    <button id="nextReviewPage" type="button">Next</button>
+                </div>
+            </section>
+        </section>
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div id="reviewModal" class="review-modal hidden" aria-hidden="true">
+    <div class="review-modal-card">
+        <button id="closeReviewModal" class="review-modal-close" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        <span>Review Details</span>
+        <h2 id="modalReviewTitle">Customer Review</h2>
+        <div id="modalReviewContent"></div>
+        <div id="moderationActions" class="moderation-actions hidden">
+            <button data-review-status="Approved" type="button">Approve</button>
+            <button data-review-status="Pending" type="button">Pending</button>
+            <button data-review-status="Rejected" type="button">Reject</button>
+        </div>
+    </div>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/reviews.js"></script>
+</body>
+</html>

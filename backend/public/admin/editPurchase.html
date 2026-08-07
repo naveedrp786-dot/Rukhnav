@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Purchase | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/purchasing-v5.css">
+    <link rel="stylesheet" href="/admin/css/editPurchase.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main purchasing-v5-page">
+        <div id="topbar-container"></div>
+
+        <section class="purchase-header">
+            <div>
+                <p class="eyebrow">PURCHASE MANAGEMENT</p>
+                <h1><i class="fa-solid fa-pen-to-square"></i> Edit Purchase Order</h1>
+                <p class="page-subtitle">Update supplier information, products, quantities, costs and totals.</p>
+            </div>
+
+            <a href="/admin/purchases.html" class="btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to Purchases
+            </a>
+        </section>
+
+        <section class="purchase-meta-grid">
+            <article class="meta-card">
+                <label>Purchase Order Number</label>
+                <input id="poNumber" type="text" value="Loading..." readonly>
+            </article>
+
+            <article class="meta-card">
+                <label>Purchase Date</label>
+                <input id="purchaseDate" type="date">
+            </article>
+
+            <article class="meta-card">
+                <label>Expected Date</label>
+                <input id="expectedDate" type="date">
+            </article>
+
+            <article class="meta-card">
+                <label>Payment Method</label>
+                <select id="paymentMethod">
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Card</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="JazzCash">JazzCash</option>
+                    <option value="EasyPaisa">EasyPaisa</option>
+                    <option value="Credit">Credit</option>
+                </select>
+            </article>
+        </section>
+
+        <section class="purchase-grid">
+            <div class="left-panel">
+                <article class="erp-card">
+                    <p class="section-kicker">SUPPLIER</p>
+                    <h2><i class="fa-solid fa-building"></i> Supplier Information</h2>
+
+                    <label for="supplier">Select Supplier</label>
+                    <div class="supplier-select-row" style="display:flex; gap:10px; align-items:center;">
+                        <select id="supplier" style="flex:1;"></select>
+                        <button id="btnNewSupplier" type="button" class="btn-primary">
+                            <i class="fa-solid fa-user-plus"></i>
+                            New Supplier
+                        </button>
+                    </div>
+
+                    <div id="supplierDetails" class="supplier-info">
+                        Loading supplier information...
+                    </div>
+                </article>
+
+                <article class="erp-card">
+                    <div class="card-title-row">
+                        <div>
+                            <p class="section-kicker">ORDER ITEMS</p>
+                            <h2><i class="fa-solid fa-boxes-stacked"></i> Products</h2>
+                        </div>
+
+                        <button id="btnAddRow" type="button" class="btn-primary">
+                            <i class="fa-solid fa-plus"></i>
+                            Add Product
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="productTable">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Qty</th>
+                                    <th>Unit Cost</th>
+                                    <th>Line Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+
+            <aside class="right-panel">
+                <article class="erp-card summary-card">
+                    <p class="section-kicker">FINANCIALS</p>
+                    <h2><i class="fa-solid fa-calculator"></i> Purchase Summary</h2>
+
+                    <div class="summary-row readonly-row">
+                        <span>Subtotal</span>
+                        <input id="subTotal" type="text" value="0.00" readonly>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Discount</span>
+                        <input id="discount" type="number" value="0" min="0" step="0.01">
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <input id="tax" type="number" value="0" min="0" step="0.01">
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <input id="shipping" type="number" value="0" min="0" step="0.01">
+                    </div>
+
+                    <div class="grand-total">
+                        <span>Grand Total</span>
+                        <input id="grandTotal" type="text" value="0.00" readonly>
+                    </div>
+
+                    <div class="balance-grid">
+                        <div><span>Paid</span><strong id="paidAmount">Rs 0.00</strong></div>
+                        <div><span>Balance</span><strong id="balanceAmount">Rs 0.00</strong></div>
+                        <div><span>Payment Status</span><strong id="paymentStatus">Pending</strong></div>
+                        <div><span>Order Status</span><strong id="orderStatus">Draft</strong></div>
+                    </div>
+                </article>
+
+                <article class="erp-card">
+                    <p class="section-kicker">NOTES</p>
+                    <h2><i class="fa-solid fa-note-sticky"></i> Remarks</h2>
+                    <textarea id="remarks" rows="7" placeholder="Enter purchase remarks..."></textarea>
+                </article>
+
+                <article class="erp-card action-card">
+                    <button id="btnUpdate" type="button" class="btn-success">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Update Purchase
+                    </button>
+
+                    <a href="/admin/purchases.html" class="btn-secondary full-width">
+                        <i class="fa-solid fa-xmark"></i>
+                        Cancel
+                    </a>
+                </article>
+            </aside>
+        </section>
+
+        <div id="pageMessage" class="page-message hidden"></div>
+    </main>
+</div>
+
+
+<!-- New Supplier Modal -->
+<div id="supplierModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:650px;">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-building-circle-check"></i> Add New Supplier</h2>
+            <button id="btnCloseSupplierModal" type="button" class="close" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                <div style="grid-column:1/-1;">
+                    <label for="newSupplierName">Supplier Name *</label>
+                    <input id="newSupplierName" type="text" placeholder="Enter supplier name">
+                </div>
+
+                <div>
+                    <label for="newContactPerson">Contact Person</label>
+                    <input id="newContactPerson" type="text" placeholder="Contact person">
+                </div>
+
+                <div>
+                    <label for="newSupplierPhone">Phone</label>
+                    <input id="newSupplierPhone" type="text" placeholder="03XXXXXXXXX">
+                </div>
+
+                <div>
+                    <label for="newSupplierEmail">Email</label>
+                    <input id="newSupplierEmail" type="email" placeholder="supplier@example.com">
+                </div>
+
+                <div>
+                    <label for="newSupplierCity">City</label>
+                    <input id="newSupplierCity" type="text" placeholder="City">
+                </div>
+
+                <div>
+                    <label for="newSupplierCountry">Country</label>
+                    <input id="newSupplierCountry" type="text" value="Pakistan">
+                </div>
+
+                <div style="grid-column:1/-1;">
+                    <label for="newSupplierAddress">Address</label>
+                    <textarea id="newSupplierAddress" rows="3" placeholder="Supplier address"></textarea>
+                </div>
+            </div>
+
+            <div id="supplierModalMessage" class="page-message hidden" style="margin-top:12px;"></div>
+        </div>
+
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px;">
+            <button id="btnCancelSupplier" type="button" class="btn-secondary">Cancel</button>
+            <button id="btnSaveSupplier" type="button" class="btn-success">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Supplier
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="footer-container"></div>
+<script src="/admin/js/editpurchase.js"></script>
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+</html>

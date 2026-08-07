@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Stock In | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/stock.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+    <main class="main">
+        <div id="topbar-container"></div>
+        <section class="content erp-v5-page stock-in-page">
+            <header class="erp-v5-hero stock-hero">
+                <div>
+                    <span class="erp-v5-eyebrow stock-eyebrow"><i class="fa-solid fa-boxes-packing"></i> Inventory Operations</span>
+                    <h1>Stock In</h1>
+                    <p>Receive product quantities from suppliers and maintain a clear stock-receipt trail.</p>
+                </div>
+                <div class="erp-v5-hero__actions stock-hero-actions">
+                    <a href="/admin/inventory.html" class="erp-v5-btn erp-v5-btn--light stock-btn light"><i class="fa-solid fa-warehouse"></i> Inventory Overview</a>
+                    <a href="/admin/stockAdjustments.html" class="erp-v5-btn erp-v5-btn--gold stock-btn gold"><i class="fa-solid fa-sliders"></i> Stock Adjustments</a>
+                </div>
+            </header>
+
+            <div id="stockMessage" class="stock-message" role="alert" aria-live="polite"></div>
+
+            <section class="stock-grid">
+                <article class="erp-v5-panel stock-panel">
+                    <div class="erp-v5-panel-heading stock-panel-heading">
+                        <span>Goods Receipt</span>
+                        <h2>Receive Stock</h2>
+                        <p>Select a product and supplier, then enter the quantity received.</p>
+                    </div>
+
+                    <form id="stockInForm" class="stock-form">
+                        <label>
+                            <span>Product</span>
+                            <select id="stockProduct" required><option value="">Loading products...</option></select>
+                        </label>
+
+                        <label>
+                            <span>Supplier</span>
+                            <select id="stockSupplier" required><option value="">Loading suppliers...</option></select>
+                        </label>
+
+                        <label>
+                            <span>Quantity Received</span>
+                            <input id="stockQuantity" type="number" min="1" step="1" required>
+                        </label>
+
+                        <label>
+                            <span>Unit Cost</span>
+                            <input id="stockUnitCost" type="number" min="0" step="0.01" required>
+                        </label>
+
+                        <label>
+                            <span>Reference Number</span>
+                            <input id="stockReference" maxlength="100" placeholder="GRN, supplier invoice or PO number">
+                        </label>
+
+                        <label>
+                            <span>Received Date</span>
+                            <input id="stockDate" type="date" required>
+                        </label>
+
+                        <label class="full">
+                            <span>Notes</span>
+                            <textarea id="stockNotes" rows="4" maxlength="1000" placeholder="Batch, quality or receiving notes"></textarea>
+                        </label>
+
+                        <button id="saveStockButton" type="submit" class="stock-btn gold full">
+                            <i class="fa-solid fa-circle-plus"></i> Receive Stock
+                        </button>
+                    </form>
+                </article>
+
+                <aside class="erp-v5-panel stock-panel stock-guide">
+                    <div class="erp-v5-panel-heading stock-panel-heading">
+                        <span>Receiving Guide</span>
+                        <h2>Before Posting</h2>
+                    </div>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> Confirm the physical quantity.</li>
+                        <li><i class="fa-solid fa-check"></i> Select the correct supplier.</li>
+                        <li><i class="fa-solid fa-check"></i> Enter the actual unit cost.</li>
+                        <li><i class="fa-solid fa-check"></i> Keep the supplier invoice or GRN reference.</li>
+                        <li><i class="fa-solid fa-check"></i> Use Stock Adjustments only for corrections.</li>
+                    </ul>
+                    <div class="stock-warning">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <p>Stock In increases available inventory. Review all values before posting.</p>
+                    </div>
+                </aside>
+            </section>
+        </section>
+        <div id="footer-container"></div>
+    </main>
+</div>
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/stock.js"></script>
+</body>
+</html>
