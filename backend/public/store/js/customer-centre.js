@@ -109,6 +109,9 @@ window.CustomerCentre = {
         const forgotPasswordForm =
             document.getElementById("forgotPasswordForm");
 
+        const verificationForm =
+            document.getElementById("verificationForm");
+
         loginForm?.addEventListener(
             "submit",
             event => this.login(event)
@@ -124,6 +127,11 @@ window.CustomerCentre = {
             event => this.requestReset(event)
         );
 
+        verificationForm?.addEventListener(
+            "submit",
+            event => this.verifyAccount(event)
+        );
+
         document
             .getElementById("showForgotPassword")
             ?.addEventListener("click", () => {
@@ -134,6 +142,44 @@ window.CustomerCentre = {
             .getElementById("backToLogin")
             ?.addEventListener("click", () => {
                 this.showAuthForm("login");
+            });
+
+        document
+            .getElementById("verificationBackToLogin")
+            ?.addEventListener("click", () => {
+                this.showAuthForm("login");
+            });
+
+        document
+            .getElementById("sendVerificationButton")
+            ?.addEventListener("click", () => {
+                this.sendVerificationCode();
+            });
+
+        document
+            .getElementById("showVerification")
+            ?.addEventListener("click", () => {
+
+                const loginIdentifier =
+                    document
+                        .getElementById("loginIdentifier")
+                        ?.value
+                        ?.trim() || "";
+
+                const verificationIdentifier =
+                    document.getElementById(
+                        "verificationIdentifier"
+                    );
+
+                if (
+                    verificationIdentifier &&
+                    loginIdentifier
+                ) {
+                    verificationIdentifier.value =
+                        loginIdentifier;
+                }
+
+                this.showAuthForm("verify");
             });
 
         document
@@ -230,7 +276,8 @@ window.CustomerCentre = {
         const forms = {
             login: "loginForm",
             register: "registerForm",
-            forgot: "forgotPasswordForm"
+            forgot: "forgotPasswordForm",
+            verify: "verificationForm"
         };
 
         Object.values(forms).forEach(id =>
@@ -248,7 +295,11 @@ window.CustomerCentre = {
         });
 
         document.querySelector(".auth-tabs")
-            .classList.toggle("hidden", name === "forgot");
+            .classList.toggle(
+                "hidden",
+                name === "forgot" ||
+                name === "verify"
+            );
 
         this.clearMessage();
     },
@@ -561,18 +612,226 @@ window.CustomerCentre = {
                 "success"
             );
 
-            event.currentTarget.reset();
+            form.reset();
 
-            setTimeout(() => {
-                this.showAuthForm("login");
-                document.getElementById("loginIdentifier").value =
+            const verificationIdentifier =
+                document.getElementById(
+                    "verificationIdentifier"
+                );
+
+            if (verificationIdentifier) {
+                verificationIdentifier.value =
                     email || phone;
-            }, 1600);
+            }
+
+            this.showAuthForm("verify");
+
+            if (email) {
+                await this.sendVerificationCode();
+            } else {
+                this.showMessage(
+                    "Your account was created. Mobile verification delivery will be available after SMS service is connected.",
+                    "info"
+                );
+            }
         } catch (error) {
             this.showMessage(error.message, "error");
         } finally {
             this.setLoading(button, false);
         }
+    },
+
+    async sendVerificationCode() {
+
+        const identifier =
+            document
+                .getElementById(
+                    "verificationIdentifier"
+                )
+                ?.value
+                ?.trim();
+
+        if (!identifier) {
+
+            this.showMessage(
+                "Enter your email address or mobile number first.",
+                "error"
+            );
+
+            return;
+        }
+
+        const button =
+            document.getElementById(
+                "sendVerificationButton"
+            );
+
+        this.setLoading(
+            button,
+            true,
+            "Sending Code"
+        );
+
+        try {
+
+            const data =
+                await API.post(
+                    API.customer(
+                        "/verification/request"
+                    ),
+                    {
+                        identifier
+                    }
+                );
+
+            if (data.developmentCode) {
+
+                sessionStorage.setItem(
+                    "rukhnav_development_verification_code",
+                    String(
+                        data.developmentCode
+                    )
+                );
+
+            }
+
+            this.showMessage(
+                data.message ||
+                "Verification code sent.",
+                "success"
+            );
+
+        } catch (error) {
+
+            this.showMessage(
+                error.message,
+                "error"
+            );
+
+        } finally {
+
+            this.setLoading(
+                button,
+                false
+            );
+
+        }
+
+    },
+
+    async verifyAccount(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const identifier =
+            document
+                .getElementById(
+                    "verificationIdentifier"
+                )
+                ?.value
+                ?.trim();
+
+        const code =
+            document
+                .getElementById(
+                    "guestVerificationCode"
+                )
+                ?.value
+                ?.trim();
+
+        if (!identifier) {
+
+            this.showMessage(
+                "Enter your email address or mobile number.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+            !/^\d{6}$/.test(
+                code || ""
+            )
+        ) {
+
+            this.showMessage(
+                "Enter the six-digit verification code.",
+                "error"
+            );
+
+            return;
+        }
+
+        const button =
+            document.getElementById(
+                "verifyAccountButton"
+            );
+
+        this.setLoading(
+            button,
+            true,
+            "Verifying"
+        );
+
+        try {
+
+            const data =
+                await API.post(
+                    API.customer(
+                        "/verification/confirm"
+                    ),
+                    {
+                        identifier,
+                        code
+                    }
+                );
+
+            this.showMessage(
+                data.message ||
+                "Account verified successfully.",
+                "success"
+            );
+
+            sessionStorage.removeItem(
+                "rukhnav_development_verification_code"
+            );
+
+            setTimeout(() => {
+
+                this.showAuthForm(
+                    "login"
+                );
+
+                const loginIdentifier =
+                    document.getElementById(
+                        "loginIdentifier"
+                    );
+
+                if (loginIdentifier) {
+                    loginIdentifier.value =
+                        identifier;
+                }
+
+            }, 1200);
+
+        } catch (error) {
+
+            this.showMessage(
+                error.message,
+                "error"
+            );
+
+        } finally {
+
+            this.setLoading(
+                button,
+                false
+            );
+
+        }
+
     },
 
     async requestReset(event) {

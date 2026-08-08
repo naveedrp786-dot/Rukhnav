@@ -3,6 +3,10 @@
 const db = require("../config/db");
 const bcrypt = require("bcrypt");
 
+const {
+    sendEmail
+} = require("../services/emailService");
+
 // =========================================
 // Configuration
 // =========================================
@@ -166,10 +170,97 @@ exports.requestVerificationCode = async (
             getRequestIp(req)
         ]);
 
-        /*
-         * Later, the delivery service will send
-         * this code through email, SMS, or WhatsApp.
-         */
+
+    // =========================================
+    // Deliver Verification Code
+    // =========================================
+
+    if (identifierData.type === "Email") {
+
+        const recipientName =
+            customer.full_name ||
+            customer.first_name ||
+            "Customer";
+
+        const emailSent =
+            await sendEmail(
+                identifierData.value,
+                "Verify your RUKHNAV account",
+                `
+                <div style="
+                    font-family:Arial,sans-serif;
+                    max-width:560px;
+                    margin:auto;
+                    padding:28px;
+                    color:#1f2a24;
+                ">
+                    <h1 style="
+                        margin:0 0 12px;
+                        color:#17452f;
+                    ">
+                        RUKHNAV
+                    </h1>
+
+                    <h2 style="
+                        margin:0 0 18px;
+                        color:#1f2a24;
+                    ">
+                        Verify your email address
+                    </h2>
+
+                    <p>
+                        Hello ${recipientName},
+                    </p>
+
+                    <p>
+                        Use this verification code to activate
+                        your RUKHNAV customer account:
+                    </p>
+
+                    <div style="
+                        margin:24px 0;
+                        padding:18px;
+                        text-align:center;
+                        background:#f7f4ec;
+                        border-radius:12px;
+                    ">
+                        <strong style="
+                            font-size:32px;
+                            letter-spacing:8px;
+                            color:#17452f;
+                        ">
+                            ${code}
+                        </strong>
+                    </div>
+
+                    <p>
+                        This code expires in
+                        ${OTP_EXPIRY_MINUTES} minutes.
+                    </p>
+
+                    <p style="
+                        font-size:12px;
+                        color:#6f776f;
+                    ">
+                        If you did not request this code,
+                        you can safely ignore this email.
+                    </p>
+                </div>
+                `
+            );
+
+        if (!emailSent) {
+
+            return res.status(502).json({
+                success: false,
+                message:
+                    "The verification code was created, but the email could not be sent. Please try again."
+            });
+
+        }
+
+    }
+
 
         const response = {
             success: true,

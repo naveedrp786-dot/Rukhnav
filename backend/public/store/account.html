@@ -93,6 +93,15 @@
                     Sign In
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
+
+                <button
+                    id="showVerification"
+                    type="button"
+                    class="back-link"
+                >
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Verify an existing account
+                </button>
             </form>
 
             <form id="registerForm" class="centre-form hidden">
@@ -224,6 +233,81 @@
                 <button id="registerButton" class="btn primary centre-submit" type="submit">
                     Create Account
                     <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <form id="verificationForm" class="centre-form hidden">
+                <div class="form-heading">
+                    <span>Account Verification</span>
+                    <h2>Verify your account</h2>
+                    <p>
+                        We will send a six-digit verification code
+                        to your email address or mobile number.
+                    </p>
+                </div>
+
+                <label for="verificationIdentifier">
+                    Email or mobile number
+                </label>
+
+                <div class="centre-input">
+                    <i class="fa-regular fa-user"></i>
+                    <input
+                        id="verificationIdentifier"
+                        type="text"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <button
+                    id="sendVerificationButton"
+                    class="btn secondary centre-submit"
+                    type="button"
+                >
+                    Send / Resend Code
+                </button>
+
+                <label for="guestVerificationCode">
+                    Six-digit verification code
+                </label>
+
+                <div class="centre-input">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <input
+                        id="guestVerificationCode"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        placeholder="000000"
+                        required
+                    >
+                </div>
+
+                <button
+                    id="verifyAccountButton"
+                    class="btn primary centre-submit"
+                    type="submit"
+                >
+                    Verify Account
+                    <i class="fa-solid fa-circle-check"></i>
+                </button>
+
+                <p class="recovery-security-note">
+                    Verification codes expire after 10 minutes.
+                    If you did not receive the message, use
+                    Send / Resend Code.
+                </p>
+
+                <button
+                    id="verificationBackToLogin"
+                    type="button"
+                    class="back-link"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to sign in
                 </button>
             </form>
 
