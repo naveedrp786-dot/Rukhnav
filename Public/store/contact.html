@@ -57,8 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
             `Reply email: ${document.getElementById("contactReplyEmail").value}\n\n` +
             document.getElementById("contactMessage").value
         );
-        window.location.href = `mailto:naveedrp786@gmail.com?subject=${subject}&body=${body}`;
-        document.getElementById("contactStatus").textContent = "Your email application has been opened.";
+        const form = document.getElementById("contactForm");
+
+        const supportEmail =
+            form?.dataset.supportEmail ||
+            "naveedrp786@gmail.com";
+
+        window.location.href =
+            `mailto:${supportEmail}?subject=${subject}&body=${body}`;
+
+        document.getElementById("contactStatus").textContent =
+            form?.dataset.successText ||
+            "Your email application has been opened.";
     });
 });
 </script>

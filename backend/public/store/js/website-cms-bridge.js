@@ -951,6 +951,181 @@ window.RukhnavModernCMS = {
             });
     },
 
+    applyContact(settings) {
+        const contact =
+            settings.contact || {};
+
+        const email =
+            document.getElementById(
+                "contactEmail"
+            );
+
+        if (
+            email &&
+            contact.support_email
+        ) {
+            email.textContent =
+                contact.support_email;
+
+            email.href =
+                `mailto:${contact.support_email}`;
+        }
+
+        const whatsapp =
+            document.getElementById(
+                "contactWhatsapp"
+            );
+
+        if (
+            whatsapp &&
+            contact.whatsapp_number
+        ) {
+            const number =
+                String(
+                    contact.whatsapp_number
+                ).replace(/\D/g, "");
+
+            whatsapp.textContent =
+                contact.whatsapp_number;
+
+            whatsapp.href =
+                `https://wa.me/${number}`;
+        }
+
+        this.setText(
+            "#contactServiceArea",
+            contact.service_area
+        );
+
+        this.setText(
+            "#contactHours",
+            contact.business_hours
+        );
+
+        const form =
+            document.getElementById(
+                "contactForm"
+            );
+
+        if (form) {
+            form.dataset.supportEmail =
+                contact.support_email || "";
+        }
+    },
+
+    applyContactPage(settings) {
+        const page =
+            settings.pages?.contact || {};
+
+        const main =
+            document.querySelector(
+                "main.info-page"
+            );
+
+        if (
+            main &&
+            page.enabled === false
+        ) {
+            main.hidden = true;
+            return;
+        }
+
+        this.setText(
+            ".info-hero > div:first-child > span",
+            page.eyebrow
+        );
+
+        this.setText(
+            ".info-hero > div:first-child > h1",
+            page.title
+        );
+
+        this.setText(
+            ".info-hero > div:first-child > p",
+            page.description
+        );
+
+        this.setText(
+            ".contact-form > div:first-child > h2",
+            page.form_title
+        );
+
+        const setLabel = (
+            inputId,
+            value
+        ) => {
+            if (!value) return;
+
+            const input =
+                document.getElementById(
+                    inputId
+                );
+
+            const label =
+                input?.closest("label");
+
+            if (!label) return;
+
+            const nodes =
+                [...label.childNodes];
+
+            const textNode =
+                nodes.find(
+                    node =>
+                        node.nodeType ===
+                        Node.TEXT_NODE
+                );
+
+            if (textNode) {
+                textNode.textContent =
+                    value;
+            }
+        };
+
+        setLabel(
+            "contactName",
+            page.name_label
+        );
+
+        setLabel(
+            "contactReplyEmail",
+            page.email_label
+        );
+
+        setLabel(
+            "contactSubject",
+            page.subject_label
+        );
+
+        setLabel(
+            "contactMessage",
+            page.message_label
+        );
+
+        const button =
+            document.querySelector(
+                "#contactForm button[type='submit']"
+            );
+
+        if (
+            button &&
+            page.submit_text
+        ) {
+            button.textContent =
+                page.submit_text;
+        }
+
+        const form =
+            document.getElementById(
+                "contactForm"
+            );
+
+        if (form) {
+            form.dataset.successText =
+                page.success_text || "";
+        }
+    },
+
     applySEO(settings) {
         const seo =
             settings.seo || {};
@@ -1048,6 +1223,14 @@ window.RukhnavModernCMS = {
         );
 
         this.applyFooter(
+            settings
+        );
+
+        this.applyContact(
+            settings
+        );
+
+        this.applyContactPage(
             settings
         );
 
