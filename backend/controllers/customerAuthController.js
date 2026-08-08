@@ -91,6 +91,24 @@ exports.requestVerificationCode = async (
                 ? "Email Verification"
                 : "Phone Verification";
 
+        // =========================================
+        // Phone Verification Provider Check
+        // =========================================
+        if (
+            identifierData.type === "Phone" &&
+            (
+                !process.env.TWILIO_ACCOUNT_SID ||
+                !process.env.TWILIO_AUTH_TOKEN ||
+                !process.env.TWILIO_SMS_FROM
+            )
+        ) {
+            return res.status(503).json({
+                success: false,
+                message:
+                    "Mobile verification is temporarily unavailable. Please try again later."
+            });
+        }
+
         const requestAllowed =
             await checkRequestLimit(
                 customer.id,
