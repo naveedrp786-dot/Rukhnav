@@ -916,13 +916,19 @@ window.AccountModules = {
         const emailVerified =
             Boolean(
                 customer.email_verified_at ||
-                customer.emailVerifiedAt
+                customer.emailVerifiedAt ||
+                customer.email_verified === true ||
+                customer.email_verified === 1 ||
+                customer.email_verified === "1"
             );
 
         const phoneVerified =
             Boolean(
                 customer.phone_verified_at ||
-                customer.phoneVerifiedAt
+                customer.phoneVerifiedAt ||
+                customer.phone_verified === true ||
+                customer.phone_verified === 1 ||
+                customer.phone_verified === "1"
             );
 
         const emailStatus =
@@ -935,17 +941,27 @@ window.AccountModules = {
                 "securityPhoneStatus"
             );
 
-        document.getElementById(
-            "securityEmailValue"
-        ).textContent =
-            customer.email ||
-            "No email added";
+        const emailValue =
+            document.getElementById(
+                "securityEmailValue"
+            );
 
-        document.getElementById(
-            "securityPhoneValue"
-        ).textContent =
-            customer.phone ||
-            "No mobile number added";
+        const phoneValue =
+            document.getElementById(
+                "securityPhoneValue"
+            );
+
+        if (emailValue) {
+            emailValue.textContent =
+                customer.email ||
+                "No email added";
+        }
+
+        if (phoneValue) {
+            phoneValue.textContent =
+                customer.phone ||
+                "No mobile number added";
+        }
 
         if (emailStatus) {
             emailStatus.textContent =
@@ -974,6 +990,38 @@ window.AccountModules = {
                         : "pending"
                 }`;
         }
+
+        document
+            .querySelectorAll(
+                '[data-request-verification="email"]'
+            )
+            .forEach(button => {
+                button.classList.toggle(
+                    "hidden",
+                    emailVerified ||
+                    !customer.email
+                );
+
+                button.disabled =
+                    emailVerified ||
+                    !customer.email;
+            });
+
+        document
+            .querySelectorAll(
+                '[data-request-verification="phone"]'
+            )
+            .forEach(button => {
+                button.classList.toggle(
+                    "hidden",
+                    phoneVerified ||
+                    !customer.phone
+                );
+
+                button.disabled =
+                    phoneVerified ||
+                    !customer.phone;
+            });
     },
 
     async requestVerification(
