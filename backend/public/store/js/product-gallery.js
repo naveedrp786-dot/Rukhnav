@@ -1244,116 +1244,18 @@ const ProductDetails = {
     reviewShellMarkup() {
         return `
             <section class="product-reviews-module">
-                <div class="review-overview">
-                    <div class="review-score-card">
-                        <strong id="reviewAverageScore">0.0</strong>
-                        <span id="reviewAverageStars">☆☆☆☆☆</span>
-                        <small id="reviewTotalCount">No reviews yet</small>
-                    </div>
-
-                    <div id="reviewDistribution" class="review-distribution">
-                        ${[5,4,3,2,1].map(star => `
-                            <div>
-                                <span>${star} star</span>
-                                <i><b style="width:0%"></b></i>
-                                <em>0</em>
-                            </div>
-                        `).join("")}
-                    </div>
-                </div>
-
-                <div class="review-create-card">
-                    <div>
-                        <span>Share Your Experience</span>
-                        <h3>Write a review with photos</h3>
-                        <p>
-                            Rate this product, add your comments and upload up to five JPG, PNG or WEBP pictures.
-                        </p>
-                    </div>
-
-                    ${
-                        API.isAuthenticated()
-                            ? `
-                                <form id="productReviewForm" class="product-review-form">
-                                    <label>
-                                        <span>Your rating *</span>
-                                        <select name="rating" required>
-                                            <option value="">Choose rating</option>
-                                            <option value="5">5 — Excellent</option>
-                                            <option value="4">4 — Very good</option>
-                                            <option value="3">3 — Good</option>
-                                            <option value="2">2 — Fair</option>
-                                            <option value="1">1 — Poor</option>
-                                        </select>
-                                    </label>
-
-                                    <label>
-                                        <span>Your comments *</span>
-                                        <textarea
-                                            name="comment"
-                                            rows="4"
-                                            minlength="5"
-                                            maxlength="2000"
-                                            placeholder="Tell other customers about your experience..."
-                                            required
-                                        ></textarea>
-                                    </label>
-
-                                    <label class="review-photo-picker">
-                                        <span>Customer photos</span>
-                                        <input
-                                            id="productReviewImages"
-                                            type="file"
-                                            name="review_images"
-                                            accept="image/jpeg,image/png,image/webp"
-                                            multiple
-                                        >
-                                        <small>Maximum 5 pictures, 5 MB each.</small>
-                                    </label>
-
-                                    <div id="reviewPhotoPreview" class="review-photo-preview"></div>
-
-                                    <div
-                                        id="productReviewEligibility"
-                                        class="product-review-eligibility checking"
-                                    >
-                                        <i class="fa-solid fa-spinner fa-spin"></i>
-                                        <span>
-                                            Checking whether this delivered product is eligible for review...
-                                        </span>
-                                    </div>
-
-                                    <button
-                                        id="submitProductReview"
-                                        type="submit"
-                                        class="btn primary"
-                                        disabled
-                                    >
-                                        <i class="fa-regular fa-star"></i>
-                                        Submit Verified Review
-                                    </button>
-
-                                    <div id="productReviewMessage" class="product-review-message" aria-live="polite"></div>
-                                </form>
-                            `
-                            : `
-                                <div class="review-login-prompt">
-                                    <i class="fa-regular fa-user"></i>
-                                    <p>Sign in to rate this product and upload customer photos.</p>
-                                    <a href="account.html?return=${encodeURIComponent(location.pathname + location.search)}" class="btn primary">
-                                        Sign In
-                                    </a>
-                                </div>
-                            `
-                    }
-                </div>
 
                 <div class="review-list-heading">
                     <div>
                         <span>Customer Feedback</span>
                         <h3>Reviews &amp; photos</h3>
                     </div>
-                    <button id="refreshReviewsButton" type="button" class="btn secondary">
+
+                    <button
+                        id="refreshReviewsButton"
+                        type="button"
+                        class="btn secondary"
+                    >
                         <i class="fa-solid fa-rotate"></i>
                         Refresh
                     </button>
@@ -1384,23 +1286,212 @@ const ProductDetails = {
                     </label>
 
                     <label class="review-photo-filter">
-                        <input id="publicReviewPhotosOnly" type="checkbox">
+                        <input
+                            id="publicReviewPhotosOnly"
+                            type="checkbox"
+                        >
                         <span>With customer photos only</span>
                     </label>
                 </div>
 
-                <div id="productReviewsLoading" class="review-list-state">
+                <div
+                    id="productReviewsLoading"
+                    class="review-list-state"
+                >
                     <i class="fa-solid fa-spinner fa-spin"></i>
                     Loading customer reviews...
                 </div>
 
-                <div id="productReviewsEmpty" class="review-list-state hidden">
+                <div
+                    id="productReviewsEmpty"
+                    class="review-list-state hidden"
+                >
                     <i class="fa-regular fa-star"></i>
-                    <strong>Be the first to review this product</strong>
-                    <span>Customer comments and photos will appear here.</span>
+                    <strong>
+                        Be the first to review this product
+                    </strong>
+                    <span>
+                        Customer comments and photos will appear here.
+                    </span>
                 </div>
 
-                <div id="productReviewsList" class="product-reviews-list"></div>
+                <div
+                    id="productReviewsList"
+                    class="product-reviews-list"
+                ></div>
+
+                <div class="review-overview">
+                    <div class="review-score-card">
+                        <strong id="reviewAverageScore">
+                            0.0
+                        </strong>
+
+                        <span id="reviewAverageStars">
+                            ☆☆☆☆☆
+                        </span>
+
+                        <small id="reviewTotalCount">
+                            No reviews yet
+                        </small>
+                    </div>
+
+                    <div
+                        id="reviewDistribution"
+                        class="review-distribution"
+                    >
+                        ${[5,4,3,2,1].map(star => `
+                            <div>
+                                <span>${star} star</span>
+                                <i>
+                                    <b style="width:0%"></b>
+                                </i>
+                                <em>0</em>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+
+                <div class="review-create-card">
+                    <div>
+                        <span>
+                            Share Your Experience
+                        </span>
+
+                        <h3>
+                            Write a review with photos
+                        </h3>
+
+                        <p>
+                            Rate this product, add your comments
+                            and upload up to five JPG, PNG or WEBP
+                            pictures.
+                        </p>
+                    </div>
+
+                    ${
+                        API.isAuthenticated()
+                            ? `
+                                <form
+                                    id="productReviewForm"
+                                    class="product-review-form"
+                                >
+                                    <label>
+                                        <span>
+                                            Your rating *
+                                        </span>
+
+                                        <select
+                                            name="rating"
+                                            required
+                                        >
+                                            <option value="">
+                                                Choose rating
+                                            </option>
+                                            <option value="5">
+                                                5 — Excellent
+                                            </option>
+                                            <option value="4">
+                                                4 — Very good
+                                            </option>
+                                            <option value="3">
+                                                3 — Good
+                                            </option>
+                                            <option value="2">
+                                                2 — Fair
+                                            </option>
+                                            <option value="1">
+                                                1 — Poor
+                                            </option>
+                                        </select>
+                                    </label>
+
+                                    <label>
+                                        <span>
+                                            Your comments *
+                                        </span>
+
+                                        <textarea
+                                            name="comment"
+                                            rows="4"
+                                            minlength="5"
+                                            maxlength="2000"
+                                            placeholder="Tell other customers about your experience..."
+                                            required
+                                        ></textarea>
+                                    </label>
+
+                                    <label class="review-photo-picker">
+                                        <span>
+                                            Customer photos
+                                        </span>
+
+                                        <input
+                                            id="productReviewImages"
+                                            type="file"
+                                            name="review_images"
+                                            accept="image/jpeg,image/png,image/webp"
+                                            multiple
+                                        >
+
+                                        <small>
+                                            Maximum 5 pictures, 5 MB each.
+                                        </small>
+                                    </label>
+
+                                    <div
+                                        id="reviewPhotoPreview"
+                                        class="review-photo-preview"
+                                    ></div>
+
+                                    <div
+                                        id="productReviewEligibility"
+                                        class="product-review-eligibility checking"
+                                    >
+                                        <i class="fa-solid fa-spinner fa-spin"></i>
+
+                                        <span>
+                                            Checking whether this delivered
+                                            product is eligible for review...
+                                        </span>
+                                    </div>
+
+                                    <button
+                                        id="submitProductReview"
+                                        type="submit"
+                                        class="btn primary"
+                                        disabled
+                                    >
+                                        <i class="fa-regular fa-star"></i>
+                                        Submit Verified Review
+                                    </button>
+
+                                    <div
+                                        id="productReviewMessage"
+                                        class="product-review-message"
+                                        aria-live="polite"
+                                    ></div>
+                                </form>
+                            `
+                            : `
+                                <div class="review-login-prompt">
+                                    <i class="fa-regular fa-user"></i>
+
+                                    <p>
+                                        Sign in to rate this product and
+                                        upload customer photos.
+                                    </p>
+
+                                    <a
+                                        href="account.html?return=${encodeURIComponent(location.pathname + location.search)}"
+                                        class="btn primary"
+                                    >
+                                        Sign In
+                                    </a>
+                                </div>
+                            `
+                    }
+                </div>
+
             </section>
         `;
     },
