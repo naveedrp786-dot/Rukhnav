@@ -1166,6 +1166,9 @@ window.AccountModules = {
     async changePassword(event) {
         event.preventDefault();
 
+        const form =
+            event.currentTarget;
+
         const currentPassword =
             document.getElementById(
                 "currentPassword"
@@ -1227,7 +1230,7 @@ window.AccountModules = {
                     }
                 );
 
-            event.currentTarget.reset();
+            form?.reset();
 
             this.message(
                 "passwordMessage",
