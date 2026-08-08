@@ -147,6 +147,9 @@ const wishlistRoutes =
 const couponRoutes =
     require("./routes/couponRoutes");
 
+const customerPortalRoutes =
+    require("./routes/customerPortalRoutes");
+
 const profileRoutes =
     require("./routes/profileRoutes");
 
@@ -326,6 +329,11 @@ app.use(
 app.use(
     "/api/coupons",
     couponRoutes
+);
+
+app.use(
+    "/api/customer-portal",
+    customerPortalRoutes
 );
 
 app.use(
