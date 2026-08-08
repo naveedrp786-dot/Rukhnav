@@ -27,3 +27,25 @@
 
 /* Referral system enhancements */
 .referral-registration-hint{margin:-2px 0 3px;padding:8px 10px;border-radius:8px;background:#f7f8f4;color:var(--muted);font-size:9px;line-height:1.5}.referral-registration-hint.active{background:#eef5ec;color:var(--primary);font-weight:700}.referral-card-actions{display:flex;gap:7px}.referral-link-row{margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}.referral-link-row span,.referral-link-row strong{display:block}.referral-link-row span{color:var(--muted);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}.referral-link-row strong{margin-top:5px;color:var(--primary);font-size:9px;line-height:1.5;word-break:break-all}
+
+/* =========================================
+   CUSTOMER AUTH BRAND - TEXT COLOR PROTECTION
+   Keep left login/register panel readable
+   when Website Management theme colors apply.
+   ========================================= */
+
+.customer-auth-brand h1 {
+    color: #ffffff !important;
+}
+
+.customer-auth-brand > p {
+    color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.customer-auth-brand .auth-feature-grid strong {
+    color: #ffffff !important;
+}
+
+.customer-auth-brand .auth-feature-grid span {
+    color: rgba(255, 255, 255, 0.72) !important;
+}
