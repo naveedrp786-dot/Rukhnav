@@ -116,3 +116,13 @@ button{
         font-size:min(var(--cms-h1-size,72px),42px);
     }
 }
+
+/* Preserve navigation contrast */
+.categories-nav a{
+    color:#fff;
+}
+
+.categories-nav a:hover,
+.categories-nav a:focus{
+    color:#fff;
+}
