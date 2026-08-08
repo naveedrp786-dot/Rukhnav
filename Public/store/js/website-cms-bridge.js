@@ -1156,6 +1156,11 @@ window.RukhnavModernCMS = {
                 enabled: legal.shipping_enabled,
                 title: legal.shipping_title,
                 intro: legal.shipping_intro
+            },
+            "faq.html": {
+                enabled: legal.faq_enabled,
+                title: legal.faq_title,
+                intro: legal.faq_intro
             }
         };
 
