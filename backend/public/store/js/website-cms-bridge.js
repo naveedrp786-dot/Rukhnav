@@ -1126,6 +1126,104 @@ window.RukhnavModernCMS = {
         }
     },
 
+    applyLegalPage(settings) {
+        const legal =
+            settings.pages?.legal || {};
+
+        const path =
+            window.location.pathname
+                .split("/")
+                .pop()
+                .toLowerCase();
+
+        const map = {
+            "privacy-policy.html": {
+                enabled: legal.privacy_enabled,
+                title: legal.privacy_title,
+                intro: legal.privacy_intro
+            },
+            "terms.html": {
+                enabled: legal.terms_enabled,
+                title: legal.terms_title,
+                intro: legal.terms_intro
+            },
+            "refund-policy.html": {
+                enabled: legal.refund_enabled,
+                title: legal.refund_title,
+                intro: legal.refund_intro
+            },
+            "shipping-policy.html": {
+                enabled: legal.shipping_enabled,
+                title: legal.shipping_title,
+                intro: legal.shipping_intro
+            }
+        };
+
+        const page = map[path];
+
+        if (!page) {
+            return;
+        }
+
+        const main =
+            document.querySelector(
+                "main.legal-page"
+            );
+
+        if (
+            main &&
+            page.enabled === false
+        ) {
+            main.hidden = true;
+            return;
+        }
+
+        this.setText(
+            ".legal-hero h1",
+            page.title
+        );
+
+        this.setText(
+            ".legal-hero p",
+            page.intro
+        );
+
+        const contact =
+            settings.contact || {};
+
+        document
+            .querySelectorAll(
+                ".legal-content p"
+            )
+            .forEach(paragraph => {
+                let text =
+                    paragraph.textContent || "";
+
+                if (
+                    contact.support_email
+                ) {
+                    text =
+                        text.replace(
+                            /naveedrp786@gmail\.com/gi,
+                            contact.support_email
+                        );
+                }
+
+                if (
+                    contact.whatsapp_number
+                ) {
+                    text =
+                        text.replace(
+                            /\+923081201745/g,
+                            contact.whatsapp_number
+                        );
+                }
+
+                paragraph.textContent =
+                    text;
+            });
+    },
+
     applySEO(settings) {
         const seo =
             settings.seo || {};
@@ -1231,6 +1329,10 @@ window.RukhnavModernCMS = {
         );
 
         this.applyContactPage(
+            settings
+        );
+
+        this.applyLegalPage(
             settings
         );
 
