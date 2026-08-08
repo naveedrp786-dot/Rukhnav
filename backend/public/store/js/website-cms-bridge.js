@@ -67,9 +67,60 @@ window.RukhnavModernCMS = {
             "--background": theme.background_color,
             "--surface": theme.surface_color,
             "--text": theme.text_color,
+            "--heading-color":
+                theme.heading_color ||
+                theme.text_color,
+            "--link-color":
+                theme.link_color ||
+                theme.primary_color,
             "--muted":
                 theme.muted_color ||
                 theme.muted_text_color,
+
+            "--cms-body-size":
+                theme.body_font_size !== undefined
+                    ? `${theme.body_font_size}px`
+                    : null,
+            "--cms-h1-size":
+                theme.h1_size !== undefined
+                    ? `${theme.h1_size}px`
+                    : null,
+            "--cms-h2-size":
+                theme.h2_size !== undefined
+                    ? `${theme.h2_size}px`
+                    : null,
+            "--cms-h3-size":
+                theme.h3_size !== undefined
+                    ? `${theme.h3_size}px`
+                    : null,
+            "--cms-nav-size":
+                theme.nav_font_size !== undefined
+                    ? `${theme.nav_font_size}px`
+                    : null,
+            "--cms-brand-size":
+                theme.brand_font_size !== undefined
+                    ? `${theme.brand_font_size}px`
+                    : null,
+            "--cms-tagline-size":
+                theme.tagline_font_size !== undefined
+                    ? `${theme.tagline_font_size}px`
+                    : null,
+            "--cms-product-name-size":
+                theme.product_name_size !== undefined
+                    ? `${theme.product_name_size}px`
+                    : null,
+            "--cms-product-price-size":
+                theme.product_price_size !== undefined
+                    ? `${theme.product_price_size}px`
+                    : null,
+            "--cms-button-size":
+                theme.button_font_size !== undefined
+                    ? `${theme.button_font_size}px`
+                    : null,
+            "--cms-footer-size":
+                theme.footer_font_size !== undefined
+                    ? `${theme.footer_font_size}px`
+                    : null,
             "--radius":
                 theme.border_radius !== undefined
                     ? `${theme.border_radius}px`

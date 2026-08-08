@@ -29,3 +29,90 @@
         display:none;
     }
 }
+
+
+/* =========================================================
+   Website Management - Typography Controls
+   Defaults preserve the existing RUKHNAV storefront.
+   ========================================================= */
+
+body{
+    font-size:var(--cms-body-size,14px);
+}
+
+h1,h2,h3,h4,h5,h6{
+    color:var(--heading-color,var(--text));
+}
+
+a{
+    color:var(--link-color,inherit);
+}
+
+.hero h1{
+    font-size:clamp(42px,5vw,var(--cms-h1-size,72px));
+}
+
+.section-head h2{
+    font-size:clamp(30px,3vw,var(--cms-h2-size,42px));
+}
+
+.story h2{
+    font-size:clamp(32px,4vw,var(--cms-h2-size,52px));
+}
+
+h3{
+    font-size:var(--cms-h3-size,24px);
+}
+
+.categories-nav a{
+    font-size:var(--cms-nav-size,12px);
+}
+
+.brand strong{
+    font-size:var(--cms-brand-size,26px);
+}
+
+.brand-copy small{
+    font-size:var(--cms-tagline-size,9px);
+}
+
+.product-body>a{
+    font-size:var(--cms-product-name-size,14px);
+}
+
+.price{
+    font-size:var(--cms-product-price-size,16px);
+}
+
+.btn,
+button{
+    font-size:var(--cms-button-size,12px);
+}
+
+.footer-brand p,
+.footer-col a,
+.footer-col span{
+    font-size:var(--cms-footer-size,11px);
+}
+
+.page-hero h1{
+    font-size:min(var(--cms-h1-size,72px),48px);
+}
+
+.info h1{
+    font-size:min(var(--cms-h1-size,72px),58px);
+}
+
+@media(max-width:650px){
+    .brand strong{
+        font-size:min(var(--cms-brand-size,26px),20px);
+    }
+
+    .hero h1{
+        font-size:min(var(--cms-h1-size,72px),43px);
+    }
+
+    .info h1{
+        font-size:min(var(--cms-h1-size,72px),42px);
+    }
+}
