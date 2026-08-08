@@ -1,23 +1,9 @@
 "use strict";
 
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-
-    family: 4,
-
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-    },
-
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-    socketTimeout: 20000
-});
+// =========================================
+// RUKHNAV Transactional Email Service
+// Resend HTTPS API
+// =========================================
 
 async function sendEmail(
     to,
@@ -27,19 +13,71 @@ async function sendEmail(
 
     try {
 
-        const info =
-            await transporter.sendMail({
-                from:
-                    `"RUKHNAV Cosmetics" <${process.env.EMAIL_USER}>`,
+        const apiKey =
+            process.env.RESEND_API_KEY;
 
-                to,
-                subject,
-                html
-            });
+        const from =
+            process.env.EMAIL_FROM ||
+            "RUKHNAV <onboarding@resend.dev>";
+
+        if (!apiKey) {
+            console.error(
+                "❌ Email Error: RESEND_API_KEY is missing."
+            );
+            return false;
+        }
+
+        if (!to) {
+            console.error(
+                "❌ Email Error: Recipient is missing."
+            );
+            return false;
+        }
+
+        const response =
+            await fetch(
+                "https://api.resend.com/emails",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${apiKey}`,
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            from,
+                            to: [to],
+                            subject,
+                            html
+                        })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            console.error(
+                "❌ Resend Email Error:",
+                response.status,
+                data?.message ||
+                data?.name ||
+                "Unknown Resend error"
+            );
+
+            return false;
+        }
 
         console.log(
             "✅ Email Sent:",
-            info.messageId
+            data.id ||
+            "Resend accepted message"
         );
 
         return true;
@@ -53,11 +91,11 @@ async function sendEmail(
 
         console.error(
             "❌ Email Code:",
-            error.code || "UNKNOWN"
+            error.code ||
+            "UNKNOWN"
         );
 
         return false;
-
     }
 
 }
