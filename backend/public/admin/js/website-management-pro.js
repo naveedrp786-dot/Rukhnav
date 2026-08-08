@@ -10,6 +10,11 @@ function token() {
         localStorage.getItem("adminToken") ||
         localStorage.getItem("admin_token") ||
         localStorage.getItem("token") ||
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("adminToken") ||
+        sessionStorage.getItem("admin_token") ||
+        sessionStorage.getItem("token") ||
+        sessionStorage.getItem("authToken") ||
         ""
     );
 }
