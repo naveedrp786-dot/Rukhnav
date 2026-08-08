@@ -168,6 +168,9 @@ const invoiceRoutes =
 const addressRoutes =
     require("./routes/addressRoutes");
 
+const customerAddressRoutes =
+    require("./routes/customerAddressRoutes");
+
 const adminManagementRoutes =
     require("./routes/adminManagementRoutes");
 
@@ -358,6 +361,11 @@ app.use(
 app.use(
     "/api/addresses",
     addressRoutes
+);
+
+app.use(
+    "/api/customer-addresses",
+    customerAddressRoutes
 );
 
 app.use(
