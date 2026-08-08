@@ -28,3 +28,31 @@
 .history-list{display:grid;gap:8px}.history-list article{padding:12px;border:1px solid #e4dccd;border-radius:10px;display:flex;justify-content:space-between}.history-list span{color:#7d756a;font-size:10px}
 @media(max-width:1000px){.wmp-layout{grid-template-columns:1fr}.wmp-tabs{position:static;grid-template-columns:repeat(3,1fr)}.category-row,.nav-row{grid-template-columns:1fr 1fr}.media-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.wmp-page{padding:14px}.wmp-hero{flex-direction:column}.wmp-grid{grid-template-columns:1fr}.wmp-grid .full{grid-column:auto}.wmp-tabs{grid-template-columns:repeat(2,1fr)}.media-grid{grid-template-columns:1fr}}
+
+/* =========================================
+   Theme Color Picker Improvements
+   ========================================= */
+
+.wmp-grid input[type="color"]{
+    width:100%;
+    height:48px;
+    padding:4px;
+    border:1px solid #dcd3c4;
+    border-radius:9px;
+    background:#fff;
+    cursor:pointer;
+}
+
+.wmp-grid input[type="color"]::-webkit-color-swatch-wrapper{
+    padding:2px;
+}
+
+.wmp-grid input[type="color"]::-webkit-color-swatch{
+    border:0;
+    border-radius:6px;
+}
+
+.wmp-grid input[type="color"]::-moz-color-swatch{
+    border:0;
+    border-radius:6px;
+}
