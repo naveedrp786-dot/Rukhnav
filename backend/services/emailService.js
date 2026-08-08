@@ -1,38 +1,60 @@
+"use strict";
+
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
 
-    service: "gmail",
+    family: 4,
 
     auth: {
-
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD
+    },
 
-    }
-
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000
 });
 
-async function sendEmail(to, subject, html) {
+async function sendEmail(
+    to,
+    subject,
+    html
+) {
 
     try {
 
-        const info = await transporter.sendMail({
+        const info =
+            await transporter.sendMail({
+                from:
+                    `"RUKHNAV Cosmetics" <${process.env.EMAIL_USER}>`,
 
-            from: `"RUKHNAV Cosmetics" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            html
+                to,
+                subject,
+                html
+            });
 
-        });
-
-        console.log("✅ Email Sent:", info.messageId);
+        console.log(
+            "✅ Email Sent:",
+            info.messageId
+        );
 
         return true;
 
     } catch (error) {
 
-        console.error("❌ Email Error:", error.message);
+        console.error(
+            "❌ Email Error:",
+            error.message
+        );
+
+        console.error(
+            "❌ Email Code:",
+            error.code || "UNKNOWN"
+        );
 
         return false;
 
