@@ -21,3 +21,56 @@
 .legal-hero .legal-meta span {
     color: #ffffff !important;
 }
+
+/* =========================================
+   FAQ PAGE
+   ========================================= */
+
+.faq-content section > h2 {
+    margin-bottom: 18px;
+}
+
+.faq-content details {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.faq-content summary {
+    position: relative;
+    padding: 17px 48px 17px 18px;
+    color: var(--primary);
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+
+.faq-content summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-content summary::after {
+    content: "+";
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.faq-content details[open] summary::after {
+    content: "−";
+}
+
+.faq-content details p {
+    margin: 0;
+    padding: 0 18px 18px;
+}
+
+.faq-content details[open] summary {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+}
