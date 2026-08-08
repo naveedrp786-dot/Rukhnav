@@ -619,6 +619,91 @@ exports.requestPasswordReset = async (
             getRequestIp(req)
         ]);
 
+        // =========================================
+        // Deliver Password Reset Code
+        // =========================================
+
+        if (identifierData.type === "Email") {
+
+            const recipientName =
+                customer.full_name ||
+                customer.first_name ||
+                "Customer";
+
+            const emailSent =
+                await sendEmail(
+                    identifierData.value,
+                    "Reset your RUKHNAV password",
+                    `
+                    <div style="
+                        font-family:Arial,sans-serif;
+                        max-width:560px;
+                        margin:auto;
+                        padding:28px;
+                        color:#1f2a24;
+                    ">
+                        <h1 style="
+                            margin:0 0 12px;
+                            color:#17452f;
+                        ">
+                            RUKHNAV
+                        </h1>
+
+                        <h2 style="
+                            margin:0 0 18px;
+                            color:#1f2a24;
+                        ">
+                            Password Reset
+                        </h2>
+
+                        <p>
+                            Hello ${recipientName},
+                        </p>
+
+                        <p>
+                            Use this six-digit code to reset
+                            your RUKHNAV account password:
+                        </p>
+
+                        <div style="
+                            margin:24px 0;
+                            padding:18px;
+                            text-align:center;
+                            background:#f7f4ec;
+                            border-radius:12px;
+                        ">
+                            <strong style="
+                                font-size:32px;
+                                letter-spacing:8px;
+                                color:#17452f;
+                            ">
+                                ${code}
+                            </strong>
+                        </div>
+
+                        <p>
+                            This code expires in
+                            ${OTP_EXPIRY_MINUTES} minutes.
+                        </p>
+
+                        <p style="
+                            font-size:12px;
+                            color:#6f776f;
+                        ">
+                            If you did not request a password reset,
+                            you can safely ignore this email.
+                        </p>
+                    </div>
+                    `
+                );
+
+            if (!emailSent) {
+                console.error(
+                    "Password reset email delivery failed."
+                );
+            }
+        }
+
         const response = {
             success: true,
             message:
