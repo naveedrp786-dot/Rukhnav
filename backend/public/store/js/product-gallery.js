@@ -1320,6 +1320,21 @@ const ProductDetails = {
                     class="product-reviews-list"
                 ></div>
 
+                <div class="review-experience-heading">
+                    <span>
+                        Verified Customer Experience
+                    </span>
+
+                    <h3>
+                        Customer Reviews &amp; Photos
+                    </h3>
+
+                    <p>
+                        Ratings are calculated from approved customer
+                        reviews and verified purchases.
+                    </p>
+                </div>
+
                 <div class="review-overview">
                     <div class="review-score-card">
                         <strong id="reviewAverageScore">
