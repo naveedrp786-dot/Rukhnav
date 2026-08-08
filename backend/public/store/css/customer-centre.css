@@ -49,3 +49,41 @@
 .customer-auth-brand .auth-feature-grid span {
     color: rgba(255, 255, 255, 0.72) !important;
 }
+
+/* =========================================
+   CUSTOMER CENTRE WELCOME BANNER PROTECTION
+   Keeps heading readable against green hero
+   even when CMS/global heading colors change.
+========================================= */
+
+.welcome-card h2,
+#welcomeCardTitle {
+    color: #ffffff !important;
+}
+
+.welcome-card p,
+#welcomeCardText {
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.welcome-membership strong {
+    color: #ffffff !important;
+}
+
+/* =========================================
+   CUSTOMER CENTRE WELCOME BANNER
+========================================= */
+
+.welcome-card h2,
+#welcomeCardTitle {
+    color: #ffffff !important;
+}
+
+.welcome-card p,
+#welcomeCardText {
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.welcome-membership strong {
+    color: #ffffff !important;
+}
