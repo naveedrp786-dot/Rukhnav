@@ -50,3 +50,10 @@
     .events-header-actions{grid-template-columns:1fr}
     .events-header-actions .events-primary-button{grid-column:auto}
 }
+
+/* =========================================
+   Events Hero Typography
+   ========================================= */
+.events-hero h2 {
+    color: #ffffff;
+}
