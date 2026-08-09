@@ -681,6 +681,219 @@ async function syncNotificationFailures() {
     return inserted;
 }
 
+// =========================================
+// Customer Event Notifications
+// =========================================
+
+async function syncCustomerEvents() {
+    if (
+        !await tableExists(
+            "customer_events"
+        )
+    ) {
+        return 0;
+    }
+
+    const [rows] =
+        await db.query(`
+            SELECT
+                source.id,
+                source.customer_id,
+                source.event_type,
+                source.event_name,
+                source.recurrence,
+                source.reminder_days,
+                source.remind_by_email,
+                source.remind_by_whatsapp,
+                source.remind_by_sms,
+                source.full_name,
+
+                DATE_FORMAT(
+                    source.next_event_date,
+                    '%Y-%m-%d'
+                ) AS next_event_date,
+
+                DATE_FORMAT(
+                    DATE_SUB(
+                        source.next_event_date,
+                        INTERVAL source.reminder_days DAY
+                    ),
+                    '%Y-%m-%d'
+                ) AS reminder_date,
+
+                DATEDIFF(
+                    source.next_event_date,
+                    CURDATE()
+                ) AS days_until
+
+            FROM (
+                SELECT
+                    ce.id,
+                    ce.customer_id,
+                    ce.event_type,
+                    ce.event_name,
+                    ce.event_date,
+                    ce.recurrence,
+                    ce.reminder_days,
+                    ce.remind_by_email,
+                    ce.remind_by_whatsapp,
+                    ce.remind_by_sms,
+                    c.full_name,
+
+                    CASE
+                        WHEN ce.recurrence = 'One Time'
+                            THEN ce.event_date
+
+                        WHEN DATE_FORMAT(
+                                ce.event_date,
+                                '%m-%d'
+                             ) >= DATE_FORMAT(
+                                CURDATE(),
+                                '%m-%d'
+                             )
+                            THEN STR_TO_DATE(
+                                CONCAT(
+                                    YEAR(CURDATE()),
+                                    '-',
+                                    DATE_FORMAT(
+                                        ce.event_date,
+                                        '%m-%d'
+                                    )
+                                ),
+                                '%Y-%m-%d'
+                            )
+
+                        ELSE STR_TO_DATE(
+                            CONCAT(
+                                YEAR(CURDATE()) + 1,
+                                '-',
+                                DATE_FORMAT(
+                                    ce.event_date,
+                                    '%m-%d'
+                                )
+                            ),
+                            '%Y-%m-%d'
+                        )
+                    END AS next_event_date
+
+                FROM customer_events ce
+
+                INNER JOIN customers c
+                    ON c.id =
+                        ce.customer_id
+
+                WHERE ce.status =
+                    'Active'
+
+                  AND c.deleted_at
+                    IS NULL
+            ) source
+
+            WHERE source.next_event_date
+                    IS NOT NULL
+
+              AND DATE_SUB(
+                    source.next_event_date,
+                    INTERVAL source.reminder_days DAY
+                  ) <= CURDATE()
+
+              AND source.next_event_date
+                    >= CURDATE()
+
+            ORDER BY
+                source.next_event_date ASC
+
+            LIMIT 250
+        `);
+
+    let inserted = 0;
+
+    for (const event of rows) {
+        const channels = [];
+
+        if (
+            Number(
+                event.remind_by_email
+            ) === 1
+        ) {
+            channels.push("Email");
+        }
+
+        if (
+            Number(
+                event.remind_by_whatsapp
+            ) === 1
+        ) {
+            channels.push("WhatsApp");
+        }
+
+        if (
+            Number(
+                event.remind_by_sms
+            ) === 1
+        ) {
+            channels.push("SMS");
+        }
+
+        const daysUntil =
+            Number(
+                event.days_until
+            );
+
+        const timingText =
+            daysUntil === 0
+                ? "is today"
+                : daysUntil === 1
+                    ? "is tomorrow"
+                    : `is in ${daysUntil} days`;
+
+        const result =
+            await createNotification({
+                notificationType:
+                    "CUSTOMER_EVENT_DUE",
+
+                severity:
+                    daysUntil <= 1
+                        ? "warning"
+                        : "info",
+
+                title:
+                    "Upcoming customer event",
+
+                message:
+                    `${event.event_name} for ${
+                        event.full_name ||
+                        `Customer #${event.customer_id}`
+                    } ${timingText}. Reminder channels: ${
+                        channels.length
+                            ? channels.join(", ")
+                            : "None"
+                    }.`,
+
+                sourceType:
+                    "customer_event",
+
+                sourceId:
+                    event.id,
+
+                linkUrl:
+                    `/admin/events.html?event=${event.id}`,
+
+                icon:
+                    "fa-calendar-check",
+
+                dedupeKey:
+                    `CUSTOMER_EVENT_DUE:${event.id}:${event.next_event_date}`
+            });
+
+        if (result.inserted) {
+            inserted += 1;
+        }
+    }
+
+    return inserted;
+}
+
 async function performSync() {
     const results =
         await Promise.allSettled([
@@ -688,6 +901,7 @@ async function performSync() {
             syncProducts(),
             syncReviews(),
             syncAccountDeletionRequests(),
+            syncCustomerEvents(),
             syncNotificationFailures()
         ]);
 
