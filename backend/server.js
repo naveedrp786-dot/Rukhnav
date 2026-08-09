@@ -261,6 +261,12 @@ const purchasingDashboardRoutes =
 const healthRoutes =
     require("./routes/healthRoutes");
 
+const adminNotificationRoutes =
+    require("./routes/adminNotificationRoutes");
+
+const notificationCenterRoutes =
+    require("./routes/notificationCenterRoutes");
+
 // =====================================================
 // Background Jobs
 // =====================================================
@@ -479,6 +485,16 @@ app.use(
 app.use(
     "/api/admin/events",
     adminEventRoutes
+);
+
+app.use(
+    "/api/admin/notifications",
+    adminNotificationRoutes
+);
+
+app.use(
+    "/api/admin/notification-center",
+    notificationCenterRoutes
 );
 
 app.use(
