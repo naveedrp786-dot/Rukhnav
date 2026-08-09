@@ -96,6 +96,16 @@ router.get(
 );
 
 // =========================================
+// Protected Referral History
+// =========================================
+
+router.get(
+    "/referrals/me",
+    auth,
+    customerController.getMyReferrals
+);
+
+// =========================================
 // Protected Account Management
 // =========================================
 

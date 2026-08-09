@@ -1162,6 +1162,105 @@ exports.profile = async (req, res) => {
 
 };
 
+
+// =========================================
+// Customer Referral History
+// =========================================
+
+exports.getMyReferrals = async (req, res) => {
+
+    try {
+
+        const [rows] =
+            await db.query(`
+                SELECT
+                    r.id,
+                    r.referred_customer_id,
+
+                    referred.full_name
+                        AS referred_name,
+
+                    referred.status
+                        AS referred_account_status,
+
+                    r.status
+                        AS referral_status,
+
+                    r.referral_code_used,
+
+                    r.referrer_reward_points,
+
+                    r.created_at
+
+                FROM customer_referrals r
+
+                LEFT JOIN customers referred
+                    ON referred.id =
+                       r.referred_customer_id
+
+                WHERE
+                    r.referrer_customer_id = ?
+
+                ORDER BY
+                    r.created_at DESC,
+                    r.id DESC
+            `, [req.user.id]);
+
+        return res.json({
+            success: true,
+
+            referrals:
+                rows.map(row => ({
+                    id:
+                        row.id,
+
+                    referredCustomerId:
+                        row.referred_customer_id,
+
+                    referredName:
+                        row.referred_name ||
+                        "RUKHNAV Customer",
+
+                    referredAccountStatus:
+                        row.referred_account_status ||
+                        "Unknown",
+
+                    referralStatus:
+                        row.referral_status ||
+                        "Registered",
+
+                    referralCodeUsed:
+                        row.referral_code_used ||
+                        null,
+
+                    rewardPoints:
+                        Number(
+                            row.referrer_reward_points ||
+                            0
+                        ),
+
+                    createdAt:
+                        row.created_at
+                }))
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Customer referral history error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to load your referral history."
+        });
+
+    }
+
+};
+
 // =========================================
 // Check Referral Code
 // =========================================

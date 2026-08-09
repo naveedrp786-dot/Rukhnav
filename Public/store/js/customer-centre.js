@@ -3,6 +3,8 @@
 window.CustomerCentre = {
     customer: null,
     loyalty: null,
+    referralSummary: null,
+    referrals: [],
     messageTimer: null,
     profileRecord: null,
     reviewsLoaded: false,
@@ -109,6 +111,9 @@ window.CustomerCentre = {
         const forgotPasswordForm =
             document.getElementById("forgotPasswordForm");
 
+        const verificationForm =
+            document.getElementById("verificationForm");
+
         loginForm?.addEventListener(
             "submit",
             event => this.login(event)
@@ -124,6 +129,11 @@ window.CustomerCentre = {
             event => this.requestReset(event)
         );
 
+        verificationForm?.addEventListener(
+            "submit",
+            event => this.verifyAccount(event)
+        );
+
         document
             .getElementById("showForgotPassword")
             ?.addEventListener("click", () => {
@@ -134,6 +144,44 @@ window.CustomerCentre = {
             .getElementById("backToLogin")
             ?.addEventListener("click", () => {
                 this.showAuthForm("login");
+            });
+
+        document
+            .getElementById("verificationBackToLogin")
+            ?.addEventListener("click", () => {
+                this.showAuthForm("login");
+            });
+
+        document
+            .getElementById("sendVerificationButton")
+            ?.addEventListener("click", () => {
+                this.sendVerificationCode();
+            });
+
+        document
+            .getElementById("showVerification")
+            ?.addEventListener("click", () => {
+
+                const loginIdentifier =
+                    document
+                        .getElementById("loginIdentifier")
+                        ?.value
+                        ?.trim() || "";
+
+                const verificationIdentifier =
+                    document.getElementById(
+                        "verificationIdentifier"
+                    );
+
+                if (
+                    verificationIdentifier &&
+                    loginIdentifier
+                ) {
+                    verificationIdentifier.value =
+                        loginIdentifier;
+                }
+
+                this.showAuthForm("verify");
             });
 
         document
@@ -230,7 +278,8 @@ window.CustomerCentre = {
         const forms = {
             login: "loginForm",
             register: "registerForm",
-            forgot: "forgotPasswordForm"
+            forgot: "forgotPasswordForm",
+            verify: "verificationForm"
         };
 
         Object.values(forms).forEach(id =>
@@ -248,7 +297,11 @@ window.CustomerCentre = {
         });
 
         document.querySelector(".auth-tabs")
-            .classList.toggle("hidden", name === "forgot");
+            .classList.toggle(
+                "hidden",
+                name === "forgot" ||
+                name === "verify"
+            );
 
         this.clearMessage();
     },
@@ -418,15 +471,82 @@ window.CustomerCentre = {
             }
 
             await this.loadCustomerCentre();
+    } catch (error) {
+        const message =
+            error?.message ||
+            "Unable to sign in.";
 
-        } catch (error) {
+        const deletionPending =
+            message.includes(
+                "Account deletion has been requested"
+            );
+
+        if (deletionPending) {
             this.showMessage(
-                error.message ||
-                "Unable to sign in.",
+                "Your account is pending deletion. You can restore it during the recovery period.",
                 "error"
             );
 
-        } finally {
+            const restore =
+                confirm(
+                    "Your RUKHNAV account is scheduled for deletion. Restore your account now?"
+                );
+
+            if (restore) {
+                this.setLoading(
+                    button,
+                    true,
+                    "Restoring Account"
+                );
+
+                try {
+                    const recovery =
+                        await API.post(
+                            API.customer(
+                                "/account/deletion/cancel"
+                            ),
+                            {
+                                identifier,
+                                password
+                            }
+                        );
+
+                    this.showMessage(
+                        recovery.message ||
+                        "Your account has been restored successfully. Signing you in...",
+                        "success"
+                    );
+
+                    setTimeout(
+                        () => {
+                            form?.requestSubmit();
+                        },
+                        900
+                    );
+
+                    return;
+                } catch (
+                    recoveryError
+                ) {
+                    this.showMessage(
+                        recoveryError?.message ||
+                        "Unable to restore your account.",
+                        "error"
+                    );
+
+                    return;
+                }
+            }
+
+            return;
+        }
+
+        this.showMessage(
+            message,
+            "error"
+        );
+
+    } finally {
             this.setLoading(
                 button,
                 false
@@ -561,18 +681,226 @@ window.CustomerCentre = {
                 "success"
             );
 
-            event.currentTarget.reset();
+            form.reset();
 
-            setTimeout(() => {
-                this.showAuthForm("login");
-                document.getElementById("loginIdentifier").value =
+            const verificationIdentifier =
+                document.getElementById(
+                    "verificationIdentifier"
+                );
+
+            if (verificationIdentifier) {
+                verificationIdentifier.value =
                     email || phone;
-            }, 1600);
+            }
+
+            this.showAuthForm("verify");
+
+            if (email) {
+                await this.sendVerificationCode();
+            } else {
+                this.showMessage(
+                    "Your account was created. Mobile verification delivery will be available after SMS service is connected.",
+                    "info"
+                );
+            }
         } catch (error) {
             this.showMessage(error.message, "error");
         } finally {
             this.setLoading(button, false);
         }
+    },
+
+    async sendVerificationCode() {
+
+        const identifier =
+            document
+                .getElementById(
+                    "verificationIdentifier"
+                )
+                ?.value
+                ?.trim();
+
+        if (!identifier) {
+
+            this.showMessage(
+                "Enter your email address or mobile number first.",
+                "error"
+            );
+
+            return;
+        }
+
+        const button =
+            document.getElementById(
+                "sendVerificationButton"
+            );
+
+        this.setLoading(
+            button,
+            true,
+            "Sending Code"
+        );
+
+        try {
+
+            const data =
+                await API.post(
+                    API.customer(
+                        "/verification/request"
+                    ),
+                    {
+                        identifier
+                    }
+                );
+
+            if (data.developmentCode) {
+
+                sessionStorage.setItem(
+                    "rukhnav_development_verification_code",
+                    String(
+                        data.developmentCode
+                    )
+                );
+
+            }
+
+            this.showMessage(
+                data.message ||
+                "Verification code sent.",
+                "success"
+            );
+
+        } catch (error) {
+
+            this.showMessage(
+                error.message,
+                "error"
+            );
+
+        } finally {
+
+            this.setLoading(
+                button,
+                false
+            );
+
+        }
+
+    },
+
+    async verifyAccount(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const identifier =
+            document
+                .getElementById(
+                    "verificationIdentifier"
+                )
+                ?.value
+                ?.trim();
+
+        const code =
+            document
+                .getElementById(
+                    "guestVerificationCode"
+                )
+                ?.value
+                ?.trim();
+
+        if (!identifier) {
+
+            this.showMessage(
+                "Enter your email address or mobile number.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+            !/^\d{6}$/.test(
+                code || ""
+            )
+        ) {
+
+            this.showMessage(
+                "Enter the six-digit verification code.",
+                "error"
+            );
+
+            return;
+        }
+
+        const button =
+            document.getElementById(
+                "verifyAccountButton"
+            );
+
+        this.setLoading(
+            button,
+            true,
+            "Verifying"
+        );
+
+        try {
+
+            const data =
+                await API.post(
+                    API.customer(
+                        "/verification/confirm"
+                    ),
+                    {
+                        identifier,
+                        code
+                    }
+                );
+
+            this.showMessage(
+                data.message ||
+                "Account verified successfully.",
+                "success"
+            );
+
+            sessionStorage.removeItem(
+                "rukhnav_development_verification_code"
+            );
+
+            setTimeout(() => {
+
+                this.showAuthForm(
+                    "login"
+                );
+
+                const loginIdentifier =
+                    document.getElementById(
+                        "loginIdentifier"
+                    );
+
+                if (loginIdentifier) {
+                    loginIdentifier.value =
+                        identifier;
+                }
+
+            }, 1200);
+
+        } catch (error) {
+
+            this.showMessage(
+                error.message,
+                "error"
+            );
+
+        } finally {
+
+            this.setLoading(
+                button,
+                false
+            );
+
+        }
+
     },
 
     async requestReset(event) {
@@ -650,6 +978,11 @@ window.CustomerCentre = {
                     ),
                     API.get(
                         "/api/customer-loyalty/me"
+                    ),
+                    API.get(
+                        API.customer(
+                            "/referrals/me"
+                        )
                     )
                 ]);
 
@@ -693,6 +1026,23 @@ window.CustomerCentre = {
                     profile.id
             };
 
+            this.referralSummary =
+                customerResponse.referralSummary || {
+                    totalReferrals: 0,
+                    qualifiedReferrals: 0,
+                    rewardedReferrals: 0,
+                    referralPoints: 0
+                };
+
+            this.referrals =
+                results[3]?.status ===
+                "fulfilled"
+                    ? (
+                        results[3].value.referrals ||
+                        []
+                    )
+                    : [];
+
             if (
                 results[2].status ===
                 "fulfilled"
@@ -714,6 +1064,7 @@ window.CustomerCentre = {
 
             this.renderCustomer();
             this.renderLoyalty();
+            this.renderReferrals();
 
             this.hideViews();
 
@@ -855,6 +1206,200 @@ window.CustomerCentre = {
                 value
             );
         });
+    },
+
+
+    renderReferrals() {
+
+        const summary =
+            this.referralSummary || {};
+
+        const number =
+            value =>
+                new Intl.NumberFormat(
+                    "en-PK"
+                ).format(
+                    Number(value || 0)
+                );
+
+        this.setText(
+            "customerReferralTotal",
+            number(
+                summary.totalReferrals
+            )
+        );
+
+        this.setText(
+            "customerReferralQualified",
+            number(
+                summary.qualifiedReferrals
+            )
+        );
+
+        this.setText(
+            "customerReferralRewarded",
+            number(
+                summary.rewardedReferrals
+            )
+        );
+
+        this.setText(
+            "customerReferralPoints",
+            number(
+                summary.referralPoints
+            )
+        );
+
+        const loading =
+            document.getElementById(
+                "myReferralsLoading"
+            );
+
+        const empty =
+            document.getElementById(
+                "myReferralsEmpty"
+            );
+
+        const list =
+            document.getElementById(
+                "myReferralsList"
+            );
+
+        loading?.classList.add(
+            "hidden"
+        );
+
+        if (!list) {
+            return;
+        }
+
+        const referrals =
+            Array.isArray(this.referrals)
+                ? this.referrals
+                : [];
+
+        if (!referrals.length) {
+
+            list.classList.add(
+                "hidden"
+            );
+
+            empty?.classList.remove(
+                "hidden"
+            );
+
+            return;
+        }
+
+        empty?.classList.add(
+            "hidden"
+        );
+
+        const escapeHtml =
+            value =>
+                String(value ?? "")
+                    .replace(
+                        /&/g,
+                        "&amp;"
+                    )
+                    .replace(
+                        /</g,
+                        "&lt;"
+                    )
+                    .replace(
+                        />/g,
+                        "&gt;"
+                    )
+                    .replace(
+                        /"/g,
+                        "&quot;"
+                    )
+                    .replace(
+                        /'/g,
+                        "&#039;"
+                    );
+
+        list.innerHTML =
+            referrals.map(
+                referral => {
+
+                    const date =
+                        referral.createdAt
+                            ? new Date(
+                                referral.createdAt
+                            ).toLocaleDateString(
+                                "en-GB",
+                                {
+                                    day:
+                                        "2-digit",
+                                    month:
+                                        "short",
+                                    year:
+                                        "numeric"
+                                }
+                            )
+                            : "—";
+
+                    const status =
+                        referral.referralStatus ||
+                        "Registered";
+
+                    return `
+                        <article class="my-referral-row">
+
+                            <div class="my-referral-person">
+
+                                <div class="my-referral-avatar">
+                                    ${escapeHtml(
+                                        String(
+                                            referral
+                                                .referredName ||
+                                            "R"
+                                        )
+                                            .trim()
+                                            .charAt(0)
+                                            .toUpperCase()
+                                    )}
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        ${escapeHtml(
+                                            referral
+                                                .referredName ||
+                                            "RUKHNAV Customer"
+                                        )}
+                                    </strong>
+
+                                    <span>
+                                        Joined ${escapeHtml(date)}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <div class="my-referral-status">
+
+                                <span class="referral-customer-status">
+                                    ${escapeHtml(status)}
+                                </span>
+
+                                <strong>
+                                    ${number(
+                                        referral.rewardPoints
+                                    )} pts
+                                </strong>
+
+                            </div>
+
+                        </article>
+                    `;
+                }
+            ).join("");
+
+        list.classList.remove(
+            "hidden"
+        );
     },
 
     renderLoyalty() {

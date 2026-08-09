@@ -477,11 +477,72 @@
                                     <button id="shareReferralButton" class="icon-button" type="button" title="Share referral code" aria-label="Share referral code"><i class="fa-solid fa-share-nodes"></i></button>
                                 </div>
                             </div>
-                            <p>Share your referral code and grow your rewards.</p>
+                            <p>
+                                Share your referral code and earn
+                                rewards when your referrals qualify.
+                            </p>
+
                             <div class="referral-link-row">
                                 <span>Your referral link</span>
                                 <strong id="referralLink">—</strong>
                             </div>
+
+                            <div class="referral-summary-grid">
+
+                                <div>
+                                    <span>Total Referrals</span>
+                                    <strong id="customerReferralTotal">0</strong>
+                                </div>
+
+                                <div>
+                                    <span>Qualified</span>
+                                    <strong id="customerReferralQualified">0</strong>
+                                </div>
+
+                                <div>
+                                    <span>Rewarded</span>
+                                    <strong id="customerReferralRewarded">0</strong>
+                                </div>
+
+                                <div>
+                                    <span>Points Earned</span>
+                                    <strong id="customerReferralPoints">0</strong>
+                                </div>
+
+                            </div>
+
+                            <div class="my-referrals-section">
+
+                                <div class="my-referrals-heading">
+                                    <div>
+                                        <span>Referral Activity</span>
+                                        <h3>My Referrals</h3>
+                                    </div>
+
+                                    <i class="fa-solid fa-user-group"></i>
+                                </div>
+
+                                <div
+                                    id="myReferralsLoading"
+                                    class="my-referrals-message"
+                                >
+                                    Loading your referrals...
+                                </div>
+
+                                <div
+                                    id="myReferralsEmpty"
+                                    class="my-referrals-message hidden"
+                                >
+                                    You have not referred anyone yet.
+                                </div>
+
+                                <div
+                                    id="myReferralsList"
+                                    class="my-referrals-list hidden"
+                                ></div>
+
+                            </div>
+
                         </article>
                     </div>
                 </section>

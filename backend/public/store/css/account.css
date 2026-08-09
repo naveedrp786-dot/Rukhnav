@@ -1,1 +1,185 @@
 .account-page{min-height:72vh}.account-loading{min-height:580px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted)}.account-loading h2{font-family:var(--heading)}.account-auth-shell{max-width:1220px;margin:30px auto 76px;padding:0 24px;display:grid;grid-template-columns:.9fr 1.1fr;border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}.account-brand-panel{padding:clamp(38px,6vw,76px);background:linear-gradient(145deg,var(--primary),#315d43);color:#fff;display:flex;flex-direction:column;justify-content:center}.account-brand-panel>span,.form-heading span,.customer-dashboard-header span,.dashboard-card span{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;color:var(--secondary)}.account-brand-panel h1{font:700 clamp(40px,5vw,62px)/1 var(--heading);margin:10px 0 18px}.account-brand-panel>p{color:rgba(255,255,255,.72);line-height:1.75}.account-benefits{display:grid;gap:12px;margin-top:30px}.account-benefits article{padding:15px;border:1px solid rgba(255,255,255,.15);border-radius:13px;background:rgba(255,255,255,.06);display:flex;gap:13px}.account-benefits i{color:var(--secondary);font-size:20px}.account-benefits strong,.account-benefits span{display:block}.account-benefits span{margin-top:4px;color:rgba(255,255,255,.65);font-size:10px}.account-auth-card{padding:clamp(28px,5vw,58px);background:var(--surface)}.account-tabs{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:12px;background:color-mix(in srgb,var(--primary) 6%,white)}.account-tab{min-height:42px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-weight:800;cursor:pointer}.account-tab.active{background:#fff;color:var(--primary);box-shadow:0 4px 14px rgba(25,55,39,.08)}.account-message{display:none;margin-top:16px;padding:12px 14px;border-radius:10px;font-size:12px;font-weight:700}.account-message.show{display:block}.account-message.success{background:#e6f5eb;color:#176b38}.account-message.error{background:#fce9e7;color:#9e2b22}.account-message.info{background:#eef4ff;color:#275da4}.account-form{margin-top:26px;display:grid;gap:10px}.form-heading{margin-bottom:8px}.form-heading h2{font:700 31px var(--heading);margin:5px 0}.form-heading p{margin:0;color:var(--muted);font-size:12px}.account-form>label,.account-field-grid label{margin-top:5px;font-size:11px;font-weight:800}.account-input{min-height:46px;border:1px solid var(--border);border-radius:10px;background:#fff;display:grid;grid-template-columns:40px 1fr;align-items:center;overflow:hidden}.account-input:focus-within{border-color:var(--secondary);box-shadow:0 0 0 3px color-mix(in srgb,var(--secondary) 18%,transparent)}.account-input>i{color:var(--muted);text-align:center}.account-input input{min-width:0;height:44px;border:0;outline:0;padding:0 12px 0 0}.password-input{grid-template-columns:40px 1fr 42px}.password-input button{height:44px;border:0;background:transparent;color:var(--muted);cursor:pointer}.account-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.optional-label{color:var(--muted);font-size:9px}.account-form-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:6px 0}.remember-field,.terms-field{display:flex;align-items:flex-start;gap:8px;color:var(--muted);font-size:10px;line-height:1.5}.remember-field input,.terms-field input{margin-top:1px}.account-link-button,.account-back-button{border:0;background:transparent;color:var(--primary);font-size:10px;font-weight:800;cursor:pointer}.account-submit{width:100%;margin-top:9px}.account-back-button{margin-top:5px}.customer-dashboard{max-width:var(--max);margin:28px auto 76px;padding:0 24px}.customer-dashboard-header{margin-bottom:22px;display:flex;justify-content:space-between;align-items:end;gap:20px}.customer-dashboard-header h1{font:700 clamp(38px,5vw,58px) var(--heading);margin:7px 0 4px}.customer-dashboard-header p{margin:0;color:var(--muted)}.customer-dashboard-grid{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}.customer-account-nav,.dashboard-card,.dashboard-summary-cards>a,.dashboard-summary-cards>button{border:1px solid var(--border);border-radius:16px;background:var(--surface);box-shadow:0 9px 25px rgba(25,55,39,.05)}.customer-account-nav{padding:22px;position:sticky;top:130px;text-align:center}.customer-avatar{width:76px;height:76px;margin:0 auto 12px;border-radius:50%;background:linear-gradient(145deg,var(--secondary),#f4e1a5);color:var(--primary);display:grid;place-items:center;font:700 27px var(--heading)}.customer-account-nav>strong,.customer-account-nav>small{display:block}.customer-account-nav>small{margin-top:4px;color:var(--muted);font-size:10px;word-break:break-word}.customer-account-nav nav{display:grid;gap:4px;margin-top:22px;text-align:left}.customer-account-nav nav a,.customer-account-nav nav button{min-height:44px;padding:0 12px;border:0;border-radius:9px;background:transparent;color:var(--text);display:flex;align-items:center;gap:11px;text-decoration:none;font:700 11px var(--body);cursor:pointer}.customer-account-nav nav i{width:18px;color:var(--primary)}.customer-account-nav nav .active,.customer-account-nav nav a:hover,.customer-account-nav nav button:hover{background:color-mix(in srgb,var(--primary) 7%,white)}.customer-dashboard-content{min-width:0}.dashboard-summary-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.dashboard-summary-cards>a,.dashboard-summary-cards>button{min-height:130px;padding:18px;color:var(--text);display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;text-align:left;text-decoration:none;cursor:pointer}.dashboard-summary-cards>button{font:inherit}.dashboard-summary-cards i{margin-bottom:auto;color:var(--primary);font-size:22px}.dashboard-summary-cards strong,.dashboard-summary-cards span{display:block}.dashboard-summary-cards span{margin-top:4px;color:var(--muted);font-size:9px}.dashboard-card{margin-top:14px;padding:24px}.account-status-card,.referral-card{display:flex;justify-content:space-between;align-items:center;gap:20px}.account-status-card h2,.referral-card h2,.dashboard-card-heading h2{font:700 27px var(--heading);margin:6px 0}.account-status-card p,.referral-card p{margin:0;color:var(--muted);font-size:11px}.account-status-card>i{color:var(--primary);font-size:42px}.profile-details{margin:20px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:0}.profile-details>div{padding:14px 0;border-bottom:1px solid var(--border)}.profile-details dt{color:var(--muted);font-size:10px}.profile-details dd{margin:5px 0 0;font-weight:700}.rewards-placeholder{text-align:center;padding:60px 30px}.rewards-placeholder>i{font-size:52px;color:var(--secondary)}.rewards-placeholder h2{font:700 34px var(--heading);margin:8px 0}.rewards-placeholder p{max-width:620px;margin:auto;color:var(--muted);line-height:1.7}@media(max-width:980px){.account-auth-shell{grid-template-columns:1fr}.customer-dashboard-grid{grid-template-columns:1fr}.customer-account-nav{position:static}.dashboard-summary-cards{grid-template-columns:1fr 1fr}}@media(max-width:650px){.account-auth-shell{margin:18px 16px 54px;padding:0}.account-brand-panel{padding:35px 24px}.account-auth-card{padding:26px 20px}.account-field-grid{grid-template-columns:1fr}.customer-dashboard{padding:0 16px}.customer-dashboard-header{align-items:flex-start;flex-direction:column}.dashboard-summary-cards{grid-template-columns:1fr 1fr}.profile-details{grid-template-columns:1fr}.account-status-card,.referral-card{align-items:flex-start;flex-direction:column}.referral-card .btn{width:100%}}
+
+/* =====================================================
+   Refer & Earn
+===================================================== */
+
+.referral-summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+    margin-top:18px;
+}
+
+.referral-summary-grid>div{
+    padding:13px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 3%,
+            white
+        );
+}
+
+.referral-summary-grid span,
+.referral-summary-grid strong{
+    display:block;
+}
+
+.referral-summary-grid span{
+    color:var(--muted);
+    font-size:9px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.45px;
+}
+
+.referral-summary-grid strong{
+    margin-top:5px;
+    color:var(--primary);
+    font-size:19px;
+}
+
+.my-referrals-section{
+    margin-top:20px;
+    padding-top:17px;
+    border-top:1px solid var(--border);
+}
+
+.my-referrals-heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:12px;
+}
+
+.my-referrals-heading span{
+    color:var(--secondary);
+    font-size:9px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.7px;
+}
+
+.my-referrals-heading h3{
+    margin:3px 0 0;
+    font:700 20px var(--heading);
+}
+
+.my-referrals-heading i{
+    color:var(--primary);
+    font-size:20px;
+}
+
+.my-referrals-list{
+    display:grid;
+    gap:8px;
+}
+
+.my-referral-row{
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.my-referral-person{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.my-referral-avatar{
+    width:36px;
+    height:36px;
+    flex:0 0 36px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:
+        color-mix(
+            in srgb,
+            var(--secondary) 30%,
+            white
+        );
+    color:var(--primary);
+    font-weight:900;
+}
+
+.my-referral-person strong,
+.my-referral-person span{
+    display:block;
+}
+
+.my-referral-person strong{
+    font-size:11px;
+}
+
+.my-referral-person span{
+    margin-top:3px;
+    color:var(--muted);
+    font-size:9px;
+}
+
+.my-referral-status{
+    text-align:right;
+}
+
+.my-referral-status strong{
+    display:block;
+    margin-top:4px;
+    color:var(--primary);
+    font-size:10px;
+}
+
+.referral-customer-status{
+    display:inline-flex;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#eef5ec;
+    color:var(--primary);
+    font-size:9px;
+    font-weight:800;
+}
+
+.my-referrals-message{
+    padding:14px;
+    border-radius:10px;
+    background:#f7f8f4;
+    color:var(--muted);
+    font-size:10px;
+    text-align:center;
+}
+
+@media(max-width:760px){
+
+    .referral-summary-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+}
+
+@media(max-width:480px){
+
+    .my-referral-row{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .my-referral-status{
+        width:100%;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        text-align:left;
+    }
+
+}

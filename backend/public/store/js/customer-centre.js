@@ -3,6 +3,8 @@
 window.CustomerCentre = {
     customer: null,
     loyalty: null,
+    referralSummary: null,
+    referrals: [],
     messageTimer: null,
     profileRecord: null,
     reviewsLoaded: false,
@@ -976,6 +978,11 @@ window.CustomerCentre = {
                     ),
                     API.get(
                         "/api/customer-loyalty/me"
+                    ),
+                    API.get(
+                        API.customer(
+                            "/referrals/me"
+                        )
                     )
                 ]);
 
@@ -1019,6 +1026,23 @@ window.CustomerCentre = {
                     profile.id
             };
 
+            this.referralSummary =
+                customerResponse.referralSummary || {
+                    totalReferrals: 0,
+                    qualifiedReferrals: 0,
+                    rewardedReferrals: 0,
+                    referralPoints: 0
+                };
+
+            this.referrals =
+                results[3]?.status ===
+                "fulfilled"
+                    ? (
+                        results[3].value.referrals ||
+                        []
+                    )
+                    : [];
+
             if (
                 results[2].status ===
                 "fulfilled"
@@ -1040,6 +1064,7 @@ window.CustomerCentre = {
 
             this.renderCustomer();
             this.renderLoyalty();
+            this.renderReferrals();
 
             this.hideViews();
 
@@ -1181,6 +1206,200 @@ window.CustomerCentre = {
                 value
             );
         });
+    },
+
+
+    renderReferrals() {
+
+        const summary =
+            this.referralSummary || {};
+
+        const number =
+            value =>
+                new Intl.NumberFormat(
+                    "en-PK"
+                ).format(
+                    Number(value || 0)
+                );
+
+        this.setText(
+            "customerReferralTotal",
+            number(
+                summary.totalReferrals
+            )
+        );
+
+        this.setText(
+            "customerReferralQualified",
+            number(
+                summary.qualifiedReferrals
+            )
+        );
+
+        this.setText(
+            "customerReferralRewarded",
+            number(
+                summary.rewardedReferrals
+            )
+        );
+
+        this.setText(
+            "customerReferralPoints",
+            number(
+                summary.referralPoints
+            )
+        );
+
+        const loading =
+            document.getElementById(
+                "myReferralsLoading"
+            );
+
+        const empty =
+            document.getElementById(
+                "myReferralsEmpty"
+            );
+
+        const list =
+            document.getElementById(
+                "myReferralsList"
+            );
+
+        loading?.classList.add(
+            "hidden"
+        );
+
+        if (!list) {
+            return;
+        }
+
+        const referrals =
+            Array.isArray(this.referrals)
+                ? this.referrals
+                : [];
+
+        if (!referrals.length) {
+
+            list.classList.add(
+                "hidden"
+            );
+
+            empty?.classList.remove(
+                "hidden"
+            );
+
+            return;
+        }
+
+        empty?.classList.add(
+            "hidden"
+        );
+
+        const escapeHtml =
+            value =>
+                String(value ?? "")
+                    .replace(
+                        /&/g,
+                        "&amp;"
+                    )
+                    .replace(
+                        /</g,
+                        "&lt;"
+                    )
+                    .replace(
+                        />/g,
+                        "&gt;"
+                    )
+                    .replace(
+                        /"/g,
+                        "&quot;"
+                    )
+                    .replace(
+                        /'/g,
+                        "&#039;"
+                    );
+
+        list.innerHTML =
+            referrals.map(
+                referral => {
+
+                    const date =
+                        referral.createdAt
+                            ? new Date(
+                                referral.createdAt
+                            ).toLocaleDateString(
+                                "en-GB",
+                                {
+                                    day:
+                                        "2-digit",
+                                    month:
+                                        "short",
+                                    year:
+                                        "numeric"
+                                }
+                            )
+                            : "—";
+
+                    const status =
+                        referral.referralStatus ||
+                        "Registered";
+
+                    return `
+                        <article class="my-referral-row">
+
+                            <div class="my-referral-person">
+
+                                <div class="my-referral-avatar">
+                                    ${escapeHtml(
+                                        String(
+                                            referral
+                                                .referredName ||
+                                            "R"
+                                        )
+                                            .trim()
+                                            .charAt(0)
+                                            .toUpperCase()
+                                    )}
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        ${escapeHtml(
+                                            referral
+                                                .referredName ||
+                                            "RUKHNAV Customer"
+                                        )}
+                                    </strong>
+
+                                    <span>
+                                        Joined ${escapeHtml(date)}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <div class="my-referral-status">
+
+                                <span class="referral-customer-status">
+                                    ${escapeHtml(status)}
+                                </span>
+
+                                <strong>
+                                    ${number(
+                                        referral.rewardPoints
+                                    )} pts
+                                </strong>
+
+                            </div>
+
+                        </article>
+                    `;
+                }
+            ).join("");
+
+        list.classList.remove(
+            "hidden"
+        );
     },
 
     renderLoyalty() {
