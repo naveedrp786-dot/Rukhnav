@@ -105,6 +105,7 @@
         const explicit =
             document.querySelector(
                 [
+                    "#adminNotificationsButton",
                     "#notificationButton",
                     "#notificationBtn",
                     "#notificationBell",

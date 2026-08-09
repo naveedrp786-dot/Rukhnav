@@ -8,6 +8,40 @@
 
 const RUKHNAV_SIDEBAR_SCROLL_KEY = "rukhnav_admin_sidebar_scroll";
 
+
+/* =========================================
+   Global Admin Notification Bell
+========================================= */
+
+function loadAdminNotificationBell() {
+    if (
+        window.RUKHNAV_ADMIN_NOTIFICATION_BELL_V2 ||
+        document.querySelector(
+            'script[data-rukhnav-admin-notification-bell]'
+        )
+    ) {
+        return;
+    }
+
+    const script =
+        document.createElement("script");
+
+    script.src =
+        "/admin/js/admin-notification-bell.js?v=3";
+
+    script.async =
+        true;
+
+    script.dataset
+        .rukhnavAdminNotificationBell =
+        "true";
+
+    document.head
+        .appendChild(script);
+}
+
+
+
 async function loadComponent(targetId, url) {
     const target = document.getElementById(targetId);
     if (!target) return;
@@ -248,6 +282,9 @@ async function initializeAdminLayout() {
             loadComponent("topbar-container", "/admin/components/topbar.html"),
             loadComponent("footer-container", "/admin/components/footer.html")
         ]);
+
+        loadAdminNotificationBell();
+
         initialiseSidebar();
         markActiveNavigation();
         restoreSidebarScroll();
