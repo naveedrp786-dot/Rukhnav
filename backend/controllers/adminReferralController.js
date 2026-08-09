@@ -63,8 +63,24 @@ exports.getReferrals = async (req, res) => {
         const status = clean(req.query.status);
         const search = clean(req.query.search);
 
+        const referrerCustomerId =
+            toInt(
+                req.query.referrer_customer_id,
+                0
+            );
+
         const where = [];
         const params = [];
+
+        if (referrerCustomerId > 0) {
+            where.push(
+                "r.referrer_customer_id = ?"
+            );
+
+            params.push(
+                referrerCustomerId
+            );
+        }
 
         if (["Registered", "Qualified", "Rewarded", "Cancelled"].includes(status)) {
             where.push("r.status = ?");

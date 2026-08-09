@@ -2084,3 +2084,87 @@
         grid-template-columns:1fr;
     }
 }
+/* =====================================================
+   Customer Referral Network
+===================================================== */
+
+.referral-network-card {
+    position: relative;
+}
+
+.referral-network-button {
+    width: 100%;
+    margin-top: 16px;
+    justify-content: center;
+}
+
+.referral-network-button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.customer-referrals-dialog {
+    width: min(1040px, calc(100vw - 32px));
+}
+
+.customer-referral-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.customer-referral-summary-strip > div {
+    padding: 14px 16px;
+    border: 1px solid var(--erp-border, #e5e7eb);
+    border-radius: 12px;
+    background: #fff;
+}
+
+.customer-referral-summary-strip span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.customer-referral-summary-strip strong {
+    font-size: 20px;
+}
+
+.customer-referrals-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.customer-referrals-table td small {
+    display: block;
+    margin-top: 3px;
+    color: #6b7280;
+}
+
+.referral-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #f3f4f6;
+}
+
+.referral-status-qualified,
+.referral-status-rewarded {
+    background: #ecfdf5;
+}
+
+.referral-status-cancelled {
+    background: #fef2f2;
+}
+
+@media (max-width: 720px) {
+    .customer-referral-summary-strip {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}

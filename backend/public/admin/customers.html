@@ -930,6 +930,58 @@
 
                     </article>
 
+                    <article class="customer-detail-card referral-network-card">
+
+                        <div class="detail-card-heading">
+
+                            <i class="fa-solid fa-people-arrows"></i>
+
+                            <h3>
+                                Referral Network
+                            </h3>
+
+                        </div>
+
+                        <dl class="customer-detail-list">
+
+                            <div>
+                                <dt>Referred By</dt>
+                                <dd id="detailsReferredBy">Direct Registration</dd>
+                            </div>
+
+                            <div>
+                                <dt>Total Referrals</dt>
+                                <dd id="detailsTotalReferrals">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Qualified</dt>
+                                <dd id="detailsQualifiedReferrals">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Rewarded</dt>
+                                <dd id="detailsRewardedReferrals">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Referral Points Earned</dt>
+                                <dd id="detailsReferralPoints">0</dd>
+                            </div>
+
+                        </dl>
+
+                        <button
+                            type="button"
+                            id="viewCustomerReferralsButton"
+                            class="secondary-btn erp-v5-btn referral-network-button"
+                        >
+                            <i class="fa-solid fa-users"></i>
+                            View Referred Customers
+                        </button>
+
+                    </article>
+
                     <article class="customer-detail-card">
 
                         <div class="detail-card-heading">
@@ -2305,6 +2357,150 @@
     <script src="/admin/js/componentLoader.js"></script>
 
     <!-- Customers Page Logic -->
+    <!-- =====================================================
+         Customer Referral Network Modal
+    ====================================================== -->
+
+    <div
+        id="customerReferralsModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog customer-referrals-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customerReferralsTitle"
+        >
+
+            <div class="customer-modal-header">
+
+                <div>
+                    <span class="modal-label">
+                        Referral Network
+                    </span>
+
+                    <h2 id="customerReferralsTitle">
+                        Referred Customers
+                    </h2>
+
+                    <p id="customerReferralsSubtitle">
+                        Loading referral activity...
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="customerReferralsModal"
+                    aria-label="Close referral network"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+            <div class="customer-modal-body">
+
+                <div
+                    id="customerReferralsLoading"
+                    class="activity-loading"
+                >
+                    <div class="customers-spinner"></div>
+
+                    <p>
+                        Loading referred customers...
+                    </p>
+                </div>
+
+                <div
+                    id="customerReferralsEmpty"
+                    class="customers-state hidden"
+                >
+                    <i class="fa-solid fa-user-group"></i>
+
+                    <h3>No referrals yet</h3>
+
+                    <p>
+                        This customer has not referred any
+                        registered customers yet.
+                    </p>
+                </div>
+
+                <div
+                    id="customerReferralsContent"
+                    class="hidden"
+                >
+
+                    <div class="customer-referral-summary-strip">
+
+                        <div>
+                            <span>Total</span>
+                            <strong id="referralModalTotal">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Qualified</span>
+                            <strong id="referralModalQualified">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Rewarded</span>
+                            <strong id="referralModalRewarded">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Points</span>
+                            <strong id="referralModalPoints">0</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="customer-referrals-table-wrapper">
+
+                        <table class="customers-table customer-referrals-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Contact</th>
+                                    <th>Referral Status</th>
+                                    <th>Account</th>
+                                    <th>Reward</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="customerReferralsTableBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="customer-modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn erp-v5-btn"
+                    data-close-modal="customerReferralsModal"
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
     <script src="/admin/js/customers.js"></script>
 
 </body>

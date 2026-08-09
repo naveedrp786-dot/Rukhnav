@@ -8,6 +8,9 @@ const RUKHNAV_ORIGIN = window.RUKHNAV_API_ORIGIN || window.location.origin;
 const CUSTOMERS_API =
     RUKHNAV_ORIGIN + "/api/admin/customers";
 
+const REFERRALS_API =
+    RUKHNAV_ORIGIN + "/api/admin/referrals";
+
 const adminToken =
     localStorage.getItem("token") ||
     localStorage.getItem("adminToken") ||
@@ -1776,6 +1779,306 @@ function updateMembershipBadge(
         )}`;
 }
 
+
+/* =====================================================
+   Customer Referral Network
+===================================================== */
+
+async function referralApiRequest(
+    endpoint = "",
+    options = {}
+) {
+    const response =
+        await fetch(
+            `${REFERRALS_API}${endpoint}`,
+            {
+                ...options,
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    Authorization:
+                        `Bearer ${adminToken}`,
+
+                    ...(options.headers || {})
+                }
+            }
+        );
+
+    let data = {};
+
+    try {
+        data = await response.json();
+    } catch {
+        data = {};
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            `Referral request failed (${response.status}).`
+        );
+    }
+
+    return data;
+}
+
+function escapeReferralHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+async function openCustomerReferrals(
+    customerId,
+    customerName = "Customer"
+) {
+    const modal =
+        document.getElementById(
+            "customerReferralsModal"
+        );
+
+    const loading =
+        document.getElementById(
+            "customerReferralsLoading"
+        );
+
+    const content =
+        document.getElementById(
+            "customerReferralsContent"
+        );
+
+    const empty =
+        document.getElementById(
+            "customerReferralsEmpty"
+        );
+
+    const tableBody =
+        document.getElementById(
+            "customerReferralsTableBody"
+        );
+
+    const subtitle =
+        document.getElementById(
+            "customerReferralsSubtitle"
+        );
+
+    openModal(modal);
+
+    loading?.classList.remove("hidden");
+    content?.classList.add("hidden");
+    empty?.classList.add("hidden");
+
+    if (tableBody) {
+        tableBody.innerHTML = "";
+    }
+
+    if (subtitle) {
+        subtitle.textContent =
+            `Customers referred by ${customerName}.`;
+    }
+
+    try {
+        const data =
+            await referralApiRequest(
+                `?referrer_customer_id=${
+                    encodeURIComponent(customerId)
+                }&limit=100`
+            );
+
+        const referrals =
+            Array.isArray(data.referrals)
+                ? data.referrals
+                : [];
+
+        const summary =
+            customerState.currentCustomer
+                ?.referralSummary || {};
+
+        setTextContent(
+            "referralModalTotal",
+            formatNumber(
+                summary.totalReferrals ||
+                referrals.length
+            )
+        );
+
+        setTextContent(
+            "referralModalQualified",
+            formatNumber(
+                summary.qualifiedReferrals ||
+                referrals.filter(
+                    item =>
+                        item.status ===
+                        "Qualified"
+                ).length
+            )
+        );
+
+        setTextContent(
+            "referralModalRewarded",
+            formatNumber(
+                summary.rewardedReferrals ||
+                referrals.filter(
+                    item =>
+                        item.status ===
+                        "Rewarded"
+                ).length
+            )
+        );
+
+        setTextContent(
+            "referralModalPoints",
+            formatNumber(
+                summary.referralPoints || 0
+            )
+        );
+
+        loading?.classList.add("hidden");
+
+        if (!referrals.length) {
+            empty?.classList.remove("hidden");
+            return;
+        }
+
+        if (tableBody) {
+            tableBody.innerHTML =
+                referrals.map(
+                    referral => {
+                        const referredId =
+                            referral
+                                .referred_customer_id;
+
+                        const name =
+                            referral.referred_name ||
+                            `Customer #${referredId}`;
+
+                        const reward =
+                            Number(
+                                referral
+                                    .referrer_reward_points ||
+                                0
+                            );
+
+                        return `
+                            <tr>
+                                <td>
+                                    <strong>
+                                        ${escapeReferralHtml(name)}
+                                    </strong>
+
+                                    <small>
+                                        #${escapeReferralHtml(referredId)}
+                                    </small>
+                                </td>
+
+                                <td>
+                                    <div>
+                                        ${escapeReferralHtml(
+                                            referral.referred_email ||
+                                            "—"
+                                        )}
+                                    </div>
+
+                                    <small>
+                                        ${escapeReferralHtml(
+                                            referral.referred_phone ||
+                                            "—"
+                                        )}
+                                    </small>
+                                </td>
+
+                                <td>
+                                    <span class="
+                                        referral-status
+                                        referral-status-${
+                                            escapeReferralHtml(
+                                                String(
+                                                    referral.status ||
+                                                    "Registered"
+                                                ).toLowerCase()
+                                            )
+                                        }
+                                    ">
+                                        ${escapeReferralHtml(
+                                            referral.status ||
+                                            "Registered"
+                                        )}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    ${escapeReferralHtml(
+                                        referral
+                                            .referred_account_status ||
+                                        "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${formatNumber(reward)} pts
+                                </td>
+
+                                <td>
+                                    ${escapeReferralHtml(
+                                        formatDateTime(
+                                            referral.created_at
+                                        )
+                                    )}
+                                </td>
+                            </tr>
+                        `;
+                    }
+                ).join("");
+        }
+
+        content?.classList.remove("hidden");
+
+    } catch (error) {
+        loading?.classList.add("hidden");
+
+        showMessage(
+            error.message ||
+            "Unable to load customer referrals.",
+            "error"
+        );
+
+        closeModal(modal);
+    }
+}
+
+document.addEventListener(
+    "click",
+    async event => {
+        const button =
+            event.target.closest(
+                "#viewCustomerReferralsButton"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        const customerId =
+            button.dataset.customerId;
+
+        if (!customerId) {
+            return;
+        }
+
+        await openCustomerReferrals(
+            customerId,
+            button.dataset.customerName ||
+            "Customer"
+        );
+    }
+);
+
+
 /* =====================================================
    Load Single Customer
 ===================================================== */
@@ -1794,6 +2097,35 @@ async function fetchCustomerById(customerId) {
             "Customer details were not returned."
         );
     }
+
+    /*
+     * The customer-details API returns additional
+     * summaries beside the main customer object.
+     * Preserve them on the customer object so the
+     * details modal can render the full 360° view.
+     */
+    const payload =
+        data?.data &&
+        typeof data.data === "object"
+            ? data.data
+            : data;
+
+    customer.referralSummary =
+        payload?.referralSummary || {
+            totalReferrals: 0,
+            qualifiedReferrals: 0,
+            rewardedReferrals: 0,
+            referralPoints: 0
+        };
+
+    customer.orderSummary =
+        payload?.orderSummary || null;
+
+    customer.eventSummary =
+        payload?.eventSummary || null;
+
+    customer.recentOrders =
+        payload?.recentOrders || [];
 
     customerState.currentCustomer =
         customer;
@@ -1922,6 +2254,68 @@ function populateCustomerDetails(customer) {
         "detailsReferralCode",
         customer.referral_code || "—"
     );
+
+    const referralSummary =
+        customer.referralSummary || {};
+
+    const referredByText =
+        customer.referred_by_customer_id
+            ? `${
+                customer.referred_by_name ||
+                `Customer #${customer.referred_by_customer_id}`
+            } (#${customer.referred_by_customer_id})`
+            : "Direct Registration";
+
+    setTextContent(
+        "detailsReferredBy",
+        referredByText
+    );
+
+    setTextContent(
+        "detailsTotalReferrals",
+        formatNumber(
+            referralSummary.totalReferrals || 0
+        )
+    );
+
+    setTextContent(
+        "detailsQualifiedReferrals",
+        formatNumber(
+            referralSummary.qualifiedReferrals || 0
+        )
+    );
+
+    setTextContent(
+        "detailsRewardedReferrals",
+        formatNumber(
+            referralSummary.rewardedReferrals || 0
+        )
+    );
+
+    setTextContent(
+        "detailsReferralPoints",
+        formatNumber(
+            referralSummary.referralPoints || 0
+        )
+    );
+
+    const referralsButton =
+        document.getElementById(
+            "viewCustomerReferralsButton"
+        );
+
+    if (referralsButton) {
+        referralsButton.dataset.customerId =
+            String(customerId);
+
+        referralsButton.dataset.customerName =
+            name;
+
+        referralsButton.disabled =
+            Number(
+                referralSummary.totalReferrals || 0
+            ) < 1;
+    }
 
     setTextContent(
         "detailsTotalOrders",
