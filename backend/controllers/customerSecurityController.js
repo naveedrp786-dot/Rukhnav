@@ -240,11 +240,16 @@ exports.getSessions = async (
             });
         }
 
+        const currentSessionHash =
+            req.customerSessionHash ||
+            null;
+
         const [rows] =
             await db.query(
                 `
                 SELECT
                     id,
+                    refresh_token_hash,
                     ip_address,
                     user_agent,
                     created_at,
@@ -253,6 +258,8 @@ exports.getSessions = async (
                 FROM customer_sessions
                 WHERE customer_id = ?
                   AND revoked_at IS NULL
+                  AND expires_at >
+                      CURRENT_TIMESTAMP
                 ORDER BY
                     COALESCE(
                         last_used_at,
@@ -266,22 +273,48 @@ exports.getSessions = async (
         return res.json({
             success: true,
             sessions:
-                rows.map(
-                    (row, index) => ({
-                        ...row,
-                        device_name:
-                            /mobile|android|iphone/i.test(
+                rows.map(row => ({
+                    id:
+                        row.id,
+
+                    ip_address:
+                        row.ip_address,
+
+                    user_agent:
+                        row.user_agent,
+
+                    created_at:
+                        row.created_at,
+
+                    last_used_at:
+                        row.last_used_at,
+
+                    revoked_at:
+                        row.revoked_at,
+
+                    device_name:
+                        /mobile|android|iphone|ipad/i
+                            .test(
                                 row.user_agent ||
                                 ""
                             )
                                 ? "Mobile Device"
                                 : "Desktop Browser",
-                        is_current:
-                            index === 0
-                    })
-                )
+
+                    is_current:
+                        Boolean(
+                            currentSessionHash &&
+                            row.refresh_token_hash ===
+                                currentSessionHash
+                        )
+                }))
         });
     } catch (error) {
+        console.error(
+            "Load customer sessions error:",
+            error
+        );
+
         return res.json({
             success: true,
             sessions: []
@@ -294,6 +327,18 @@ exports.revokeOtherSessions = async (
     res
 ) => {
     try {
+        const currentSessionHash =
+            req.customerSessionHash ||
+            null;
+
+        if (!currentSessionHash) {
+            return res.status(401).json({
+                success: false,
+                message:
+                    "Current session could not be identified."
+            });
+        }
+
         if (
             await tableExists(
                 "customer_sessions"
@@ -306,9 +351,13 @@ exports.revokeOtherSessions = async (
                     CURRENT_TIMESTAMP
                 WHERE customer_id = ?
                   AND revoked_at IS NULL
+                  AND refresh_token_hash <> ?
                 `,
-                [customerId(req)]
-            ).catch(() => {});
+                [
+                    customerId(req),
+                    currentSessionHash
+                ]
+            );
         }
 
         await activity(
@@ -322,6 +371,11 @@ exports.revokeOtherSessions = async (
                 "Other stored sessions were signed out."
         });
     } catch (error) {
+        console.error(
+            "Revoke customer sessions error:",
+            error
+        );
+
         return res.status(500).json({
             success: false,
             message:
