@@ -1443,6 +1443,9 @@ window.AccountModules = {
     async requestDeletion(event) {
         event.preventDefault();
 
+        const form =
+            event.currentTarget;
+
         if (
             !confirm(
                 "Request account deletion? You will have a recovery period before permanent deletion."
@@ -1487,7 +1490,7 @@ window.AccountModules = {
                 "success"
             );
 
-            event.currentTarget.reset();
+            form?.reset();
             await this.loadDeletionStatus();
         } catch (error) {
             this.message(
