@@ -195,8 +195,12 @@ exports.changePassword = async (
                     CURRENT_TIMESTAMP
                 WHERE customer_id = ?
                   AND revoked_at IS NULL
+                  AND refresh_token_hash <> ?
                 `,
-                [customer]
+                [
+                    customer,
+                    req.customerSessionHash
+                ]
             ).catch(() => {});
         }
 

@@ -6,7 +6,10 @@ const jwt =
 const crypto =
     require("crypto");
 
-module.exports = (
+const db =
+    require("../config/db");
+
+module.exports = async (
     req,
     res,
     next
@@ -24,34 +27,115 @@ module.exports = (
 
     const token =
         authHeader.startsWith("Bearer ")
-            ? authHeader.split(" ")[1]
-            : authHeader;
+            ? authHeader.slice(7).trim()
+            : authHeader.trim();
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message:
+                "Access denied. Token is required."
+        });
+    }
 
     try {
+        const jwtSecret =
+            process.env.JWT_SECRET;
+
+        if (!jwtSecret) {
+            throw new Error(
+                "JWT_SECRET is not configured."
+            );
+        }
+
         const decoded =
             jwt.verify(
                 token,
-                process.env.JWT_SECRET ||
-                "rukhnav_secret_key"
+                jwtSecret
             );
 
-        req.user = decoded;
-
-        // Hash the presented JWT using the same
-        // method used when customer_sessions
-        // records are created during login.
-        req.customerSessionHash =
+        const sessionHash =
             crypto
                 .createHash("sha256")
                 .update(token)
                 .digest("hex");
 
+        // Customer JWTs must correspond to an
+        // active, non-revoked stored session.
+        if (
+            decoded.accountType === "customer"
+        ) {
+            const [sessions] =
+                await db.query(
+                    `
+                    SELECT id
+                    FROM customer_sessions
+                    WHERE customer_id = ?
+                      AND refresh_token_hash = ?
+                      AND revoked_at IS NULL
+                      AND expires_at >
+                          CURRENT_TIMESTAMP
+                    LIMIT 1
+                    `,
+                    [
+                        Number(decoded.id),
+                        sessionHash
+                    ]
+                );
+
+            if (!sessions.length) {
+                return res.status(401).json({
+                    success: false,
+                    sessionRevoked: true,
+                    message:
+                        "This session has expired or was signed out. Please log in again."
+                });
+            }
+
+            // Keep session activity reasonably current.
+            await db.query(
+                `
+                UPDATE customer_sessions
+                SET last_used_at =
+                    CURRENT_TIMESTAMP
+                WHERE id = ?
+                `,
+                [sessions[0].id]
+            ).catch(() => {});
+        }
+
+        req.user =
+            decoded;
+
+        req.customerSessionHash =
+            sessionHash;
+
         next();
-    } catch (err) {
-        return res.status(401).json({
+    } catch (error) {
+        if (
+            error?.name ===
+                "JsonWebTokenError" ||
+            error?.name ===
+                "TokenExpiredError" ||
+            error?.name ===
+                "NotBeforeError"
+        ) {
+            return res.status(401).json({
+                success: false,
+                message:
+                    "Invalid or expired token."
+            });
+        }
+
+        console.error(
+            "Customer authentication error:",
+            error
+        );
+
+        return res.status(500).json({
             success: false,
             message:
-                "Invalid or expired token."
+                "Unable to validate customer session."
         });
     }
 };
