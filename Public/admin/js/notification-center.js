@@ -32,22 +32,93 @@ function showMessage(message, type = "") {
     element.className = `notification-message ${type}`.trim();
 }
 
-async function loadAll() {
-    showMessage("");
+async function loadAll(options = {}) {
+    const {
+        preserveMessage = false,
+        preserveRecipients = true
+    } = options;
+
+    // Save temporary test recipients before channel cards
+    // are rebuilt by renderDashboard().
+    const savedRecipients = {};
+
+    if (preserveRecipients) {
+        document
+            .querySelectorAll("[data-channel]")
+            .forEach(card => {
+                const channel = card.dataset.channel;
+                const input =
+                    card.querySelector(".test-recipient");
+
+                if (channel && input) {
+                    savedRecipients[channel] =
+                        input.value || "";
+                }
+            });
+    }
+
+    if (!preserveMessage) {
+        showMessage("");
+    }
+
     try {
-        const [dashboard, templates, logs, customers] = await Promise.all([
-            request("/dashboard"), request("/templates"), request("/logs"), request("/customer-preferences")
+        const [
+            dashboard,
+            templates,
+            logs,
+            customers
+        ] = await Promise.all([
+            request("/dashboard"),
+            request("/templates"),
+            request("/logs"),
+            request("/customer-preferences")
         ]);
+
         state.dashboard = dashboard;
-        state.templates = templates.templates || [];
-        state.logs = logs.logs || [];
-        state.customers = customers.customers || [];
+        state.templates =
+            templates.templates || [];
+        state.logs =
+            logs.logs || [];
+        state.customers =
+            customers.customers || [];
+
         renderDashboard();
         renderTemplates();
         renderLogs();
         renderPreferences();
+
+        // Restore temporary recipient values after
+        // renderDashboard() recreates the cards.
+        if (preserveRecipients) {
+            Object.entries(savedRecipients)
+                .forEach(([channel, value]) => {
+                    const card =
+                        Array.from(
+                            document.querySelectorAll(
+                                "[data-channel]"
+                            )
+                        ).find(
+                            item =>
+                                item.dataset.channel ===
+                                channel
+                        );
+
+                    const input =
+                        card?.querySelector(
+                            ".test-recipient"
+                        );
+
+                    if (input) {
+                        input.value = value;
+                    }
+                });
+        }
+
     } catch (error) {
-        showMessage(error.message, "error");
+        showMessage(
+            error.message,
+            "error"
+        );
     }
 }
 
@@ -78,11 +149,6 @@ function renderDashboard() {
 async function saveChannel(event) {
     const card = event.currentTarget.closest("[data-channel]");
     const channel = card.dataset.channel;
-
-    // Preserve the temporary test recipient while the
-    // channel cards are refreshed from the server.
-    const testRecipient =
-        card.querySelector(".test-recipient")?.value || "";
 
     const button = event.currentTarget;
     const originalHtml = button.innerHTML;
@@ -115,26 +181,14 @@ async function saveChannel(event) {
             }
         );
 
-        await loadAll();
-
-        // Restore temporary test recipient after renderDashboard()
-        // rebuilds the channel cards.
-        const refreshedCard =
-            document.querySelector(
-                `[data-channel="${CSS.escape(channel)}"]`
-            );
-
-        if (refreshedCard) {
-            const recipientInput =
-                refreshedCard.querySelector(".test-recipient");
-
-            if (recipientInput) {
-                recipientInput.value = testRecipient;
-            }
-        }
+        await loadAll({
+            preserveMessage: true,
+            preserveRecipients: true
+        });
 
         showMessage(
-            data?.message || `${channel} settings saved successfully.`,
+            data?.message ||
+                `${channel} settings saved successfully.`,
             "success"
         );
 
@@ -158,9 +212,31 @@ async function testChannel(event) {
             method: "POST",
             body: JSON.stringify({ recipient, subject: "RUKHNAV Notification Test", message: `This is a ${channel} test from RUKHNAV.` })
         });
-        showMessage(data.message, "success");
-        await loadAll();
-    } catch (error) { showMessage(error.message, "error"); }
+        await loadAll({
+            preserveMessage: true,
+            preserveRecipients: true
+        });
+
+        showMessage(
+            data.message ||
+                `${channel} test completed successfully.`,
+            "success"
+        );
+
+    } catch (error) {
+        showMessage(
+            error.message ||
+                `Unable to test ${channel}.`,
+            "error"
+        );
+
+        // Refresh counters/logs without destroying
+        // the error message or entered recipient.
+        await loadAll({
+            preserveMessage: true,
+            preserveRecipients: true
+        });
+    }
 }
 
 function renderPreferences() {
