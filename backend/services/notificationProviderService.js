@@ -1,6 +1,5 @@
 "use strict";
 
-const nodemailer = require("nodemailer");
 const twilio = require("twilio");
 
 /**
@@ -67,7 +66,7 @@ function simulatedResult(channel, recipient) {
 }
 
 /**
- * Send an email through SMTP.
+ * Send an email through the Resend HTTPS API.
  */
 async function sendEmail({
     to,
@@ -85,73 +84,48 @@ async function sendEmail({
         );
     }
 
-    const requiredValues = [
-        process.env.SMTP_HOST,
-        process.env.SMTP_PORT,
-        process.env.SMTP_USER,
-        process.env.SMTP_PASS,
-        process.env.EMAIL_FROM
-    ];
-
-    if (requiredValues.some((value) => !value)) {
+    if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) {
         throw new Error(
-            "Email SMTP configuration is incomplete."
+            "Resend email configuration is incomplete."
         );
     }
 
-    const transporter =
-        nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: Number(
-                process.env.SMTP_PORT
-            ),
-            secure:
-                String(
-                    process.env.SMTP_SECURE
-                ).toLowerCase() === "true",
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS
-            }
-        });
+    const {
+        sendEmail: sendTransactionalEmail
+    } = require("./emailService");
 
-    const result =
-        await transporter.sendMail({
-            from: process.env.EMAIL_FROM,
-            to,
-            subject,
-            text: message,
-            html: `
-                <div style="
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    color: #222222;
-                ">
-                    <h2 style="color: #b8860b;">
-                        RUKHNAV Event Reminder
-                    </h2>
+    const html = `
+        <div style="
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #222222;
+        ">
+            <h2 style="color: #b8860b;">
+                RUKHNAV
+            </h2>
 
-                    <p>
-                        ${escapeHtml(message)}
-                    </p>
+            <p>
+                ${escapeHtml(message)}
+            </p>
+        </div>
+    `;
 
-                    <p style="
-                        color: #777777;
-                        font-size: 12px;
-                    ">
-                        You are receiving this reminder
-                        because it was enabled in your
-                        RUKHNAV customer account.
-                    </p>
-                </div>
-            `
-        });
+    const sent = await sendTransactionalEmail(
+        to,
+        subject,
+        html
+    );
+
+    if (!sent) {
+        throw new Error(
+            "Resend did not accept the email."
+        );
+    }
 
     return {
         success: true,
         simulated: false,
-        providerMessageId:
-            result.messageId || null
+        providerMessageId: null
     };
 }
 

@@ -12,8 +12,8 @@ function bool(value) {
 function environmentReadiness(channel) {
     if (channel === "Email") {
         return {
-            ready: Boolean(process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS && process.env.EMAIL_FROM),
-            required: ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM"]
+            ready: Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM),
+            required: ["RESEND_API_KEY", "EMAIL_FROM"]
         };
     }
 
@@ -98,7 +98,7 @@ exports.updateChannel = async (req, res) => {
 
         const enabled = bool(req.body.enabled);
         const simulationMode = bool(req.body.simulation_mode);
-        const provider = String(req.body.provider || (channel === "Email" ? "SMTP" : "Twilio")).trim();
+        const provider = String(req.body.provider || (channel === "Email" ? "Resend" : "Twilio")).trim();
         const fromName = String(req.body.from_name || "RUKHNAV").trim();
         const fromAddress = String(req.body.from_address || "").trim() || null;
 
@@ -149,7 +149,7 @@ exports.testChannel = async (req, res) => {
             INSERT INTO notification_delivery_logs
                 (channel, recipient, subject, message, status, provider, provider_message_id, sent_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-        `, [channel, recipient, channel === "Email" ? subject : null, message, result.simulated ? "Simulated" : "Sent", channel === "Email" ? "SMTP" : "Twilio", result.providerMessageId || null]);
+        `, [channel, recipient, channel === "Email" ? subject : null, message, result.simulated ? "Simulated" : "Sent", channel === "Email" ? "Resend" : "Twilio", result.providerMessageId || null]);
 
         res.json({ success: true, simulated: Boolean(result.simulated), message: result.simulated ? `${channel} test simulated successfully.` : `${channel} test sent successfully.` });
     } catch (error) {
@@ -157,7 +157,7 @@ exports.testChannel = async (req, res) => {
             INSERT INTO notification_delivery_logs
                 (channel, recipient, subject, message, status, provider, error_message)
             VALUES (?, ?, ?, ?, 'Failed', ?, ?)
-        `, [channel, recipient, channel === "Email" ? subject : null, message, channel === "Email" ? "SMTP" : "Twilio", error.message]);
+        `, [channel, recipient, channel === "Email" ? subject : null, message, channel === "Email" ? "Resend" : "Twilio", error.message]);
 
         res.status(500).json({ success: false, message: error.message });
     }
