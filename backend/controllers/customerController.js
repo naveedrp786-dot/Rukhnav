@@ -897,6 +897,80 @@ if (
                 }
             );
 
+        // =================================
+        // Record Customer Session
+        // =================================
+
+        try {
+            const sessionHash =
+                crypto
+                    .createHash("sha256")
+                    .update(token)
+                    .digest("hex");
+
+            const userAgent =
+                String(
+                    req.headers[
+                        "user-agent"
+                    ] || ""
+                ).slice(0, 1000);
+
+            const ipAddress =
+                String(
+                    req.ip ||
+                    req.socket?.remoteAddress ||
+                    ""
+                ).slice(0, 45) || null;
+
+            const deviceName =
+                /mobile|android|iphone|ipad/i
+                    .test(userAgent)
+                    ? "Mobile Device"
+                    : "Desktop Browser";
+
+            await db.query(
+                `
+                INSERT INTO customer_sessions
+                (
+                    customer_id,
+                    refresh_token_hash,
+                    device_name,
+                    user_agent,
+                    ip_address,
+                    last_used_at,
+                    expires_at
+                )
+                VALUES
+                (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    CURRENT_TIMESTAMP,
+                    DATE_ADD(
+                        CURRENT_TIMESTAMP,
+                        INTERVAL 24 HOUR
+                    )
+                )
+                `,
+                [
+                    customer.id,
+                    sessionHash,
+                    deviceName,
+                    userAgent || null,
+                    ipAddress
+                ]
+            );
+        } catch (sessionError) {
+            // Session tracking must never prevent
+            // a successful customer login.
+            console.error(
+                "Customer session tracking error:",
+                sessionError
+            );
+        }
+
         return res.json({
             success: true,
             message:
