@@ -78,20 +78,75 @@ function renderDashboard() {
 async function saveChannel(event) {
     const card = event.currentTarget.closest("[data-channel]");
     const channel = card.dataset.channel;
+
+    // Preserve the temporary test recipient while the
+    // channel cards are refreshed from the server.
+    const testRecipient =
+        card.querySelector(".test-recipient")?.value || "";
+
+    const button = event.currentTarget;
+    const originalHtml = button.innerHTML;
+
     try {
-        await request(`/channels/${encodeURIComponent(channel)}`, {
-            method: "PATCH",
-            body: JSON.stringify({
-                enabled: card.querySelector(".channel-enabled").checked,
-                simulation_mode: card.querySelector(".channel-simulation").checked,
-                provider: card.querySelector(".channel-provider").value,
-                from_name: card.querySelector(".channel-from-name").value,
-                from_address: card.querySelector(".channel-from-address").value
-            })
-        });
-        showMessage(`${channel} settings saved.`, "success");
+        button.disabled = true;
+        button.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+        const data = await request(
+            `/channels/${encodeURIComponent(channel)}`,
+            {
+                method: "PATCH",
+                body: JSON.stringify({
+                    enabled:
+                        card.querySelector(".channel-enabled").checked,
+
+                    simulation_mode:
+                        card.querySelector(".channel-simulation").checked,
+
+                    provider:
+                        card.querySelector(".channel-provider").value,
+
+                    from_name:
+                        card.querySelector(".channel-from-name").value,
+
+                    from_address:
+                        card.querySelector(".channel-from-address").value
+                })
+            }
+        );
+
         await loadAll();
-    } catch (error) { showMessage(error.message, "error"); }
+
+        // Restore temporary test recipient after renderDashboard()
+        // rebuilds the channel cards.
+        const refreshedCard =
+            document.querySelector(
+                `[data-channel="${CSS.escape(channel)}"]`
+            );
+
+        if (refreshedCard) {
+            const recipientInput =
+                refreshedCard.querySelector(".test-recipient");
+
+            if (recipientInput) {
+                recipientInput.value = testRecipient;
+            }
+        }
+
+        showMessage(
+            data?.message || `${channel} settings saved successfully.`,
+            "success"
+        );
+
+    } catch (error) {
+        showMessage(
+            error.message || `Unable to save ${channel} settings.`,
+            "error"
+        );
+
+        button.disabled = false;
+        button.innerHTML = originalHtml;
+    }
 }
 
 async function testChannel(event) {
