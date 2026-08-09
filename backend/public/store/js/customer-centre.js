@@ -469,15 +469,82 @@ window.CustomerCentre = {
             }
 
             await this.loadCustomerCentre();
+    } catch (error) {
+        const message =
+            error?.message ||
+            "Unable to sign in.";
 
-        } catch (error) {
+        const deletionPending =
+            message.includes(
+                "Account deletion has been requested"
+            );
+
+        if (deletionPending) {
             this.showMessage(
-                error.message ||
-                "Unable to sign in.",
+                "Your account is pending deletion. You can restore it during the recovery period.",
                 "error"
             );
 
-        } finally {
+            const restore =
+                confirm(
+                    "Your RUKHNAV account is scheduled for deletion. Restore your account now?"
+                );
+
+            if (restore) {
+                this.setLoading(
+                    button,
+                    true,
+                    "Restoring Account"
+                );
+
+                try {
+                    const recovery =
+                        await API.post(
+                            API.customer(
+                                "/account/deletion/cancel"
+                            ),
+                            {
+                                identifier,
+                                password
+                            }
+                        );
+
+                    this.showMessage(
+                        recovery.message ||
+                        "Your account has been restored successfully. Signing you in...",
+                        "success"
+                    );
+
+                    setTimeout(
+                        () => {
+                            form?.requestSubmit();
+                        },
+                        900
+                    );
+
+                    return;
+                } catch (
+                    recoveryError
+                ) {
+                    this.showMessage(
+                        recoveryError?.message ||
+                        "Unable to restore your account.",
+                        "error"
+                    );
+
+                    return;
+                }
+            }
+
+            return;
+        }
+
+        this.showMessage(
+            message,
+            "error"
+        );
+
+    } finally {
             this.setLoading(
                 button,
                 false
