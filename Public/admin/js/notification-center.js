@@ -1,6 +1,6 @@
 "use strict";
 
-const API = "/api/admin/notifications";
+const API = "/api/admin/notification-center";
 const token = localStorage.getItem("adminToken") || localStorage.getItem("token") || sessionStorage.getItem("adminToken") || sessionStorage.getItem("token");
 if (!token) window.location.href = "/admin/login.html";
 
