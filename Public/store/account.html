@@ -466,47 +466,119 @@
                             <p id="memberSince"></p>
                         </article>
 
-                        <article class="centre-card">
-                            <div class="card-heading">
-                                <div>
-                                    <span>Referral Code</span>
-                                    <h2 id="referralCode">—</h2>
-                                </div>
-                                <div class="referral-card-actions">
-                                    <button id="copyReferralButton" class="icon-button" type="button" title="Copy referral code" aria-label="Copy referral code"><i class="fa-regular fa-copy"></i></button>
-                                    <button id="shareReferralButton" class="icon-button" type="button" title="Share referral code" aria-label="Share referral code"><i class="fa-solid fa-share-nodes"></i></button>
-                                </div>
-                            </div>
-                            <p>
-                                Share your referral code and earn
-                                rewards when your referrals qualify.
-                            </p>
+                        <article class="centre-card referral-earn-card">
 
-                            <div class="referral-link-row">
-                                <span>Your referral link</span>
-                                <strong id="referralLink">—</strong>
+                            <div class="referral-earn-header">
+
+                                <div class="referral-earn-copy">
+
+                                    <span class="section-kicker">
+                                        Refer & Earn
+                                    </span>
+
+                                    <h2>
+                                        Invite friends. Earn rewards.
+                                    </h2>
+
+                                    <p>
+                                        Share your personal referral code.
+                                        When your referral qualifies,
+                                        you earn loyalty points automatically.
+                                    </p>
+
+                                </div>
+
+                                <div class="referral-code-panel">
+
+                                    <span>Your Referral Code</span>
+
+                                    <strong id="referralCode">—</strong>
+
+                                    <div class="referral-card-actions">
+
+                                        <button
+                                            id="copyReferralButton"
+                                            class="referral-action-button"
+                                            type="button"
+                                            title="Copy referral code"
+                                            aria-label="Copy referral code"
+                                        >
+                                            <i class="fa-regular fa-copy"></i>
+                                            Copy
+                                        </button>
+
+                                        <button
+                                            id="shareReferralButton"
+                                            class="referral-action-button primary"
+                                            type="button"
+                                            title="Share referral code"
+                                            aria-label="Share referral code"
+                                        >
+                                            <i class="fa-solid fa-share-nodes"></i>
+                                            Share
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="referral-link-card">
+
+                                <div>
+                                    <span>Your Referral Link</span>
+                                    <strong id="referralLink">—</strong>
+                                </div>
+
+                                <i class="fa-solid fa-link"></i>
+
                             </div>
 
                             <div class="referral-summary-grid">
 
-                                <div>
-                                    <span>Total Referrals</span>
-                                    <strong id="customerReferralTotal">0</strong>
+                                <div class="referral-stat-card">
+                                    <div class="referral-stat-icon">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                    </div>
+
+                                    <div>
+                                        <span>Total Referrals</span>
+                                        <strong id="customerReferralTotal">0</strong>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <span>Qualified</span>
-                                    <strong id="customerReferralQualified">0</strong>
+                                <div class="referral-stat-card">
+                                    <div class="referral-stat-icon">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </div>
+
+                                    <div>
+                                        <span>Qualified</span>
+                                        <strong id="customerReferralQualified">0</strong>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <span>Rewarded</span>
-                                    <strong id="customerReferralRewarded">0</strong>
+                                <div class="referral-stat-card">
+                                    <div class="referral-stat-icon">
+                                        <i class="fa-solid fa-award"></i>
+                                    </div>
+
+                                    <div>
+                                        <span>Rewarded</span>
+                                        <strong id="customerReferralRewarded">0</strong>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <span>Points Earned</span>
-                                    <strong id="customerReferralPoints">0</strong>
+                                <div class="referral-stat-card">
+                                    <div class="referral-stat-icon">
+                                        <i class="fa-solid fa-coins"></i>
+                                    </div>
+
+                                    <div>
+                                        <span>Points Earned</span>
+                                        <strong id="customerReferralPoints">0</strong>
+                                    </div>
                                 </div>
 
                             </div>
@@ -514,12 +586,26 @@
                             <div class="my-referrals-section">
 
                                 <div class="my-referrals-heading">
+
                                     <div>
-                                        <span>Referral Activity</span>
-                                        <h3>My Referrals</h3>
+                                        <span class="section-kicker">
+                                            Referral Activity
+                                        </span>
+
+                                        <h3>
+                                            My Referrals
+                                        </h3>
+
+                                        <p>
+                                            Track the people you referred
+                                            and the rewards you earned.
+                                        </p>
                                     </div>
 
-                                    <i class="fa-solid fa-user-group"></i>
+                                    <div class="my-referrals-heading-icon">
+                                        <i class="fa-solid fa-user-group"></i>
+                                    </div>
+
                                 </div>
 
                                 <div
