@@ -618,7 +618,7 @@
    Prevent the small Account Status card from stretching
    to match the much taller Refer & Earn card.
 */
-#dashboardPanel .dashboard-grid{
+.dashboard-grid{
     grid-template-columns:
         minmax(250px,.62fr)
         minmax(0,1.38fr);
@@ -626,20 +626,20 @@
 }
 
 /* Compact account-status card */
-#dashboardPanel .dashboard-grid > .centre-card:first-child{
+.dashboard-grid > .centre-card:first-child{
     align-self:start;
     min-height:0;
     padding:22px 24px;
 }
 
 /* Referral card gets the useful dashboard width */
-#dashboardPanel .referral-earn-card{
+.referral-earn-card{
     min-width:0;
     align-self:start;
 }
 
 /* Referral hero balance */
-#dashboardPanel .referral-earn-header{
+.referral-earn-header{
     grid-template-columns:
         minmax(0,1fr)
         minmax(245px,.78fr);
@@ -647,16 +647,16 @@
 }
 
 /* Keep long production referral URLs contained */
-#dashboardPanel .referral-link-card{
+.referral-link-card{
     min-width:0;
 }
 
-#dashboardPanel .referral-link-card > div{
+.referral-link-card > div{
     min-width:0;
     flex:1;
 }
 
-#dashboardPanel #referralLink{
+#referralLink{
     display:block;
     max-width:100%;
     overflow-wrap:anywhere;
@@ -664,22 +664,22 @@
 }
 
 /* Better stats proportions */
-#dashboardPanel .referral-summary-grid{
+.referral-summary-grid{
     grid-template-columns:
         repeat(4,minmax(0,1fr));
     gap:10px;
 }
 
-#dashboardPanel .referral-stat-card{
+.referral-stat-card{
     min-width:0;
 }
 
 /* Referral history should stay clean */
-#dashboardPanel .my-referrals-list{
+.my-referrals-list{
     width:100%;
 }
 
-#dashboardPanel .my-referral-row{
+.my-referral-row{
     width:100%;
     box-sizing:border-box;
 }
@@ -687,13 +687,13 @@
 /* Tablet */
 @media(max-width:1100px){
 
-    #dashboardPanel .dashboard-grid{
+    .dashboard-grid{
         grid-template-columns:
             minmax(220px,.7fr)
             minmax(0,1.3fr);
     }
 
-    #dashboardPanel .referral-earn-header{
+    .referral-earn-header{
         grid-template-columns:1fr;
     }
 
@@ -702,12 +702,12 @@
 /* Existing dashboard becomes one column here */
 @media(max-width:820px){
 
-    #dashboardPanel .dashboard-grid{
+    .dashboard-grid{
         grid-template-columns:1fr;
     }
 
-    #dashboardPanel .dashboard-grid > .centre-card:first-child,
-    #dashboardPanel .referral-earn-card{
+    .dashboard-grid > .centre-card:first-child,
+    .referral-earn-card{
         width:100%;
     }
 
@@ -716,7 +716,7 @@
 /* Mobile */
 @media(max-width:620px){
 
-    #dashboardPanel .referral-summary-grid{
+    .referral-summary-grid{
         grid-template-columns:
             repeat(2,minmax(0,1fr));
     }
@@ -726,7 +726,7 @@
 /* Small mobile */
 @media(max-width:430px){
 
-    #dashboardPanel .referral-summary-grid{
+    .referral-summary-grid{
         grid-template-columns:1fr;
     }
 
@@ -736,12 +736,12 @@
    Customer Dashboard Referral — Final Full Width
 ===================================================== */
 
-#dashboardPanel .dashboard-grid{
+.dashboard-grid{
     grid-template-columns:1fr;
     align-items:start;
 }
 
-#dashboardPanel .referral-earn-card{
+.referral-earn-card{
     width:100%;
     min-width:0;
     box-sizing:border-box;
@@ -751,7 +751,7 @@
    More balanced desktop hero:
    introduction on left, code panel on right.
 */
-#dashboardPanel .referral-earn-header{
+.referral-earn-header{
     grid-template-columns:
         minmax(0,1.3fr)
         minmax(300px,.7fr);
@@ -759,30 +759,30 @@
     align-items:center;
 }
 
-#dashboardPanel .referral-earn-copy{
+.referral-earn-copy{
     max-width:620px;
 }
 
-#dashboardPanel .referral-earn-copy h2{
+.referral-earn-copy h2{
     max-width:560px;
 }
 
-#dashboardPanel .referral-code-panel{
+.referral-code-panel{
     min-height:165px;
 }
 
 /* Referral URL */
-#dashboardPanel .referral-link-card{
+.referral-link-card{
     margin-top:22px;
     padding:16px 18px;
 }
 
-#dashboardPanel .referral-link-card > div{
+.referral-link-card > div{
     min-width:0;
     flex:1;
 }
 
-#dashboardPanel #referralLink{
+#referralLink{
     display:block;
     max-width:100%;
     overflow-wrap:anywhere;
@@ -791,26 +791,26 @@
 }
 
 /* Four clean KPIs */
-#dashboardPanel .referral-summary-grid{
+.referral-summary-grid{
     grid-template-columns:
         repeat(4,minmax(0,1fr));
     gap:14px;
     margin-top:18px;
 }
 
-#dashboardPanel .referral-stat-card{
+.referral-stat-card{
     min-height:105px;
     min-width:0;
     padding:17px;
 }
 
 /* Referral activity */
-#dashboardPanel .my-referrals-section{
+.my-referrals-section{
     margin-top:28px;
     padding-top:24px;
 }
 
-#dashboardPanel .my-referral-row{
+.my-referral-row{
     width:100%;
     box-sizing:border-box;
     padding:16px 18px;
@@ -819,11 +819,11 @@
 /* Tablet */
 @media(max-width:980px){
 
-    #dashboardPanel .referral-earn-header{
+    .referral-earn-header{
         grid-template-columns:1fr;
     }
 
-    #dashboardPanel .referral-code-panel{
+    .referral-code-panel{
         min-height:0;
     }
 
@@ -832,7 +832,7 @@
 /* Mobile */
 @media(max-width:680px){
 
-    #dashboardPanel .referral-summary-grid{
+    .referral-summary-grid{
         grid-template-columns:
             repeat(2,minmax(0,1fr));
     }
@@ -842,7 +842,7 @@
 /* Small mobile */
 @media(max-width:430px){
 
-    #dashboardPanel .referral-summary-grid{
+    .referral-summary-grid{
         grid-template-columns:1fr;
     }
 
@@ -858,7 +858,7 @@
    Therefore the remaining Refer & Earn card must occupy
    the complete dashboard content width.
 */
-#dashboardPanel .dashboard-grid{
+.dashboard-grid{
     display:grid;
     grid-template-columns:minmax(0,1fr);
     width:100%;
@@ -866,7 +866,7 @@
 }
 
 /* The only remaining dashboard card spans everything */
-#dashboardPanel .dashboard-grid > .referral-earn-card{
+.dashboard-grid > .referral-earn-card{
     grid-column:1 / -1;
     width:100%;
     max-width:none;
@@ -879,7 +879,7 @@
    Use the extra desktop width properly:
    invitation copy + referral-code panel.
 */
-#dashboardPanel .referral-earn-header{
+.referral-earn-header{
     grid-template-columns:
         minmax(0,1.45fr)
         minmax(300px,.55fr);
@@ -888,29 +888,29 @@
 }
 
 /* Give referral text a comfortable readable width */
-#dashboardPanel .referral-earn-copy{
+.referral-earn-copy{
     min-width:0;
 }
 
-#dashboardPanel .referral-earn-copy h2{
+.referral-earn-copy h2{
     max-width:650px;
 }
 
 /* Referral code panel stays substantial but controlled */
-#dashboardPanel .referral-code-panel{
+.referral-code-panel{
     width:100%;
     min-width:0;
     box-sizing:border-box;
 }
 
 /* Referral URL uses the full available width */
-#dashboardPanel .referral-link-card{
+.referral-link-card{
     width:100%;
     box-sizing:border-box;
 }
 
 /* Keep the four summary cards evenly distributed */
-#dashboardPanel .referral-summary-grid{
+.referral-summary-grid{
     display:grid;
     grid-template-columns:repeat(4,minmax(0,1fr));
     gap:14px;
@@ -918,13 +918,13 @@
 }
 
 /* Referral activity uses full width */
-#dashboardPanel .my-referrals-section,
-#dashboardPanel .my-referrals-list{
+.my-referrals-section,
+.my-referrals-list{
     width:100%;
     min-width:0;
 }
 
-#dashboardPanel .my-referral-row{
+.my-referral-row{
     width:100%;
     box-sizing:border-box;
 }
@@ -932,7 +932,7 @@
 /* Medium desktop / tablet */
 @media(max-width:1100px){
 
-    #dashboardPanel .referral-earn-header{
+    .referral-earn-header{
         grid-template-columns:
             minmax(0,1fr)
             minmax(260px,.65fr);
@@ -944,11 +944,11 @@
 /* Tablet */
 @media(max-width:820px){
 
-    #dashboardPanel .referral-earn-header{
+    .referral-earn-header{
         grid-template-columns:1fr;
     }
 
-    #dashboardPanel .referral-summary-grid{
+    .referral-summary-grid{
         grid-template-columns:
             repeat(2,minmax(0,1fr));
     }
@@ -958,7 +958,7 @@
 /* Mobile */
 @media(max-width:560px){
 
-    #dashboardPanel .referral-summary-grid{
+    .referral-summary-grid{
         grid-template-columns:1fr;
     }
 
