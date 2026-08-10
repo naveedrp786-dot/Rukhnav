@@ -953,7 +953,7 @@ async function submitPointsAdjustment(
     try {
         const data =
             await apiRequest(
-                `${LOYALTY_API}/customers/${customerId}/adjust-points`,
+                `${LOYALTY_API}/customers/${customerId}/ledger-adjustment`,
                 {
                     method: "POST",
 
@@ -961,7 +961,7 @@ async function submitPointsAdjustment(
                         JSON.stringify({
                             points,
 
-                            affect_lifetime_points:
+                            qualifiesForLifetime:
                                 affectLifetimePoints,
 
                             reason
@@ -1013,11 +1013,44 @@ async function openHistoryModal(
     try {
         const data =
             await apiRequest(
-                `${LOYALTY_API}/customers/${customerId}/history`
+                `${LOYALTY_API}/customers/${customerId}/transactions?limit=100`
             );
 
-        const customer =
+        const ledgerCustomer =
             data.customer || {};
+
+        /*
+         * Normalize the canonical loyalty-ledger
+         * response for the existing history UI.
+         */
+        const customer = {
+            ...ledgerCustomer,
+
+            full_name:
+                ledgerCustomer.full_name ||
+                ledgerCustomer.fullName ||
+                "",
+
+            reward_points:
+                ledgerCustomer.reward_points ??
+                ledgerCustomer.rewardPoints ??
+                0,
+
+            lifetime_points:
+                ledgerCustomer.lifetime_points ??
+                ledgerCustomer.lifetimePoints ??
+                0,
+
+            membership_level:
+                ledgerCustomer.membership_level ||
+                ledgerCustomer.membershipLevel ||
+                "Bronze",
+
+            total_spent:
+                ledgerCustomer.total_spent ??
+                ledgerCustomer.totalSpent ??
+                0
+        };
 
         const transactions =
             Array.isArray(
@@ -1148,7 +1181,22 @@ function renderHistoryTransactions(
                 (transaction) => {
                     const points =
                         Number(
-                            transaction.points ||
+                            transaction.points_change ??
+                            transaction.points ??
+                            0
+                        );
+
+                    const availableBalanceAfter =
+                        Number(
+                            transaction.balance_after ??
+                            transaction.available_balance_after ??
+                            0
+                        );
+
+                    const lifetimePointsAfter =
+                        Number(
+                            transaction.lifetime_after ??
+                            transaction.lifetime_points_after ??
                             0
                         );
 
@@ -1190,15 +1238,13 @@ function renderHistoryTransactions(
 
                             <td>
                                 ${formatNumber(
-                                    transaction
-                                        .available_balance_after
+                                    availableBalanceAfter
                                 )}
                             </td>
 
                             <td>
                                 ${formatNumber(
-                                    transaction
-                                        .lifetime_points_after
+                                    lifetimePointsAfter
                                 )}
                             </td>
 
