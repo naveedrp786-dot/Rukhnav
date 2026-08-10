@@ -631,6 +631,14 @@ function createCustomerRow(customer) {
         <tr>
 
             <td>
+                <span class="customer-id-value">
+                    #${Number(
+                        customer.id
+                    )}
+                </span>
+            </td>
+
+            <td>
 
                 <div class="customer-cell">
 
