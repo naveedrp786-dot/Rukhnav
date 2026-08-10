@@ -847,3 +847,119 @@
     }
 
 }
+
+
+/* =====================================================
+   Customer Dashboard - Full Width Referral Fix
+===================================================== */
+
+/*
+   Account Status was removed from dashboard-grid.
+   Therefore the remaining Refer & Earn card must occupy
+   the complete dashboard content width.
+*/
+#dashboardPanel .dashboard-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    width:100%;
+    align-items:start;
+}
+
+/* The only remaining dashboard card spans everything */
+#dashboardPanel .dashboard-grid > .referral-earn-card{
+    grid-column:1 / -1;
+    width:100%;
+    max-width:none;
+    min-width:0;
+    align-self:start;
+    box-sizing:border-box;
+}
+
+/*
+   Use the extra desktop width properly:
+   invitation copy + referral-code panel.
+*/
+#dashboardPanel .referral-earn-header{
+    grid-template-columns:
+        minmax(0,1.45fr)
+        minmax(300px,.55fr);
+    gap:32px;
+    align-items:stretch;
+}
+
+/* Give referral text a comfortable readable width */
+#dashboardPanel .referral-earn-copy{
+    min-width:0;
+}
+
+#dashboardPanel .referral-earn-copy h2{
+    max-width:650px;
+}
+
+/* Referral code panel stays substantial but controlled */
+#dashboardPanel .referral-code-panel{
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+}
+
+/* Referral URL uses the full available width */
+#dashboardPanel .referral-link-card{
+    width:100%;
+    box-sizing:border-box;
+}
+
+/* Keep the four summary cards evenly distributed */
+#dashboardPanel .referral-summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px;
+    width:100%;
+}
+
+/* Referral activity uses full width */
+#dashboardPanel .my-referrals-section,
+#dashboardPanel .my-referrals-list{
+    width:100%;
+    min-width:0;
+}
+
+#dashboardPanel .my-referral-row{
+    width:100%;
+    box-sizing:border-box;
+}
+
+/* Medium desktop / tablet */
+@media(max-width:1100px){
+
+    #dashboardPanel .referral-earn-header{
+        grid-template-columns:
+            minmax(0,1fr)
+            minmax(260px,.65fr);
+        gap:22px;
+    }
+
+}
+
+/* Tablet */
+@media(max-width:820px){
+
+    #dashboardPanel .referral-earn-header{
+        grid-template-columns:1fr;
+    }
+
+    #dashboardPanel .referral-summary-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+}
+
+/* Mobile */
+@media(max-width:560px){
+
+    #dashboardPanel .referral-summary-grid{
+        grid-template-columns:1fr;
+    }
+
+}
