@@ -1,12 +1,12 @@
 "use strict";
-const RUKHNAV_ORIGIN = window.RUKHNAV_API_ORIGIN || window.location.origin;
+const CUSTOMER_LOYALTY_ORIGIN = window.RUKHNAV_API_ORIGIN || window.location.origin;
 
 // =========================================
 // RUKHNAV ERP - Customer Loyalty
 // =========================================
 
 const LOYALTY_API =
-    RUKHNAV_ORIGIN + "/api/admin/loyalty";
+    CUSTOMER_LOYALTY_ORIGIN + "/api/admin/loyalty";
 
 let loyaltyCategories = [];
 let loyaltyCustomers = [];
