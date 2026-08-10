@@ -281,7 +281,15 @@ async function processFirstPaidSaleReferral({
 
         SET
             status = 'Rewarded',
-            referrer_reward_points = ?
+            referrer_reward_points = ?,
+            qualified_at = COALESCE(
+                qualified_at,
+                CURRENT_TIMESTAMP
+            ),
+            rewarded_at = COALESCE(
+                rewarded_at,
+                CURRENT_TIMESTAMP
+            )
 
         WHERE id = ?
         `,
