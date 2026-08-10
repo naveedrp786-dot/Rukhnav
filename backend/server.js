@@ -159,9 +159,6 @@ const dashboardRoutes =
 const reminderRoutes =
     require("./routes/reminderRoutes");
 
-const rewardRoutes =
-    require("./routes/rewardRoutes");
-
 const inventoryRoutes =
     require("./routes/inventoryRoutes");
 
@@ -355,11 +352,6 @@ app.use(
 app.use(
     "/api/reminders",
     reminderRoutes
-);
-
-app.use(
-    "/api/rewards",
-    rewardRoutes
 );
 
 app.use(

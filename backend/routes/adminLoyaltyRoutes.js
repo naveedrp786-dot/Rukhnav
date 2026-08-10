@@ -83,30 +83,6 @@ router.get(
         .getCustomers
 );
 
-/**
- * Get one customer's points history.
- *
- * GET
- * /api/admin/loyalty/customers/:customerId/history
- */
-router.get(
-    "/customers/:customerId/history",
-    adminLoyaltyManagementController
-        .getCustomerPointsHistory
-);
-
-/**
- * Add or deduct customer points.
- *
- * POST
- * /api/admin/loyalty/customers/:customerId/adjust-points
- */
-router.post(
-    "/customers/:customerId/adjust-points",
-    adminLoyaltyManagementController
-        .adjustCustomerPoints
-);
-
 // =========================================
 // Loyalty Transaction Ledger
 // =========================================

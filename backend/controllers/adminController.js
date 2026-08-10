@@ -11,10 +11,6 @@ const jwt = require("jsonwebtoken");
 const logger = require("../utils/logger");
 
 const {
-    processOrderRewards
-} = require("../services/rewardService");
-
-const {
     reduceStock
 } = require("../services/inventoryService");
 
@@ -1004,7 +1000,11 @@ exports.updateOrderStatus = async (req, res) => {
         );
 
         // When an order is completed,
-        // reduce inventory and award points
+        // reduce inventory.
+        //
+        // Loyalty points are intentionally NOT awarded here.
+        // Canonical loyalty processing happens from paid sales
+        // through customerLoyaltyService.processPaidSale().
 
         if (order_status.toLowerCase() === "completed") {
 
@@ -1016,18 +1016,6 @@ exports.updateOrderStatus = async (req, res) => {
 
                 logger.error(
                     `Inventory Error: ${err.message}`
-                );
-
-            }
-
-            try {
-
-                await processOrderRewards(id);
-
-            } catch (err) {
-
-                logger.error(
-                    `Reward Error: ${err.message}`
                 );
 
             }

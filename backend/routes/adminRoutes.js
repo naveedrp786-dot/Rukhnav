@@ -5,7 +5,6 @@ const adminController = require("../controllers/adminController");
 const adminAuth = require("../middleware/adminAuth");
 const { sendEmail } = require("../services/emailService");
 const { createCoupon } = require("../services/couponService");
-const { calculateRewardPoints } = require("../services/rewardService");
 
 // Your other admin routes...
 
@@ -119,21 +118,6 @@ router.get("/test-coupon", async (req, res) => {
         });
 
     }
-
-});
-
-router.get("/test-points", (req, res) => {
-
-    const amount = 4850;
-
-    const points = calculateRewardPoints(amount);
-
-    res.json({
-
-        orderAmount: amount,
-        rewardPoints: points
-
-    });
 
 });
 

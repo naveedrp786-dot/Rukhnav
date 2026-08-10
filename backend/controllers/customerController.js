@@ -466,30 +466,25 @@ exports.register = async (req, res) => {
         await connection.commit();
 
         // =================================
-        // Initialise Customer Rewards
+        // Initialise Customer Loyalty Account
         // =================================
 
         try {
 
-            const {
-                initializeRewards
-            } = require(
-                "../services/rewardService"
+            await db.query(
+                `
+                INSERT IGNORE INTO customer_rewards (
+                    customer_id
+                )
+                VALUES (?)
+                `,
+                [customerId]
             );
-
-            if (
-                typeof initializeRewards ===
-                "function"
-            ) {
-                await initializeRewards(
-                    customerId
-                );
-            }
 
         } catch (rewardError) {
 
             console.error(
-                "Reward initialisation error:",
+                "Loyalty account initialisation error:",
                 rewardError
             );
 
