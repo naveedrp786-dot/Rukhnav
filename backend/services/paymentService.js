@@ -2,6 +2,8 @@
 
 const db = require("../config/db");
 const accountingAutomation = require("./accountingAutomationService");
+const orderSalesIntegrationService =
+    require("./orderSalesIntegrationService");
 const {
     PAYMENT_STATUS,
     ORDER_PAYMENT_STATUS,
@@ -194,8 +196,46 @@ const recordPayment = async ({ orderId, adminId, payload }) => {
             adminId || null
         );
 
+        // =============================================
+        // Order Payment -> ERP Sale -> Invoice
+        // =============================================
+
+        const salesSync =
+            await orderSalesIntegrationService
+                .syncOrderPaymentToSale(
+                    connection,
+                    orderId
+                );
+
         await connection.commit();
-        return { payment, orderPaymentSummary: summary };
+
+        // =============================================
+        // Paid Sale -> Loyalty -> Referral
+        //
+        // This must run AFTER the payment transaction
+        // commits because the loyalty service uses its
+        // own database connection.
+        // =============================================
+
+        let loyaltyProcessing = null;
+
+        if (
+            salesSync.linked &&
+            salesSync.paymentStatus === "Paid"
+        ) {
+            loyaltyProcessing =
+                await orderSalesIntegrationService
+                    .processPaidOrderSale(
+                        salesSync.saleId
+                    );
+        }
+
+        return {
+            payment,
+            orderPaymentSummary: summary,
+            salesSync,
+            loyaltyProcessing
+        };
     } catch (error) {
         if (connection) await rollbackQuietly(connection);
         throw error;
@@ -316,8 +356,23 @@ const refundPayment = async ({ paymentId, adminId, payload }) => {
             adminId || null
         );
 
+        // Keep the linked ERP Sale and Invoice
+        // synchronized with the refunded order balance.
+        const salesSync =
+            await orderSalesIntegrationService
+                .syncOrderPaymentToSale(
+                    connection,
+                    payment.order_id
+                );
+
         await connection.commit();
-        return { refund, paymentStatus: newStatus, orderPaymentSummary: summary };
+
+        return {
+            refund,
+            paymentStatus: newStatus,
+            orderPaymentSummary: summary,
+            salesSync
+        };
     } catch (error) {
         if (connection) await rollbackQuietly(connection);
         throw error;
