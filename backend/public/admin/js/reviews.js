@@ -149,8 +149,86 @@ const ReviewAdmin = {
                         <span>Helpful Votes</span>
                         <strong>${Number(r.helpful_count || 0)}</strong>
                     </div>
+                    <div>
+                        <span>Featured</span>
+                        <strong>${Number(r.featured) === 1 ? "Yes ★" : "No"}</strong>
+                    </div>
+                    <div>
+                        <span>Approved By</span>
+                        <strong>${this.e(r.approved_by_name || "—")}</strong>
+                    </div>
+                    <div>
+                        <span>Approved At</span>
+                        <strong>${r.approved_at ? this.dateTime(r.approved_at) : "—"}</strong>
+                    </div>
                 </div>
-                <div class="review-detail-comment">${this.e(r.comment || "No written comment.")}</div>`;
+
+                <div class="review-detail-comment">
+                    ${this.e(r.comment || "No written comment.")}
+                </div>
+
+                <div class="review-admin-tools">
+                    <label class="review-admin-label" for="adminReviewReply">
+                        Admin Reply
+                    </label>
+
+                    <textarea
+                        id="adminReviewReply"
+                        class="review-admin-reply"
+                        rows="4"
+                        maxlength="5000"
+                        placeholder="Write a professional reply to this customer..."
+                    >${this.e(r.admin_reply || "")}</textarea>
+
+                    <div class="review-admin-tool-actions">
+                        <button
+                            id="saveReviewReply"
+                            type="button"
+                            class="review-btn review-btn-dark">
+                            Save Reply
+                        </button>
+
+                        <button
+                            id="removeReviewReply"
+                            type="button"
+                            class="review-btn"
+                            ${r.admin_reply ? "" : "disabled"}>
+                            Remove Reply
+                        </button>
+
+                        <button
+                            id="toggleFeaturedReview"
+                            type="button"
+                            class="review-btn review-btn-gold">
+                            ${Number(r.featured) === 1
+                                ? "Remove Featured"
+                                : "Feature Review"}
+                        </button>
+                    </div>
+                </div>`;
+
+            document
+                .getElementById("saveReviewReply")
+                ?.addEventListener(
+                    "click",
+                    () => this.saveReply()
+                );
+
+            document
+                .getElementById("removeReviewReply")
+                ?.addEventListener(
+                    "click",
+                    () => this.removeReply()
+                );
+
+            document
+                .getElementById("toggleFeaturedReview")
+                ?.addEventListener(
+                    "click",
+                    () => this.toggleFeatured(
+                        Number(r.featured) !== 1
+                    )
+                );
             document.getElementById("moderationActions")?.classList.toggle("hidden", !this.moderationEnabled);
             const modal = document.getElementById("reviewModal");
             modal?.classList.remove("hidden");
@@ -182,13 +260,146 @@ const ReviewAdmin = {
         }
     },
 
+    async saveReply() {
+        if (!this.activeReviewId) return;
+
+        const textarea =
+            document.getElementById("adminReviewReply");
+
+        const replyText =
+            String(textarea?.value || "").trim();
+
+        if (!replyText) {
+            this.message(
+                "Write a reply before saving.",
+                "error"
+            );
+            textarea?.focus();
+            return;
+        }
+
+        try {
+            await this.request(
+                `/api/admin/reviews/${this.activeReviewId}/reply`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        reply_text: replyText
+                    })
+                }
+            );
+
+            this.message(
+                "Admin reply saved successfully.",
+                "info"
+            );
+
+            await this.openReview(
+                this.activeReviewId
+            );
+
+        } catch (error) {
+            this.message(
+                error.message,
+                "error"
+            );
+        }
+    },
+
+    async removeReply() {
+        if (!this.activeReviewId) return;
+
+        try {
+            await this.request(
+                `/api/admin/reviews/${this.activeReviewId}/reply`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            this.message(
+                "Admin reply removed.",
+                "info"
+            );
+
+            await this.openReview(
+                this.activeReviewId
+            );
+
+        } catch (error) {
+            this.message(
+                error.message,
+                "error"
+            );
+        }
+    },
+
+    async toggleFeatured(featured) {
+        if (!this.activeReviewId) return;
+
+        try {
+            await this.request(
+                `/api/admin/reviews/${this.activeReviewId}/featured`,
+                {
+                    method: "PATCH",
+                    body: JSON.stringify({
+                        featured
+                    })
+                }
+            );
+
+            this.message(
+                featured
+                    ? "Review marked as featured."
+                    : "Review removed from featured reviews.",
+                "info"
+            );
+
+            await this.openReview(
+                this.activeReviewId
+            );
+
+            await this.refresh();
+
+        } catch (error) {
+            this.message(
+                error.message,
+                "error"
+            );
+        }
+    },
+
     stars(value) {
         const n = Math.max(0, Math.min(5, Math.round(Number(value) || 0)));
         return "★".repeat(n) + "☆".repeat(5 - n);
     },
 
     date(value) {
-        return value ? new Date(value).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "—";
+        return value
+            ? new Date(value).toLocaleDateString(
+                "en-GB",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            )
+            : "—";
+    },
+
+    dateTime(value) {
+        return value
+            ? new Date(value).toLocaleString(
+                "en-GB",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            )
+            : "—";
     },
 
     text(id, value) {

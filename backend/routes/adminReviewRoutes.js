@@ -10,5 +10,8 @@ router.get("/summary", adminReviewController.getSummary);
 router.get("/", adminReviewController.getReviews);
 router.get("/:id", adminReviewController.getReviewById);
 router.patch("/:id/status", adminReviewController.updateStatus);
+router.put("/:id/reply", adminReviewController.saveReply);
+router.delete("/:id/reply", adminReviewController.deleteReply);
+router.patch("/:id/featured", adminReviewController.updateFeatured);
 
 module.exports = router;
