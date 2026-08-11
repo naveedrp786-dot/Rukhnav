@@ -2124,6 +2124,20 @@ window.CustomerCentre = {
                 <p>${this.escapeHtml(review.comment || "")}</p>
 
                 ${
+                    review.admin_reply
+                        ? `
+                            <div class="my-review-admin-reply">
+                                <div class="my-review-admin-reply-title">
+                                    <i class="fa-solid fa-reply"></i>
+                                    <strong>RUKHNAV Response</strong>
+                                </div>
+                                <p>${this.escapeHtml(review.admin_reply)}</p>
+                            </div>
+                        `
+                        : ""
+                }
+
+                ${
                     images.length
                         ? `
                             <div class="my-review-photos">

@@ -64,3 +64,33 @@
 .welcome-card .welcome-membership span {
     color: rgba(255, 255, 255, 0.78) !important;
 }
+
+/* =====================================================
+   My Reviews - RUKHNAV Response
+===================================================== */
+.my-review-admin-reply {
+    margin: 14px 0;
+    padding: 14px 16px;
+    border-left: 4px solid #d6a928;
+    border-radius: 10px;
+    background: #f7f4ec;
+}
+
+.my-review-admin-reply-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+    color: #17452f;
+}
+
+.my-review-admin-reply-title strong {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.my-review-admin-reply p {
+    margin: 0;
+    color: #3d463f;
+    line-height: 1.6;
+}
