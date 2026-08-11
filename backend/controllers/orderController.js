@@ -341,10 +341,33 @@ exports.placeOrder = async (req, res) => {
             await connection.query(
                 `
                 SELECT
-                    id,
-                    status
-                FROM customers
-                WHERE id = ?
+                    c.id,
+                    c.status,
+                    COALESCE(
+                        cr.membership_level,
+                        'Bronze'
+                    ) AS membership_level,
+                    COALESCE(
+                        clc.discount_percentage,
+                        0
+                    ) AS loyalty_discount_percentage,
+                    COALESCE(
+                        clc.free_delivery_enabled,
+                        0
+                    ) AS free_delivery_enabled
+                FROM customers c
+                LEFT JOIN customer_rewards cr
+                    ON cr.customer_id = c.id
+                LEFT JOIN customer_loyalty_categories clc
+                    ON LOWER(clc.category_name) =
+                       LOWER(
+                           COALESCE(
+                               cr.membership_level,
+                               'Bronze'
+                           )
+                       )
+                   AND LOWER(clc.status) = 'active'
+                WHERE c.id = ?
                 LIMIT 1
                 FOR UPDATE
                 `,
@@ -720,15 +743,84 @@ exports.placeOrder = async (req, res) => {
         // Secure server-side totals
         // -------------------------------------------------
 
-        const deliveryCharges =
-            calculateDeliveryCharges(
-                subtotalAmount
+        /*
+         * Loyalty benefits are calculated by the server.
+         * Never trust a membership discount or free-delivery
+         * value supplied by the browser.
+         */
+        const loyaltyMembershipLevel =
+            cleanText(
+                customerRows[0].membership_level ||
+                "Bronze",
+                50
+            ) || "Bronze";
+
+        const loyaltyDiscountPercentage =
+            Math.min(
+                Math.max(
+                    Number(
+                        customerRows[0]
+                            .loyalty_discount_percentage ||
+                        0
+                    ),
+                    0
+                ),
+                100
             );
 
-        const grandTotal = Number(
-            (
+        /*
+         * Apply the membership discount after the coupon.
+         * This prevents discounts from exceeding the
+         * remaining merchandise value.
+         */
+        const amountAfterCoupon =
+            Math.max(
+                0,
                 subtotalAmount -
-                discountAmount +
+                discountAmount
+            );
+
+        const loyaltyDiscountAmount =
+            Number(
+                Math.min(
+                    amountAfterCoupon,
+                    amountAfterCoupon *
+                    (
+                        loyaltyDiscountPercentage /
+                        100
+                    )
+                ).toFixed(2)
+            );
+
+        const freeDeliveryEnabled =
+            Number(
+                customerRows[0]
+                    .free_delivery_enabled ||
+                0
+            ) === 1;
+
+        const deliveryCharges =
+            freeDeliveryEnabled
+                ? 0
+                : calculateDeliveryCharges(
+                      subtotalAmount
+                  );
+
+        /*
+         * Reward-point redemption is intentionally zero
+         * until checkout redemption/reservation/reversal
+         * is implemented transactionally.
+         */
+        const rewardPointsRedeemed = 0;
+        const rewardPointsDiscountAmount = 0;
+
+        const grandTotal = Number(
+            Math.max(
+                0,
+                subtotalAmount -
+                discountAmount -
+                loyaltyDiscountAmount -
+                rewardPointsDiscountAmount +
                 deliveryCharges
             ).toFixed(2)
         );
@@ -763,6 +855,11 @@ exports.placeOrder = async (req, res) => {
                     order_notes,
                     coupon_code,
                     discount_amount,
+                    loyalty_discount_amount,
+                    loyalty_membership_level,
+                    loyalty_discount_percentage,
+                    reward_points_redeemed,
+                    reward_points_discount_amount,
                     delivery_charges,
                     address_id
                 )
@@ -772,7 +869,7 @@ exports.placeOrder = async (req, res) => {
                     'Pending',
                     ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?,
-                    ?, ?
+                    ?, ?, ?, ?, ?, ?, ?
                 )
                 `,
                 [
@@ -791,6 +888,11 @@ exports.placeOrder = async (req, res) => {
                     orderNotes,
                     appliedCoupon,
                     discountAmount,
+                    loyaltyDiscountAmount,
+                    loyaltyMembershipLevel,
+                    loyaltyDiscountPercentage,
+                    rewardPointsRedeemed,
+                    rewardPointsDiscountAmount,
                     deliveryCharges,
                     addressId
                 ]
