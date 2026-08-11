@@ -3,6 +3,9 @@
 const crypto = require("crypto");
 const db = require("../config/db");
 
+const inventoryService =
+    require("../services/inventoryService");
+
 const ALLOWED_PAYMENT_METHODS = new Set([
     "cash_on_delivery",
     "bank_transfer",
@@ -449,6 +452,8 @@ exports.placeGuestOrder = async (
                     product_name,
                     selling_price,
                     stock_quantity,
+                    low_stock_level,
+                    cost_price,
                     image,
                     status
                 FROM products
@@ -741,20 +746,57 @@ exports.placeGuestOrder = async (
                 ]
             );
 
+            const product =
+                productMap.get(
+                    Number(item.productId)
+                );
+
+            if (!product) {
+                throw new Error(
+                    `Product ${item.productId} was not found while reserving guest order stock.`
+                );
+            }
+
+            const previousStock =
+                Number(
+                    product.stock_quantity || 0
+                );
+
+            const quantity =
+                Number(item.quantity);
+
+            if (
+                !Number.isInteger(quantity) ||
+                quantity <= 0 ||
+                previousStock < quantity
+            ) {
+                throw new Error(
+                    `Unable to reserve stock for ${item.productName}.`
+                );
+            }
+
+            const newStock =
+                previousStock - quantity;
+
+            const stockStatus =
+                inventoryService.getStockStatus(
+                    newStock,
+                    product.low_stock_level
+                );
+
             const [stockResult] =
                 await connection.query(
                     `
                     UPDATE products
                     SET
-                        stock_quantity =
-                            stock_quantity - ?
+                        stock_quantity = ?,
+                        stock_status = ?
                     WHERE id = ?
-                      AND stock_quantity >= ?
                     `,
                     [
-                        item.quantity,
-                        item.productId,
-                        item.quantity
+                        newStock,
+                        stockStatus,
+                        item.productId
                     ]
                 );
 
@@ -766,6 +808,36 @@ exports.placeGuestOrder = async (
                     `Unable to reserve stock for ${item.productName}.`
                 );
             }
+
+            await inventoryService.recordMovement(
+                connection,
+                {
+                    productId:
+                        item.productId,
+                    transactionType:
+                        "Stock Out",
+                    quantity,
+                    previousStock,
+                    newStock,
+                    costPrice:
+                        Number(
+                            product.cost_price || 0
+                        ),
+                    supplierId:
+                        null,
+                    reference:
+                        orderNumber,
+                    remarks:
+                        `Guest website order ${orderNumber}`,
+                    createdBy:
+                        null
+                }
+            );
+
+            // Keep our locked product object synchronized
+            // in case the same product is referenced again.
+            product.stock_quantity =
+                newStock;
         }
 
         await connection.commit();

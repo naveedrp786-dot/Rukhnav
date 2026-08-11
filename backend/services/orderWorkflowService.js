@@ -11,6 +11,9 @@ const {
 const orderSalesIntegrationService =
     require("./orderSalesIntegrationService");
 
+const inventoryService =
+    require("./inventoryService");
+
 const cleanNotes = value => {
     if (value === undefined || value === null) {
         return null;
@@ -90,6 +93,133 @@ const updateOrderStatus = async ({ orderId, requestedStatus, adminId, notes }) =
             );
             error.statusCode = 409;
             throw error;
+        }
+
+        // Website stock is reserved when the order is placed.
+        // Once Confirmed, an ERP Sale + Invoice exists and its
+        // cancellation workflow must own stock/refund reversal.
+        if (
+            newStatus === "Cancelled" &&
+            oldStatus !== "Pending"
+        ) {
+            const [linkedSales] =
+                await connection.query(
+                    `
+                    SELECT
+                        id,
+                        sale_number,
+                        sale_status,
+                        payment_status
+                    FROM sales
+                    WHERE order_id = ?
+                    LIMIT 1
+                    `,
+                    [orderId]
+                );
+
+            if (linkedSales.length) {
+                const error = new Error(
+                    `Order ${order.order_number || order.id} is linked to ERP sale ${linkedSales[0].sale_number}. Cancel the linked sale from Sales Management so inventory, invoice, refund and loyalty records remain synchronized.`
+                );
+                error.statusCode = 409;
+                throw error;
+            }
+
+            const error = new Error(
+                `Only Pending website orders can be cancelled directly from Order Management.`
+            );
+            error.statusCode = 409;
+            throw error;
+        }
+
+        // Pending order cancellation: return reserved stock exactly once.
+        if (
+            newStatus === "Cancelled" &&
+            oldStatus === "Pending"
+        ) {
+            const [items] =
+                await connection.query(
+                    `
+                    SELECT
+                        oi.product_id,
+                        oi.quantity,
+                        p.stock_quantity,
+                        p.low_stock_level,
+                        p.cost_price
+                    FROM order_items oi
+                    INNER JOIN products p
+                        ON p.id = oi.product_id
+                    WHERE oi.order_id = ?
+                    ORDER BY oi.id ASC
+                    FOR UPDATE
+                    `,
+                    [orderId]
+                );
+
+            if (!items.length) {
+                const error = new Error(
+                    "Order items were not found. Inventory cannot be restored safely."
+                );
+                error.statusCode = 409;
+                throw error;
+            }
+
+            for (const item of items) {
+                const previousStock =
+                    Number(item.stock_quantity || 0);
+
+                const restoredQuantity =
+                    Number(item.quantity || 0);
+
+                const newStock =
+                    previousStock + restoredQuantity;
+
+                const stockStatus =
+                    inventoryService.getStockStatus(
+                        newStock,
+                        item.low_stock_level
+                    );
+
+                await connection.query(
+                    `
+                    UPDATE products
+                    SET
+                        stock_quantity = ?,
+                        stock_status = ?
+                    WHERE id = ?
+                    `,
+                    [
+                        newStock,
+                        stockStatus,
+                        item.product_id
+                    ]
+                );
+
+                await inventoryService.recordMovement(
+                    connection,
+                    {
+                        productId:
+                            item.product_id,
+                        transactionType:
+                            "Stock In",
+                        quantity:
+                            restoredQuantity,
+                        previousStock,
+                        newStock,
+                        costPrice:
+                            Number(item.cost_price || 0),
+                        supplierId:
+                            null,
+                        reference:
+                            order.order_number ||
+                            `ORDER-${order.id}`,
+                        remarks:
+                            `Stock restored after admin cancellation of website order ${order.order_number || order.id}`,
+                        createdBy:
+                            adminId || null
+                    }
+                );
+            }
         }
 
         const timestampColumn = getTimestampColumn(newStatus);

@@ -1,5 +1,8 @@
 "use strict";
 
+const inventoryService =
+    require("../services/inventoryService");
+
 const db = require("../config/db");
 const notificationHooks =
     require("../services/notificationHooks");
@@ -846,31 +849,82 @@ exports.placeOrder = async (req, res) => {
                 ]
             );
 
-            const [stockResult] =
+            const [productRows] =
                 await connection.query(
                     `
-                    UPDATE products
-                    SET
-                        stock_quantity =
-                            stock_quantity - ?
+                    SELECT
+                        stock_quantity,
+                        low_stock_level,
+                        cost_price
+                    FROM products
                     WHERE id = ?
-                      AND stock_quantity >= ?
+                    LIMIT 1
+                    FOR UPDATE
                     `,
-                    [
-                        quantity,
-                        item.product_id,
-                        quantity
-                    ]
+                    [item.product_id]
                 );
 
-            if (
-                stockResult.affectedRows ===
-                0
-            ) {
+            if (!productRows.length) {
+                throw new Error(
+                    `Product not found for ${item.product_name}.`
+                );
+            }
+
+            const previousStock =
+                Number(productRows[0].stock_quantity);
+
+            if (previousStock < quantity) {
                 throw new Error(
                     `Unable to reserve stock for ${item.product_name}.`
                 );
             }
+
+            const newStock =
+                previousStock - quantity;
+
+            const stockStatus =
+                inventoryService.getStockStatus(
+                    newStock,
+                    productRows[0].low_stock_level
+                );
+
+            await connection.query(
+                `
+                UPDATE products
+                SET
+                    stock_quantity = ?,
+                    stock_status = ?
+                WHERE id = ?
+                `,
+                [
+                    newStock,
+                    stockStatus,
+                    item.product_id
+                ]
+            );
+
+            await inventoryService.recordMovement(
+                connection,
+                {
+                    productId:
+                        item.product_id,
+                    transactionType:
+                        "Stock Out",
+                    quantity,
+                    previousStock,
+                    newStock,
+                    costPrice:
+                        Number(
+                            productRows[0].cost_price || 0
+                        ),
+                    supplierId: null,
+                    reference:
+                        orderNumber,
+                    remarks:
+                        `Website order ${orderNumber}`,
+                    createdBy: null
+                }
+            );
         }
 
         // -------------------------------------------------
@@ -1412,20 +1466,80 @@ exports.cancelOrder = async (
             );
 
         for (const item of items) {
+            const [productRows] =
+                await connection.query(
+                    `
+                    SELECT
+                        stock_quantity,
+                        low_stock_level,
+                        cost_price
+                    FROM products
+                    WHERE id = ?
+                    LIMIT 1
+                    FOR UPDATE
+                    `,
+                    [item.product_id]
+                );
+
+            if (!productRows.length) {
+                throw new Error(
+                    `Product ${item.product_id} was not found while restoring cancelled order stock.`
+                );
+            }
+
+            const previousStock =
+                Number(productRows[0].stock_quantity);
+
+            const restoredQuantity =
+                Number(item.quantity);
+
+            const newStock =
+                previousStock +
+                restoredQuantity;
+
+            const stockStatus =
+                inventoryService.getStockStatus(
+                    newStock,
+                    productRows[0].low_stock_level
+                );
+
             await connection.query(
                 `
                 UPDATE products
                 SET
-                    stock_quantity =
-                        stock_quantity + ?
+                    stock_quantity = ?,
+                    stock_status = ?
                 WHERE id = ?
                 `,
                 [
-                    Number(
-                        item.quantity
-                    ),
+                    newStock,
+                    stockStatus,
                     item.product_id
                 ]
+            );
+
+            await inventoryService.recordMovement(
+                connection,
+                {
+                    productId:
+                        item.product_id,
+                    transactionType:
+                        "Stock In",
+                    quantity:
+                        restoredQuantity,
+                    previousStock,
+                    newStock,
+                    costPrice:
+                        Number(
+                            productRows[0].cost_price || 0
+                        ),
+                    supplierId: null,
+                    reference:
+                        order.order_number,
+                    remarks:
+                        `Stock restored after cancellation of website order ${order.order_number}`,
+                    createdBy: null
+                }
             );
         }
 
