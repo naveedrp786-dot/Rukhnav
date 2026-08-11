@@ -28,10 +28,14 @@ window.API = {
     },
 
     token() {
+        /*
+         * Storefront authentication must use customer-specific
+         * tokens only. A generic "token" may belong to another
+         * part of the ERP/admin application on the same origin.
+         */
         return (
             localStorage.getItem("customerToken") ||
             localStorage.getItem("customer_token") ||
-            localStorage.getItem("token") ||
             ""
         );
     },

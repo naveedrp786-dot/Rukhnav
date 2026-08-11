@@ -388,22 +388,43 @@ window.Store = {
                 )
             );
 
+        /*
+         * Try the authenticated cart first only when a
+         * real customer token exists.
+         */
         if (API.isAuthenticated()) {
-            const data =
-                await API.post(
-                    API.cart,
-                    {
-                        product_id:
-                            Number(productId),
+            try {
+                const data =
+                    await API.post(
+                        API.cart,
+                        {
+                            product_id:
+                                Number(productId),
 
-                        quantity:
-                            amount
-                    }
-                );
+                            quantity:
+                                amount
+                        }
+                    );
 
-            await this.refreshCartCount();
+                await this.refreshCartCount();
 
-            return data;
+                return data;
+
+            } catch (error) {
+                /*
+                 * An expired/invalid customer session should not
+                 * prevent shopping. Clear it and continue using
+                 * the browser guest cart.
+                 */
+                if (
+                    error.status !== 401 &&
+                    error.status !== 403
+                ) {
+                    throw error;
+                }
+
+                API.clearCustomerSession();
+            }
         }
 
         const cart =

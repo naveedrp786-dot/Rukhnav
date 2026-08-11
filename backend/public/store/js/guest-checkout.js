@@ -3,6 +3,12 @@
 const GuestCheckout = {
     product: null,
     quantity: 1,
+
+    // Multiple products used when checkout starts
+    // from the browser guest cart.
+    items: [],
+    cartMode: false,
+
     attribution: {},
 
     async init() {
@@ -14,6 +20,44 @@ const GuestCheckout = {
                 location.search
             );
 
+        /*
+         * -------------------------------------------------
+         * Guest cart checkout
+         * -------------------------------------------------
+         * cart.html sends:
+         *
+         * guest-checkout.html?source=cart
+         *
+         * The browser cart contains:
+         * [
+         *   { productId: 6, quantity: 2 },
+         *   { productId: 18, quantity: 1 }
+         * ]
+         */
+        if (
+            params.get("source") ===
+            "cart"
+        ) {
+            this.cartMode = true;
+
+            try {
+                await this.loadCartCheckout();
+                this.showCheckout();
+            } catch (error) {
+                this.showLoadError(
+                    error.message ||
+                    "Unable to load your guest cart."
+                );
+            }
+
+            return;
+        }
+
+        /*
+         * -------------------------------------------------
+         * Existing Buy Now checkout
+         * -------------------------------------------------
+         */
         const productId =
             Number.parseInt(
                 params.get("product_id") ||
@@ -68,7 +112,9 @@ const GuestCheckout = {
             }
 
             const stock =
-                this.stock();
+                this.productStock(
+                    this.product
+                );
 
             if (stock < 1) {
                 throw new Error(
@@ -82,23 +128,17 @@ const GuestCheckout = {
                     stock
                 );
 
+            this.items = [
+                {
+                    product:
+                        this.product,
+                    quantity:
+                        this.quantity
+                }
+            ];
+
             this.render();
-
-            document
-                .getElementById(
-                    "guestCheckoutLoading"
-                )
-                ?.classList.add(
-                    "hidden"
-                );
-
-            document
-                .getElementById(
-                    "guestCheckoutContent"
-                )
-                ?.classList.remove(
-                    "hidden"
-                );
+            this.showCheckout();
 
         } catch (error) {
             this.showLoadError(
@@ -106,6 +146,164 @@ const GuestCheckout = {
                 "Unable to load the selected product."
             );
         }
+    },
+
+    async loadCartCheckout() {
+        /*
+         * Store is loaded before guest-checkout.js
+         * by the storefront HTML.
+         */
+        if (
+            typeof Store === "undefined" ||
+            typeof Store.read !== "function"
+        ) {
+            throw new Error(
+                "The guest cart could not be loaded."
+            );
+        }
+
+        const guestItems =
+            Store.read(
+                Store.cartKey
+            );
+
+        if (
+            !Array.isArray(guestItems) ||
+            !guestItems.length
+        ) {
+            throw new Error(
+                "Your guest cart is empty."
+            );
+        }
+
+        const data =
+            await API.get(
+                API.products
+            );
+
+        const products =
+            Array.isArray(data.products)
+                ? data.products
+                : Array.isArray(data.data)
+                    ? data.data
+                    : Array.isArray(data)
+                        ? data
+                        : [];
+
+        if (!products.length) {
+            throw new Error(
+                "Product details could not be loaded."
+            );
+        }
+
+        const items = [];
+
+        for (const cartItem of guestItems) {
+            const productId =
+                Number(
+                    cartItem.productId
+                );
+
+            const requestedQuantity =
+                Math.min(
+                    Math.max(
+                        Number(
+                            cartItem.quantity ||
+                            1
+                        ),
+                        1
+                    ),
+                    50
+                );
+
+            const product =
+                products.find(
+                    row =>
+                        Number(row.id) ===
+                        productId
+                );
+
+            /*
+             * Do not silently drop a product from
+             * checkout. If a cart item no longer
+             * exists, ask the customer to review
+             * the cart first.
+             */
+            if (!product) {
+                throw new Error(
+                    `A product in your cart is no longer available. Please return to your cart and review it.`
+                );
+            }
+
+            const stock =
+                this.productStock(
+                    product
+                );
+
+            if (stock < 1) {
+                throw new Error(
+                    `${product.product_name || "A product"} is currently out of stock.`
+                );
+            }
+
+            if (
+                requestedQuantity >
+                stock
+            ) {
+                throw new Error(
+                    `Only ${stock} unit${stock === 1 ? "" : "s"} of ${product.product_name || "this product"} are currently available. Please update your cart quantity.`
+                );
+            }
+
+            items.push({
+                product,
+                quantity:
+                    requestedQuantity
+            });
+        }
+
+        if (!items.length) {
+            throw new Error(
+                "Your guest cart is empty."
+            );
+        }
+
+        this.items =
+            items;
+
+        this.product =
+            items[0].product;
+
+        this.quantity =
+            items[0].quantity;
+
+        this.render();
+    },
+
+    showCheckout() {
+        document
+            .getElementById(
+                "guestCheckoutLoading"
+            )
+            ?.classList.add(
+                "hidden"
+            );
+
+        document
+            .getElementById(
+                "guestCheckoutError"
+            )
+            ?.classList.add(
+                "hidden"
+            );
+
+        document
+            .getElementById(
+                "guestCheckoutContent"
+            )
+            ?.classList.remove(
+                "hidden"
+            );
     },
 
     bind() {
@@ -206,26 +404,26 @@ const GuestCheckout = {
         );
     },
 
-    stock() {
+    productStock(product) {
         return Number(
-            this.product?.stock_quantity ??
-            this.product?.stock ??
+            product?.stock_quantity ??
+            product?.stock ??
             0
         );
     },
 
-    price() {
+    productPrice(product) {
         return Number(
-            this.product?.selling_price ??
-            this.product?.price ??
+            product?.selling_price ??
+            product?.price ??
             0
         );
     },
 
-    image() {
+    productImage(product) {
         const value =
-            this.product?.image ||
-            this.product?.image_url ||
+            product?.image ||
+            product?.image_url ||
             "";
 
         if (!value) {
@@ -237,6 +435,26 @@ const GuestCheckout = {
             : `${API.base}/${String(value).replace(/^\/+/, "")}`;
     },
 
+    // Existing helpers retained for Buy Now
+    // compatibility and any future callers.
+    stock() {
+        return this.productStock(
+            this.product
+        );
+    },
+
+    price() {
+        return this.productPrice(
+            this.product
+        );
+    },
+
+    image() {
+        return this.productImage(
+            this.product
+        );
+    },
+
     delivery(subtotal) {
         return subtotal >= 2500
             ? 0
@@ -244,9 +462,76 @@ const GuestCheckout = {
     },
 
     render() {
-        const subtotal =
-            this.price() *
-            this.quantity;
+        const checkoutItems =
+            Array.isArray(this.items) &&
+            this.items.length
+                ? this.items
+                : (
+                    this.product
+                        ? [
+                            {
+                                product:
+                                    this.product,
+                                quantity:
+                                    this.quantity
+                            }
+                        ]
+                        : []
+                );
+
+        let subtotal = 0;
+
+        const rows =
+            checkoutItems.map(item => {
+                const product =
+                    item.product;
+
+                const quantity =
+                    Number(
+                        item.quantity ||
+                        1
+                    );
+
+                const price =
+                    this.productPrice(
+                        product
+                    );
+
+                const lineTotal =
+                    price *
+                    quantity;
+
+                subtotal +=
+                    lineTotal;
+
+                const image =
+                    this.productImage(
+                        product
+                    );
+
+                const stock =
+                    this.productStock(
+                        product
+                    );
+
+                return `
+                    <article class="guest-order-item">
+                        ${
+                            image
+                                ? `<img src="${Components.e(image)}" alt="${Components.e(product.product_name || "Product")}">`
+                                : `<div class="guest-order-placeholder"><i class="fa-solid fa-spa"></i></div>`
+                        }
+
+                        <div>
+                            <strong>${Components.e(product.product_name || "Product")}</strong>
+                            <span>Quantity: ${quantity}</span>
+                            <small>${stock} available</small>
+                        </div>
+
+                        <b>${Store.money(lineTotal)}</b>
+                    </article>
+                `;
+            });
 
         const delivery =
             this.delivery(
@@ -257,32 +542,14 @@ const GuestCheckout = {
             subtotal +
             delivery;
 
-        const image =
-            this.image();
-
         const container =
             document.getElementById(
                 "guestOrderItems"
             );
 
         if (container) {
-            container.innerHTML = `
-                <article class="guest-order-item">
-                    ${
-                        image
-                            ? `<img src="${Components.e(image)}" alt="${Components.e(this.product.product_name || "Product")}">`
-                            : `<div class="guest-order-placeholder"><i class="fa-solid fa-spa"></i></div>`
-                    }
-
-                    <div>
-                        <strong>${Components.e(this.product.product_name || "Product")}</strong>
-                        <span>Quantity: ${this.quantity}</span>
-                        <small>${this.stock()} available</small>
-                    </div>
-
-                    <b>${Store.money(subtotal)}</b>
-                </article>
-            `;
+            container.innerHTML =
+                rows.join("");
         }
 
         this.text(
@@ -327,7 +594,14 @@ const GuestCheckout = {
     async submit(event) {
         event.preventDefault();
 
-        if (!this.product) {
+        if (
+            !Array.isArray(this.items) ||
+            !this.items.length
+        ) {
+            this.message(
+                "There are no products available to order.",
+                "error"
+            );
             return;
         }
 
@@ -463,15 +737,20 @@ const GuestCheckout = {
                         accept_privacy:
                             true,
 
-                        items: [
-                            {
-                                product_id:
-                                    this.product.id,
+                        items:
+                            this.items.map(
+                                item => ({
+                                    product_id:
+                                        Number(
+                                            item.product.id
+                                        ),
 
-                                quantity:
-                                    this.quantity
-                            }
-                        ],
+                                    quantity:
+                                        Number(
+                                            item.quantity
+                                        )
+                                })
+                            ),
 
                         attribution:
                             this.attribution
@@ -497,6 +776,31 @@ const GuestCheckout = {
                 `rukhnav_guest_order_${order.order_number}`,
                 token
             );
+
+            /*
+             * The backend has now confirmed the order.
+             * Only now is it safe to clear a cart-based
+             * guest checkout.
+             */
+            if (this.cartMode) {
+                localStorage.removeItem(
+                    Store.cartKey
+                );
+
+                localStorage.setItem(
+                    Store.cartSyncKey,
+                    String(Date.now())
+                );
+
+                try {
+                    await Store.refreshCartCount();
+                } catch (error) {
+                    console.warn(
+                        "Cart counter could not be refreshed:",
+                        error
+                    );
+                }
+            }
 
             const successUrl =
                 new URL(
