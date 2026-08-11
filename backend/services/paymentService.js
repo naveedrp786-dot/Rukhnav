@@ -384,6 +384,30 @@ const refundPayment = async ({ paymentId, adminId, payload }) => {
                     payment.order_id
                 );
 
+    /*
+     * A true full refund becomes the final
+     * customer-facing order state.
+     *
+     * Partial refunds deliberately preserve
+     * the existing fulfilment status.
+     */
+    if (orderFullyRefunded) {
+        await connection.query(
+            `
+                UPDATE orders
+                SET
+                    order_status = 'Refunded',
+                    refunded_at = COALESCE(
+                        refunded_at,
+                        CURRENT_TIMESTAMP
+                    )
+                WHERE id = ?
+            `,
+            [payment.order_id]
+        );
+    }
+
+
         await connection.commit();
 
         // Full order refund -> reverse earned purchase loyalty.
