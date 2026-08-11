@@ -180,6 +180,27 @@ const updateOrderStatus = async ({ orderId, requestedStatus, adminId, notes }) =
 
         await connection.commit();
 
+        // =============================================
+        // Already-Paid Order -> Loyalty -> Referral
+        //
+        // Sale/Invoice must commit first because the
+        // loyalty service uses its own DB connection.
+        // =============================================
+
+        let loyaltyProcessing = null;
+
+        if (
+            salesIntegration &&
+            salesIntegration.saleId &&
+            salesIntegration.paymentStatus === "Paid"
+        ) {
+            loyaltyProcessing =
+                await orderSalesIntegrationService
+                    .processPaidOrderSale(
+                        salesIntegration.saleId
+                    );
+        }
+
         return {
             order: updatedRows[0],
             oldStatus,
@@ -187,7 +208,8 @@ const updateOrderStatus = async ({ orderId, requestedStatus, adminId, notes }) =
             historyId: historyResult.insertId,
             changedByAdminId: adminId || null,
             notes: safeNotes,
-            salesIntegration
+            salesIntegration,
+            loyaltyProcessing
         };
     } catch (error) {
         if (connection) {
