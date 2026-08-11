@@ -8,6 +8,9 @@ const {
     getTimestampColumn
 } = require("../utils/orderStatusHelper");
 
+const orderSalesIntegrationService =
+    require("./orderSalesIntegrationService");
+
 const cleanNotes = value => {
     if (value === undefined || value === null) {
         return null;
@@ -131,6 +134,23 @@ const updateOrderStatus = async ({ orderId, requestedStatus, adminId, notes }) =
             [orderId, oldStatus, newStatus, adminId || null, safeNotes]
         );
 
+        // =============================================
+        // Website Order -> ERP Sale -> Invoice
+        // =============================================
+
+        let salesIntegration = null;
+
+        if (newStatus === "Confirmed") {
+            salesIntegration =
+                await orderSalesIntegrationService.ensureSaleForOrder(
+                    connection,
+                    {
+                        orderId,
+                        adminId: adminId || null
+                    }
+                );
+        }
+
         const [updatedRows] = await connection.query(
             `
                 SELECT
@@ -166,7 +186,8 @@ const updateOrderStatus = async ({ orderId, requestedStatus, adminId, notes }) =
             newStatus,
             historyId: historyResult.insertId,
             changedByAdminId: adminId || null,
-            notes: safeNotes
+            notes: safeNotes,
+            salesIntegration
         };
     } catch (error) {
         if (connection) {
