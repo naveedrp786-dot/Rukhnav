@@ -109,6 +109,23 @@ const frontendPublicRoot =
     }) ||
     path.join(__dirname, "../public");
 
+// =====================================================
+// Browser Favicon
+// =====================================================
+// Reuse the existing RUKHNAV brand logo instead of
+// requiring a separate favicon.ico file.
+app.get("/favicon.ico", (req, res) => {
+    res.type("png");
+    res.sendFile(
+        path.join(
+            frontendPublicRoot,
+            "admin",
+            "images",
+            "logo.png"
+        )
+    );
+});
+
 app.use(
     express.static(frontendPublicRoot)
 );

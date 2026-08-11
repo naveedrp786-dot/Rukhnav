@@ -240,8 +240,16 @@ const ReviewAdmin = {
 
     closeModal() {
         const modal = document.getElementById("reviewModal");
+
+        // Move keyboard focus outside the modal before hiding it.
+        // This prevents Chrome's aria-hidden accessibility warning.
+        if (modal && modal.contains(document.activeElement)) {
+            document.activeElement.blur();
+        }
+
         modal?.classList.add("hidden");
         modal?.setAttribute("aria-hidden", "true");
+
         this.activeReviewId = null;
     },
 
