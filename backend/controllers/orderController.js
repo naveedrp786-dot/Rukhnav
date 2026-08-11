@@ -11,20 +11,27 @@ const notificationHooks =
 // Configuration
 // =====================================================
 
-// Add these values to .env later if required:
+// Delivery rules.
 //
-// DELIVERY_CHARGES=200
-// FREE_DELIVERY_MINIMUM=3000
+// Railway environment variables may override these values,
+// but the application must always have safe production
+// defaults aligned with the storefront and guest checkout.
 //
-// Defaults:
-// - Rs. 0 delivery charges
-// - No automatic free-delivery threshold
+// Default:
+// - Rs. 250 delivery charge
+// - Free delivery on orders of Rs. 2,500 or more
 
 const DEFAULT_DELIVERY_CHARGES =
-    Number(process.env.DELIVERY_CHARGES || 0);
+    Number(
+        process.env.DELIVERY_CHARGES ||
+        250
+    );
 
 const FREE_DELIVERY_MINIMUM =
-    Number(process.env.FREE_DELIVERY_MINIMUM || 0);
+    Number(
+        process.env.FREE_DELIVERY_MINIMUM ||
+        2500
+    );
 
 const ALLOWED_PAYMENT_METHODS = {
     cash_on_delivery: "cash_on_delivery",
