@@ -141,6 +141,14 @@ const ReviewAdmin = {
                     <div><span>Status</span><strong>${this.e(r.status || "Approved")}</strong></div>
                     <div><span>Rating</span><strong class="review-stars">${this.stars(r.rating)}</strong></div>
                     <div><span>Date</span><strong>${this.date(r.created_at)}</strong></div>
+                    <div>
+                        <span>Verified Purchase</span>
+                        <strong>${Number(r.verified_purchase) === 1 ? "Yes ✓" : "No"}</strong>
+                    </div>
+                    <div>
+                        <span>Helpful Votes</span>
+                        <strong>${Number(r.helpful_count || 0)}</strong>
+                    </div>
                 </div>
                 <div class="review-detail-comment">${this.e(r.comment || "No written comment.")}</div>`;
             document.getElementById("moderationActions")?.classList.toggle("hidden", !this.moderationEnabled);
