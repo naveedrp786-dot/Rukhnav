@@ -252,7 +252,8 @@ const applyLoyaltyTransaction =
         description = null,
         idempotencyKey = null,
         createdByAdminId = null,
-        metadata = null
+        metadata = null,
+        existingConnection = null
     }) => {
         const parsedCustomerId =
             toInteger(
@@ -339,11 +340,25 @@ const applyLoyaltyTransaction =
         const safeMetadata =
             normaliseMetadata(metadata);
 
+        /*
+         * Normally the loyalty service owns
+         * its database transaction.
+         *
+         * Checkout may provide an existing
+         * connection so the order, inventory
+         * and points commit or roll back together.
+         */
+        const ownsConnection =
+            !existingConnection;
+
         const connection =
+            existingConnection ||
             await db.getConnection();
 
         try {
-            await connection.beginTransaction();
+            if (ownsConnection) {
+                await connection.beginTransaction();
+            }
 
             const existingTransaction =
                 await getExistingTransactionByKey(
@@ -352,7 +367,9 @@ const applyLoyaltyTransaction =
                 );
 
             if (existingTransaction) {
-                await connection.commit();
+                if (ownsConnection) {
+                    await connection.commit();
+                }
 
                 return {
                     alreadyProcessed: true,
@@ -534,7 +551,9 @@ const applyLoyaltyTransaction =
                     [insertResult.insertId]
                 );
 
-            await connection.commit();
+            if (ownsConnection) {
+                await connection.commit();
+            }
 
             return {
                 alreadyProcessed: false,
@@ -560,7 +579,9 @@ const applyLoyaltyTransaction =
             };
 
         } catch (error) {
-            await connection.rollback();
+            if (ownsConnection) {
+                await connection.rollback();
+            }
 
             if (
                 error.code ===
@@ -576,7 +597,9 @@ const applyLoyaltyTransaction =
             throw error;
 
         } finally {
-            connection.release();
+            if (ownsConnection) {
+                connection.release();
+            }
         }
     };
 
@@ -636,7 +659,8 @@ const redeemRewardPoints =
         points,
         referenceNumber = null,
         description = null,
-        metadata = null
+        metadata = null,
+        existingConnection = null
     }) => {
         const parsedPoints =
             toInteger(
@@ -670,7 +694,8 @@ const redeemRewardPoints =
                 referenceNumber
                     ? `reward-redemption:${referenceNumber}`
                     : null,
-            metadata
+            metadata,
+            existingConnection
         });
     };
 

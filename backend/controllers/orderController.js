@@ -7,6 +7,10 @@ const db = require("../config/db");
 const notificationHooks =
     require("../services/notificationHooks");
 
+const {
+    redeemRewardPoints
+} = require("../services/loyaltyTransactionService");
+
 // =====================================================
 // Configuration
 // =====================================================
@@ -235,6 +239,38 @@ exports.placeOrder = async (req, res) => {
             req.body.payment_method
         );
 
+    /*
+     * Reward redemption request.
+     *
+     * Browser requests the number of points.
+     * Server validates the real balance and determines
+     * the actual discount.
+     *
+     * RUKHNAV redemption rule:
+     * 1 reward point = Rs. 1
+     */
+    const requestedRewardPoints =
+        req.body.reward_points_to_redeem === undefined ||
+        req.body.reward_points_to_redeem === null ||
+        req.body.reward_points_to_redeem === ""
+            ? 0
+            : Number(
+                  req.body.reward_points_to_redeem
+              );
+
+    if (
+        !Number.isInteger(
+            requestedRewardPoints
+        ) ||
+        requestedRewardPoints < 0
+    ) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Reward points must be a whole number of zero or greater."
+        });
+    }
+
     // -------------------------------------------------
     // Basic checkout validation
     // -------------------------------------------------
@@ -347,6 +383,10 @@ exports.placeOrder = async (req, res) => {
                         cr.membership_level,
                         'Bronze'
                     ) AS membership_level,
+                    COALESCE(
+                        cr.reward_points,
+                        0
+                    ) AS available_reward_points,
                     COALESCE(
                         clc.discount_percentage,
                         0
@@ -807,12 +847,88 @@ exports.placeOrder = async (req, res) => {
                   );
 
         /*
-         * Reward-point redemption is intentionally zero
-         * until checkout redemption/reservation/reversal
-         * is implemented transactionally.
+         * Secure reward redemption.
+         *
+         * Customer reward balance was read while the
+         * customer row is protected by this checkout
+         * transaction.
+         *
+         * 1 point = Rs. 1.
          */
-        const rewardPointsRedeemed = 0;
-        const rewardPointsDiscountAmount = 0;
+        const availableRewardPoints =
+            Math.max(
+                0,
+                Math.floor(
+                    Number(
+                        customerRows[0]
+                            .available_reward_points ||
+                        0
+                    )
+                )
+            );
+
+        if (
+            requestedRewardPoints >
+            availableRewardPoints
+        ) {
+            await rollbackQuietly(
+                connection
+            );
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    `You only have ${availableRewardPoints} reward point(s) available.`
+            });
+        }
+
+        /*
+         * Points can reduce merchandise remaining after
+         * coupon and membership discounts, but they do
+         * not consume the delivery charge.
+         */
+        const merchandiseAfterDiscounts =
+            Math.max(
+                0,
+                Number(
+                    (
+                        subtotalAmount -
+                        discountAmount -
+                        loyaltyDiscountAmount
+                    ).toFixed(2)
+                )
+            );
+
+        const maximumUsableRewardPoints =
+            Math.max(
+                0,
+                Math.floor(
+                    merchandiseAfterDiscounts
+                )
+            );
+
+        if (
+            requestedRewardPoints >
+            maximumUsableRewardPoints
+        ) {
+            await rollbackQuietly(
+                connection
+            );
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    `A maximum of ${maximumUsableRewardPoints} reward point(s) can be used on this order.`
+            });
+        }
+
+        const rewardPointsRedeemed =
+            requestedRewardPoints;
+
+        const rewardPointsDiscountAmount =
+            Number(
+                rewardPointsRedeemed.toFixed(2)
+            );
 
         const grandTotal = Number(
             Math.max(
@@ -1034,6 +1150,41 @@ exports.placeOrder = async (req, res) => {
                     createdBy: null
                 }
             );
+        }
+
+        // -------------------------------------------------
+        // Redeem reward points
+        // -------------------------------------------------
+
+        /*
+         * IMPORTANT:
+         *
+         * Pass checkout's existing MySQL connection.
+         * Therefore order + stock + reward redemption
+         * succeed or fail together.
+         */
+        if (rewardPointsRedeemed > 0) {
+            await redeemRewardPoints({
+                customerId,
+                points:
+                    rewardPointsRedeemed,
+                referenceNumber:
+                    `ORDER-${orderNumber}`,
+                description:
+                    `Reward points redeemed on website order ${orderNumber}.`,
+                metadata: {
+                    orderId,
+                    orderNumber,
+                    points:
+                        rewardPointsRedeemed,
+                    discountAmount:
+                        rewardPointsDiscountAmount,
+                    source:
+                        "website_checkout"
+                },
+                existingConnection:
+                    connection
+            });
         }
 
         // -------------------------------------------------

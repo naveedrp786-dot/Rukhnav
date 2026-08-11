@@ -217,6 +217,65 @@
                         <strong id="checkoutLoyaltyDiscount">Rs. 0</strong>
                     </div>
                 </div>
+
+                <div class="reward-redemption">
+                    <div class="reward-redemption-heading">
+                        <div>
+                            <strong>
+                                <i class="fa-solid fa-coins"></i>
+                                Use reward points
+                            </strong>
+                            <small>
+                                Redeem available points toward this order.
+                                Final eligibility is verified securely when
+                                the order is placed.
+                            </small>
+                        </div>
+
+                        <span id="checkoutRewardValue">
+                            Rs. 0 discount
+                        </span>
+                    </div>
+
+                    <div class="reward-redemption-controls">
+                        <input
+                            id="checkoutRewardPoints"
+                            type="number"
+                            min="0"
+                            step="1"
+                            value="0"
+                            inputmode="numeric"
+                            aria-label="Reward points to redeem"
+                        >
+
+                        <button
+                            id="useMaximumRewardPoints"
+                            type="button"
+                        >
+                            Use Maximum
+                        </button>
+
+                        <button
+                            id="clearRewardPoints"
+                            type="button"
+                            class="reward-clear-button"
+                        >
+                            Clear
+                        </button>
+                    </div>
+
+                    <div class="reward-redemption-meta">
+                        <span>
+                            Available:
+                            <strong id="checkoutRewardAvailable">0 points</strong>
+                        </span>
+
+                        <span>
+                            Using:
+                            <strong id="checkoutRewardUsing">0 points</strong>
+                        </span>
+                    </div>
+                </div>
             </article>
 
 
@@ -235,6 +294,10 @@
             <div class="summary-row"><span>Delivery</span><strong id="checkoutDelivery">Rs. 0</strong></div>
             <div class="summary-row"><span>Coupon discount</span><strong id="checkoutCouponDiscount">Rs. 0</strong></div>
             <div class="summary-row"><span>Loyalty discount</span><strong id="checkoutSummaryLoyalty">Rs. 0</strong></div>
+            <div class="summary-row reward-summary-row">
+                <span>Reward points discount</span>
+                <strong id="checkoutRewardDiscount">- Rs. 0</strong>
+            </div>
             <div class="summary-total"><span>Total payable</span><strong id="checkoutGrandTotal">Rs. 0</strong></div>
 
             <button id="placeOrderButton" type="submit" form="checkoutForm" class="place-order-button">

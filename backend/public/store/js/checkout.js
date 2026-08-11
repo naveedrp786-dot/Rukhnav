@@ -8,6 +8,9 @@ const Checkout = {
     deliveryCharge: 250,
     couponDiscount: 0,
     loyaltyDiscount: 0,
+    availableRewardPoints: 0,
+    rewardPointsToRedeem: 0,
+    rewardPointsDiscount: 0,
     submitting: false,
 
     async init() {
@@ -120,6 +123,26 @@ this.calculate();
             ?.addEventListener("click", () => {
                 this.applyCouponPreview();
             });
+
+        document
+            .getElementById("checkoutRewardPoints")
+            ?.addEventListener("input", event => {
+                this.setRewardPoints(
+                    event.target.value
+                );
+            });
+
+        document
+            .getElementById("useMaximumRewardPoints")
+            ?.addEventListener("click", () => {
+                this.useMaximumRewardPoints();
+            });
+
+        document
+            .getElementById("clearRewardPoints")
+            ?.addEventListener("click", () => {
+                this.setRewardPoints(0);
+            });
     },
 
     prefill() {
@@ -189,6 +212,24 @@ this.calculate();
         0
     );
 
+    this.availableRewardPoints =
+        Math.max(
+            0,
+            Math.floor(
+                Number.isFinite(points)
+                    ? points
+                    : 0
+            )
+        );
+
+    if (
+        this.rewardPointsToRedeem >
+        this.availableRewardPoints
+    ) {
+        this.rewardPointsToRedeem =
+            this.availableRewardPoints;
+    }
+
     const percentage = Number(
         this.loyalty.benefits?.discountPercentage ??
         this.loyalty.discountPercentage ??
@@ -220,6 +261,29 @@ this.calculate();
         "checkoutLoyaltyDiscount",
         Store.money(this.loyaltyDiscount)
     );
+
+    this.text(
+        "checkoutRewardAvailable",
+        `${new Intl.NumberFormat("en-PK")
+            .format(this.availableRewardPoints)} points`
+    );
+
+    const rewardInput =
+        document.getElementById(
+            "checkoutRewardPoints"
+        );
+
+    if (rewardInput) {
+        rewardInput.max =
+            String(
+                this.availableRewardPoints
+            );
+
+        rewardInput.value =
+            String(
+                this.rewardPointsToRedeem
+            );
+    }
 
     // ======================================
     // FREE DELIVERY CHECK
@@ -278,25 +342,213 @@ this.calculate();
 
 },
 
+    setRewardPoints(value) {
+        let requested =
+            Number.parseInt(
+                value,
+                10
+            );
+
+        if (
+            !Number.isInteger(requested) ||
+            requested < 0
+        ) {
+            requested = 0;
+        }
+
+        requested =
+            Math.min(
+                requested,
+                this.availableRewardPoints
+            );
+
+        /*
+         * Current RUKHNAV redemption rule:
+         * 1 reward point = Rs. 1.
+         *
+         * Never allow the browser preview to redeem
+         * more than the amount remaining after coupon
+         * and membership discounts.
+         */
+        const merchandiseRemaining =
+            Math.max(
+                0,
+                this.subtotal -
+                this.couponDiscount -
+                this.loyaltyDiscount
+            );
+
+        const maximumUsefulPoints =
+            Math.max(
+                0,
+                Math.floor(
+                    merchandiseRemaining
+                )
+            );
+
+        requested =
+            Math.min(
+                requested,
+                maximumUsefulPoints
+            );
+
+        this.rewardPointsToRedeem =
+            requested;
+
+        this.rewardPointsDiscount =
+            Number(
+                requested.toFixed(2)
+            );
+
+        const input =
+            document.getElementById(
+                "checkoutRewardPoints"
+            );
+
+        if (input) {
+            input.value =
+                String(requested);
+        }
+
+        this.text(
+            "checkoutRewardUsing",
+            `${new Intl.NumberFormat("en-PK")
+                .format(requested)} points`
+        );
+
+        this.text(
+            "checkoutRewardValue",
+            `${Store.money(
+                this.rewardPointsDiscount
+            )} discount`
+        );
+
+        this.calculate();
+    },
+
+    useMaximumRewardPoints() {
+        const merchandiseRemaining =
+            Math.max(
+                0,
+                this.subtotal -
+                this.couponDiscount -
+                this.loyaltyDiscount
+            );
+
+        const maximumUsefulPoints =
+            Math.max(
+                0,
+                Math.floor(
+                    merchandiseRemaining
+                )
+            );
+
+        this.setRewardPoints(
+            Math.min(
+                this.availableRewardPoints,
+                maximumUsefulPoints
+            )
+        );
+    },
+
     calculate() {
+        /*
+         * Revalidate reward preview whenever another
+         * checkout value changes.
+         */
+        const merchandiseRemaining =
+            Math.max(
+                0,
+                this.subtotal -
+                this.couponDiscount -
+                this.loyaltyDiscount
+            );
+
+        const maximumUsefulPoints =
+            Math.max(
+                0,
+                Math.floor(
+                    merchandiseRemaining
+                )
+            );
+
+        if (
+            this.rewardPointsToRedeem >
+            maximumUsefulPoints
+        ) {
+            this.rewardPointsToRedeem =
+                maximumUsefulPoints;
+
+            this.rewardPointsDiscount =
+                maximumUsefulPoints;
+
+            const input =
+                document.getElementById(
+                    "checkoutRewardPoints"
+                );
+
+            if (input) {
+                input.value =
+                    String(
+                        maximumUsefulPoints
+                    );
+            }
+        }
+
         const total = Math.max(
             0,
             this.subtotal +
             this.deliveryCharge -
             this.couponDiscount -
-            this.loyaltyDiscount
+            this.loyaltyDiscount -
+            this.rewardPointsDiscount
+        );
+
+        this.text(
+            "checkoutRewardUsing",
+            `${new Intl.NumberFormat("en-PK")
+                .format(
+                    this.rewardPointsToRedeem
+                )} points`
+        );
+
+        this.text(
+            "checkoutRewardValue",
+            `${Store.money(
+                this.rewardPointsDiscount
+            )} discount`
+        );
+
+        this.text(
+            "checkoutRewardDiscount",
+            `- ${Store.money(
+                this.rewardPointsDiscount
+            )}`
         );
 
         this.text("checkoutSubtotal", Store.money(this.subtotal));
+
         this.text(
             "checkoutDelivery",
             this.deliveryCharge > 0
                 ? Store.money(this.deliveryCharge)
                 : "Free"
         );
-        this.text("checkoutCouponDiscount", `- ${Store.money(this.couponDiscount)}`);
-        this.text("checkoutSummaryLoyalty", `- ${Store.money(this.loyaltyDiscount)}`);
-        this.text("checkoutGrandTotal", Store.money(total));
+
+        this.text(
+            "checkoutCouponDiscount",
+            `- ${Store.money(this.couponDiscount)}`
+        );
+
+        this.text(
+            "checkoutSummaryLoyalty",
+            `- ${Store.money(this.loyaltyDiscount)}`
+        );
+
+        this.text(
+            "checkoutGrandTotal",
+            Store.money(total)
+        );
     },
 
     applyCouponPreview() {
@@ -425,6 +677,13 @@ this.calculate();
             coupon_code: couponCode,
             delivery_option: deliveryOption,
             delivery_charges: this.deliveryCharge,
+
+            /*
+             * Request only. The server verifies the
+             * actual balance and payable amount.
+             */
+            reward_points_to_redeem:
+                this.rewardPointsToRedeem,
         };
 
         const button = document.getElementById("placeOrderButton");
