@@ -499,6 +499,16 @@ function chartRows(data) {
         return data;
     }
 
+    // Reports API response shape:
+    // { success: true, chart: { data: [...] } }
+    if (
+        data?.chart &&
+        typeof data.chart === "object" &&
+        Array.isArray(data.chart.data)
+    ) {
+        return data.chart.data;
+    }
+
     for (const key of [
         "data",
         "rows",
