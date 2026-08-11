@@ -298,14 +298,22 @@ exports.getInvoices = async (req, res) => {
                 i.payment_status,
                 i.status,
 
+                s.order_id,
+                o.order_number,
+
                 c.full_name customer_name,
                 c.phone,
                 c.email
 
             FROM invoices i
 
-            LEFT JOIN customers c
+            LEFT JOIN sales s
+                ON s.id = i.sale_id
 
+            LEFT JOIN orders o
+                ON o.id = s.order_id
+
+            LEFT JOIN customers c
                 ON c.id=i.customer_id
 
             ORDER BY i.id DESC
@@ -362,6 +370,9 @@ exports.getInvoiceById = async(req,res)=>{
 
                 i.*,
 
+                s.order_id,
+                o.order_number,
+
                 c.full_name,
 
                 c.phone,
@@ -371,6 +382,12 @@ exports.getInvoiceById = async(req,res)=>{
                 c.address
 
             FROM invoices i
+
+            LEFT JOIN sales s
+                ON s.id = i.sale_id
+
+            LEFT JOIN orders o
+                ON o.id = s.order_id
 
             LEFT JOIN customers c
 

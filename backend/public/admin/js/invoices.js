@@ -995,7 +995,8 @@ function populateDetails(
                         <td>
                             ${formatMoney(
                                 item.subtotal ||
-                                item.line_total
+                                item.line_total ||
+                                item.total
                             )}
                         </td>
                     </tr>
