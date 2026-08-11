@@ -170,6 +170,66 @@ const OrderDetailsPage = {
         document.getElementById("detailsDiscount").textContent =
             Store.money(order.discount_amount || 0);
 
+        const loyaltyDiscount =
+            Number(
+                order.loyalty_discount_amount ||
+                0
+            );
+
+        const loyaltyPercentage =
+            Number(
+                order.loyalty_discount_percentage ||
+                0
+            );
+
+        const membershipLevel =
+            order.loyalty_membership_level ||
+            "";
+
+        const memberLabel =
+            document.getElementById(
+                "detailsMemberDiscountLabel"
+            );
+
+        if (memberLabel) {
+            const membershipText =
+                membershipLevel
+                    ? `${membershipLevel} `
+                    : "";
+
+            const percentageText =
+                loyaltyPercentage > 0
+                    ? ` (${loyaltyPercentage}%)`
+                    : "";
+
+            memberLabel.textContent =
+                `${membershipText}member discount${percentageText}`;
+        }
+
+        document.getElementById(
+            "detailsMemberDiscount"
+        ).textContent =
+            Store.money(loyaltyDiscount);
+
+        const rewardPoints =
+            Number(
+                order.reward_points_redeemed ||
+                0
+            );
+
+        document.getElementById(
+            "detailsRewardPoints"
+        ).textContent =
+            `${rewardPoints.toLocaleString()} point${rewardPoints === 1 ? "" : "s"}`;
+
+        document.getElementById(
+            "detailsRewardDiscount"
+        ).textContent =
+            Store.money(
+                order.reward_points_discount_amount ||
+                0
+            );
+
         document.getElementById("detailsDelivery").textContent =
             Store.money(order.delivery_charges || 0);
 

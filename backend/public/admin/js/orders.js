@@ -1245,6 +1245,66 @@ function populateOrderDetails(data) {
         )
     );
 
+    const loyaltyDiscount =
+        Number(
+            order.loyalty_discount_amount ||
+            0
+        );
+
+    const loyaltyPercentage =
+        Number(
+            order.loyalty_discount_percentage ||
+            0
+        );
+
+    const membershipLevel =
+        order.loyalty_membership_level ||
+        "";
+
+    const memberDiscountLabel =
+        $("detailsMemberDiscountLabel");
+
+    if (memberDiscountLabel) {
+        const membershipText =
+            membershipLevel
+                ? `${membershipLevel} `
+                : "";
+
+        const percentageText =
+            loyaltyPercentage > 0
+                ? ` (${loyaltyPercentage}%)`
+                : "";
+
+        memberDiscountLabel.textContent =
+            `${membershipText}Member Discount${percentageText}`;
+    }
+
+    setText(
+        "detailsMemberDiscount",
+        formatMoney(
+            loyaltyDiscount
+        )
+    );
+
+    const rewardPoints =
+        Number(
+            order.reward_points_redeemed ||
+            0
+        );
+
+    setText(
+        "detailsRewardPoints",
+        `${rewardPoints.toLocaleString()} point${rewardPoints === 1 ? "" : "s"}`
+    );
+
+    setText(
+        "detailsRewardDiscount",
+        formatMoney(
+            order.reward_points_discount_amount ||
+            0
+        )
+    );
+
     setText(
         "detailsDeliveryCharges",
         formatMoney(
