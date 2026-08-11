@@ -2,6 +2,12 @@
 
 const db = require("../config/db");
 
+const customerLoyaltyService =
+    require("./customerLoyaltyService");
+
+const orderSalesIntegrationService =
+    require("./orderSalesIntegrationService");
+
 const RETURN_WINDOW_DAYS = Math.max(1, Number(process.env.CUSTOMER_RETURN_WINDOW_DAYS || 14));
 const ACTIVE_REQUEST_STATUSES = ["Requested", "Under Review", "Approved", "Received", "Inspected"];
 
@@ -392,6 +398,7 @@ exports.completeReturn = async ({ returnId, adminId, payload }) => {
         if(refundableTarget<0||refundableTarget>money(request.approved_amount)) throw fail("Refund amount cannot exceed the inspected approved amount.");
         let remaining=refundRequested?refundableTarget:0;
         let refunded=0;
+        let paymentSummary=null;
         if(remaining>0){
             const [payments]=await connection.query(
                 `SELECT * FROM payment_transactions WHERE order_id=? AND status IN ('Paid','Partially Refunded') ORDER BY paid_at DESC,id DESC FOR UPDATE`,[request.order_id]
@@ -412,7 +419,28 @@ exports.completeReturn = async ({ returnId, adminId, payload }) => {
                 remaining=money(remaining-amount); refunded=money(refunded+amount);
             }
             if(remaining>0) throw fail(`Only PKR ${refunded.toFixed(2)} is currently refundable from recorded paid transactions.`,409);
-            await updateOrderPaymentSummary(connection,request.order_id);
+            paymentSummary =
+                await updateOrderPaymentSummary(
+                    connection,
+                    request.order_id
+                );
+        }
+
+        const orderFullyRefunded =
+            String(
+                paymentSummary?.payment_status ||
+                ""
+            ).toLowerCase() === "refunded";
+
+        let salesSync=null;
+
+        if(refunded>0){
+            salesSync =
+                await orderSalesIntegrationService
+                    .syncOrderPaymentToSale(
+                        connection,
+                        request.order_id
+                    );
         }
 
         const finalStatus=refunded>0?"Refunded":"Completed";
@@ -421,9 +449,68 @@ exports.completeReturn = async ({ returnId, adminId, payload }) => {
             [finalStatus,refunded,refunded,returnId]
         );
         await connection.query(`UPDATE customer_return_items SET item_status=? WHERE return_request_id=?`,[finalStatus,returnId]);
-        if(refunded>0) await connection.query(`UPDATE orders SET order_status='Refunded',refunded_at=COALESCE(refunded_at,CURRENT_TIMESTAMP) WHERE id=?`,[request.order_id]);
+        if(orderFullyRefunded) {
+            await connection.query(
+                `UPDATE orders
+                 SET order_status='Refunded',
+                     refunded_at=COALESCE(
+                         refunded_at,
+                         CURRENT_TIMESTAMP
+                     )
+                 WHERE id=?`,
+                [request.order_id]
+            );
+        }
         await addActivity(connection,{returnRequestId:returnId,actorType:"Admin",actorId:adminId,action:refunded>0?"Return completed and refund issued":"Return completed",fromStatus:"Inspected",toStatus:finalStatus,notes:payload.notes});
-        await connection.commit(); return {id:returnId,status:finalStatus,refund_amount:refunded,restocked:restock};
+        await connection.commit();
+
+        let loyaltyReversal=null;
+        let loyaltyWarning=null;
+
+        if(
+            orderFullyRefunded &&
+            salesSync?.linked &&
+            salesSync?.saleId
+        ){
+            try{
+                loyaltyReversal =
+                    await customerLoyaltyService
+                        .reverseSalePoints(
+                            salesSync.saleId,
+                            `Website order ${request.order_id} fully refunded through customer return`
+                        );
+            }catch(error){
+                if(Number(error.statusCode)===404){
+                    loyaltyReversal={
+                        success:true,
+                        pointsReversed:0,
+                        message:
+                            "No purchase loyalty points had been awarded for this sale."
+                    };
+                }else{
+                    console.error(
+                        "Return loyalty reversal failed:",
+                        error
+                    );
+
+                    loyaltyWarning =
+                        error.message ||
+                        "Return completed, but loyalty reversal requires review.";
+                }
+            }
+        }
+
+        return {
+            id:returnId,
+            status:finalStatus,
+            refund_amount:refunded,
+            restocked:restock,
+            paymentSummary,
+            orderFullyRefunded,
+            salesSync,
+            loyaltyReversal,
+            loyaltyWarning
+        };
     }catch(error){await rollbackQuietly(connection);throw error;}finally{connection.release();}
 };
 

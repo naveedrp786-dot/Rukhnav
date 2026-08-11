@@ -1,5 +1,8 @@
 "use strict";
 
+const customerLoyaltyService =
+    require("./customerLoyaltyService");
+
 const db = require("../config/db");
 const accountingAutomation = require("./accountingAutomationService");
 const orderSalesIntegrationService =
@@ -344,6 +347,22 @@ const refundPayment = async ({ paymentId, adminId, payload }) => {
         );
 
         const summary = await calculateAndUpdateOrderPayment(connection, payment.order_id);
+
+        const [[updatedOrder]] =
+            await connection.query(
+                `SELECT id, payment_status
+                 FROM orders
+                 WHERE id = ?
+                 LIMIT 1`,
+                [payment.order_id]
+            );
+
+        const orderFullyRefunded =
+            String(
+                updatedOrder?.payment_status ||
+                ""
+            ).toLowerCase() === "refunded";
+
         const [[refund]] = await connection.query(
             `SELECT * FROM payment_refunds WHERE id = ? LIMIT 1`,
             [refundId]
@@ -367,11 +386,52 @@ const refundPayment = async ({ paymentId, adminId, payload }) => {
 
         await connection.commit();
 
+        // Full order refund -> reverse earned purchase loyalty.
+        // Partial refunds deliberately do not reverse all sale points.
+        let loyaltyReversal = null;
+        let loyaltyWarning = null;
+
+        if (
+            orderFullyRefunded &&
+            salesSync?.linked &&
+            salesSync?.saleId
+        ) {
+            try {
+                loyaltyReversal =
+                    await customerLoyaltyService
+                        .reverseSalePoints(
+                            salesSync.saleId,
+                            `Website order ${payment.order_id} fully refunded`
+                        );
+            } catch (error) {
+                if (Number(error.statusCode) === 404) {
+                    loyaltyReversal = {
+                        success: true,
+                        pointsReversed: 0,
+                        message:
+                            "No purchase loyalty points had been awarded for this sale."
+                    };
+                } else {
+                    console.error(
+                        "Refund loyalty reversal failed:",
+                        error
+                    );
+
+                    loyaltyWarning =
+                        error.message ||
+                        "Refund completed, but loyalty reversal requires review.";
+                }
+            }
+        }
+
         return {
             refund,
             paymentStatus: newStatus,
+            orderFullyRefunded,
             orderPaymentSummary: summary,
-            salesSync
+            salesSync,
+            loyaltyReversal,
+            loyaltyWarning
         };
     } catch (error) {
         if (connection) await rollbackQuietly(connection);
