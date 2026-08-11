@@ -118,7 +118,8 @@ app.get("/favicon.ico", (req, res) => {
     res.type("png");
     res.sendFile(
         path.join(
-            frontendPublicRoot,
+            __dirname,
+            "public",
             "admin",
             "images",
             "logo.png"
