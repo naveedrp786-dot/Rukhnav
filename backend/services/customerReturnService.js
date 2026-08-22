@@ -75,21 +75,117 @@ const updateOrderPaymentSummary = async (connection, orderId) => {
     );
 
     const grand = money(order.grand_total);
-    const gross = money(totals.gross_paid);
-    const refunded = money(totals.refunded);
+    const gross = Math.max(0, money(totals.gross_paid));
+    const refunded = Math.max(0, money(totals.refunded));
     const net = Math.max(0, money(gross - refunded));
-    const balance = Math.max(0, money(grand - net));
+
+    // Refunds do not create a new receivable. Outstanding balance is based
+    // on the original gross payment, not on the post-refund retained amount.
+    const balance = Math.max(0, money(grand - gross));
+
     let status = "Pending";
     if (refunded > 0 && net <= 0) status = "Refunded";
     else if (refunded > 0) status = "Partially Refunded";
-    else if (grand > 0 && net >= grand) status = "Paid";
-    else if (net > 0) status = "Partially Paid";
+    else if (grand > 0 && gross >= grand) status = "Paid";
+    else if (gross > 0) status = "Partially Paid";
 
     await connection.query(
         `UPDATE orders SET paid_amount = ?, balance_amount = ?, payment_status = ? WHERE id = ?`,
         [net, balance, status, orderId]
     );
-    return { paid_amount: net, balance_amount: balance, payment_status: status };
+
+    return {
+        gross_paid_amount: gross,
+        refunded_amount: refunded,
+        paid_amount: net,
+        net_paid_amount: net,
+        balance_amount: balance,
+        payment_status: status
+    };
+};
+
+const calculateReturnFinancials = async (
+    connection,
+    {
+        orderId,
+        grossAmount
+    }
+) => {
+    const [[order]] = await connection.query(
+        `SELECT
+            id,
+            discount_amount,
+            loyalty_discount_amount,
+            reward_points_discount_amount
+         FROM orders
+         WHERE id = ?
+         LIMIT 1
+         FOR UPDATE`,
+        [orderId]
+    );
+
+    if (!order) throw fail("Order not found.", 404);
+
+    const [[subtotalRow]] = await connection.query(
+        `SELECT COALESCE(SUM(subtotal), 0) AS merchandise_subtotal
+         FROM order_items
+         WHERE order_id = ?`,
+        [orderId]
+    );
+
+    const merchandiseSubtotal = money(subtotalRow.merchandise_subtotal);
+    const gross = Math.max(0, money(grossAmount));
+
+    if (gross <= 0 || merchandiseSubtotal <= 0) {
+        return {
+            gross_return_amount: gross,
+            coupon_discount_share: 0,
+            loyalty_discount_share: 0,
+            reward_discount_share: 0,
+            effective_refund_amount: gross
+        };
+    }
+
+    const ratio = Math.min(1, gross / merchandiseSubtotal);
+
+    let couponShare = money(
+        Math.max(0, Number(order.discount_amount || 0)) * ratio
+    );
+    let loyaltyShare = money(
+        Math.max(0, Number(order.loyalty_discount_amount || 0)) * ratio
+    );
+    let rewardShare = money(
+        Math.max(0, Number(order.reward_points_discount_amount || 0)) * ratio
+    );
+
+    // Defensive cap for malformed historical orders whose merchandise
+    // discounts exceed merchandise value. Reduce later discounts first.
+    let totalShare = money(couponShare + loyaltyShare + rewardShare);
+
+    if (totalShare > gross) {
+        let excess = money(totalShare - gross);
+
+        const rewardReduction = Math.min(rewardShare, excess);
+        rewardShare = money(rewardShare - rewardReduction);
+        excess = money(excess - rewardReduction);
+
+        const loyaltyReduction = Math.min(loyaltyShare, excess);
+        loyaltyShare = money(loyaltyShare - loyaltyReduction);
+        excess = money(excess - loyaltyReduction);
+
+        const couponReduction = Math.min(couponShare, excess);
+        couponShare = money(couponShare - couponReduction);
+    }
+
+    totalShare = money(couponShare + loyaltyShare + rewardShare);
+
+    return {
+        gross_return_amount: gross,
+        coupon_discount_share: couponShare,
+        loyalty_discount_share: loyaltyShare,
+        reward_discount_share: rewardShare,
+        effective_refund_amount: Math.max(0, money(gross - totalShare))
+    };
 };
 
 exports.createReturnRequest = async ({ customerId, payload }) => {
@@ -163,9 +259,28 @@ exports.createReturnRequest = async ({ customerId, payload }) => {
         for (const item of items) {
             await connection.query(
                 `INSERT INTO customer_return_items
-                 (return_request_id, order_item_id, product_id, requested_quantity, unit_price, requested_amount, item_status)
-                 VALUES (?, ?, ?, ?, ?, ?, 'Requested')`,
-                [returnId, item.id, item.product_id, item.requestedQuantity, item.unitPrice, item.amount]
+                 (
+                    return_request_id,
+                    order_item_id,
+                    product_id,
+                    requested_quantity,
+                    unit_price,
+                    requested_amount,
+                    gross_return_amount,
+                    effective_refund_amount,
+                    item_status
+                 )
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Requested')`,
+                [
+                    returnId,
+                    item.id,
+                    item.product_id,
+                    item.requestedQuantity,
+                    item.unitPrice,
+                    item.amount,
+                    item.amount,
+                    item.amount
+                ]
             );
         }
         await addActivity(connection, { returnRequestId: returnId, actorType: "Customer", actorId: customerId,
@@ -335,9 +450,10 @@ exports.inspectReturn = async ({ returnId, adminId, payload }) => {
     const connection=await db.getConnection();
     try{
         await connection.beginTransaction();
-        const [[row]]=await connection.query(`SELECT id,status FROM customer_return_requests WHERE id=? LIMIT 1 FOR UPDATE`,[returnId]);
+        const [[row]]=await connection.query(`SELECT id,status,order_id FROM customer_return_requests WHERE id=? LIMIT 1 FOR UPDATE`,[returnId]);
         if(!row) throw fail("Return request not found.",404);
         if(row.status!=="Received") throw fail("Only a received return can be inspected.",409);
+        const requestOrderId = Number(row.order_id);
         const [items]=await connection.query(`SELECT * FROM customer_return_items WHERE return_request_id=? FOR UPDATE`,[returnId]);
         const byId=new Map(items.map(i=>[Number(i.id),i]));
         let approvedTotal=0;
@@ -348,11 +464,48 @@ exports.inspectReturn = async ({ returnId, adminId, payload }) => {
             if(!Number.isInteger(accepted)||accepted<0||accepted>received) throw fail("Accepted quantity must be between zero and received quantity.");
             const condition=cleanText(input.condition_status,40)||"Good";
             if(!["Good","Opened","Damaged","Expired","Not Resellable"].includes(condition)) throw fail("Invalid condition status.");
-            const acceptedAmount=money(Number(item.unit_price)*accepted); approvedTotal=money(approvedTotal+acceptedAmount);
+
+            const grossAcceptedAmount = money(Number(item.unit_price) * accepted);
+            const financials = await calculateReturnFinancials(
+                connection,
+                {
+                    orderId: requestOrderId,
+                    grossAmount: grossAcceptedAmount
+                }
+            );
+
+            approvedTotal = money(
+                approvedTotal +
+                financials.effective_refund_amount
+            );
+
             await connection.query(
-                `UPDATE customer_return_items SET item_status='Inspected',accepted_quantity=?,restock_quantity=0,
-                 approved_amount=?,condition_status=?,inspection_notes=? WHERE id=?`,
-                [accepted,acceptedAmount,condition,cleanText(input.inspection_notes),id]
+                `UPDATE customer_return_items
+                 SET
+                    item_status='Inspected',
+                    accepted_quantity=?,
+                    restock_quantity=0,
+                    gross_return_amount=?,
+                    coupon_discount_share=?,
+                    loyalty_discount_share=?,
+                    reward_discount_share=?,
+                    effective_refund_amount=?,
+                    approved_amount=?,
+                    condition_status=?,
+                    inspection_notes=?
+                 WHERE id=?`,
+                [
+                    accepted,
+                    financials.gross_return_amount,
+                    financials.coupon_discount_share,
+                    financials.loyalty_discount_share,
+                    financials.reward_discount_share,
+                    financials.effective_refund_amount,
+                    financials.effective_refund_amount,
+                    condition,
+                    cleanText(input.inspection_notes),
+                    id
+                ]
             );
         }
         await connection.query(`UPDATE customer_return_requests SET status='Inspected',approved_amount=?,inspection_notes=?,inspected_at=CURRENT_TIMESTAMP WHERE id=?`,

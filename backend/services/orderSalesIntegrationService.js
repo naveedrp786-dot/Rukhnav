@@ -193,6 +193,9 @@ async function ensureSaleForOrder(
                 balance_amount,
                 grand_total,
                 discount_amount,
+                loyalty_discount_amount,
+                reward_points_redeemed,
+                reward_points_discount_amount,
                 delivery_charges,
                 coupon_code,
                 transaction_id,
@@ -317,6 +320,31 @@ async function ensureSaleForOrder(
             order.discount_amount
         );
 
+    const loyaltyDiscount =
+        toMoney(
+            order.loyalty_discount_amount
+        );
+
+    const rewardPointsUsed =
+        Math.max(
+            0,
+            Number(
+                order.reward_points_redeemed || 0
+            )
+        );
+
+    const rewardDiscount =
+        toMoney(
+            order.reward_points_discount_amount
+        );
+
+    const totalMerchandiseDiscount =
+        toMoney(
+            discountAmount +
+            loyaltyDiscount +
+            rewardDiscount
+        );
+
     const deliveryCharges =
         toMoney(
             order.delivery_charges
@@ -327,14 +355,61 @@ async function ensureSaleForOrder(
             order.grand_total
         );
 
-    const paidAmount =
-        Math.min(
-            grandTotal,
-            Math.max(
-                0,
-                toMoney(
-                    order.paid_amount
-                )
+    const [[paymentTotals]] =
+        await connection.query(
+            `
+            SELECT
+                COALESCE(
+                    SUM(
+                        CASE
+                            WHEN status IN (
+                                'Paid',
+                                'Partially Refunded',
+                                'Refunded'
+                            )
+                            THEN amount
+                            ELSE 0
+                        END
+                    ),
+                    0
+                ) AS gross_paid,
+                COALESCE(
+                    SUM(refunded_amount),
+                    0
+                ) AS refunded
+            FROM payment_transactions
+            WHERE order_id = ?
+            `,
+            [parsedOrderId]
+        );
+
+    const recordedGrossPaid =
+        toMoney(
+            paymentTotals.gross_paid
+        );
+
+    const grossPaidAmount =
+        Math.max(
+            0,
+            recordedGrossPaid > 0
+                ? recordedGrossPaid
+                : toMoney(order.paid_amount)
+        );
+
+    const refundedAmount =
+        Math.max(
+            0,
+            toMoney(
+                paymentTotals.refunded
+            )
+        );
+
+    const netPaidAmount =
+        Math.max(
+            0,
+            toMoney(
+                grossPaidAmount -
+                refundedAmount
             )
         );
 
@@ -343,14 +418,24 @@ async function ensureSaleForOrder(
             0,
             toMoney(
                 grandTotal -
-                paidAmount
+                grossPaidAmount
             )
         );
 
     const paymentStatus =
-        mapOrderPaymentStatus(
-            order
-        );
+        grandTotal > 0 &&
+        grossPaidAmount >= grandTotal
+            ? "Paid"
+            : grossPaidAmount > 0
+                ? "Partial"
+                : "Pending";
+
+    const refundStatus =
+        refundedAmount <= 0
+            ? "None"
+            : netPaidAmount <= 0
+                ? "Refunded"
+                : "Partially Refunded";
 
     const salePaymentMethod =
         mapOrderPaymentMethod(
@@ -413,7 +498,7 @@ async function ensureSaleForOrder(
                 order.created_at ||
                     new Date(),
                 subtotal,
-                discountAmount,
+                totalMerchandiseDiscount,
                 grandTotal,
                 paymentStatus,
                 salePaymentMethod,
@@ -499,6 +584,7 @@ async function ensureSaleForOrder(
                 product_discount,
                 coupon_code,
                 coupon_discount,
+                loyalty_discount,
                 reward_points_used,
                 reward_discount,
                 shipping_charges,
@@ -507,8 +593,11 @@ async function ensureSaleForOrder(
                 tax,
                 grand_total,
                 paid_amount,
+                refunded_amount,
+                net_paid_amount,
                 balance_amount,
                 payment_status,
+                refund_status,
                 payment_method,
                 transaction_id,
                 shipping_address,
@@ -525,12 +614,17 @@ async function ensureSaleForOrder(
                 0,
                 ?,
                 ?,
-                0,
-                0,
+                ?,
+                ?,
+                ?,
                 ?,
                 0,
                 0,
                 0,
+                ?,
+                ?,
+                ?,
+                ?,
                 ?,
                 ?,
                 ?,
@@ -550,11 +644,17 @@ async function ensureSaleForOrder(
                 order.coupon_code ||
                     null,
                 discountAmount,
+                loyaltyDiscount,
+                rewardPointsUsed,
+                rewardDiscount,
                 deliveryCharges,
                 grandTotal,
-                paidAmount,
+                grossPaidAmount,
+                refundedAmount,
+                netPaidAmount,
                 balanceAmount,
                 paymentStatus,
+                refundStatus,
                 salePaymentMethod,
                 order.transaction_id ||
                     null,
@@ -645,10 +745,13 @@ async function syncOrderPaymentToSale(
             SELECT
                 o.id,
                 o.grand_total,
-                o.paid_amount,
-                o.payment_status,
                 o.payment_method,
                 o.transaction_id,
+                o.coupon_code,
+                o.discount_amount,
+                o.loyalty_discount_amount,
+                o.reward_points_redeemed,
+                o.reward_points_discount_amount,
                 s.id AS sale_id
             FROM orders o
 
@@ -687,39 +790,119 @@ async function syncOrderPaymentToSale(
         };
     }
 
+    const [[totals]] =
+        await connection.query(
+            `
+            SELECT
+                COALESCE(
+                    SUM(
+                        CASE
+                            WHEN status IN (
+                                'Paid',
+                                'Partially Refunded',
+                                'Refunded'
+                            )
+                            THEN amount
+                            ELSE 0
+                        END
+                    ),
+                    0
+                ) AS gross_paid,
+                COALESCE(
+                    SUM(refunded_amount),
+                    0
+                ) AS refunded
+            FROM payment_transactions
+            WHERE order_id = ?
+            `,
+            [orderId]
+        );
+
     const grandTotal =
         toMoney(
             order.grand_total
         );
 
-    const paidAmount =
-        Math.min(
-            grandTotal,
-            Math.max(
-                0,
-                toMoney(
-                    order.paid_amount
-                )
+    const grossPaidAmount =
+        Math.max(
+            0,
+            toMoney(
+                totals.gross_paid
             )
         );
 
+    const refundedAmount =
+        Math.max(
+            0,
+            toMoney(
+                totals.refunded
+            )
+        );
+
+    const netPaidAmount =
+        Math.max(
+            0,
+            toMoney(
+                grossPaidAmount -
+                refundedAmount
+            )
+        );
+
+    /*
+     * A refund is not an unpaid balance.
+     * Outstanding balance is based on gross
+     * payments received before refunds.
+     */
     const balanceAmount =
         Math.max(
             0,
             toMoney(
                 grandTotal -
-                paidAmount
+                grossPaidAmount
             )
         );
 
     const paymentStatus =
-        mapOrderPaymentStatus(
-            order
-        );
+        grandTotal > 0 &&
+        grossPaidAmount >= grandTotal
+            ? "Paid"
+            : grossPaidAmount > 0
+                ? "Partial"
+                : "Pending";
+
+    const refundStatus =
+        refundedAmount <= 0
+            ? "None"
+            : netPaidAmount <= 0
+                ? "Refunded"
+                : "Partially Refunded";
 
     const paymentMethod =
         mapOrderPaymentMethod(
             order.payment_method
+        );
+
+    const couponDiscount =
+        toMoney(
+            order.discount_amount
+        );
+
+    const loyaltyDiscount =
+        toMoney(
+            order.loyalty_discount_amount
+        );
+
+    const rewardPointsUsed =
+        Math.max(
+            0,
+            Number(
+                order.reward_points_redeemed || 0
+            )
+        );
+
+    const rewardDiscount =
+        toMoney(
+            order.reward_points_discount_amount
         );
 
     await connection.query(
@@ -728,13 +911,19 @@ async function syncOrderPaymentToSale(
 
         SET
             payment_status = ?,
-            payment_method = ?
+            payment_method = ?,
+            discount = ?
 
         WHERE id = ?
         `,
         [
             paymentStatus,
             paymentMethod,
+            toMoney(
+                couponDiscount +
+                loyaltyDiscount +
+                rewardDiscount
+            ),
             order.sale_id
         ]
     );
@@ -744,9 +933,17 @@ async function syncOrderPaymentToSale(
         UPDATE invoices
 
         SET
+            coupon_code = ?,
+            coupon_discount = ?,
+            loyalty_discount = ?,
+            reward_points_used = ?,
+            reward_discount = ?,
             paid_amount = ?,
+            refunded_amount = ?,
+            net_paid_amount = ?,
             balance_amount = ?,
             payment_status = ?,
+            refund_status = ?,
             payment_method = ?,
             transaction_id =
                 COALESCE(
@@ -757,9 +954,17 @@ async function syncOrderPaymentToSale(
         WHERE sale_id = ?
         `,
         [
-            paidAmount,
+            order.coupon_code || null,
+            couponDiscount,
+            loyaltyDiscount,
+            rewardPointsUsed,
+            rewardDiscount,
+            grossPaidAmount,
+            refundedAmount,
+            netPaidAmount,
             balanceAmount,
             paymentStatus,
+            refundStatus,
             paymentMethod,
             order.transaction_id ||
                 null,
@@ -773,9 +978,12 @@ async function syncOrderPaymentToSale(
         saleId:
             order.sale_id,
 
-        paidAmount,
+        grossPaidAmount,
+        refundedAmount,
+        netPaidAmount,
         balanceAmount,
-        paymentStatus
+        paymentStatus,
+        refundStatus
     };
 }
 
