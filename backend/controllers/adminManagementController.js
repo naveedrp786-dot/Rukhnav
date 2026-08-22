@@ -160,6 +160,11 @@ exports.createAdmin = async (req, res) => {
             status
         } = req.body;
 
+        const profile_image =
+            req.file
+                ? req.file.filename
+                : null;
+
         // =====================================
         // Required Field Validation
         // =====================================
@@ -278,11 +283,12 @@ exports.createAdmin = async (req, res) => {
                 phone,
                 password,
                 role,
-                status
+                status,
+                profile_image
 
             )
 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 
             `,
 
@@ -300,7 +306,9 @@ exports.createAdmin = async (req, res) => {
 
                 adminRole,
 
-                adminStatus
+                adminStatus,
+
+                profile_image
 
             ]
 
@@ -475,6 +483,15 @@ exports.updateAdmin = async (req, res) => {
                 : "Active";
 
         // =====================================
+        // Prepare Profile Image
+        // =====================================
+
+        const profile_image =
+            req.file
+                ? req.file.filename
+                : admins[0].profile_image;
+
+        // =====================================
         // Update Administrator
         // =====================================
 
@@ -498,7 +515,9 @@ exports.updateAdmin = async (req, res) => {
 
                 role = ?,
 
-                status = ?
+                status = ?,
+
+                profile_image = ?
 
             WHERE id = ?
 
@@ -519,6 +538,8 @@ exports.updateAdmin = async (req, res) => {
                 adminRole,
 
                 adminStatus,
+
+                profile_image,
 
                 id
 

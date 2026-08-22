@@ -3,6 +3,7 @@ const router = express.Router();
 
 const adminManagementController = require("../controllers/adminManagementController");
 const adminAuth = require("../middleware/adminAuth");
+const uploadAdmin = require("../middleware/uploadAdmin");
 
 // ======================================================
 // ADMIN CRUD ROUTES
@@ -27,6 +28,7 @@ router.get(
 router.post(
     "/",
     adminAuth,
+    uploadAdmin.single("profile_image"),
     adminManagementController.createAdmin
 );
 
@@ -34,6 +36,7 @@ router.post(
 router.put(
     "/:id",
     adminAuth,
+    uploadAdmin.single("profile_image"),
     adminManagementController.updateAdmin
 );
 
