@@ -285,13 +285,177 @@
             </section>
 
             <section class="invoice-totals">
-                <div><span>Subtotal</span><strong id="detailsSubtotal">PKR 0</strong></div>
-                <div><span>Discount</span><strong id="detailsDiscount">PKR 0</strong></div>
-                <div><span>Tax</span><strong id="detailsTax">PKR 0</strong></div>
-                <div><span>Delivery</span><strong id="detailsDelivery">PKR 0</strong></div>
-                <div class="grand-total"><span>Grand Total</span><strong id="detailsGrandTotal">PKR 0</strong></div>
-                <div><span>Paid Amount</span><strong id="detailsPaidAmount">PKR 0</strong></div>
-                <div><span>Balance</span><strong id="detailsBalanceAmount">PKR 0</strong></div>
+                <div>
+                    <span>Subtotal</span>
+                    <strong id="detailsSubtotal">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Product Discount</span>
+                    <strong id="detailsProductDiscount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Coupon Discount</span>
+                    <strong id="detailsCouponDiscount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Loyalty Discount</span>
+                    <strong id="detailsLoyaltyDiscount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Reward Discount</span>
+                    <strong id="detailsRewardDiscount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Tax</span>
+                    <strong id="detailsTax">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Delivery</span>
+                    <strong id="detailsDelivery">PKR 0</strong>
+                </div>
+
+                <div class="grand-total">
+                    <span>Grand Total</span>
+                    <strong id="detailsGrandTotal">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Gross Paid</span>
+                    <strong id="detailsPaidAmount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Refunded</span>
+                    <strong id="detailsRefundedAmount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Net Paid</span>
+                    <strong id="detailsNetPaidAmount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Balance</span>
+                    <strong id="detailsBalanceAmount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Refund Status</span>
+                    <strong id="detailsRefundStatus">None</strong>
+                </div>
+            </section>
+
+            <section
+                id="invoiceReturnRefundSection"
+                class="detail-section hidden"
+            >
+                <div class="detail-section-heading">
+                    <div>
+                        <span class="section-label">
+                            Returns
+                        </span>
+
+                        <h3>
+                            Return / Refund Details
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="invoice-detail-grid">
+                    <article class="detail-card">
+                        <div class="detail-card-heading">
+                            <i class="fa-solid fa-arrow-rotate-left"></i>
+                            <h3>Return Information</h3>
+                        </div>
+
+                        <dl class="detail-list">
+                            <div>
+                                <dt>Return Number</dt>
+                                <dd id="detailsReturnNumber">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>Return Status</dt>
+                                <dd id="detailsReturnStatus">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>Refund Number</dt>
+                                <dd id="detailsRefundNumber">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>Refund Date</dt>
+                                <dd id="detailsRefundDate">—</dd>
+                            </div>
+                        </dl>
+                    </article>
+
+                    <article class="detail-card">
+                        <div class="detail-card-heading">
+                            <i class="fa-solid fa-coins"></i>
+                            <h3>Refund Breakdown</h3>
+                        </div>
+
+                        <dl class="detail-list">
+                            <div>
+                                <dt>Gross Return</dt>
+                                <dd id="detailsGrossReturn">PKR 0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Coupon Share</dt>
+                                <dd id="detailsReturnCouponShare">PKR 0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Loyalty Share</dt>
+                                <dd id="detailsReturnLoyaltyShare">PKR 0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Reward Share</dt>
+                                <dd id="detailsReturnRewardShare">PKR 0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Cash Refunded</dt>
+                                <dd id="detailsCashRefunded">PKR 0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Reward Points Restored</dt>
+                                <dd id="detailsRewardPointsRestored">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Earned Points Reversed</dt>
+                                <dd id="detailsEarnedPointsReversed">0</dd>
+                            </div>
+                        </dl>
+                    </article>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="invoice-items-table">
+                        <thead>
+                            <tr>
+                                <th>Returned Product</th>
+                                <th>Accepted Qty</th>
+                                <th>Gross Return</th>
+                                <th>Effective Refund</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="invoiceReturnItemsTableBody"></tbody>
+                    </table>
+                </div>
             </section>
         </div>
 
