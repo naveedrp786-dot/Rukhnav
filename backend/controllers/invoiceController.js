@@ -445,15 +445,203 @@ exports.getInvoiceById = async(req,res)=>{
 
         );
 
+        let returnRequests = [];
+        let returnItems = [];
+        let paymentRefunds = [];
+        let loyaltyAdjustments = [];
+
+        if (invoice.order_id) {
+
+            const [returnRows] = await db.query(
+                `
+                    SELECT
+                        rr.id,
+                        rr.return_number,
+                        rr.order_id,
+                        rr.status,
+                        rr.reason,
+                        rr.requested_amount,
+                        rr.approved_amount,
+                        rr.refund_amount,
+                        rr.inspected_at,
+                        rr.completed_at,
+                        rr.refunded_at,
+                        rr.created_at
+
+                    FROM customer_return_requests rr
+
+                    WHERE rr.order_id = ?
+
+                    ORDER BY rr.id DESC
+                `,
+                [invoice.order_id]
+            );
+
+            returnRequests = returnRows;
+
+            const [returnItemRows] = await db.query(
+                `
+                    SELECT
+                        ri.id,
+                        ri.return_request_id,
+                        rr.return_number,
+                        rr.status AS return_status,
+
+                        ri.product_id,
+                        p.product_name,
+
+                        ri.requested_quantity,
+                        ri.approved_quantity,
+                        ri.received_quantity,
+                        ri.accepted_quantity,
+
+                        ri.unit_price,
+                        ri.gross_return_amount,
+
+                        ri.coupon_discount_share,
+                        ri.loyalty_discount_share,
+                        ri.reward_discount_share,
+
+                        ri.effective_refund_amount,
+                        ri.approved_amount,
+
+                        ri.item_status,
+                        ri.condition_status,
+                        ri.inspection_result
+
+                    FROM customer_return_items ri
+
+                    JOIN customer_return_requests rr
+                        ON rr.id = ri.return_request_id
+
+                    LEFT JOIN products p
+                        ON p.id = ri.product_id
+
+                    WHERE rr.order_id = ?
+
+                    ORDER BY
+                        rr.id DESC,
+                        ri.id
+                `,
+                [invoice.order_id]
+            );
+
+            returnItems = returnItemRows;
+
+            const [refundRows] = await db.query(
+                `
+                    SELECT
+                        pr.id,
+                        pr.refund_number,
+                        pr.order_id,
+                        pr.amount,
+                        pr.reason,
+                        pr.transaction_reference,
+                        pr.status,
+                        pr.completed_at,
+                        pr.created_at
+
+                    FROM payment_refunds pr
+
+                    WHERE pr.order_id = ?
+
+                    ORDER BY pr.id DESC
+                `,
+                [invoice.order_id]
+            );
+
+            paymentRefunds = refundRows;
+
+            const returnIds =
+                returnRequests.map(
+                    row => Number(row.id)
+                );
+
+            if (
+                invoice.customer_id &&
+                (
+                    invoice.sale_id ||
+                    returnIds.length
+                )
+            ) {
+                const clauses = [];
+                const params = [
+                    invoice.customer_id
+                ];
+
+                if (invoice.sale_id) {
+                    clauses.push(
+                        "idempotency_key = ?"
+                    );
+
+                    params.push(
+                        `refund-reversal:sale:${invoice.sale_id}`
+                    );
+                }
+
+                for (const returnId of returnIds) {
+                    clauses.push(
+                        "idempotency_key = ?"
+                    );
+
+                    params.push(
+                        `reward-restoration:return:${returnId}`
+                    );
+                }
+
+                if (clauses.length) {
+                    const [ledgerRows] =
+                        await db.query(
+                            `
+                                SELECT
+                                    id,
+                                    transaction_type,
+                                    points_change,
+                                    lifetime_points_change,
+                                    source_type,
+                                    source_id,
+                                    reference_number,
+                                    description,
+                                    idempotency_key,
+                                    created_at
+
+                                FROM customer_loyalty_transactions
+
+                                WHERE
+                                    customer_id = ?
+                                    AND (
+                                        ${clauses.join(" OR ")}
+                                    )
+
+                                ORDER BY id DESC
+                            `,
+                            params
+                        );
+
+                    loyaltyAdjustments =
+                        ledgerRows;
+                }
+            }
+        }
+
         res.json({
-
             success:true,
-
             invoice,
+            items,
 
-            items
+            returns:
+                returnRequests,
 
+            return_items:
+                returnItems,
+
+            payment_refunds:
+                paymentRefunds,
+
+            loyalty_adjustments:
+                loyaltyAdjustments
         });
+
 
     }
 
@@ -1576,6 +1764,10 @@ exports.generateInvoice = async (req, res) => {
 
                 i.*,
 
+                s.order_id,
+                s.sale_number,
+                o.order_number,
+
                 c.full_name,
                 c.email,
                 c.phone,
@@ -1585,6 +1777,12 @@ exports.generateInvoice = async (req, res) => {
 
             LEFT JOIN customers c
                 ON i.customer_id=c.id
+
+            LEFT JOIN sales s
+                ON s.id=i.sale_id
+
+            LEFT JOIN orders o
+                ON o.id=s.order_id
 
             WHERE i.id=?
 
@@ -1633,6 +1831,169 @@ exports.generateInvoice = async (req, res) => {
 
         );
 
+
+        // =====================================
+        // Return / Refund Details
+        // =====================================
+
+        let pdfReturns = [];
+        let pdfReturnItems = [];
+        let pdfRefunds = [];
+        let pdfLoyaltyAdjustments = [];
+
+        if (invoice.order_id) {
+
+            const [returnRows] = await db.query(
+                `
+                    SELECT
+                        id,
+                        return_number,
+                        status,
+                        reason,
+                        requested_amount,
+                        approved_amount,
+                        refund_amount,
+                        completed_at,
+                        refunded_at,
+                        created_at
+
+                    FROM customer_return_requests
+
+                    WHERE order_id = ?
+
+                    ORDER BY id DESC
+                `,
+                [invoice.order_id]
+            );
+
+            pdfReturns = returnRows;
+
+            const [returnItemRows] =
+                await db.query(
+                    `
+                        SELECT
+                            ri.id,
+                            ri.return_request_id,
+                            rr.return_number,
+                            p.product_name,
+
+                            ri.accepted_quantity,
+                            ri.unit_price,
+                            ri.gross_return_amount,
+
+                            ri.coupon_discount_share,
+                            ri.loyalty_discount_share,
+                            ri.reward_discount_share,
+
+                            ri.effective_refund_amount,
+                            ri.item_status
+
+                        FROM customer_return_items ri
+
+                        JOIN customer_return_requests rr
+                            ON rr.id =
+                               ri.return_request_id
+
+                        LEFT JOIN products p
+                            ON p.id =
+                               ri.product_id
+
+                        WHERE rr.order_id = ?
+
+                        ORDER BY
+                            rr.id DESC,
+                            ri.id
+                    `,
+                    [invoice.order_id]
+                );
+
+            pdfReturnItems =
+                returnItemRows;
+
+            const [refundRows] =
+                await db.query(
+                    `
+                        SELECT
+                            refund_number,
+                            amount,
+                            status,
+                            completed_at,
+                            created_at
+
+                        FROM payment_refunds
+
+                        WHERE order_id = ?
+
+                        ORDER BY id DESC
+                    `,
+                    [invoice.order_id]
+                );
+
+            pdfRefunds =
+                refundRows;
+
+            const returnIds =
+                pdfReturns.map(
+                    row => Number(row.id)
+                );
+
+            const clauses = [];
+            const params = [
+                invoice.customer_id
+            ];
+
+            if (invoice.sale_id) {
+                clauses.push(
+                    "idempotency_key = ?"
+                );
+
+                params.push(
+                    `refund-reversal:sale:${invoice.sale_id}`
+                );
+            }
+
+            for (const returnId of returnIds) {
+                clauses.push(
+                    "idempotency_key = ?"
+                );
+
+                params.push(
+                    `reward-restoration:return:${returnId}`
+                );
+            }
+
+            if (
+                invoice.customer_id &&
+                clauses.length
+            ) {
+                const [ledgerRows] =
+                    await db.query(
+                        `
+                            SELECT
+                                transaction_type,
+                                points_change,
+                                lifetime_points_change,
+                                idempotency_key,
+                                created_at
+
+                            FROM customer_loyalty_transactions
+
+                            WHERE
+                                customer_id = ?
+                                AND (
+                                    ${clauses.join(" OR ")}
+                                )
+
+                            ORDER BY id DESC
+                        `,
+                        params
+                    );
+
+                pdfLoyaltyAdjustments =
+                    ledgerRows;
+            }
+        }
+
         // =====================================
         // Calculations
         // =====================================
@@ -1640,6 +2001,7 @@ exports.generateInvoice = async (req, res) => {
         const subtotal          = Number(invoice.subtotal || 0);
         const productDiscount  = Number(invoice.product_discount || invoice.discount || 0);
         const couponDiscount   = Number(invoice.coupon_discount || 0);
+        const loyaltyDiscount  = Number(invoice.loyalty_discount || 0);
         const rewardDiscount   = Number(invoice.reward_discount || 0);
         const shipping         = Number(invoice.shipping_charges || 0);
         const packaging        = Number(invoice.packaging_charges || 0);
@@ -1647,7 +2009,13 @@ exports.generateInvoice = async (req, res) => {
 
         const grandTotal       = Number(invoice.grand_total || 0);
         const paid             = Number(invoice.paid_amount || 0);
+        const refunded         = Number(invoice.refunded_amount || 0);
+        const netPaid          = Number(
+            invoice.net_paid_amount ??
+            Math.max(paid - refunded, 0)
+        );
         const balance          = Number(invoice.balance_amount || 0);
+        const refundStatus     = invoice.refund_status || "None";
 
         // =====================================
         // PDF
@@ -2207,6 +2575,8 @@ summaryRow("Product Discount", productDiscount);
 
 summaryRow("Coupon Discount", couponDiscount);
 
+summaryRow("Loyalty Discount", loyaltyDiscount);
+
 summaryRow("Reward Discount", rewardDiscount);
 
 summaryRow("Shipping Charges", shipping);
@@ -2276,6 +2646,42 @@ doc.text(
 summaryY += 14;
 
 doc.text(
+    "Refunded",
+    312,
+    summaryY
+);
+
+doc.text(
+    `Rs ${refunded.toFixed(2)}`,
+    470,
+    summaryY,
+    {
+        width:80,
+        align:"right"
+    }
+);
+
+summaryY += 14;
+
+doc.text(
+    "Net Paid",
+    312,
+    summaryY
+);
+
+doc.text(
+    `Rs ${netPaid.toFixed(2)}`,
+    470,
+    summaryY,
+    {
+        width:80,
+        align:"right"
+    }
+);
+
+summaryY += 14;
+
+doc.text(
     "Balance",
     312,
     summaryY
@@ -2292,6 +2698,29 @@ doc.text(
 );
 
 // =====================================
+
+summaryY += 14;
+
+doc
+.font("Helvetica-Bold")
+.text(
+    "Refund Status",
+    312,
+    summaryY
+);
+
+doc
+.font("Helvetica")
+.text(
+    String(refundStatus),
+    430,
+    summaryY,
+    {
+        width:120,
+        align:"right"
+    }
+);
+
 // Customer Note
 // =====================================
 
@@ -2509,6 +2938,332 @@ doc.text(
         align: "center"
     }
 );
+
+
+// =====================================
+// Return / Refund Detail Page
+// =====================================
+
+if (
+    pdfReturns.length ||
+    pdfRefunds.length
+) {
+
+    doc.addPage();
+
+    doc
+    .rect(0,0,595,842)
+    .fill("#FFFFFF");
+
+    doc
+    .fillColor("#0B6E4F")
+    .font("Helvetica-Bold")
+    .fontSize(18)
+    .text(
+        "RETURN / REFUND DETAILS",
+        25,
+        35
+    );
+
+    doc
+    .font("Helvetica")
+    .fontSize(9)
+    .fillColor("#333333")
+    .text(
+        `Invoice: ${invoice.invoice_number}`,
+        25,
+        65
+    )
+    .text(
+        `Order: ${invoice.order_number || "-"}`,
+        25,
+        80
+    )
+    .text(
+        `Sale: ${invoice.sale_number || "-"}`,
+        25,
+        95
+    );
+
+    let returnY = 125;
+
+    const returnNumbers =
+        pdfReturns
+            .map(r => r.return_number)
+            .filter(Boolean)
+            .join(", ");
+
+    const refundNumbers =
+        pdfRefunds
+            .map(r => r.refund_number)
+            .filter(Boolean)
+            .join(", ");
+
+    const grossReturned =
+        pdfReturnItems.reduce(
+            (sum, item) =>
+                sum +
+                Number(
+                    item.gross_return_amount ||
+                    0
+                ),
+            0
+        );
+
+    const couponShare =
+        pdfReturnItems.reduce(
+            (sum, item) =>
+                sum +
+                Number(
+                    item.coupon_discount_share ||
+                    0
+                ),
+            0
+        );
+
+    const loyaltyShare =
+        pdfReturnItems.reduce(
+            (sum, item) =>
+                sum +
+                Number(
+                    item.loyalty_discount_share ||
+                    0
+                ),
+            0
+        );
+
+    const rewardShare =
+        pdfReturnItems.reduce(
+            (sum, item) =>
+                sum +
+                Number(
+                    item.reward_discount_share ||
+                    0
+                ),
+            0
+        );
+
+    const effectiveRefund =
+        pdfRefunds.reduce(
+            (sum, row) =>
+                sum + Number(row.amount || 0),
+            0
+        );
+
+    const restoredPoints =
+        pdfLoyaltyAdjustments
+            .filter(row =>
+                String(
+                    row.idempotency_key || ""
+                ).startsWith(
+                    "reward-restoration:return:"
+                )
+            )
+            .reduce(
+                (sum, row) =>
+                    sum +
+                    Math.max(
+                        0,
+                        Number(
+                            row.points_change || 0
+                        )
+                    ),
+                0
+            );
+
+    const reversedEarnedPoints =
+        pdfLoyaltyAdjustments
+            .filter(row =>
+                String(
+                    row.idempotency_key || ""
+                ).startsWith(
+                    "refund-reversal:sale:"
+                )
+            )
+            .reduce(
+                (sum, row) =>
+                    sum +
+                    Math.abs(
+                        Number(
+                            row.points_change || 0
+                        )
+                    ),
+                0
+            );
+
+    const detailRow = (
+        label,
+        value
+    ) => {
+
+        doc
+        .font("Helvetica-Bold")
+        .fontSize(9)
+        .fillColor("#333333")
+        .text(
+            label,
+            25,
+            returnY,
+            {
+                width:200
+            }
+        );
+
+        doc
+        .font("Helvetica")
+        .text(
+            value,
+            240,
+            returnY,
+            {
+                width:320,
+                align:"right"
+            }
+        );
+
+        returnY += 17;
+    };
+
+    detailRow(
+        "Return Number(s)",
+        returnNumbers || "-"
+    );
+
+    detailRow(
+        "Refund Number(s)",
+        refundNumbers || "-"
+    );
+
+    detailRow(
+        "Gross Returned",
+        `Rs ${grossReturned.toFixed(2)}`
+    );
+
+    detailRow(
+        "Coupon Discount Share",
+        `Rs ${couponShare.toFixed(2)}`
+    );
+
+    detailRow(
+        "Loyalty Discount Share",
+        `Rs ${loyaltyShare.toFixed(2)}`
+    );
+
+    detailRow(
+        "Reward Discount Share",
+        `Rs ${rewardShare.toFixed(2)}`
+    );
+
+    detailRow(
+        "Cash Refunded",
+        `Rs ${effectiveRefund.toFixed(2)}`
+    );
+
+    detailRow(
+        "Reward Points Restored",
+        String(restoredPoints)
+    );
+
+    detailRow(
+        "Earned Points Reversed",
+        String(reversedEarnedPoints)
+    );
+
+    returnY += 18;
+
+    doc
+    .fillColor("#0B6E4F")
+    .font("Helvetica-Bold")
+    .fontSize(11)
+    .text(
+        "RETURNED ITEMS",
+        25,
+        returnY
+    );
+
+    returnY += 24;
+
+    doc
+    .fontSize(8)
+    .fillColor("#FFFFFF");
+
+    doc
+    .rect(
+        25,
+        returnY,
+        545,
+        22
+    )
+    .fill("#0B6E4F");
+
+    doc
+    .fillColor("#FFFFFF")
+    .text("Product",35,returnY+7)
+    .text("Qty",270,returnY+7)
+    .text("Gross",335,returnY+7)
+    .text("Refund",465,returnY+7);
+
+    returnY += 28;
+
+    for (
+        const item of pdfReturnItems
+    ) {
+
+        if (returnY > 760) {
+            doc.addPage();
+
+            doc
+            .rect(0,0,595,842)
+            .fill("#FFFFFF");
+
+            returnY = 40;
+        }
+
+        doc
+        .fillColor("#222222")
+        .font("Helvetica")
+        .fontSize(8)
+        .text(
+            item.product_name ||
+            "Product",
+            35,
+            returnY,
+            {
+                width:220
+            }
+        )
+        .text(
+            String(
+                item.accepted_quantity ||
+                0
+            ),
+            270,
+            returnY
+        )
+        .text(
+            `Rs ${Number(
+                item.gross_return_amount ||
+                0
+            ).toFixed(2)}`,
+            335,
+            returnY
+        )
+        .text(
+            `Rs ${Number(
+                item.effective_refund_amount ||
+                0
+            ).toFixed(2)}`,
+            465,
+            returnY,
+            {
+                width:90,
+                align:"right"
+            }
+        );
+
+        returnY += 19;
+    }
+}
 
 // =====================================
 // Finish PDF

@@ -126,6 +126,18 @@ async function loadInvoiceDetails() {
             data.invoice,
             Array.isArray(data.items)
                 ? data.items
+                : [],
+            Array.isArray(data.returns)
+                ? data.returns
+                : [],
+            Array.isArray(data.return_items)
+                ? data.return_items
+                : [],
+            Array.isArray(data.payment_refunds)
+                ? data.payment_refunds
+                : [],
+            Array.isArray(data.loyalty_adjustments)
+                ? data.loyalty_adjustments
                 : []
         );
 
@@ -154,7 +166,11 @@ async function loadInvoiceDetails() {
 
 function renderInvoice(
     invoice,
-    items
+    items,
+    returns = [],
+    returnItems = [],
+    paymentRefunds = [],
+    loyaltyAdjustments = []
 ) {
     setText(
         "invoiceNumber",
@@ -237,24 +253,31 @@ function renderInvoice(
         )
     );
 
-    const totalDiscount =
-        Number(
-            invoice.product_discount ||
-            0
-        ) +
-        Number(
-            invoice.coupon_discount ||
-            0
-        ) +
-        Number(
-            invoice.reward_discount ||
-            0
-        );
+    setText(
+        "productDiscountAmount",
+        formatMoney(
+            invoice.product_discount || 0
+        )
+    );
 
     setText(
-        "discountAmount",
+        "couponDiscountAmount",
         formatMoney(
-            totalDiscount
+            invoice.coupon_discount || 0
+        )
+    );
+
+    setText(
+        "loyaltyDiscountAmount",
+        formatMoney(
+            invoice.loyalty_discount || 0
+        )
+    );
+
+    setText(
+        "rewardDiscountAmount",
+        formatMoney(
+            invoice.reward_discount || 0
         )
     );
 
@@ -280,14 +303,40 @@ function renderInvoice(
     );
 
     setText(
+        "refundedAmount",
+        formatMoney(
+            invoice.refunded_amount || 0
+        )
+    );
+
+    setText(
+        "netPaidAmount",
+        formatMoney(
+            invoice.net_paid_amount ?? invoice.paid_amount ?? 0
+        )
+    );
+
+    setText(
         "balanceAmount",
         formatMoney(
             invoice.balance_amount
         )
     );
 
+    setText(
+        "refundStatus",
+        invoice.refund_status || "None"
+    );
+
     renderPaymentStatus(
         invoice.payment_status
+    );
+
+    renderReturnRefund(
+        returns,
+        returnItems,
+        paymentRefunds,
+        loyaltyAdjustments
     );
 
     renderItems(items);
@@ -331,6 +380,287 @@ function renderPaymentStatus(status) {
             )}
         </span>
     `;
+}
+
+
+// =========================================
+// Render Return / Refund
+// =========================================
+
+function renderReturnRefund(
+    returns = [],
+    returnItems = [],
+    paymentRefunds = [],
+    loyaltyAdjustments = []
+) {
+    const section =
+        $("returnRefundSection");
+
+    if (!section) return;
+
+    if (
+        !returns.length &&
+        !paymentRefunds.length
+    ) {
+        section.classList.add(
+            "d-none"
+        );
+
+        return;
+    }
+
+    section.classList.remove(
+        "d-none"
+    );
+
+    const returnNumbers =
+        returns
+            .map(
+                row =>
+                    row.return_number
+            )
+            .filter(Boolean)
+            .join(", ");
+
+    const refundNumbers =
+        paymentRefunds
+            .map(
+                row =>
+                    row.refund_number
+            )
+            .filter(Boolean)
+            .join(", ");
+
+    const latestReturn =
+        returns[0] || null;
+
+    const latestRefund =
+        paymentRefunds[0] || null;
+
+    setText(
+        "returnNumber",
+        returnNumbers || "-"
+    );
+
+    setText(
+        "refundNumber",
+        refundNumbers || "-"
+    );
+
+    setText(
+        "returnStatus",
+        latestReturn?.status ||
+        "Refunded"
+    );
+
+    const refundDate =
+        latestRefund?.completed_at ||
+        latestReturn?.refunded_at ||
+        latestReturn?.completed_at ||
+        null;
+
+    setText(
+        "refundDate",
+        refundDate
+            ? formatDateTime(
+                refundDate
+            )
+            : "-"
+    );
+
+    const totals =
+        returnItems.reduce(
+            (sum, item) => {
+                sum.gross +=
+                    Number(
+                        item.gross_return_amount ||
+                        0
+                    );
+
+                sum.coupon +=
+                    Number(
+                        item.coupon_discount_share ||
+                        0
+                    );
+
+                sum.loyalty +=
+                    Number(
+                        item.loyalty_discount_share ||
+                        0
+                    );
+
+                sum.reward +=
+                    Number(
+                        item.reward_discount_share ||
+                        0
+                    );
+
+                return sum;
+            },
+            {
+                gross:0,
+                coupon:0,
+                loyalty:0,
+                reward:0
+            }
+        );
+
+    const refunded =
+        paymentRefunds.reduce(
+            (sum, row) =>
+                sum +
+                Number(
+                    row.amount || 0
+                ),
+            0
+        );
+
+    setText(
+        "grossReturnValue",
+        formatMoney(
+            totals.gross
+        )
+    );
+
+    setText(
+        "returnCouponShare",
+        formatMoney(
+            totals.coupon
+        )
+    );
+
+    setText(
+        "returnLoyaltyShare",
+        formatMoney(
+            totals.loyalty
+        )
+    );
+
+    setText(
+        "returnRewardShare",
+        formatMoney(
+            totals.reward
+        )
+    );
+
+    setText(
+        "effectiveRefundValue",
+        formatMoney(refunded)
+    );
+
+    const restoredPoints =
+        loyaltyAdjustments
+            .filter(
+                row =>
+                    String(
+                        row.idempotency_key ||
+                        ""
+                    ).startsWith(
+                        "reward-restoration:return:"
+                    )
+            )
+            .reduce(
+                (sum, row) =>
+                    sum +
+                    Math.max(
+                        0,
+                        Number(
+                            row.points_change ||
+                            0
+                        )
+                    ),
+                0
+            );
+
+    const reversedPoints =
+        loyaltyAdjustments
+            .filter(
+                row =>
+                    String(
+                        row.idempotency_key ||
+                        ""
+                    ).startsWith(
+                        "refund-reversal:sale:"
+                    )
+            )
+            .reduce(
+                (sum, row) =>
+                    sum +
+                    Math.abs(
+                        Number(
+                            row.points_change ||
+                            0
+                        )
+                    ),
+                0
+            );
+
+    setText(
+        "rewardPointsRestored",
+        String(restoredPoints)
+    );
+
+    setText(
+        "earnedPointsReversed",
+        String(reversedPoints)
+    );
+
+    const tbody =
+        $("returnItemsBody");
+
+    if (!tbody) return;
+
+    if (!returnItems.length) {
+        tbody.innerHTML = `
+            <tr>
+                <td
+                    colspan="4"
+                    class="text-center text-muted"
+                >
+                    No returned item details.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    tbody.innerHTML =
+        returnItems
+            .map(
+                item => `
+                    <tr>
+                        <td>
+                            ${escapeHtml(
+                                item.product_name ||
+                                `Product #${item.product_id}`
+                            )}
+                        </td>
+
+                        <td class="text-center">
+                            ${Number(
+                                item.accepted_quantity ||
+                                0
+                            )}
+                        </td>
+
+                        <td class="text-end">
+                            ${formatMoney(
+                                item.gross_return_amount ||
+                                0
+                            )}
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            ${formatMoney(
+                                item.effective_refund_amount ||
+                                0
+                            )}
+                        </td>
+                    </tr>
+                `
+            )
+            .join("");
 }
 
 // =========================================

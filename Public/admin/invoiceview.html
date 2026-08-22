@@ -480,13 +480,29 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <th>
-                                                        Discount
-                                                    </th>
-                                                    <td
-                                                        id="discountAmount"
-                                                        class="text-end"
-                                                    >
+                                                    <th>Product Discount</th>
+                                                    <td id="productDiscountAmount" class="text-end">
+                                                        PKR 0.00
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Coupon Discount</th>
+                                                    <td id="couponDiscountAmount" class="text-end">
+                                                        PKR 0.00
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Loyalty Discount</th>
+                                                    <td id="loyaltyDiscountAmount" class="text-end text-success">
+                                                        PKR 0.00
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Reward Discount</th>
+                                                    <td id="rewardDiscountAmount" class="text-end text-success">
                                                         PKR 0.00
                                                     </td>
                                                 </tr>
@@ -518,26 +534,37 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <th>
-                                                        Paid
-                                                    </th>
-                                                    <td
-                                                        id="paidAmount"
-                                                        class="text-end text-success fw-bold"
-                                                    >
+                                                    <th>Gross Paid</th>
+                                                    <td id="paidAmount" class="text-end text-success fw-bold">
                                                         PKR 0.00
                                                     </td>
                                                 </tr>
 
                                                 <tr>
-                                                    <th>
-                                                        Balance
-                                                    </th>
-                                                    <td
-                                                        id="balanceAmount"
-                                                        class="text-end text-danger fw-bold"
-                                                    >
+                                                    <th>Refunded</th>
+                                                    <td id="refundedAmount" class="text-end text-danger fw-bold">
                                                         PKR 0.00
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Net Paid</th>
+                                                    <td id="netPaidAmount" class="text-end fw-bold">
+                                                        PKR 0.00
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Balance</th>
+                                                    <td id="balanceAmount" class="text-end text-danger fw-bold">
+                                                        PKR 0.00
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>Refund Status</th>
+                                                    <td id="refundStatus" class="text-end fw-bold">
+                                                        None
                                                     </td>
                                                 </tr>
 
@@ -546,6 +573,114 @@
                                         </table>
 
                                     </div>
+
+                                    <div
+                                        id="returnRefundSection"
+                                        class="mt-4 d-none"
+                                    >
+                                        <div
+                                            class="p-3 rounded border"
+                                        >
+                                            <div
+                                                class="d-flex justify-content-between align-items-center mb-3"
+                                            >
+                                                <h5
+                                                    class="text-success mb-0"
+                                                >
+                                                    Return / Refund
+                                                </h5>
+
+                                                <span
+                                                    id="returnStatus"
+                                                    class="badge bg-secondary"
+                                                >
+                                                    -
+                                                </span>
+                                            </div>
+
+                                            <div
+                                                class="table-responsive"
+                                            >
+                                                <table
+                                                    class="table table-sm mb-3"
+                                                >
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>Return Number(s)</th>
+                                                            <td id="returnNumber" class="text-end">-</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Refund Number(s)</th>
+                                                            <td id="refundNumber" class="text-end">-</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Refund Date</th>
+                                                            <td id="refundDate" class="text-end">-</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Gross Return Value</th>
+                                                            <td id="grossReturnValue" class="text-end">PKR 0.00</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Coupon Discount Share</th>
+                                                            <td id="returnCouponShare" class="text-end">PKR 0.00</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Loyalty Discount Share</th>
+                                                            <td id="returnLoyaltyShare" class="text-end">PKR 0.00</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Reward Discount Share</th>
+                                                            <td id="returnRewardShare" class="text-end">PKR 0.00</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Cash Refunded</th>
+                                                            <td id="effectiveRefundValue" class="text-end text-danger fw-bold">PKR 0.00</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Reward Points Restored</th>
+                                                            <td id="rewardPointsRestored" class="text-end fw-bold">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Earned Points Reversed</th>
+                                                            <td id="earnedPointsReversed" class="text-end fw-bold">0</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div
+                                                class="table-responsive"
+                                            >
+                                                <table
+                                                    class="table table-sm table-bordered"
+                                                >
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Returned Product</th>
+                                                            <th class="text-center">Accepted Qty</th>
+                                                            <th class="text-end">Gross</th>
+                                                            <th class="text-end">Effective Refund</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody
+                                                        id="returnItemsBody"
+                                                    ></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                 </div>
 
