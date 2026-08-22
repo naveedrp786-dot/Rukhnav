@@ -14,7 +14,16 @@
             <i class="fa-solid fa-bell"></i>
         </button>
 
-        <div class="rukhnav-topbar__profile" aria-label="Signed in administrator">
+        <div
+            class="rukhnav-topbar__profile"
+            role="link"
+            tabindex="0"
+            aria-label="Open Admin Management"
+            title="Open Admin Management"
+            onclick="window.location.href='/admin/admins.html'"
+            onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();window.location.href='/admin/admins.html';}"
+            style="cursor:pointer;"
+        >
             <img id="adminImage" src="/admin/images/default-user.png" alt="Administrator">
             <div>
                 <strong id="adminName">Administrator</strong>

@@ -5,7 +5,7 @@ const RUKHNAV_ORIGIN = window.RUKHNAV_API_ORIGIN || window.location.origin;
 // RUKHNAV ERP - Admin Management v2
 // ==========================================
 
-const API_BASE = RUKHNAV_ORIGIN + "/api/admin";
+const API_BASE = RUKHNAV_ORIGIN + "/api/admins";
 
 let admins = [];
 let filteredAdmins = [];
@@ -79,7 +79,7 @@ async function loadAdmins() {
 
     try {
         const data = await apiRequest(
-            `${API_BASE}/admins`
+            API_BASE
         );
 
         admins = Array.isArray(data.admins)
@@ -409,7 +409,7 @@ function openAddAdminModal() {
 async function openEditAdminModal(id) {
     try {
         const data = await apiRequest(
-            `${API_BASE}/admins/${id}`
+            `${API_BASE}/${id}`
         );
 
         const admin = data.admin;
@@ -545,8 +545,8 @@ async function saveAdmin(event) {
         }
 
         const url = editId
-            ? `${API_BASE}/admins/${editId}`
-            : `${API_BASE}/admins`;
+            ? `${API_BASE}/${editId}`
+            : API_BASE;
 
         const method = editId
             ? "PUT"
@@ -691,7 +691,7 @@ async function confirmDeleteAdmin() {
 
     try {
         const result = await apiRequest(
-            `${API_BASE}/admins/${deleteAdminId}`,
+            `${API_BASE}/${deleteAdminId}`,
             {
                 method: "DELETE"
             }
