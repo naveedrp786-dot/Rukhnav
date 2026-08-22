@@ -842,6 +842,26 @@ function populateDetails(
         invoice.items ||
         [];
 
+    const returns =
+        Array.isArray(data.returns)
+            ? data.returns
+            : [];
+
+    const returnItems =
+        Array.isArray(data.return_items)
+            ? data.return_items
+            : [];
+
+    const paymentRefunds =
+        Array.isArray(data.payment_refunds)
+            ? data.payment_refunds
+            : [];
+
+    const loyaltyAdjustments =
+        Array.isArray(data.loyalty_adjustments)
+            ? data.loyalty_adjustments
+            : [];
+
     state.currentInvoice =
         invoice;
 
@@ -917,10 +937,30 @@ function populateDetails(
     );
 
     setText(
-        "detailsDiscount",
+        "detailsProductDiscount",
         formatMoney(
-            invoice.discount_amount ||
-            invoice.discount
+            invoice.product_discount || 0
+        )
+    );
+
+    setText(
+        "detailsCouponDiscount",
+        formatMoney(
+            invoice.coupon_discount || 0
+        )
+    );
+
+    setText(
+        "detailsLoyaltyDiscount",
+        formatMoney(
+            invoice.loyalty_discount || 0
+        )
+    );
+
+    setText(
+        "detailsRewardDiscount",
+        formatMoney(
+            invoice.reward_discount || 0
         )
     );
 
@@ -928,14 +968,17 @@ function populateDetails(
         "detailsTax",
         formatMoney(
             invoice.tax_amount ||
-            invoice.tax
+            invoice.tax ||
+            0
         )
     );
 
     setText(
         "detailsDelivery",
         formatMoney(
-            invoice.delivery_charges
+            invoice.shipping_charges ??
+            invoice.delivery_charges ??
+            0
         )
     );
 
@@ -954,10 +997,46 @@ function populateDetails(
     );
 
     setText(
+        "detailsRefundedAmount",
+        formatMoney(
+            invoice.refunded_amount || 0
+        )
+    );
+
+    const netPaid =
+        invoice.net_paid_amount !== undefined &&
+        invoice.net_paid_amount !== null
+            ? Number(
+                invoice.net_paid_amount
+            )
+            : Math.max(
+                Number(
+                    invoice.paid_amount || 0
+                ) -
+                Number(
+                    invoice.refunded_amount || 0
+                ),
+                0
+            );
+
+    setText(
+        "detailsNetPaidAmount",
+        formatMoney(
+            netPaid
+        )
+    );
+
+    setText(
         "detailsBalanceAmount",
         formatMoney(
             invoice.balance_amount
         )
+    );
+
+    setText(
+        "detailsRefundStatus",
+        invoice.refund_status ||
+        "None"
     );
 
     $("printInvoiceButton")
@@ -1012,6 +1091,273 @@ function populateDetails(
                     </td>
                 </tr>
             `;
+
+    const returnSection =
+        $("invoiceReturnRefundSection");
+
+    if (
+        returnSection &&
+        (
+            returns.length ||
+            paymentRefunds.length
+        )
+    ) {
+        returnSection.classList.remove(
+            "hidden"
+        );
+
+        const returnNumbers =
+            returns
+                .map(
+                    row =>
+                        row.return_number
+                )
+                .filter(Boolean)
+                .join(", ");
+
+        const refundNumbers =
+            paymentRefunds
+                .map(
+                    row =>
+                        row.refund_number
+                )
+                .filter(Boolean)
+                .join(", ");
+
+        const latestReturn =
+            returns[0] || null;
+
+        const latestRefund =
+            paymentRefunds[0] || null;
+
+        setText(
+            "detailsReturnNumber",
+            returnNumbers || "—"
+        );
+
+        setText(
+            "detailsReturnStatus",
+            latestReturn?.status || "—"
+        );
+
+        setText(
+            "detailsRefundNumber",
+            refundNumbers || "—"
+        );
+
+        setText(
+            "detailsRefundDate",
+            latestRefund?.completed_at
+                ? formatDate(
+                    latestRefund.completed_at
+                )
+                : latestReturn?.refunded_at
+                    ? formatDate(
+                        latestReturn.refunded_at
+                    )
+                    : "—"
+        );
+
+        const totals =
+            returnItems.reduce(
+                (sum, item) => {
+
+                    sum.gross +=
+                        Number(
+                            item.gross_return_amount ||
+                            0
+                        );
+
+                    sum.coupon +=
+                        Number(
+                            item.coupon_discount_share ||
+                            0
+                        );
+
+                    sum.loyalty +=
+                        Number(
+                            item.loyalty_discount_share ||
+                            0
+                        );
+
+                    sum.reward +=
+                        Number(
+                            item.reward_discount_share ||
+                            0
+                        );
+
+                    return sum;
+                },
+                {
+                    gross:0,
+                    coupon:0,
+                    loyalty:0,
+                    reward:0
+                }
+            );
+
+        const refunded =
+            paymentRefunds.reduce(
+                (sum, row) =>
+                    sum +
+                    Number(
+                        row.amount || 0
+                    ),
+                0
+            );
+
+        setText(
+            "detailsGrossReturn",
+            formatMoney(
+                totals.gross
+            )
+        );
+
+        setText(
+            "detailsReturnCouponShare",
+            formatMoney(
+                totals.coupon
+            )
+        );
+
+        setText(
+            "detailsReturnLoyaltyShare",
+            formatMoney(
+                totals.loyalty
+            )
+        );
+
+        setText(
+            "detailsReturnRewardShare",
+            formatMoney(
+                totals.reward
+            )
+        );
+
+        setText(
+            "detailsCashRefunded",
+            formatMoney(
+                refunded
+            )
+        );
+
+        const restoredPoints =
+            loyaltyAdjustments
+                .filter(
+                    row =>
+                        String(
+                            row.idempotency_key ||
+                            ""
+                        ).startsWith(
+                            "reward-restoration:return:"
+                        )
+                )
+                .reduce(
+                    (sum, row) =>
+                        sum +
+                        Math.max(
+                            0,
+                            Number(
+                                row.points_change ||
+                                0
+                            )
+                        ),
+                    0
+                );
+
+        const reversedPoints =
+            loyaltyAdjustments
+                .filter(
+                    row =>
+                        String(
+                            row.idempotency_key ||
+                            ""
+                        ).startsWith(
+                            "refund-reversal:sale:"
+                        )
+                )
+                .reduce(
+                    (sum, row) =>
+                        sum +
+                        Math.abs(
+                            Number(
+                                row.points_change ||
+                                0
+                            )
+                        ),
+                    0
+                );
+
+        setText(
+            "detailsRewardPointsRestored",
+            formatNumber(
+                restoredPoints
+            )
+        );
+
+        setText(
+            "detailsEarnedPointsReversed",
+            formatNumber(
+                reversedPoints
+            )
+        );
+
+        const returnBody =
+            $("invoiceReturnItemsTableBody");
+
+        if (returnBody) {
+            returnBody.innerHTML =
+                returnItems.length
+                    ? returnItems
+                        .map(
+                            item => `
+                                <tr>
+                                    <td>
+                                        ${escapeHtml(
+                                            item.product_name ||
+                                            `Product #${item.product_id || ""}`
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        ${formatNumber(
+                                            item.accepted_quantity || 0
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        ${formatMoney(
+                                            item.gross_return_amount || 0
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        ${formatMoney(
+                                            item.effective_refund_amount || 0
+                                        )}
+                                    </td>
+                                </tr>
+                            `
+                        )
+                        .join("")
+                    : `
+                        <tr>
+                            <td
+                                colspan="4"
+                                style="text-align:center"
+                            >
+                                No returned item details.
+                            </td>
+                        </tr>
+                    `;
+        }
+    } else if (returnSection) {
+
+        returnSection.classList.add(
+            "hidden"
+        );
+    }
+
 }
 
 async function openDetails(
