@@ -986,6 +986,92 @@ const expireRewardPoints =
     };
 
 // =========================================
+// Restore Redeemed Points After Return
+// =========================================
+
+const restoreRedeemedRewardPoints =
+    async ({
+        customerId,
+        points,
+        orderId,
+        returnId,
+        orderNumber = null,
+        description = null,
+        metadata = null,
+        createdByAdminId = null,
+        existingConnection = null
+    }) => {
+        const parsedPoints =
+            toInteger(
+                points,
+                "points"
+            );
+
+        if (parsedPoints <= 0) {
+            throw new LoyaltyServiceError(
+                "Restored reward points must be greater than zero.",
+                400,
+                "INVALID_REWARD_RESTORE_POINTS"
+            );
+        }
+
+        const parsedOrderId =
+            toInteger(
+                orderId,
+                "orderId"
+            );
+
+        const parsedReturnId =
+            toInteger(
+                returnId,
+                "returnId"
+            );
+
+        return applyLoyaltyTransaction({
+            customerId,
+
+            // Keep existing DB transaction type compatibility.
+            transactionType:
+                "Other",
+
+            pointsChange:
+                parsedPoints,
+
+            // Restoring spent points must NOT increase lifetime points.
+            lifetimePointsChange:
+                0,
+
+            sourceType:
+                "Reward Restoration",
+
+            sourceId:
+                parsedOrderId,
+
+            referenceNumber:
+                orderNumber,
+
+            description:
+                description ||
+                "Reward points restored after customer return.",
+
+            // Prevent duplicate credits for the same return.
+            idempotencyKey:
+                `reward-restoration:return:${parsedReturnId}`,
+
+            createdByAdminId,
+
+            metadata: {
+                ...(metadata || {}),
+                orderId: parsedOrderId,
+                returnId: parsedReturnId,
+                restoredPoints: parsedPoints
+            },
+
+            existingConnection
+        });
+    };
+
+// =========================================
 // Reverse Points After Refund
 // =========================================
 
@@ -997,7 +1083,8 @@ const reverseRefundPoints =
         saleId,
         saleNumber = null,
         description = null,
-        metadata = null
+        metadata = null,
+        existingConnection = null
     }) => {
         const parsedPoints =
             toInteger(
@@ -1058,7 +1145,9 @@ const reverseRefundPoints =
             idempotencyKey:
                 `refund-reversal:sale:${saleId}`,
 
-            metadata
+            metadata,
+
+            existingConnection
         });
     };
 
@@ -1076,6 +1165,8 @@ module.exports = {
     applyManualAdjustment,
 
     redeemRewardPoints,
+
+    restoreRedeemedRewardPoints,
 
     expireRewardPoints,
 

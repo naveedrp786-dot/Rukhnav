@@ -5,6 +5,9 @@ const db = require("../config/db");
 const customerLoyaltyService =
     require("./customerLoyaltyService");
 
+const loyaltyTransactionService =
+    require("./loyaltyTransactionService");
+
 const orderSalesIntegrationService =
     require("./orderSalesIntegrationService");
 
@@ -614,44 +617,318 @@ exports.completeReturn = async ({ returnId, adminId, payload }) => {
                 [request.order_id]
             );
         }
-        await addActivity(connection,{returnRequestId:returnId,actorType:"Admin",actorId:adminId,action:refunded>0?"Return completed and refund issued":"Return completed",fromStatus:"Inspected",toStatus:finalStatus,notes:payload.notes});
-        await connection.commit();
+        let rewardRestoration=null;
 
-        let loyaltyReversal=null;
-        let loyaltyWarning=null;
+        /*
+         * Restore reward points that were redeemed against
+         * the returned merchandise.
+         *
+         * This happens inside the same DB transaction as the
+         * monetary refund, so the points credit and refund
+         * succeed or roll back together.
+         */
+        if(refunded>0){
+            const [[rewardOrder]] = await connection.query(
+                `SELECT
+                    customer_id,
+                    order_number,
+                    reward_points_redeemed,
+                    reward_points_discount_amount
+                 FROM orders
+                 WHERE id=?
+                 LIMIT 1
+                 FOR UPDATE`,
+                [request.order_id]
+            );
+
+            const [[rewardShareRow]] = await connection.query(
+                `SELECT
+                    COALESCE(SUM(reward_discount_share),0)
+                        AS reward_discount_share
+                 FROM customer_return_items
+                 WHERE return_request_id=?`,
+                [returnId]
+            );
+
+            const totalRedeemed =
+                Math.max(
+                    0,
+                    Number(
+                        rewardOrder?.reward_points_redeemed || 0
+                    )
+                );
+
+            const totalRewardDiscount =
+                Math.max(
+                    0,
+                    money(
+                        rewardOrder?.reward_points_discount_amount || 0
+                    )
+                );
+
+            const inspectedRewardShare =
+                Math.max(
+                    0,
+                    money(
+                        rewardShareRow?.reward_discount_share || 0
+                    )
+                );
+
+            /*
+             * If admin issues less than the full approved refund,
+             * restore only the proportional reward-point share.
+             */
+            const refundScale =
+                money(request.approved_amount) > 0
+                    ? Math.min(
+                        1,
+                        Math.max(
+                            0,
+                            refunded /
+                            money(request.approved_amount)
+                        )
+                    )
+                    : 0;
+
+            const refundableRewardShare =
+                money(
+                    inspectedRewardShare *
+                    refundScale
+                );
+
+            let pointsToRestore =
+                totalRedeemed > 0 &&
+                totalRewardDiscount > 0 &&
+                refundableRewardShare > 0
+                    ? Math.round(
+                        totalRedeemed *
+                        Math.min(
+                            1,
+                            refundableRewardShare /
+                            totalRewardDiscount
+                        )
+                    )
+                    : 0;
+
+            /*
+             * Cap the total restored points across all returns
+             * for this order so the customer can never receive
+             * more than originally redeemed.
+             */
+            if(pointsToRestore>0){
+                const [[alreadyRestoredRow]] =
+                    await connection.query(
+                        `SELECT
+                            COALESCE(
+                                SUM(points_change),
+                                0
+                            ) AS restored_points
+                         FROM customer_loyalty_transactions
+                         WHERE customer_id=?
+                           AND source_type='Reward Restoration'
+                           AND source_id=?
+                           AND points_change>0`,
+                        [
+                            rewardOrder.customer_id,
+                            request.order_id
+                        ]
+                    );
+
+                const alreadyRestored =
+                    Math.max(
+                        0,
+                        Number(
+                            alreadyRestoredRow?.restored_points || 0
+                        )
+                    );
+
+                pointsToRestore =
+                    Math.min(
+                        pointsToRestore,
+                        Math.max(
+                            0,
+                            totalRedeemed -
+                            alreadyRestored
+                        )
+                    );
+            }
+
+            if(pointsToRestore>0){
+                rewardRestoration =
+                    await loyaltyTransactionService
+                        .restoreRedeemedRewardPoints({
+                            customerId:
+                                rewardOrder.customer_id,
+
+                            points:
+                                pointsToRestore,
+
+                            orderId:
+                                request.order_id,
+
+                            returnId,
+
+                            orderNumber:
+                                rewardOrder.order_number,
+
+                            description:
+                                `Reward points restored for customer return ${request.return_number}`,
+
+                            metadata: {
+                                refundAmount:
+                                    refunded,
+
+                                approvedAmount:
+                                    money(
+                                        request.approved_amount
+                                    ),
+
+                                rewardDiscountShare:
+                                    refundableRewardShare
+                            },
+
+                            createdByAdminId:
+                                adminId,
+
+                            existingConnection:
+                                connection
+                        });
+            }
+        }
+
+        /*
+         * Reverse purchase-earned loyalty points inside the
+         * SAME transaction as the refund.
+         */
+        let transactionalLoyaltyReversal=null;
 
         if(
             orderFullyRefunded &&
             salesSync?.linked &&
             salesSync?.saleId
         ){
-            try{
-                loyaltyReversal =
-                    await customerLoyaltyService
-                        .reverseSalePoints(
-                            salesSync.saleId,
-                            `Website order ${request.order_id} fully refunded through customer return`
+            const [[saleForReversal]] =
+                await connection.query(
+                    `SELECT
+                        id,
+                        sale_number,
+                        customer_id,
+                        grand_total
+                     FROM sales
+                     WHERE id=?
+                     LIMIT 1
+                     FOR UPDATE`,
+                    [salesSync.saleId]
+                );
+
+            if(saleForReversal){
+                const [[earnedTransaction]] =
+                    await connection.query(
+                        `SELECT
+                            id,
+                            points_change,
+                            lifetime_points_change
+                         FROM customer_loyalty_transactions
+                         WHERE
+                            customer_id=?
+                            AND source_id=?
+                            AND points_change>0
+                            AND source_type IN (
+                                'Sale',
+                                'Customer Sale',
+                                'Purchase'
+                            )
+                         ORDER BY id ASC
+                         LIMIT 1`,
+                        [
+                            saleForReversal.customer_id,
+                            saleForReversal.id
+                        ]
+                    );
+
+                if(earnedTransaction){
+                    const awardedPoints =
+                        Math.abs(
+                            Number(
+                                earnedTransaction.points_change || 0
+                            )
                         );
-            }catch(error){
-                if(Number(error.statusCode)===404){
-                    loyaltyReversal={
+
+                    const awardedLifetimePoints =
+                        Math.abs(
+                            Number(
+                                earnedTransaction
+                                    .lifetime_points_change || 0
+                            )
+                        );
+
+                    if(
+                        awardedPoints > 0 ||
+                        awardedLifetimePoints > 0
+                    ){
+                        transactionalLoyaltyReversal =
+                            await loyaltyTransactionService
+                                .reverseRefundPoints({
+                                    customerId:
+                                        saleForReversal.customer_id,
+
+                                    points:
+                                        awardedPoints,
+
+                                    lifetimePoints:
+                                        awardedLifetimePoints,
+
+                                    saleId:
+                                        saleForReversal.id,
+
+                                    saleNumber:
+                                        saleForReversal.sale_number,
+
+                                    description:
+                                        `Website order ${request.order_id} fully refunded through customer return`,
+
+                                    metadata: {
+                                        originalTransactionId:
+                                            earnedTransaction.id,
+
+                                        saleTotal:
+                                            Number(
+                                                saleForReversal.grand_total || 0
+                                            ),
+
+                                        returnId:
+                                            Number(returnId),
+
+                                        orderId:
+                                            Number(request.order_id),
+
+                                        source:
+                                            "customer_return_atomic_reversal"
+                                    },
+
+                                    existingConnection:
+                                        connection
+                                });
+                    }
+                }else{
+                    transactionalLoyaltyReversal={
                         success:true,
                         pointsReversed:0,
                         message:
                             "No purchase loyalty points had been awarded for this sale."
                     };
-                }else{
-                    console.error(
-                        "Return loyalty reversal failed:",
-                        error
-                    );
-
-                    loyaltyWarning =
-                        error.message ||
-                        "Return completed, but loyalty reversal requires review.";
                 }
             }
         }
+
+        await addActivity(connection,{returnRequestId:returnId,actorType:"Admin",actorId:adminId,action:refunded>0?"Return completed and refund issued":"Return completed",fromStatus:"Inspected",toStatus:finalStatus,notes:payload.notes});
+
+        await connection.commit();
+
+        let loyaltyReversal=
+            transactionalLoyaltyReversal;
+
+        let loyaltyWarning=null;
 
         return {
             id:returnId,
@@ -661,6 +938,7 @@ exports.completeReturn = async ({ returnId, adminId, payload }) => {
             paymentSummary,
             orderFullyRefunded,
             salesSync,
+            rewardRestoration,
             loyaltyReversal,
             loyaltyWarning
         };
