@@ -631,7 +631,6 @@ async function ensureSaleForOrder(
                 ?,
                 ?,
                 ?,
-                ?,
                 'Issued',
                 ?
             )
