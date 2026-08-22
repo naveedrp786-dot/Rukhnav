@@ -74,13 +74,6 @@ app.use(
     })
 );
 
-// Backend public folder
-app.use(
-    express.static(
-        path.join(__dirname, "public")
-    )
-);
-
 // Uploaded files
 app.use(
     "/uploads",
@@ -127,8 +120,21 @@ app.get("/favicon.ico", (req, res) => {
     );
 });
 
+// Primary frontend files.
+// Keep the canonical top-level Public/public folder first
+// so Railway serves the same frontend files tracked and
+// edited by the project.
 app.use(
     express.static(frontendPublicRoot)
+);
+
+// Backend-specific public files remain available only
+// as a fallback when the frontend root does not contain
+// the requested asset.
+app.use(
+    express.static(
+        path.join(__dirname, "public")
+    )
 );
 
 // =====================================================
