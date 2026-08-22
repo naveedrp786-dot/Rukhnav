@@ -1,11 +1,11 @@
 "use strict";
-const RUKHNAV_ORIGIN = window.RUKHNAV_API_ORIGIN || window.location.origin;
+const ADMIN_MANAGEMENT_ORIGIN = window.RUKHNAV_API_ORIGIN || window.location.origin;
 
 // ==========================================
 // RUKHNAV ERP - Admin Management v2
 // ==========================================
 
-const API_BASE = RUKHNAV_ORIGIN + "/api/admins";
+const API_BASE = ADMIN_MANAGEMENT_ORIGIN + "/api/admins";
 
 let admins = [];
 let filteredAdmins = [];
@@ -260,7 +260,7 @@ function renderAdmins() {
                 .trim() || "Unnamed Admin";
 
         const imageUrl = admin.profile_image
-            ? `${RUKHNAV_ORIGIN}/uploads/admins/${encodeURIComponent(admin.profile_image)}`
+            ? `${ADMIN_MANAGEMENT_ORIGIN}/uploads/admins/${encodeURIComponent(admin.profile_image)}`
             : "images/default-user.png";
 
         const role =
@@ -462,7 +462,7 @@ async function openEditAdminModal(id) {
 
         $("imagePreview").src =
             admin.profile_image
-                ? `${RUKHNAV_ORIGIN}/uploads/admins/${encodeURIComponent(admin.profile_image)}`
+                ? `${ADMIN_MANAGEMENT_ORIGIN}/uploads/admins/${encodeURIComponent(admin.profile_image)}`
                 : "images/default-user.png";
 
         showAdminModal();
