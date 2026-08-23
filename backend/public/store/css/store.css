@@ -310,3 +310,56 @@ button{
         );
     border-top-color:var(--secondary);
 }
+
+/* =========================================================
+   RUKHNAV THEME ENGINE V2 — CINEMATIC SMOKE ATMOSPHERE
+   ========================================================= */
+
+.hero{
+    position:relative;
+    isolation:isolate;
+    background:var(--smoke-gradient);
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    inset:-8%;
+    z-index:-1;
+    pointer-events:none;
+    background:var(--smoke-gradient);
+    filter:blur(34px);
+    opacity:.72;
+    transform:scale(1.08);
+}
+
+.story{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    background:var(--dark-smoke-gradient);
+}
+
+.story::before{
+    content:"";
+    position:absolute;
+    inset:-18%;
+    z-index:-1;
+    pointer-events:none;
+    background:var(--dark-smoke-gradient);
+    filter:blur(42px);
+    opacity:.82;
+    transform:scale(1.12);
+}
+
+.page-hero{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    background:var(--smoke-gradient);
+}
+
+.newsletter > div{
+    background:
+        var(--smoke-gradient);
+}

@@ -277,6 +277,53 @@ window.RukhnavModernCMS = {
             `${highlight} 84%, ` +
             `${glowColor} 100%)`;
 
+        /*
+         * Multi-layer cinematic smoke / aurora atmosphere.
+         * Radial gradients create soft overlapping colour clouds.
+         */
+        const smokeGradient =
+            `radial-gradient(circle at 12% 18%, ` +
+            `${alpha(shade2, 0.72)} 0%, ` +
+            `${alpha(shade2, 0.26)} 22%, ` +
+            `transparent 48%), ` +
+
+            `radial-gradient(circle at 82% 16%, ` +
+            `${alpha(highlight, 0.68)} 0%, ` +
+            `${alpha(highlight, 0.24)} 24%, ` +
+            `transparent 52%), ` +
+
+            `radial-gradient(circle at 58% 78%, ` +
+            `${alpha(glowColor, 0.58)} 0%, ` +
+            `${alpha(glowColor, 0.20)} 28%, ` +
+            `transparent 56%), ` +
+
+            `radial-gradient(circle at 28% 82%, ` +
+            `${alpha(shade3, 0.46)} 0%, ` +
+            `transparent 52%), ` +
+
+            `linear-gradient(135deg, ` +
+            `${background} 0%, ` +
+            `${shade4} 48%, ` +
+            `${accent} 100%)`;
+
+        const darkSmokeGradient =
+            `radial-gradient(circle at 14% 18%, ` +
+            `${alpha(shade2, 0.62)} 0%, ` +
+            `transparent 44%), ` +
+
+            `radial-gradient(circle at 82% 24%, ` +
+            `${alpha(glowColor, 0.48)} 0%, ` +
+            `transparent 48%), ` +
+
+            `radial-gradient(circle at 54% 88%, ` +
+            `${alpha(highlight, 0.34)} 0%, ` +
+            `transparent 46%), ` +
+
+            `linear-gradient(135deg, ` +
+            `${shade1} 0%, ` +
+            `${primary} 48%, ` +
+            `${shade2} 100%)`;
+
         const variables = {
             /*
              * Theme Engine V2
@@ -307,6 +354,12 @@ window.RukhnavModernCMS = {
 
             "--spectrum-gradient":
                 spectrumGradient,
+
+            "--smoke-gradient":
+                smokeGradient,
+
+            "--dark-smoke-gradient":
+                darkSmokeGradient,
 
             "--primary": theme.primary_color,
             "--secondary": theme.secondary_color,

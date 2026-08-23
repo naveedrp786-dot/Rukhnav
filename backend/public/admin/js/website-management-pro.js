@@ -259,7 +259,44 @@ function renderThemePresets() {
                         preset.id
                     )}"
                 >
-                    <div class="rukhnav-theme-card-preview">
+                    <div
+                        class="rukhnav-theme-card-preview"
+                        style="
+                            --preview-primary:${themePresetEscape(
+                                theme.primary_color
+                            )};
+                            --preview-secondary:${themePresetEscape(
+                                theme.secondary_color
+                            )};
+                            --preview-accent:${themePresetEscape(
+                                theme.accent_color
+                            )};
+                            --preview-shade-1:${themePresetEscape(
+                                theme.shade_1 ||
+                                theme.primary_color
+                            )};
+                            --preview-shade-2:${themePresetEscape(
+                                theme.shade_2 ||
+                                theme.secondary_color
+                            )};
+                            --preview-shade-3:${themePresetEscape(
+                                theme.shade_3 ||
+                                theme.accent_color
+                            )};
+                            --preview-shade-4:${themePresetEscape(
+                                theme.shade_4 ||
+                                theme.background_color
+                            )};
+                            --preview-highlight:${themePresetEscape(
+                                theme.highlight_color ||
+                                theme.secondary_color
+                            )};
+                            --preview-glow:${themePresetEscape(
+                                theme.glow_color ||
+                                theme.secondary_color
+                            )};
+                        "
+                    >
                         <div
                             class="rukhnav-theme-preview-top"
                             style="
