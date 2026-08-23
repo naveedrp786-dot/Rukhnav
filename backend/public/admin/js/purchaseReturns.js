@@ -769,6 +769,11 @@ async function viewPurchaseReturn(id) {
         modal.dataset.returnId =
             String(id);
 
+        configurePurchaseReturnActions(
+            purchaseReturn,
+            items
+        );
+
         const printButton =
             byId("printFromView");
 
@@ -787,6 +792,215 @@ async function viewPurchaseReturn(id) {
         );
     }
 }
+
+
+function configurePurchaseReturnActions(
+    purchaseReturn = {},
+    items = []
+) {
+
+    const status =
+        normalizeStatus(
+            purchaseReturn.status ||
+            "Draft"
+        );
+
+    const completeButton =
+        byId(
+            "completePurchaseReturnBtn"
+        );
+
+    const cancelButton =
+        byId(
+            "cancelPurchaseReturnBtn"
+        );
+
+    const stateMessage =
+        byId(
+            "viewReturnStateMessage"
+        );
+
+    const id =
+        Number(
+            purchaseReturn.id || 0
+        );
+
+    if (completeButton) {
+        completeButton.style.display =
+            status === "draft"
+                ? "inline-flex"
+                : "none";
+
+        completeButton.onclick =
+            status === "draft" && id
+                ? () =>
+                    completePurchaseReturnFromView(
+                        id,
+                        purchaseReturn,
+                        items
+                    )
+                : null;
+    }
+
+    if (cancelButton) {
+        cancelButton.style.display =
+            status === "draft"
+                ? "inline-flex"
+                : "none";
+
+        cancelButton.onclick =
+            status === "draft" && id
+                ? () =>
+                    cancelPurchaseReturnFromView(
+                        id,
+                        purchaseReturn
+                    )
+                : null;
+    }
+
+    if (stateMessage) {
+
+        if (status === "completed") {
+            stateMessage.innerHTML = `
+                <span class="purchase-return-state completed">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Inventory posted
+                </span>
+            `;
+        } else if (
+            status === "cancelled" ||
+            status === "canceled"
+        ) {
+            stateMessage.innerHTML = `
+                <span class="purchase-return-state cancelled">
+                    <i class="fa-solid fa-ban"></i>
+                    Return cancelled
+                </span>
+            `;
+        } else {
+            stateMessage.innerHTML = `
+                <span class="purchase-return-state draft">
+                    <i class="fa-solid fa-clock"></i>
+                    Draft — inventory not posted
+                </span>
+            `;
+        }
+    }
+}
+
+
+async function completePurchaseReturnFromView(
+    id,
+    purchaseReturn = {},
+    items = []
+) {
+
+    const returnNumber =
+        purchaseReturn.return_number ||
+        `PR-${id}`;
+
+    const totalUnits =
+        items.reduce(
+            (sum, item) =>
+                sum +
+                Number(
+                    item.quantity || 0
+                ),
+            0
+        );
+
+    const productSummary =
+        items
+            .map(
+                item =>
+                    `${item.product_name || "Product"}: ${Number(item.quantity || 0)}`
+            )
+            .join("\n");
+
+    const confirmed =
+        window.confirm(
+            `Complete purchase return ${returnNumber}?\n\n` +
+            `${totalUnits} unit(s) will be removed from inventory.\n\n` +
+            `${productSummary}\n\n` +
+            `This action will post Stock Out transactions to the inventory ledger.`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const result =
+        await api(
+            `${PURCHASE_RETURN_API}/${id}/complete`,
+            {
+                method: "PUT",
+                headers: getHeaders(),
+                body:
+                    JSON.stringify({
+                        notes:
+                            "Completed from Purchase Return Details."
+                    })
+            }
+        );
+
+    alert(
+        result.message ||
+        "Purchase return completed successfully."
+    );
+
+    await loadPurchaseReturns();
+
+    await viewPurchaseReturn(
+        id
+    );
+}
+
+
+async function cancelPurchaseReturnFromView(
+    id,
+    purchaseReturn = {}
+) {
+
+    const returnNumber =
+        purchaseReturn.return_number ||
+        `PR-${id}`;
+
+    const confirmed =
+        window.confirm(
+            `Cancel draft purchase return ${returnNumber}?\n\n` +
+            `No inventory will be changed because this return has not been completed yet.`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const result =
+        await api(
+            `${PURCHASE_RETURN_API}/${id}/cancel`,
+            {
+                method: "PUT",
+                headers: getHeaders(),
+                body:
+                    JSON.stringify({
+                        notes:
+                            "Draft purchase return cancelled from Purchase Return Details."
+                    })
+            }
+        );
+
+    alert(
+        result.message ||
+        "Purchase return cancelled successfully."
+    );
+
+    await loadPurchaseReturns();
+
+    await viewPurchaseReturn(
+        id
+    );
+}
+
 
 // ============================================================
 // Print Purchase Return

@@ -226,8 +226,50 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="closeViewBtn">Close</button>
-            <button type="button" class="btn btn-primary" id="printFromView"><i class="fa-solid fa-print"></i> Print</button>
+
+            <div
+                id="viewReturnStateMessage"
+                class="purchase-return-state-message"
+                style="margin-right:auto;"
+            ></div>
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="closeViewBtn"
+            >
+                Close
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="printFromView"
+            >
+                <i class="fa-solid fa-print"></i>
+                Print
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-danger"
+                id="cancelPurchaseReturnBtn"
+                style="display:none;"
+            >
+                <i class="fa-solid fa-ban"></i>
+                Cancel Return
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-success"
+                id="completePurchaseReturnBtn"
+                style="display:none;"
+            >
+                <i class="fa-solid fa-check"></i>
+                Complete Return
+            </button>
+
         </div>
     </div>
 </div>

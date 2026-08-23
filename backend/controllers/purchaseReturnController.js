@@ -3054,165 +3054,39 @@ exports.cancelPurchaseReturn = async (
 
 
         // ----------------------------------------------
-        // Restore Stock If Previously Completed
+        // Protect Completed Returns
         // ----------------------------------------------
+        //
+        // A completed purchase return has already affected
+        // inventory. It must not be cancelled through the
+        // ordinary Draft cancellation workflow.
+        //
+        // Any future reversal must use a dedicated,
+        // auditable reversal operation.
 
         if (
             purchaseReturn.status ===
             "Completed"
         ) {
 
-            const [items] =
-                await connection.query(
-                    `
-                    SELECT
-                        id,
-                        product_id,
-                        quantity
-                    FROM purchase_return_items
-                    WHERE purchase_return_id = ?
-                    ORDER BY id ASC
-                    FOR UPDATE
-                    `,
-                    [purchaseReturnId]
-                );
+            await rollbackQuietly(
+                connection
+            );
 
-
-            for (
-                const item
-                of items
-            ) {
-
-                const quantity =
-                    numberValue(
-                        item.quantity
-                    );
-
-
-                const [productRows] =
-                    await connection.query(
-                        `
-                        SELECT
-                            id,
-                            stock_quantity,
-                            low_stock_level
-                        FROM products
-                        WHERE id = ?
-                        LIMIT 1
-                        FOR UPDATE
-                        `,
-                        [item.product_id]
-                    );
-
-
-                if (!productRows.length) {
-
-                    await rollbackQuietly(
-                        connection
-                    );
-
-                    return res.status(404).json({
-                        success: false,
-                        message:
-                            `Product ID ${item.product_id} was not found.`
-                    });
-
-                }
-
-
-                await connection.query(
-                    `
-                    UPDATE products
-                    SET
-                        stock_quantity =
-                            stock_quantity + ?,
-
-                        stock_status =
-                            CASE
-                                WHEN stock_quantity + ? <= 0
-                                    THEN 'Out of Stock'
-
-                                WHEN stock_quantity + ? <=
-                                    low_stock_level
-                                    THEN 'Low Stock'
-
-                                ELSE 'In Stock'
-                            END
-                    WHERE id = ?
-                    `,
-                    [
-                        quantity,
-                        quantity,
-                        quantity,
-                        item.product_id
-                    ]
-                );
-
-                // ------------------------------------------
-                // Inventory Ledger - Cancel Return / Stock In
-                // ------------------------------------------
-
-                const previousStock =
-                    numberValue(
-                        productRows[0]
-                            .stock_quantity
-                    );
-
-                const newStock =
-                    previousStock +
-                    quantity;
-
-                await connection.query(
-                    `
-                    INSERT INTO inventory_transactions
-                    (
-                        product_id,
-                        transaction_type,
-                        quantity,
-                        previous_stock,
-                        new_stock,
-                        cost_price,
-                        supplier_id,
-                        reference,
-                        remarks,
-                        created_by
-                    )
-                    SELECT
-                        ?,
-                        'Stock In',
-                        ?,
-                        ?,
-                        ?,
-                        COALESCE(pri.unit_cost, 0),
-                        pr.supplier_id,
-                        pr.return_number,
-                        CONCAT(
-                            'Stock restored after cancellation of purchase return ',
-                            pr.return_number
-                        ),
-                        ?
-                    FROM purchase_returns pr
-                    JOIN purchase_return_items pri
-                        ON pri.purchase_return_id = pr.id
-                    WHERE pr.id = ?
-                      AND pri.id = ?
-                    LIMIT 1
-                    `,
-                    [
-                        item.product_id,
-                        quantity,
-                        previousStock,
-                        newStock,
-                        adminId,
-                        purchaseReturnId,
-                        item.id
-                    ]
-                );
-
-            }
+            return res.status(409).json({
+                success: false,
+                message:
+                    "A completed purchase return cannot be cancelled. Use the purchase return reversal workflow instead."
+            });
 
         }
 
+        // ----------------------------------------------
+        // Draft Cancellation
+        // ----------------------------------------------
+        //
+        // Draft cancellation does not affect inventory
+        // because stock has not yet been posted.
 
         // ----------------------------------------------
         // Mark Return Cancelled
@@ -3250,12 +3124,7 @@ exports.cancelPurchaseReturn = async (
 
                 notes:
                     notes ||
-                    (
-                        purchaseReturn.status ===
-                        "Completed"
-                            ? "Completed purchase return cancelled and stock restored."
-                            : "Draft purchase return cancelled."
-                    )
+                    "Draft purchase return cancelled."
             }
         );
 
@@ -3267,10 +3136,7 @@ exports.cancelPurchaseReturn = async (
             success: true,
 
             message:
-                purchaseReturn.status ===
-                "Completed"
-                    ? "Purchase return cancelled and stock restored successfully."
-                    : "Purchase return cancelled successfully.",
+                "Purchase return cancelled successfully.",
 
             purchaseReturn: {
                 id:

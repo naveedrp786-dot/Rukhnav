@@ -565,3 +565,55 @@ tbody tr:hover {
     transform:translateY(-2px);
     box-shadow:0 6px 15px rgba(0,0,0,.15);
 }
+
+/* =========================================================
+   Purchase Return View State
+========================================================= */
+
+.purchase-return-state-message {
+    display: flex;
+    align-items: center;
+}
+
+.purchase-return-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.purchase-return-state.draft {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.purchase-return-state.completed {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.purchase-return-state.cancelled {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.btn-success {
+    background: #16734f;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: #105d3f;
+}
+
+.btn-danger {
+    background: #b42318;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #8f1c14;
+}
