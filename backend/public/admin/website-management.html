@@ -78,6 +78,37 @@
 
 <div class="wmp-panel" data-panel="theme">
 <h2>Theme</h2>
+
+<section class="rukhnav-theme-presets-section">
+    <div class="rukhnav-theme-presets-header">
+        <div>
+            <span class="rukhnav-theme-eyebrow">
+                DESIGN LIBRARY
+            </span>
+
+            <h3>Predefined Website Themes</h3>
+
+            <p>
+                Choose a professionally matched colour and
+                typography combination. After applying a theme,
+                you can still customise every setting below.
+            </p>
+        </div>
+
+        <span
+            id="rukhnavThemePresetCount"
+            class="rukhnav-theme-count"
+        >
+            Themes
+        </span>
+    </div>
+
+    <div
+        id="rukhnavThemePresetLibrary"
+        class="rukhnav-theme-preset-grid"
+    ></div>
+</section>
+
 <div class="wmp-grid">
 <label><span>Primary</span><input type="color" data-path="theme.primary_color"></label>
 <label><span>Secondary</span><input type="color" data-path="theme.secondary_color"></label>
@@ -509,6 +540,7 @@
 </main>
 </div>
 <script src="/admin/js/adminLayout.js"></script>
+<script src="/admin/js/website-theme-presets.js"></script>
 <script src="/admin/js/website-management-pro.js"></script>
 </body>
 </html>

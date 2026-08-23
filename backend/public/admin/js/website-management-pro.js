@@ -120,6 +120,297 @@ function bindFields() {
     });
 }
 
+
+// ======================================================
+// Predefined Website Theme Presets
+// ======================================================
+
+function themePresetEscape(value = "") {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function themeMatchesPreset(preset) {
+    const current =
+        state.settings.theme || {};
+
+    return Object.entries(
+        preset.theme || {}
+    ).every(
+        ([key, value]) =>
+            String(current[key] ?? "") ===
+            String(value ?? "")
+    );
+}
+
+function refreshThemePresetSelection() {
+    const presets =
+        window.RUKHNAV_THEME_PRESETS || [];
+
+    document
+        .querySelectorAll(
+            "[data-theme-preset]"
+        )
+        .forEach(card => {
+
+            const preset =
+                presets.find(
+                    item =>
+                        item.id ===
+                        card.dataset.themePreset
+                );
+
+            card.classList.toggle(
+                "selected",
+                Boolean(
+                    preset &&
+                    themeMatchesPreset(
+                        preset
+                    )
+                )
+            );
+        });
+}
+
+function applyThemePreset(presetId) {
+    const presets =
+        window.RUKHNAV_THEME_PRESETS || [];
+
+    const preset =
+        presets.find(
+            item =>
+                item.id === presetId
+        );
+
+    if (!preset) {
+        message(
+            "Theme preset could not be found.",
+            "error"
+        );
+        return;
+    }
+
+    state.settings.theme = {
+        ...(state.settings.theme || {}),
+        ...(preset.theme || {})
+    };
+
+    /*
+     * Refill the existing editable Theme controls
+     * from the updated state object.
+     */
+    bindFields();
+
+    refreshThemePresetSelection();
+
+    message(
+        `${preset.name} applied to the draft. ` +
+        "Review or customise the settings below, " +
+        "then Save Draft and Publish.",
+        "success"
+    );
+}
+
+function renderThemePresets() {
+    const container =
+        document.getElementById(
+            "rukhnavThemePresetLibrary"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    const presets =
+        window.RUKHNAV_THEME_PRESETS || [];
+
+    const count =
+        document.getElementById(
+            "rukhnavThemePresetCount"
+        );
+
+    if (count) {
+        count.textContent =
+            `${presets.length} Themes`;
+    }
+
+    container.innerHTML =
+        presets.map(preset => {
+
+            const theme =
+                preset.theme || {};
+
+            const swatches = [
+                theme.primary_color,
+                theme.secondary_color,
+                theme.accent_color,
+                theme.background_color,
+                theme.surface_color
+            ].filter(Boolean);
+
+            return `
+                <article
+                    class="rukhnav-theme-card"
+                    data-theme-preset="${themePresetEscape(
+                        preset.id
+                    )}"
+                >
+                    <div class="rukhnav-theme-card-preview">
+                        <div
+                            class="rukhnav-theme-preview-top"
+                            style="
+                                background:${themePresetEscape(
+                                    theme.primary_color
+                                )};
+                            "
+                        >
+                            <span
+                                style="
+                                    background:${themePresetEscape(
+                                        theme.secondary_color
+                                    )};
+                                "
+                            ></span>
+
+                            <span
+                                style="
+                                    background:${themePresetEscape(
+                                        theme.accent_color
+                                    )};
+                                "
+                            ></span>
+                        </div>
+
+                        <div
+                            class="rukhnav-theme-preview-body"
+                            style="
+                                background:${themePresetEscape(
+                                    theme.background_color
+                                )};
+                                color:${themePresetEscape(
+                                    theme.text_color
+                                )};
+                            "
+                        >
+                            <strong
+                                style="
+                                    color:${themePresetEscape(
+                                        theme.heading_color
+                                    )};
+                                "
+                            >
+                                Aa
+                            </strong>
+
+                            <span
+                                style="
+                                    background:${themePresetEscape(
+                                        theme.primary_color
+                                    )};
+                                    border-radius:${Number(
+                                        theme.button_radius || 0
+                                    )}px;
+                                "
+                            >
+                                Shop
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="rukhnav-theme-card-content">
+
+                        <div class="rukhnav-theme-card-heading">
+                            <div>
+                                <h4>
+                                    ${themePresetEscape(
+                                        preset.name
+                                    )}
+                                </h4>
+
+                                <p>
+                                    ${themePresetEscape(
+                                        preset.description
+                                    )}
+                                </p>
+                            </div>
+
+                            <i
+                                class="fa-solid fa-circle-check
+                                rukhnav-theme-selected-icon"
+                            ></i>
+                        </div>
+
+                        <div class="rukhnav-theme-swatches">
+                            ${swatches.map(
+                                colour => `
+                                    <span
+                                        title="${themePresetEscape(
+                                            colour
+                                        )}"
+                                        style="
+                                            background:${themePresetEscape(
+                                                colour
+                                            )};
+                                        "
+                                    ></span>
+                                `
+                            ).join("")}
+                        </div>
+
+                        <div class="rukhnav-theme-meta">
+                            <span>
+                                ${themePresetEscape(
+                                    theme.heading_font ||
+                                    "Default"
+                                )}
+                            </span>
+
+                            <span>
+                                ${Number(
+                                    theme.border_radius || 0
+                                )}px radius
+                            </span>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="rukhnav-theme-apply"
+                            data-apply-theme="${themePresetEscape(
+                                preset.id
+                            )}"
+                        >
+                            <i class="fa-solid fa-palette"></i>
+                            Apply Theme
+                        </button>
+                    </div>
+                </article>
+            `;
+        }).join("");
+
+    container
+        .querySelectorAll(
+            "[data-apply-theme]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+                    applyThemePreset(
+                        button.dataset.applyTheme
+                    );
+                }
+            );
+        });
+
+    refreshThemePresetSelection();
+}
+
+
 function renderNavigation() {
     state.settings.navigation ||= [];
     $("navEditor").innerHTML = state.settings.navigation.map((item, index) => `
@@ -311,6 +602,7 @@ async function mergeDefaults() {
             {};
 
         bindFields();
+        renderThemePresets();
         renderNavigation();
         renderCategories();
 
