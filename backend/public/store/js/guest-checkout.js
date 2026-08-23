@@ -630,15 +630,6 @@ const GuestCheckout = {
                 "guestCity"
             );
 
-        const acceptTerms =
-            document.getElementById(
-                "guestAcceptTerms"
-            )?.checked;
-
-        const acceptPrivacy =
-            document.getElementById(
-                "guestAcceptPrivacy"
-            )?.checked;
 
         if (
             !fullName ||
@@ -653,16 +644,6 @@ const GuestCheckout = {
             return;
         }
 
-        if (
-            !acceptTerms ||
-            !acceptPrivacy
-        ) {
-            this.message(
-                "Accept the Terms & Conditions and Privacy Policy before placing your order.",
-                "error"
-            );
-            return;
-        }
 
         const method =
             document.querySelector(
