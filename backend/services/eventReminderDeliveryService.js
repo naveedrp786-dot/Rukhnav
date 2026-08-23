@@ -100,7 +100,41 @@ async function processPendingReminders(
         results: []
     };
 
+    /*
+     * WasenderAPI trial protection.
+     *
+     * Process at most one WhatsApp reminder per
+     * delivery cycle. Additional WhatsApp reminders
+     * remain Pending/Failed exactly as they were and
+     * do not consume an attempt.
+     */
+    let whatsappProcessed = false;
+
     for (const reminder of reminders) {
+
+        if (
+            reminder.reminder_channel === "WhatsApp" &&
+            whatsappProcessed
+        ) {
+            summary.skipped += 1;
+
+            summary.results.push({
+                reminderId: reminder.id,
+                channel: reminder.reminder_channel,
+                status: "Deferred",
+                reason:
+                    "WasenderAPI trial rate-limit protection"
+            });
+
+            continue;
+        }
+
+        if (
+            reminder.reminder_channel === "WhatsApp"
+        ) {
+            whatsappProcessed = true;
+        }
+
         try {
             /*
              * Claim this reminder and increase

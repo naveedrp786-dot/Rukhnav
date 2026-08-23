@@ -554,6 +554,27 @@ async function claimBatch({
                 )
                   AND next_attempt_at <=
                       CURRENT_TIMESTAMP
+                  AND (
+                        channel <> 'WhatsApp'
+                        OR id = (
+                            SELECT whatsapp_next.id
+                            FROM (
+                                SELECT id
+                                FROM notification_queue
+                                WHERE status IN (
+                                    'Queued',
+                                    'Retrying'
+                                )
+                                  AND next_attempt_at <=
+                                      CURRENT_TIMESTAMP
+                                  AND channel = 'WhatsApp'
+                                ORDER BY
+                                    priority ASC,
+                                    id ASC
+                                LIMIT 1
+                            ) AS whatsapp_next
+                        )
+                  )
                 ORDER BY
                     priority ASC,
                     id ASC
