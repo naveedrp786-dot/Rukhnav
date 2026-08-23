@@ -11,6 +11,9 @@ const loyaltyTransactionService =
 const orderSalesIntegrationService =
     require("./orderSalesIntegrationService");
 
+const inventoryService =
+    require("./inventoryService");
+
 const RETURN_WINDOW_DAYS = Math.max(1, Number(process.env.CUSTOMER_RETURN_WINDOW_DAYS || 14));
 const ACTIVE_REQUEST_STATUSES = ["Requested", "Under Review", "Approved", "Received", "Inspected"];
 
@@ -539,14 +542,101 @@ exports.completeReturn = async ({ returnId, adminId, payload }) => {
                 if(eligible<1) continue;
                 const [[product]]=await connection.query(`SELECT id,stock_quantity,low_stock_level FROM products WHERE id=? LIMIT 1 FOR UPDATE`,[item.product_id]);
                 if(!product) continue;
-                const before=Number(product.stock_quantity||0), after=before+eligible;
-                const status=after<=0?"Out of Stock":after<=Number(product.low_stock_level||0)?"Low Stock":"In Stock";
-                await connection.query(`UPDATE products SET stock_quantity=?,stock_status=? WHERE id=?`,[after,status,item.product_id]);
+                const before =
+                    Number(product.stock_quantity || 0);
+
+                const after =
+                    before + eligible;
+
+                const status =
+                    inventoryService.getStockStatus(
+                        after,
+                        Number(product.low_stock_level || 0)
+                    );
+
                 await connection.query(
-                    `INSERT INTO return_inventory_movements(return_request_id,return_item_id,product_id,quantity,stock_before,stock_after,movement_type,created_by)
-                     VALUES(?,?,?,?,?,?,'Return Restock',?)`,[returnId,item.id,item.product_id,eligible,before,after,adminId]
+                    `UPDATE products
+                     SET stock_quantity=?,
+                         stock_status=?
+                     WHERE id=?`,
+                    [
+                        after,
+                        status,
+                        item.product_id
+                    ]
                 );
-                await connection.query(`UPDATE customer_return_items SET restock_quantity=? WHERE id=?`,[eligible,item.id]);
+
+                // ==========================================
+                // Return-specific inventory audit
+                // ==========================================
+
+                await connection.query(
+                    `INSERT INTO return_inventory_movements
+                    (
+                        return_request_id,
+                        return_item_id,
+                        product_id,
+                        quantity,
+                        stock_before,
+                        stock_after,
+                        movement_type,
+                        created_by
+                    )
+                    VALUES(?,?,?,?,?,?,'Return Restock',?)`,
+                    [
+                        returnId,
+                        item.id,
+                        item.product_id,
+                        eligible,
+                        before,
+                        after,
+                        adminId
+                    ]
+                );
+
+                // ==========================================
+                // Central Inventory Ledger
+                // ==========================================
+
+                await inventoryService.recordMovement(
+                    connection,
+                    {
+                        productId:
+                            item.product_id,
+
+                        transactionType:
+                            "Stock In",
+
+                        quantity:
+                            eligible,
+
+                        previousStock:
+                            before,
+
+                        newStock:
+                            after,
+
+                        reference:
+                            request.return_number ||
+                            `RETURN-${returnId}`,
+
+                        remarks:
+                            `Customer Return Restock - Return #${request.return_number || returnId}`,
+
+                        createdBy:
+                            adminId
+                    }
+                );
+
+                await connection.query(
+                    `UPDATE customer_return_items
+                     SET restock_quantity=?
+                     WHERE id=?`,
+                    [
+                        eligible,
+                        item.id
+                    ]
+                );
             }
         }
 
