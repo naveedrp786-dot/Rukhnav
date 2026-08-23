@@ -184,9 +184,21 @@ window.RukhnavModernCMS = {
         heroCopies.forEach(
             heroCopy => {
 
+                /*
+                 * Remove the previous V2.6 stack if it exists.
+                 */
+                const oldStack =
+                    heroCopy.querySelector(
+                        ".rukhnav-smoke-stack"
+                    );
+
+                if (oldStack) {
+                    oldStack.remove();
+                }
+
                 if (
                     heroCopy.querySelector(
-                        ".rukhnav-smoke-layer"
+                        ".rukhnav-real-smoke"
                     )
                 ) {
                     return;
@@ -198,33 +210,369 @@ window.RukhnavModernCMS = {
                     );
 
                 smoke.className =
-                    "rukhnav-smoke-stack";
+                    "rukhnav-real-smoke";
 
                 smoke.setAttribute(
                     "aria-hidden",
                     "true"
                 );
 
+                /*
+                 * V2.7 uses actual SVG geometry.
+                 *
+                 * The coloured shapes are deliberately oversized.
+                 * fractalNoise + displacement + alpha shaping turns
+                 * them into irregular translucent smoke rather than
+                 * visible radial-gradient circles.
+                 */
                 smoke.innerHTML = `
-                    <div
-                        class="
-                            rukhnav-smoke-layer
-                            smoke-depth-back
-                        "
-                    ></div>
+                    <svg
+                        class="rukhnav-smoke-svg"
+                        viewBox="0 0 1000 650"
+                        preserveAspectRatio="xMidYMid slice"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <defs>
+
+                            <filter
+                                id="rukhnavRealSmokeBack"
+                                x="-40%"
+                                y="-40%"
+                                width="180%"
+                                height="180%"
+                                color-interpolation-filters="sRGB"
+                            >
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.004 0.009"
+                                    numOctaves="5"
+                                    seed="17"
+                                    result="noise"
+                                />
+
+                                <feDisplacementMap
+                                    in="SourceGraphic"
+                                    in2="noise"
+                                    scale="105"
+                                    xChannelSelector="R"
+                                    yChannelSelector="B"
+                                    result="distorted"
+                                />
+
+                                <feGaussianBlur
+                                    in="distorted"
+                                    stdDeviation="30"
+                                    result="blurred"
+                                />
+
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.009 0.018"
+                                    numOctaves="4"
+                                    seed="41"
+                                    result="maskNoise"
+                                />
+
+                                <feColorMatrix
+                                    in="maskNoise"
+                                    type="luminanceToAlpha"
+                                    result="maskAlpha"
+                                />
+
+                                <feComponentTransfer
+                                    in="maskAlpha"
+                                    result="shapedMask"
+                                >
+                                    <feFuncA
+                                        type="gamma"
+                                        amplitude="1.35"
+                                        exponent="1.8"
+                                        offset="-0.18"
+                                    />
+                                </feComponentTransfer>
+
+                                <feComposite
+                                    in="blurred"
+                                    in2="shapedMask"
+                                    operator="in"
+                                />
+                            </filter>
+
+
+                            <filter
+                                id="rukhnavRealSmokeMid"
+                                x="-45%"
+                                y="-45%"
+                                width="190%"
+                                height="190%"
+                                color-interpolation-filters="sRGB"
+                            >
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.006 0.016"
+                                    numOctaves="5"
+                                    seed="73"
+                                    result="noise"
+                                />
+
+                                <feDisplacementMap
+                                    in="SourceGraphic"
+                                    in2="noise"
+                                    scale="78"
+                                    xChannelSelector="G"
+                                    yChannelSelector="B"
+                                    result="distorted"
+                                />
+
+                                <feGaussianBlur
+                                    in="distorted"
+                                    stdDeviation="18"
+                                    result="blurred"
+                                />
+
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.012 0.026"
+                                    numOctaves="4"
+                                    seed="29"
+                                    result="maskNoise"
+                                />
+
+                                <feColorMatrix
+                                    in="maskNoise"
+                                    type="luminanceToAlpha"
+                                    result="maskAlpha"
+                                />
+
+                                <feComponentTransfer
+                                    in="maskAlpha"
+                                    result="shapedMask"
+                                >
+                                    <feFuncA
+                                        type="gamma"
+                                        amplitude="1.5"
+                                        exponent="2"
+                                        offset="-0.22"
+                                    />
+                                </feComponentTransfer>
+
+                                <feComposite
+                                    in="blurred"
+                                    in2="shapedMask"
+                                    operator="in"
+                                />
+                            </filter>
+
+
+                            <filter
+                                id="rukhnavRealSmokeFront"
+                                x="-50%"
+                                y="-50%"
+                                width="200%"
+                                height="200%"
+                                color-interpolation-filters="sRGB"
+                            >
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.008 0.024"
+                                    numOctaves="5"
+                                    seed="101"
+                                    result="noise"
+                                />
+
+                                <feDisplacementMap
+                                    in="SourceGraphic"
+                                    in2="noise"
+                                    scale="54"
+                                    xChannelSelector="R"
+                                    yChannelSelector="G"
+                                    result="distorted"
+                                />
+
+                                <feGaussianBlur
+                                    in="distorted"
+                                    stdDeviation="10"
+                                    result="blurred"
+                                />
+
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.016 0.035"
+                                    numOctaves="3"
+                                    seed="59"
+                                    result="maskNoise"
+                                />
+
+                                <feColorMatrix
+                                    in="maskNoise"
+                                    type="luminanceToAlpha"
+                                    result="maskAlpha"
+                                />
+
+                                <feComponentTransfer
+                                    in="maskAlpha"
+                                    result="shapedMask"
+                                >
+                                    <feFuncA
+                                        type="gamma"
+                                        amplitude="1.65"
+                                        exponent="2.2"
+                                        offset="-0.25"
+                                    />
+                                </feComponentTransfer>
+
+                                <feComposite
+                                    in="blurred"
+                                    in2="shapedMask"
+                                    operator="in"
+                                />
+                            </filter>
+
+                        </defs>
+
+
+                        <!-- DEEP BACKGROUND CLOUDS -->
+
+                        <g
+                            class="smoke-svg-back"
+                            filter="url(#rukhnavRealSmokeBack)"
+                        >
+                            <ellipse
+                                cx="70"
+                                cy="130"
+                                rx="330"
+                                ry="250"
+                                fill="var(--shade-1)"
+                            />
+
+                            <ellipse
+                                cx="390"
+                                cy="80"
+                                rx="300"
+                                ry="220"
+                                fill="var(--shade-2)"
+                            />
+
+                            <ellipse
+                                cx="780"
+                                cy="170"
+                                rx="350"
+                                ry="260"
+                                fill="var(--shade-4)"
+                            />
+
+                            <ellipse
+                                cx="240"
+                                cy="570"
+                                rx="390"
+                                ry="230"
+                                fill="var(--shade-3)"
+                            />
+
+                            <ellipse
+                                cx="850"
+                                cy="560"
+                                rx="370"
+                                ry="250"
+                                fill="var(--highlight)"
+                            />
+                        </g>
+
+
+                        <!-- ROLLING MIDDLE PLUMES -->
+
+                        <g
+                            class="smoke-svg-middle"
+                            filter="url(#rukhnavRealSmokeMid)"
+                        >
+                            <ellipse
+                                cx="20"
+                                cy="390"
+                                rx="270"
+                                ry="145"
+                                fill="var(--shade-2)"
+                            />
+
+                            <ellipse
+                                cx="280"
+                                cy="210"
+                                rx="250"
+                                ry="120"
+                                fill="var(--glow-color)"
+                            />
+
+                            <ellipse
+                                cx="520"
+                                cy="470"
+                                rx="310"
+                                ry="135"
+                                fill="var(--shade-3)"
+                            />
+
+                            <ellipse
+                                cx="780"
+                                cy="260"
+                                rx="290"
+                                ry="130"
+                                fill="var(--highlight)"
+                            />
+
+                            <ellipse
+                                cx="1030"
+                                cy="500"
+                                rx="310"
+                                ry="150"
+                                fill="var(--shade-4)"
+                            />
+                        </g>
+
+
+                        <!-- THIN FOREGROUND WISPS -->
+
+                        <g
+                            class="smoke-svg-front"
+                            filter="url(#rukhnavRealSmokeFront)"
+                        >
+                            <path
+                                d="
+                                    M -120 520
+                                    C 80 380,
+                                      180 590,
+                                      350 430
+                                    C 500 290,
+                                      610 470,
+                                      760 330
+                                    C 870 230,
+                                      980 300,
+                                      1120 180
+                                "
+                                fill="none"
+                                stroke="var(--glow-color)"
+                                stroke-width="105"
+                                stroke-linecap="round"
+                            />
+
+                            <path
+                                d="
+                                    M -100 180
+                                    C 120 310,
+                                      260 100,
+                                      430 250
+                                    C 600 400,
+                                      720 170,
+                                      1120 350
+                                "
+                                fill="none"
+                                stroke="var(--highlight)"
+                                stroke-width="72"
+                                stroke-linecap="round"
+                            />
+                        </g>
+
+                    </svg>
 
                     <div
-                        class="
-                            rukhnav-smoke-layer
-                            smoke-depth-middle
-                        "
-                    ></div>
-
-                    <div
-                        class="
-                            rukhnav-smoke-layer
-                            smoke-depth-front
-                        "
+                        class="rukhnav-smoke-veil"
                     ></div>
                 `;
 
@@ -234,6 +582,7 @@ window.RukhnavModernCMS = {
             }
         );
     },
+
 
     applyTheme(settings) {
         this.ensureProceduralSmokeFilter();

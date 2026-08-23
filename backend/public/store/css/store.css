@@ -566,23 +566,30 @@ button{
 }
 
 /* =========================================================
-   RUKHNAV THEME ENGINE V2.6
-   LAYERED CINEMATIC SMOKE
+   RUKHNAV THEME ENGINE V2.7
+   REAL PROCEDURAL CINEMATIC SMOKE
    ========================================================= */
+
+
+/* ---------------------------------------------------------
+   CINEMATIC HERO FOUNDATION
+   --------------------------------------------------------- */
 
 :root[data-theme-atmosphere="cinematic"] .hero{
     background:
         color-mix(
             in srgb,
-            var(--background) 96%,
+            var(--background) 97%,
             var(--shade-4)
         );
 }
+
 
 :root[data-theme-atmosphere="cinematic"] .hero::before,
 :root[data-theme-atmosphere="cinematic"] .hero::after{
     display:none;
 }
+
 
 :root[data-theme-atmosphere="cinematic"] .hero-copy{
     position:relative;
@@ -594,161 +601,124 @@ button{
             135deg,
             color-mix(
                 in srgb,
-                var(--background) 90%,
+                var(--background) 84%,
                 var(--shade-1)
-            ),
+            ) 0%,
+
             color-mix(
                 in srgb,
-                var(--background) 94%,
-                var(--shade-4)
-            ),
+                var(--background) 91%,
+                var(--shade-3)
+            ) 46%,
+
             color-mix(
                 in srgb,
-                var(--background) 92%,
+                var(--background) 88%,
                 var(--highlight)
-            )
+            ) 100%
         );
 }
 
-.rukhnav-smoke-stack{
+
+/* ---------------------------------------------------------
+   REAL SMOKE STAGE
+   --------------------------------------------------------- */
+
+.rukhnav-real-smoke{
     position:absolute;
     inset:0;
+
+    z-index:0;
     overflow:hidden;
     pointer-events:none;
-    z-index:0;
+
+    opacity:1;
+
+    contain:
+        layout
+        paint;
 }
 
-.rukhnav-smoke-layer{
+
+.rukhnav-smoke-svg{
     position:absolute;
-    inset:-30%;
-    pointer-events:none;
 
-    filter:
-        url("#rukhnavSmokeFilter");
+    width:132%;
+    height:132%;
 
-    transform-origin:center;
-}
+    left:-16%;
+    top:-16%;
 
-
-/* =========================================================
-   BACK SMOKE
-   Large soft atmosphere
-   ========================================================= */
-
-.smoke-depth-back{
-    background:
-
-        radial-gradient(
-            ellipse 48% 58% at 8% 28%,
-            color-mix(
-                in srgb,
-                var(--shade-1) 58%,
-                transparent
-            ),
-            transparent 72%
-        ),
-
-        radial-gradient(
-            ellipse 50% 56% at 72% 24%,
-            color-mix(
-                in srgb,
-                var(--shade-4) 48%,
-                transparent
-            ),
-            transparent 74%
-        ),
-
-        radial-gradient(
-            ellipse 46% 60% at 88% 78%,
-            color-mix(
-                in srgb,
-                var(--highlight) 44%,
-                transparent
-            ),
-            transparent 74%
-        );
-
-    filter:
-        url("#rukhnavSmokeFilter")
-        blur(24px)
-        saturate(1.02);
-
-    opacity:.52;
+    overflow:visible;
 
     transform:
-        scale(1.16)
-        rotate(-4deg);
+        translateZ(0);
+
+    will-change:
+        transform;
+}
+
+
+/* ---------------------------------------------------------
+   DEEP BACK SMOKE
+
+   Large and low contrast.
+   This creates depth rather than a coloured wall.
+   --------------------------------------------------------- */
+
+.smoke-svg-back{
+    opacity:.42;
+
+    transform-origin:
+        46% 48%;
 
     animation:
-        rukhnavSmokeBack
-        46s
+        rukhnavRealSmokeBack
+        58s
         ease-in-out
         infinite
         alternate;
 }
 
 
-/* =========================================================
-   MIDDLE SMOKE
-   Visible rolling plumes
-   ========================================================= */
+/* ---------------------------------------------------------
+   MIDDLE PLUMES
 
-.smoke-depth-middle{
-    background:
+   Strongest visible smoke layer.
+   --------------------------------------------------------- */
 
-        radial-gradient(
-            ellipse 30% 54% at 12% 68%,
-            color-mix(
-                in srgb,
-                var(--shade-2) 74%,
-                transparent
-            ),
-            transparent 68%
-        ),
+.smoke-svg-middle{
+    opacity:.48;
 
-        radial-gradient(
-            ellipse 36% 42% at 36% 24%,
-            color-mix(
-                in srgb,
-                var(--glow-color) 68%,
-                transparent
-            ),
-            transparent 70%
-        ),
-
-        radial-gradient(
-            ellipse 32% 52% at 58% 62%,
-            color-mix(
-                in srgb,
-                var(--shade-3) 68%,
-                transparent
-            ),
-            transparent 70%
-        ),
-
-        radial-gradient(
-            ellipse 34% 46% at 82% 30%,
-            color-mix(
-                in srgb,
-                var(--highlight) 64%,
-                transparent
-            ),
-            transparent 70%
-        );
-
-    filter:
-        url("#rukhnavSmokeFilter")
-        blur(13px)
-        saturate(1.06);
-
-    opacity:.64;
-
-    transform:
-        scale(1.10)
-        rotate(3deg);
+    transform-origin:
+        52% 46%;
 
     animation:
-        rukhnavSmokeMiddle
+        rukhnavRealSmokeMiddle
+        43s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/* ---------------------------------------------------------
+   FOREGROUND WISPS
+
+   Thin translucent ribbons — never a solid wash.
+   --------------------------------------------------------- */
+
+.smoke-svg-front{
+    opacity:.28;
+
+    mix-blend-mode:
+        screen;
+
+    transform-origin:
+        center;
+
+    animation:
+        rukhnavRealSmokeFront
         34s
         ease-in-out
         infinite
@@ -756,199 +726,220 @@ button{
 }
 
 
-/* =========================================================
-   FRONT SMOKE
-   Thin luminous wisps
-   ========================================================= */
+/* ---------------------------------------------------------
+   ATMOSPHERIC VEIL
 
-.smoke-depth-front{
+   Very subtle finishing layer. It connects the smoke
+   without whitening the entire hero.
+   --------------------------------------------------------- */
+
+.rukhnav-smoke-veil{
+    position:absolute;
+    inset:0;
+
     background:
 
         radial-gradient(
-            ellipse 16% 46% at 24% 74%,
+            ellipse 60% 46%
+            at 18% 18%,
             color-mix(
                 in srgb,
-                var(--glow-color) 54%,
+                var(--surface) 18%,
                 transparent
             ),
             transparent 68%
         ),
 
         radial-gradient(
-            ellipse 22% 30% at 48% 34%,
+            ellipse 52% 58%
+            at 82% 74%,
             color-mix(
                 in srgb,
-                var(--shade-4) 52%,
-                transparent
-            ),
-            transparent 70%
-        ),
-
-        radial-gradient(
-            ellipse 16% 44% at 70% 20%,
-            color-mix(
-                in srgb,
-                var(--highlight) 50%,
-                transparent
-            ),
-            transparent 70%
-        ),
-
-        radial-gradient(
-            ellipse 28% 18% at 80% 72%,
-            color-mix(
-                in srgb,
-                var(--shade-2) 42%,
+                var(--glow-color) 10%,
                 transparent
             ),
             transparent 72%
         );
 
+    opacity:.34;
+
     filter:
-        url("#rukhnavSmokeFilter")
-        blur(7px)
-        saturate(1.05);
-
-    opacity:.48;
-
-    mix-blend-mode:screen;
-
-    transform:
-        scale(1.08)
-        rotate(-2deg);
-
-    animation:
-        rukhnavSmokeFront
-        27s
-        ease-in-out
-        infinite
-        alternate;
+        blur(24px);
 }
 
 
-/* =========================================================
-   KEEP HERO CONTENT ABOVE SMOKE
-   ========================================================= */
+/* ---------------------------------------------------------
+   CONTENT ABOVE SMOKE
+   --------------------------------------------------------- */
 
 :root[data-theme-atmosphere="cinematic"]
-.hero-copy > *:not(.rukhnav-smoke-stack){
+.hero-copy > *:not(.rukhnav-real-smoke){
     position:relative;
-    z-index:3;
+    z-index:4;
 }
 
 
-/* =========================================================
-   TEXT READABILITY
-   ========================================================= */
+/* ---------------------------------------------------------
+   CINEMATIC TEXT CONTRAST
+   --------------------------------------------------------- */
 
 :root[data-theme-atmosphere="cinematic"]
 .hero-copy h1,
+
 :root[data-theme-atmosphere="cinematic"]
 .hero-copy h2{
-    color:var(--heading-color);
+    color:
+        var(--heading-color);
 
     text-shadow:
-        0 2px 20px
+        0 1px 1px
         color-mix(
             in srgb,
-            var(--surface) 36%,
+            var(--surface) 22%,
+            transparent
+        ),
+
+        0 8px 32px
+        color-mix(
+            in srgb,
+            var(--surface) 18%,
             transparent
         );
 }
+
 
 :root[data-theme-atmosphere="cinematic"]
 .hero-copy p{
     color:
         color-mix(
             in srgb,
-            var(--text) 94%,
+            var(--text) 96%,
             var(--heading-color)
         );
 }
 
 
-/* =========================================================
-   SLOW ORGANIC MOVEMENT
-   ========================================================= */
+/* ---------------------------------------------------------
+   ORGANIC MOTION
+   --------------------------------------------------------- */
 
-@keyframes rukhnavSmokeBack{
+@keyframes rukhnavRealSmokeBack{
 
     0%{
         transform:
-            translate3d(-3%, 1%, 0)
-            scale(1.16)
-            rotate(-4deg);
+            translate3d(-2.5%, 1%, 0)
+            scale(1.05)
+            rotate(-1.5deg);
     }
 
-    50%{
+    35%{
         transform:
-            translate3d(2%, -2%, 0)
-            scale(1.20)
-            rotate(0deg);
+            translate3d(1%, -1.5%, 0)
+            scale(1.08)
+            rotate(.5deg);
+    }
+
+    70%{
+        transform:
+            translate3d(2.5%, 1%, 0)
+            scale(1.06)
+            rotate(1.5deg);
     }
 
     100%{
         transform:
-            translate3d(4%, 2%, 0)
-            scale(1.15)
-            rotate(4deg);
+            translate3d(-1%, 2%, 0)
+            scale(1.09)
+            rotate(-.5deg);
     }
 }
 
 
-@keyframes rukhnavSmokeMiddle{
+@keyframes rukhnavRealSmokeMiddle{
 
     0%{
         transform:
-            translate3d(2%, -2%, 0)
-            scale(1.10)
-            rotate(3deg);
+            translate3d(2%, -1%, 0)
+            scale(1.04)
+            rotate(1deg);
     }
 
-    50%{
+    30%{
         transform:
-            translate3d(-2%, 2%, 0)
-            scale(1.14)
+            translate3d(-2%, 1.5%, 0)
+            scale(1.08)
             rotate(-1deg);
+    }
+
+    65%{
+        transform:
+            translate3d(1%, 2%, 0)
+            scale(1.06)
+            rotate(.5deg);
+    }
+
+    100%{
+        transform:
+            translate3d(3%, -1%, 0)
+            scale(1.09)
+            rotate(1.5deg);
+    }
+}
+
+
+@keyframes rukhnavRealSmokeFront{
+
+    0%{
+        transform:
+            translate3d(-3%, 2%, 0)
+            scale(1.03)
+            rotate(-1deg);
+    }
+
+    40%{
+        transform:
+            translate3d(2%, -2%, 0)
+            scale(1.07)
+            rotate(1deg);
+    }
+
+    75%{
+        transform:
+            translate3d(-1%, -1%, 0)
+            scale(1.05)
+            rotate(-.5deg);
     }
 
     100%{
         transform:
             translate3d(3%, 1%, 0)
-            scale(1.09)
-            rotate(-4deg);
-    }
-}
-
-
-@keyframes rukhnavSmokeFront{
-
-    0%{
-        transform:
-            translate3d(-1%, 2%, 0)
             scale(1.08)
-            rotate(-2deg);
-    }
-
-    50%{
-        transform:
-            translate3d(3%, -1%, 0)
-            scale(1.11)
-            rotate(2deg);
-    }
-
-    100%{
-        transform:
-            translate3d(-2%, 3%, 0)
-            scale(1.07)
-            rotate(5deg);
+            rotate(1.5deg);
     }
 }
 
 
-@media (prefers-reduced-motion:reduce){
+/* ---------------------------------------------------------
+   SOFT THEMES
 
-    .rukhnav-smoke-layer{
-        animation:none !important;
+   No cinematic SVG smoke.
+   --------------------------------------------------------- */
+
+:root[data-theme-atmosphere="soft"]
+.rukhnav-real-smoke{
+    display:none;
+}
+
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce){
+
+    .smoke-svg-back,
+    .smoke-svg-middle,
+    .smoke-svg-front{
+        animation:none;
     }
 }
