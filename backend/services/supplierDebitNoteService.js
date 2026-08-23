@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const accountingAutomation = require("./accountingAutomationService");
 
 function createError(message, statusCode = 400) {
     const error = new Error(message);
@@ -346,6 +347,30 @@ async function postDebitNote({
             ]
         );
 
+        await accountingAutomation.postSupplierDebitNote(
+            connection,
+            {
+                id,
+                debit_note_number:
+                    debitNote.debit_note_number,
+                debit_note_date:
+                    debitNote.debit_note_date,
+                purchase_return_id:
+                    debitNote.purchase_return_id,
+                purchase_order_id:
+                    debitNote.purchase_order_id,
+                supplier_id:
+                    debitNote.supplier_id,
+                amount:
+                    noteAmount,
+                applied_to_payable:
+                    appliedToPayable,
+                supplier_credit_amount:
+                    supplierCredit
+            },
+            adminId(postedBy)
+        );
+
         await logActivity(connection, {
             debitNoteId: id,
             action: "POSTED",
@@ -450,6 +475,33 @@ async function cancelDebitNote({
                     paymentStatus,
                     debitNote.purchase_order_id
                 ]
+            );
+        }
+
+        if (
+            debitNote.status ===
+            "Posted"
+        ) {
+            await accountingAutomation.reverseAutomaticEvent(
+                connection,
+                {
+                    sourceType:
+                        "Supplier Debit Note",
+
+                    sourceId:
+                        id,
+
+                    eventKey:
+                        "SUPPLIER_DEBIT_NOTE_POSTED",
+
+                    reason:
+                        reason,
+
+                    adminId:
+                        adminId(
+                            cancelledBy
+                        )
+                }
             );
         }
 

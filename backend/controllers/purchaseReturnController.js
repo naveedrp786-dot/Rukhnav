@@ -6,6 +6,9 @@
 
 const db = require("../config/db");
 
+const accountingAutomation =
+    require("../services/accountingAutomationService");
+
 
 // ======================================================
 // Allowed Purchase Return Statuses
@@ -3624,6 +3627,105 @@ exports.recordSupplierRefund = async (
 
 
         // ----------------------------------------------
+        // Supplier Credit Settlement Validation
+        // ----------------------------------------------
+        //
+        // A supplier refund is a settlement of supplier
+        // credit created by a Posted debit note.
+        //
+        // The portion of a debit note already applied
+        // directly against Accounts Payable must not
+        // also be received as cash/bank refund.
+
+        const [[postedDebitNote]] =
+            await connection.query(
+                `
+                SELECT
+                    id,
+                    debit_note_number,
+                    amount,
+                    applied_to_payable,
+                    supplier_credit_amount,
+                    status
+                FROM supplier_debit_notes
+                WHERE purchase_return_id = ?
+                  AND status = 'Posted'
+                LIMIT 1
+                FOR UPDATE
+                `,
+                [purchaseReturnId]
+            );
+
+
+        if (!postedDebitNote) {
+
+            await rollbackQuietly(
+                connection
+            );
+
+            return res.status(409).json({
+                success: false,
+                message:
+                    "Post the supplier debit note before recording a supplier refund."
+            });
+
+        }
+
+
+        const supplierCreditAmount =
+            numberValue(
+                postedDebitNote
+                    .supplier_credit_amount
+            );
+
+
+        const remainingSupplierCredit =
+            Number(
+                Math.max(
+                    supplierCreditAmount -
+                    existingRefundAmount,
+                    0
+                ).toFixed(2)
+            );
+
+
+        if (
+            remainingSupplierCredit <= 0
+        ) {
+
+            await rollbackQuietly(
+                connection
+            );
+
+            return res.status(409).json({
+                success: false,
+                message:
+                    "There is no outstanding supplier credit available for a cash or bank refund."
+            });
+
+        }
+
+
+        if (
+            amount >
+            remainingSupplierCredit
+        ) {
+
+            await rollbackQuietly(
+                connection
+            );
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    `Refund amount cannot exceed the outstanding supplier credit of ${remainingSupplierCredit.toFixed(2)}.`
+            });
+
+        }
+
+
+
+        // ----------------------------------------------
         // Insert Refund
         // ----------------------------------------------
 
@@ -3654,6 +3756,40 @@ exports.recordSupplierRefund = async (
                     adminId
                 ]
             );
+
+
+        // ----------------------------------------------
+        // Accounting - Supplier Refund Received
+        // ----------------------------------------------
+
+        await accountingAutomation
+            .postSupplierRefund(
+                connection,
+                {
+                    id:
+                        refundResult.insertId,
+
+                    purchase_return_id:
+                        purchaseReturnId,
+
+                    supplier_id:
+                        purchaseReturn
+                            .supplier_id,
+
+                    amount,
+
+                    refund_method:
+                        normalisedRefundMethod,
+
+                    reference_number:
+                        referenceNumber,
+
+                    refund_date:
+                        refundDate
+                },
+                adminId
+            );
+
 
 
         const newRefundedAmount =
@@ -3925,6 +4061,35 @@ exports.deleteSupplierRefund = async (
 
         const refund =
             refundRows[0];
+
+
+        // ----------------------------------------------
+        // Supplier Refund Accounting Reversal
+        // ----------------------------------------------
+        //
+        // Never delete the original Posted journal.
+        // Create an auditable reversal journal first.
+
+        await accountingAutomation
+            .reverseAutomaticEvent(
+                connection,
+                {
+                    sourceType:
+                        "Supplier Refund",
+
+                    sourceId:
+                        refundId,
+
+                    eventKey:
+                        "SUPPLIER_REFUND_RECEIVED",
+
+                    reason:
+                        `Supplier refund record ${refundId} deleted.`,
+
+                    adminId
+                }
+            );
+
 
 
         await connection.query(
