@@ -14,6 +14,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "RUKHNAV Herbal Gold",
         description: "Signature botanical green, warm gold and ivory.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#17452f",
             secondary_color: "#d6a928",
             accent_color: "#f4ead2",
@@ -41,6 +42,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Emerald Luxe",
         description: "Deep emerald with champagne gold and soft cream.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#0b4f3c",
             secondary_color: "#c8a96b",
             accent_color: "#efe2c5",
@@ -68,6 +70,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Rose Beauty",
         description: "Elegant dusty rose, burgundy and soft blush.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#7c3045",
             secondary_color: "#c98d9b",
             accent_color: "#f1dce1",
@@ -95,6 +98,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Midnight Gold",
         description: "Luxury midnight tones with rich metallic gold.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#17191d",
             secondary_color: "#d1ad57",
             accent_color: "#e9d9ad",
@@ -122,6 +126,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Sage & Sand",
         description: "Natural sage green with warm sand and clay accents.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#61745b",
             secondary_color: "#b87855",
             accent_color: "#e8ddc8",
@@ -149,6 +154,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Royal Plum",
         description: "Premium plum with rose-gold inspired highlights.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#54294f",
             secondary_color: "#c79286",
             accent_color: "#ead9df",
@@ -176,6 +182,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Ocean Spa",
         description: "Fresh teal, aqua and clean spa-inspired neutrals.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#176b70",
             secondary_color: "#55a6a8",
             accent_color: "#d8efec",
@@ -203,6 +210,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Ivory Cocoa",
         description: "Warm ivory, cocoa brown and refined bronze.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#5a4033",
             secondary_color: "#ad8055",
             accent_color: "#eadbc9",
@@ -230,6 +238,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Modern Mono",
         description: "Minimal charcoal, white and contemporary grey.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#222222",
             secondary_color: "#737373",
             accent_color: "#e8e8e8",
@@ -257,6 +266,7 @@ window.RUKHNAV_THEME_PRESETS = [
         name: "Lavender Glow",
         description: "Soft lavender with elegant violet and champagne.",
         theme: {
+            atmosphere_mode: "soft",
             primary_color: "#655184",
             secondary_color: "#c3a36b",
             accent_color: "#e8dff1",
@@ -291,6 +301,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Luminous alien-jungle mood with cyan, aqua, electric blue, violet and magenta.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#123A70",
             secondary_color: "#22D3EE",
             accent_color: "#B8F5FF",
@@ -319,6 +330,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Monumental desert atmosphere with sand, ochre, bronze, burnt orange and espresso.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#6B3F20",
             secondary_color: "#D99A3D",
             accent_color: "#EBD2A0",
@@ -347,6 +359,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Cyberpunk night energy with deep black, electric cyan, violet, hot pink and amber.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#101426",
             secondary_color: "#00E5FF",
             accent_color: "#FF3CAC",
@@ -375,6 +388,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Cinematic underwater depth with abyss blue, royal blue, aqua, turquoise and pearl.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#083E67",
             secondary_color: "#24C6D9",
             accent_color: "#BCEBF0",
@@ -403,6 +417,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Lush fantasy atmosphere with forest, emerald, jade, moss, antique gold and ivory.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#174C38",
             secondary_color: "#C3A756",
             accent_color: "#DBE8CF",
@@ -431,6 +446,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Dark regal mood with black plum, burgundy, crimson, violet and antique gold.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#301B32",
             secondary_color: "#B99045",
             accent_color: "#D9C4D4",
@@ -459,6 +475,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Nostalgic screen palette with teal, mustard, coral, terracotta, burgundy and warm ivory.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#285B59",
             secondary_color: "#D4A62A",
             accent_color: "#F1D6AF",
@@ -487,6 +504,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Frozen cinematic atmosphere with midnight blue, glacier cyan, silver, lavender and snow.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#254B7C",
             secondary_color: "#7DD3FC",
             accent_color: "#DCEFFE",
@@ -515,6 +533,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Energetic space-adventure mood with navy, cobalt, solar orange, gold and coral.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#173B73",
             secondary_color: "#F5A623",
             accent_color: "#FFE2A9",
@@ -543,6 +562,7 @@ window.RUKHNAV_THEME_PRESETS = [
         description:
             "Multishade dreamscape flowing through turquoise, cyan, blue, violet, purple and pink.",
         theme: {
+            atmosphere_mode: "cinematic",
             primary_color: "#3156D8",
             secondary_color: "#20C6D7",
             accent_color: "#E2D5FF",

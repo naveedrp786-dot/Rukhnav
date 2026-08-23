@@ -60,6 +60,15 @@ window.RukhnavModernCMS = {
         const root =
             document.documentElement;
 
+        const atmosphereMode =
+            String(
+                theme.atmosphere_mode ||
+                "soft"
+            ).toLowerCase();
+
+        root.dataset.themeAtmosphere =
+            atmosphereMode;
+
         /* =========================================================
            RUKHNAV THEME ENGINE V2
            Derived cinematic palette
@@ -278,51 +287,107 @@ window.RukhnavModernCMS = {
             `${glowColor} 100%)`;
 
         /*
-         * Multi-layer cinematic smoke / aurora atmosphere.
-         * Radial gradients create soft overlapping colour clouds.
+         * =========================================================
+         * RUKHNAV THEME ENGINE V2.1
+         * ATMOSPHERIC MESH
+         * =========================================================
+         *
+         * Multiple elliptical colour clouds are deliberately placed
+         * at different coordinates and sizes. This avoids the flat
+         * left-to-right gradient appearance of conventional themes.
+         */
+
+        const meshGradient =
+            `radial-gradient(ellipse 72% 62% at 5% 8%, ` +
+            `${alpha(shade2, 0.92)} 0%, ` +
+            `${alpha(shade2, 0.52)} 25%, ` +
+            `transparent 58%), ` +
+
+            `radial-gradient(ellipse 58% 72% at 92% 5%, ` +
+            `${alpha(highlight, 0.82)} 0%, ` +
+            `${alpha(highlight, 0.38)} 28%, ` +
+            `transparent 62%), ` +
+
+            `radial-gradient(ellipse 70% 58% at 48% 34%, ` +
+            `${alpha(shade3, 0.78)} 0%, ` +
+            `${alpha(shade3, 0.30)} 32%, ` +
+            `transparent 64%), ` +
+
+            `radial-gradient(ellipse 54% 70% at 20% 92%, ` +
+            `${alpha(glowColor, 0.76)} 0%, ` +
+            `${alpha(glowColor, 0.30)} 30%, ` +
+            `transparent 62%), ` +
+
+            `radial-gradient(ellipse 64% 52% at 82% 84%, ` +
+            `${alpha(shade4, 0.82)} 0%, ` +
+            `${alpha(shade4, 0.34)} 30%, ` +
+            `transparent 64%), ` +
+
+            `radial-gradient(ellipse 48% 46% at 67% 52%, ` +
+            `${alpha(highlight, 0.52)} 0%, ` +
+            `transparent 60%), ` +
+
+            `radial-gradient(ellipse 44% 56% at 34% 58%, ` +
+            `${alpha(shade2, 0.42)} 0%, ` +
+            `transparent 62%), ` +
+
+            `linear-gradient(135deg, ` +
+            `${mix(background, shade2, 0.08)} 0%, ` +
+            `${mix(shade4, background, 0.55)} 48%, ` +
+            `${mix(accent, highlight, 0.16)} 100%)`;
+
+        /*
+         * A second mesh with displaced clouds creates visual depth.
+         * CSS applies this as the blurred atmospheric layer.
+         */
+        const meshCloudGradient =
+            `radial-gradient(ellipse 48% 66% at 18% 32%, ` +
+            `${alpha(glowColor, 0.72)} 0%, ` +
+            `transparent 64%), ` +
+
+            `radial-gradient(ellipse 66% 48% at 78% 18%, ` +
+            `${alpha(highlight, 0.68)} 0%, ` +
+            `transparent 62%), ` +
+
+            `radial-gradient(ellipse 54% 62% at 72% 82%, ` +
+            `${alpha(shade3, 0.62)} 0%, ` +
+            `transparent 66%), ` +
+
+            `radial-gradient(ellipse 62% 50% at 26% 78%, ` +
+            `${alpha(shade4, 0.58)} 0%, ` +
+            `transparent 64%)`;
+
+        const darkMeshGradient =
+            `radial-gradient(ellipse 68% 60% at 8% 12%, ` +
+            `${alpha(shade2, 0.68)} 0%, ` +
+            `transparent 58%), ` +
+
+            `radial-gradient(ellipse 58% 68% at 88% 18%, ` +
+            `${alpha(highlight, 0.54)} 0%, ` +
+            `transparent 62%), ` +
+
+            `radial-gradient(ellipse 62% 52% at 52% 88%, ` +
+            `${alpha(glowColor, 0.48)} 0%, ` +
+            `transparent 64%), ` +
+
+            `radial-gradient(ellipse 46% 58% at 42% 42%, ` +
+            `${alpha(shade3, 0.36)} 0%, ` +
+            `transparent 62%), ` +
+
+            `linear-gradient(140deg, ` +
+            `${shade1} 0%, ` +
+            `${primary} 52%, ` +
+            `${mix(shade1, shade2, 0.42)} 100%)`;
+
+        /*
+         * Keep V2 smoke aliases for existing storefront CSS.
+         * This makes V2.1 backwards-compatible.
          */
         const smokeGradient =
-            `radial-gradient(circle at 12% 18%, ` +
-            `${alpha(shade2, 0.72)} 0%, ` +
-            `${alpha(shade2, 0.26)} 22%, ` +
-            `transparent 48%), ` +
-
-            `radial-gradient(circle at 82% 16%, ` +
-            `${alpha(highlight, 0.68)} 0%, ` +
-            `${alpha(highlight, 0.24)} 24%, ` +
-            `transparent 52%), ` +
-
-            `radial-gradient(circle at 58% 78%, ` +
-            `${alpha(glowColor, 0.58)} 0%, ` +
-            `${alpha(glowColor, 0.20)} 28%, ` +
-            `transparent 56%), ` +
-
-            `radial-gradient(circle at 28% 82%, ` +
-            `${alpha(shade3, 0.46)} 0%, ` +
-            `transparent 52%), ` +
-
-            `linear-gradient(135deg, ` +
-            `${background} 0%, ` +
-            `${shade4} 48%, ` +
-            `${accent} 100%)`;
+            meshGradient;
 
         const darkSmokeGradient =
-            `radial-gradient(circle at 14% 18%, ` +
-            `${alpha(shade2, 0.62)} 0%, ` +
-            `transparent 44%), ` +
-
-            `radial-gradient(circle at 82% 24%, ` +
-            `${alpha(glowColor, 0.48)} 0%, ` +
-            `transparent 48%), ` +
-
-            `radial-gradient(circle at 54% 88%, ` +
-            `${alpha(highlight, 0.34)} 0%, ` +
-            `transparent 46%), ` +
-
-            `linear-gradient(135deg, ` +
-            `${shade1} 0%, ` +
-            `${primary} 48%, ` +
-            `${shade2} 100%)`;
+            darkMeshGradient;
 
         const variables = {
             /*
@@ -354,6 +419,15 @@ window.RukhnavModernCMS = {
 
             "--spectrum-gradient":
                 spectrumGradient,
+
+            "--mesh-gradient":
+                meshGradient,
+
+            "--mesh-cloud-gradient":
+                meshCloudGradient,
+
+            "--dark-mesh-gradient":
+                darkMeshGradient,
 
             "--smoke-gradient":
                 smokeGradient,
