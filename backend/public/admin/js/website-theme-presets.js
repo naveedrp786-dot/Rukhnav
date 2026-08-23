@@ -26,7 +26,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 14,
-            button_radius: 10
+            button_radius: 10,
+            shade_1: "#17452f",
+            shade_2: "#2d6a4f",
+            shade_3: "#d6a928",
+            shade_4: "#f4ead2",
+            highlight_color: "#f0c84b",
+            glow_color: "#d6a928"
         }
     },
 
@@ -47,7 +53,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 16,
-            button_radius: 12
+            button_radius: 12,
+            shade_1: "#063d31",
+            shade_2: "#0b7a5c",
+            shade_3: "#c8a96b",
+            shade_4: "#efe2c5",
+            highlight_color: "#e0c17d",
+            glow_color: "#5ed1a4"
         }
     },
 
@@ -68,7 +80,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 18,
-            button_radius: 18
+            button_radius: 18,
+            shade_1: "#68273a",
+            shade_2: "#9d5266",
+            shade_3: "#c98d9b",
+            shade_4: "#f1dce1",
+            highlight_color: "#e7a7b6",
+            glow_color: "#d46c91"
         }
     },
 
@@ -89,7 +107,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 10,
-            button_radius: 6
+            button_radius: 6,
+            shade_1: "#101216",
+            shade_2: "#252b35",
+            shade_3: "#9c792b",
+            shade_4: "#e9d9ad",
+            highlight_color: "#d1ad57",
+            glow_color: "#f3d57d"
         }
     },
 
@@ -110,7 +134,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 20,
-            button_radius: 14
+            button_radius: 14,
+            shade_1: "#4d5e48",
+            shade_2: "#789174",
+            shade_3: "#b87855",
+            shade_4: "#e8ddc8",
+            highlight_color: "#d49b75",
+            glow_color: "#a6c59e"
         }
     },
 
@@ -131,7 +161,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 16,
-            button_radius: 10
+            button_radius: 10,
+            shade_1: "#3f1d3c",
+            shade_2: "#6d3566",
+            shade_3: "#c79286",
+            shade_4: "#ead9df",
+            highlight_color: "#d8a59b",
+            glow_color: "#bd72b3"
         }
     },
 
@@ -152,7 +188,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 18,
-            button_radius: 12
+            button_radius: 12,
+            shade_1: "#0c555b",
+            shade_2: "#14858b",
+            shade_3: "#55a6a8",
+            shade_4: "#d8efec",
+            highlight_color: "#80d6d2",
+            glow_color: "#4bd7db"
         }
     },
 
@@ -173,7 +215,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 12,
-            button_radius: 8
+            button_radius: 8,
+            shade_1: "#3d2b24",
+            shade_2: "#6b4938",
+            shade_3: "#ad8055",
+            shade_4: "#eadbc9",
+            highlight_color: "#c79669",
+            glow_color: "#d7aa78"
         }
     },
 
@@ -194,7 +242,13 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "DM Sans",
             body_font: "DM Sans",
             border_radius: 8,
-            button_radius: 6
+            button_radius: 6,
+            shade_1: "#111111",
+            shade_2: "#343434",
+            shade_3: "#737373",
+            shade_4: "#e8e8e8",
+            highlight_color: "#a8a8a8",
+            glow_color: "#ffffff"
         }
     },
 
@@ -215,9 +269,302 @@ window.RUKHNAV_THEME_PRESETS = [
             heading_font: "Playfair Display",
             body_font: "DM Sans",
             border_radius: 18,
-            button_radius: 14
+            button_radius: 14,
+            shade_1: "#4d386d",
+            shade_2: "#765d9a",
+            shade_3: "#c3a36b",
+            shade_4: "#e8dff1",
+            highlight_color: "#caaee9",
+            glow_color: "#b67be3"
+        }
+    },
+
+    // ==================================================
+    // CINEMATIC COLLECTION
+    // Broad cinematic colour philosophies.
+    // No movie artwork, logos or characters are used.
+    // ==================================================
+
+    {
+        id: "bioluminescent-world",
+        name: "Bioluminescent World",
+        description:
+            "Luminous alien-jungle mood with cyan, aqua, electric blue, violet and magenta.",
+        theme: {
+            primary_color: "#123A70",
+            secondary_color: "#22D3EE",
+            accent_color: "#B8F5FF",
+            background_color: "#06172E",
+            surface_color: "#0B2344",
+            text_color: "#E9FBFF",
+            heading_color: "#FFFFFF",
+            muted_color: "#91B8CC",
+            link_color: "#67E8F9",
+            heading_font: "Montserrat",
+            body_font: "DM Sans",
+            border_radius: 20,
+            button_radius: 16,
+            shade_1: "#071A3D",
+            shade_2: "#06B6D4",
+            shade_3: "#2563EB",
+            shade_4: "#7C3AED",
+            highlight_color: "#EC4899",
+            glow_color: "#22D3EE"
+        }
+    },
+
+    {
+        id: "desert-epic",
+        name: "Desert Epic",
+        description:
+            "Monumental desert atmosphere with sand, ochre, bronze, burnt orange and espresso.",
+        theme: {
+            primary_color: "#6B3F20",
+            secondary_color: "#D99A3D",
+            accent_color: "#EBD2A0",
+            background_color: "#F5E7CE",
+            surface_color: "#FFF9EF",
+            text_color: "#34261C",
+            heading_color: "#4A2B18",
+            muted_color: "#806D5C",
+            link_color: "#9A551F",
+            heading_font: "Playfair Display",
+            body_font: "DM Sans",
+            border_radius: 10,
+            button_radius: 5,
+            shade_1: "#3A2418",
+            shade_2: "#8E5128",
+            shade_3: "#C9792E",
+            shade_4: "#E6B766",
+            highlight_color: "#F0D38A",
+            glow_color: "#D98C32"
+        }
+    },
+
+    {
+        id: "neon-future",
+        name: "Neon Future",
+        description:
+            "Cyberpunk night energy with deep black, electric cyan, violet, hot pink and amber.",
+        theme: {
+            primary_color: "#101426",
+            secondary_color: "#00E5FF",
+            accent_color: "#FF3CAC",
+            background_color: "#080A14",
+            surface_color: "#13172A",
+            text_color: "#F5F7FF",
+            heading_color: "#FFFFFF",
+            muted_color: "#9AA2BE",
+            link_color: "#00E5FF",
+            heading_font: "Montserrat",
+            body_font: "DM Sans",
+            border_radius: 12,
+            button_radius: 8,
+            shade_1: "#090B16",
+            shade_2: "#00C2FF",
+            shade_3: "#5B4BFF",
+            shade_4: "#B624FF",
+            highlight_color: "#FF3CAC",
+            glow_color: "#00E5FF"
+        }
+    },
+
+    {
+        id: "ocean-kingdom",
+        name: "Ocean Kingdom",
+        description:
+            "Cinematic underwater depth with abyss blue, royal blue, aqua, turquoise and pearl.",
+        theme: {
+            primary_color: "#083E67",
+            secondary_color: "#24C6D9",
+            accent_color: "#BCEBF0",
+            background_color: "#EAF8F8",
+            surface_color: "#FFFFFF",
+            text_color: "#173442",
+            heading_color: "#063A59",
+            muted_color: "#66828B",
+            link_color: "#087D91",
+            heading_font: "Playfair Display",
+            body_font: "DM Sans",
+            border_radius: 22,
+            button_radius: 16,
+            shade_1: "#04243D",
+            shade_2: "#075985",
+            shade_3: "#0891B2",
+            shade_4: "#2DD4BF",
+            highlight_color: "#99F6E4",
+            glow_color: "#22D3EE"
+        }
+    },
+
+    {
+        id: "emerald-fantasy",
+        name: "Emerald Fantasy",
+        description:
+            "Lush fantasy atmosphere with forest, emerald, jade, moss, antique gold and ivory.",
+        theme: {
+            primary_color: "#174C38",
+            secondary_color: "#C3A756",
+            accent_color: "#DBE8CF",
+            background_color: "#F4F6EC",
+            surface_color: "#FFFFFF",
+            text_color: "#243329",
+            heading_color: "#163C2E",
+            muted_color: "#708078",
+            link_color: "#246447",
+            heading_font: "Playfair Display",
+            body_font: "DM Sans",
+            border_radius: 18,
+            button_radius: 12,
+            shade_1: "#0C3024",
+            shade_2: "#176B4D",
+            shade_3: "#2A9D68",
+            shade_4: "#8ABF74",
+            highlight_color: "#D5BC66",
+            glow_color: "#73D7A8"
+        }
+    },
+
+    {
+        id: "royal-gothic",
+        name: "Royal Gothic",
+        description:
+            "Dark regal mood with black plum, burgundy, crimson, violet and antique gold.",
+        theme: {
+            primary_color: "#301B32",
+            secondary_color: "#B99045",
+            accent_color: "#D9C4D4",
+            background_color: "#171219",
+            surface_color: "#241B27",
+            text_color: "#F5EDF4",
+            heading_color: "#FFFFFF",
+            muted_color: "#B2A1AF",
+            link_color: "#D5B363",
+            heading_font: "Playfair Display",
+            body_font: "DM Sans",
+            border_radius: 13,
+            button_radius: 7,
+            shade_1: "#160F19",
+            shade_2: "#47213F",
+            shade_3: "#7A243B",
+            shade_4: "#9D3051",
+            highlight_color: "#D2A84A",
+            glow_color: "#A855F7"
+        }
+    },
+
+    {
+        id: "retro-cinema",
+        name: "Retro Cinema",
+        description:
+            "Nostalgic screen palette with teal, mustard, coral, terracotta, burgundy and warm ivory.",
+        theme: {
+            primary_color: "#285B59",
+            secondary_color: "#D4A62A",
+            accent_color: "#F1D6AF",
+            background_color: "#F5E8D1",
+            surface_color: "#FFF9EE",
+            text_color: "#3B342E",
+            heading_color: "#284E4E",
+            muted_color: "#7D7062",
+            link_color: "#A84C38",
+            heading_font: "Georgia",
+            body_font: "DM Sans",
+            border_radius: 8,
+            button_radius: 5,
+            shade_1: "#1F4B4A",
+            shade_2: "#D4A62A",
+            shade_3: "#E77B55",
+            shade_4: "#B9473E",
+            highlight_color: "#F0C36A",
+            glow_color: "#EF8D63"
+        }
+    },
+
+    {
+        id: "ice-kingdom",
+        name: "Ice Kingdom",
+        description:
+            "Frozen cinematic atmosphere with midnight blue, glacier cyan, silver, lavender and snow.",
+        theme: {
+            primary_color: "#254B7C",
+            secondary_color: "#7DD3FC",
+            accent_color: "#DCEFFE",
+            background_color: "#F3F8FC",
+            surface_color: "#FFFFFF",
+            text_color: "#27384D",
+            heading_color: "#17375F",
+            muted_color: "#71839A",
+            link_color: "#2563A6",
+            heading_font: "Playfair Display",
+            body_font: "DM Sans",
+            border_radius: 20,
+            button_radius: 14,
+            shade_1: "#17365D",
+            shade_2: "#3B82C4",
+            shade_3: "#67D2F4",
+            shade_4: "#B9B7E8",
+            highlight_color: "#E6F6FF",
+            glow_color: "#7DD3FC"
+        }
+    },
+
+    {
+        id: "solar-adventure",
+        name: "Solar Adventure",
+        description:
+            "Energetic space-adventure mood with navy, cobalt, solar orange, gold and coral.",
+        theme: {
+            primary_color: "#173B73",
+            secondary_color: "#F5A623",
+            accent_color: "#FFE2A9",
+            background_color: "#F5F7FB",
+            surface_color: "#FFFFFF",
+            text_color: "#26344B",
+            heading_color: "#183565",
+            muted_color: "#718099",
+            link_color: "#315CB3",
+            heading_font: "Montserrat",
+            body_font: "DM Sans",
+            border_radius: 14,
+            button_radius: 10,
+            shade_1: "#102A52",
+            shade_2: "#275DCC",
+            shade_3: "#F97316",
+            shade_4: "#FBBF24",
+            highlight_color: "#FB7185",
+            glow_color: "#F59E0B"
+        }
+    },
+
+    {
+        id: "dreamscape-spectrum",
+        name: "Dreamscape Spectrum",
+        description:
+            "Multishade dreamscape flowing through turquoise, cyan, blue, violet, purple and pink.",
+        theme: {
+            primary_color: "#3156D8",
+            secondary_color: "#20C6D7",
+            accent_color: "#E2D5FF",
+            background_color: "#F7F4FF",
+            surface_color: "#FFFFFF",
+            text_color: "#332E48",
+            heading_color: "#313A75",
+            muted_color: "#77718C",
+            link_color: "#5A55D6",
+            heading_font: "Montserrat",
+            body_font: "DM Sans",
+            border_radius: 22,
+            button_radius: 18,
+            shade_1: "#13C8D3",
+            shade_2: "#1597E5",
+            shade_3: "#3758E8",
+            shade_4: "#8149E6",
+            highlight_color: "#D84FC7",
+            glow_color: "#56E0E8"
         }
     }
+
 ];
 
 window.RUKHNAV_THEME_PRESETS.get =

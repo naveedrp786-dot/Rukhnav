@@ -220,3 +220,89 @@
         flex-wrap:wrap;
     }
 }
+
+/* =========================================================
+   RUKHNAV THEME ENGINE V2
+   Legacy shared header/footer palette bridge
+   ========================================================= */
+
+:root{
+    --rk-green:var(--primary);
+    --rk-green-dark:var(--shade-1);
+    --rk-gold:var(--secondary);
+    --rk-cream:var(--background,var(--bg));
+    --rk-soft:var(--shade-4);
+    --rk-white:var(--surface);
+    --rk-text:var(--text);
+    --rk-muted:var(--muted);
+
+    --rk-border:
+        color-mix(
+            in srgb,
+            var(--primary) 14%,
+            transparent
+        );
+}
+
+/* Announcement bar follows selected Website Management theme */
+.store-announcement-bar{
+    background:
+        var(--soft-gradient) !important;
+    border-bottom:
+        1px solid var(--rk-border) !important;
+}
+
+.store-announcement-bar p,
+.store-announcement-bar a{
+    color:var(--text) !important;
+}
+
+.store-announcement-bar i{
+    color:var(--secondary) !important;
+}
+
+.announcement-links > span{
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 18%,
+            transparent
+        ) !important;
+}
+
+/* Shared footer follows selected Website Management theme */
+.rk-footer{
+    background:
+        var(--soft-gradient) !important;
+    color:var(--text) !important;
+    border-top:
+        1px solid var(--rk-border) !important;
+}
+
+.rk-footer-logo strong,
+.rk-footer h3{
+    color:var(--primary) !important;
+}
+
+.rk-footer-brand p,
+.rk-footer-links a,
+.rk-footer-contact > p,
+.rk-footer-bottom p,
+.rk-footer-bottom span{
+    color:var(--muted) !important;
+}
+
+.rk-footer-links a:hover{
+    color:var(--primary) !important;
+}
+
+.rk-footer-contact i,
+.rk-footer-bottom i{
+    color:var(--secondary) !important;
+}
+
+.rk-footer-socials a,
+.rk-footer-payments span{
+    background:var(--surface) !important;
+    color:var(--primary) !important;
+}

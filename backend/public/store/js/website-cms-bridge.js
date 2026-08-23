@@ -60,7 +60,254 @@ window.RukhnavModernCMS = {
         const root =
             document.documentElement;
 
+        /* =========================================================
+           RUKHNAV THEME ENGINE V2
+           Derived cinematic palette
+           ========================================================= */
+
+        const normalizeHex = (value, fallback) => {
+            const raw = String(value || fallback || "")
+                .trim()
+                .replace("#", "");
+
+            if (/^[0-9a-f]{3}$/i.test(raw)) {
+                return "#" + raw
+                    .split("")
+                    .map(char => char + char)
+                    .join("");
+            }
+
+            if (/^[0-9a-f]{6}$/i.test(raw)) {
+                return "#" + raw;
+            }
+
+            return fallback;
+        };
+
+        const hexToRgb = hex => {
+            const clean = normalizeHex(
+                hex,
+                "#17452f"
+            ).slice(1);
+
+            return {
+                r: parseInt(clean.slice(0, 2), 16),
+                g: parseInt(clean.slice(2, 4), 16),
+                b: parseInt(clean.slice(4, 6), 16)
+            };
+        };
+
+        const mix = (
+            colorA,
+            colorB,
+            weight = 0.5
+        ) => {
+            const a = hexToRgb(colorA);
+            const b = hexToRgb(colorB);
+
+            const amount =
+                Math.max(
+                    0,
+                    Math.min(1, weight)
+                );
+
+            const channel = (x, y) =>
+                Math.round(
+                    x + (y - x) * amount
+                )
+                    .toString(16)
+                    .padStart(2, "0");
+
+            return (
+                "#" +
+                channel(a.r, b.r) +
+                channel(a.g, b.g) +
+                channel(a.b, b.b)
+            );
+        };
+
+        const alpha = (
+            hex,
+            opacity
+        ) => {
+            const rgb =
+                hexToRgb(hex);
+
+            return (
+                `rgba(${rgb.r}, ` +
+                `${rgb.g}, ` +
+                `${rgb.b}, ` +
+                `${opacity})`
+            );
+        };
+
+        const primary =
+            normalizeHex(
+                theme.primary_color,
+                "#17452f"
+            );
+
+        const secondary =
+            normalizeHex(
+                theme.secondary_color,
+                "#d6a928"
+            );
+
+        const accent =
+            normalizeHex(
+                theme.accent_color,
+                "#f4ead2"
+            );
+
+        const background =
+            normalizeHex(
+                theme.background_color,
+                "#f7f4ec"
+            );
+
+        const surface =
+            normalizeHex(
+                theme.surface_color,
+                "#ffffff"
+            );
+
+        /*
+         * Theme V2 supports explicitly selected
+         * cinematic shades from Website Management.
+         * Older saved themes safely derive them
+         * from the original palette.
+         */
+        const shade1 =
+            normalizeHex(
+                theme.shade_1,
+                mix(
+                    primary,
+                    "#000000",
+                    0.18
+                )
+            );
+
+        const shade2 =
+            normalizeHex(
+                theme.shade_2,
+                mix(
+                    primary,
+                    secondary,
+                    0.28
+                )
+            );
+
+        const shade3 =
+            normalizeHex(
+                theme.shade_3,
+                mix(
+                    secondary,
+                    accent,
+                    0.34
+                )
+            );
+
+        const shade4 =
+            normalizeHex(
+                theme.shade_4,
+                mix(
+                    accent,
+                    "#ffffff",
+                    0.34
+                )
+            );
+
+        const highlight =
+            normalizeHex(
+                theme.highlight_color,
+                mix(
+                    secondary,
+                    "#ffffff",
+                    0.18
+                )
+            );
+
+        const glowColor =
+            normalizeHex(
+                theme.glow_color,
+                secondary
+            );
+
+        const glow =
+            alpha(
+                glowColor,
+                0.28
+            );
+
+        const heroGradient =
+            `linear-gradient(135deg, ` +
+            `${background} 0%, ` +
+            `${shade4} 46%, ` +
+            `${accent} 100%)`;
+
+        const deepGradient =
+            `linear-gradient(135deg, ` +
+            `${shade1} 0%, ` +
+            `${primary} 45%, ` +
+            `${shade2} 100%)`;
+
+        const buttonGradient =
+            `linear-gradient(135deg, ` +
+            `${primary} 0%, ` +
+            `${shade2} 100%)`;
+
+        const promoGradient =
+            `linear-gradient(120deg, ` +
+            `${primary} 0%, ` +
+            `${secondary} 58%, ` +
+            `${highlight} 100%)`;
+
+        const softGradient =
+            `linear-gradient(135deg, ` +
+            `${background} 0%, ` +
+            `${surface} 48%, ` +
+            `${shade4} 100%)`;
+
+        const spectrumGradient =
+            `linear-gradient(120deg, ` +
+            `${shade1} 0%, ` +
+            `${shade2} 22%, ` +
+            `${shade3} 46%, ` +
+            `${shade4} 68%, ` +
+            `${highlight} 84%, ` +
+            `${glowColor} 100%)`;
+
         const variables = {
+            /*
+             * Theme Engine V2
+             * Cinematic multi-shade palette
+             */
+            "--shade-1": shade1,
+            "--shade-2": shade2,
+            "--shade-3": shade3,
+            "--shade-4": shade4,
+
+            "--highlight": highlight,
+            "--glow": glow,
+
+            "--hero-gradient":
+                heroGradient,
+
+            "--deep-gradient":
+                deepGradient,
+
+            "--button-gradient":
+                buttonGradient,
+
+            "--promo-gradient":
+                promoGradient,
+
+            "--soft-gradient":
+                softGradient,
+
+            "--spectrum-gradient":
+                spectrumGradient,
+
             "--primary": theme.primary_color,
             "--secondary": theme.secondary_color,
             "--accent": theme.accent_color,

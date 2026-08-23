@@ -1,1 +1,101 @@
 :root{--primary:#173f2b;--secondary:#e5b83d;--accent:#b98a24;--bg:#f7f4ec;--surface:#fff;--text:#1f2a22;--muted:#66736a;--border:#e2e4de;--radius:14px;--shadow:0 14px 40px rgba(25,55,39,.08);--max:1480px;--body:'DM Sans',Arial,sans-serif;--heading:'Playfair Display',Georgia,serif}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:320px;background:var(--bg);color:var(--text);font-family:var(--body)}a{color:inherit}img{max-width:100%;display:block}button,input,select{font:inherit}.hidden{display:none!important}.btn{min-height:44px;border-radius:10px;padding:11px 18px;border:1px solid transparent;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;text-decoration:none;cursor:pointer}.primary{background:var(--primary);color:#fff}.secondary{border-color:var(--border);background:#fff;color:var(--primary)}.light{background:#fff;color:var(--primary)}
+/* =========================================================
+   RUKHNAV THEME ENGINE V2 — DERIVED PALETTE FALLBACKS
+   Runtime values are replaced by website-cms-bridge.js.
+   ========================================================= */
+
+:root{
+    --background:var(--bg);
+
+    --shade-1:#123725;
+    --shade-2:#4d6330;
+    --shade-3:#e1bf68;
+    --shade-4:#f8f2e4;
+
+    --highlight:#e0bd57;
+    --glow:rgba(214,169,40,.28);
+
+    --hero-gradient:
+        linear-gradient(
+            135deg,
+            var(--bg) 0%,
+            var(--shade-4) 46%,
+            var(--accent) 100%
+        );
+
+    --deep-gradient:
+        linear-gradient(
+            135deg,
+            var(--shade-1) 0%,
+            var(--primary) 45%,
+            var(--shade-2) 100%
+        );
+
+    --button-gradient:
+        linear-gradient(
+            135deg,
+            var(--primary) 0%,
+            var(--shade-2) 100%
+        );
+
+    --promo-gradient:
+        linear-gradient(
+            120deg,
+            var(--primary) 0%,
+            var(--secondary) 58%,
+            var(--highlight) 100%
+        );
+
+    --soft-gradient:
+        linear-gradient(
+            135deg,
+            var(--bg) 0%,
+            var(--surface) 48%,
+            var(--shade-4) 100%
+        );
+
+    --spectrum-gradient:
+        linear-gradient(
+            120deg,
+            var(--shade-1) 0%,
+            var(--shade-2) 22%,
+            var(--shade-3) 46%,
+            var(--shade-4) 68%,
+            var(--highlight) 84%,
+            var(--secondary) 100%
+        );
+}
+
+/* =========================================================
+   RUKHNAV THEME ENGINE V2 — PRIMARY ACTIONS
+   ========================================================= */
+
+.btn.primary,
+.primary.btn,
+button.primary,
+a.primary{
+    background:var(--button-gradient);
+    color:#ffffff;
+    box-shadow:
+        0 10px 26px var(--glow);
+    border-color:
+        color-mix(
+            in srgb,
+            var(--primary) 80%,
+            transparent
+        );
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        filter .18s ease;
+}
+
+.btn.primary:hover,
+.primary.btn:hover,
+button.primary:hover,
+a.primary:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.04);
+    box-shadow:
+        0 14px 32px var(--glow);
+}

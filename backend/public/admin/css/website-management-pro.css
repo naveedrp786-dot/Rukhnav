@@ -276,3 +276,39 @@
         grid-template-columns:1fr;
     }
 }
+
+/* =====================================================
+   THEME ENGINE V2
+   ===================================================== */
+
+.rukhnav-theme-v2-heading{
+    margin:10px 0 2px;
+    padding:14px 16px;
+    border:1px solid #e8dfc8;
+    border-radius:12px;
+    background:
+        linear-gradient(
+            100deg,
+            rgba(34,211,238,.10),
+            rgba(59,130,246,.08),
+            rgba(139,92,246,.09),
+            rgba(236,72,153,.08)
+        );
+}
+
+.rukhnav-theme-v2-heading strong,
+.rukhnav-theme-v2-heading span{
+    display:block;
+}
+
+.rukhnav-theme-v2-heading strong{
+    color:#243b32;
+    font-size:13px;
+}
+
+.rukhnav-theme-v2-heading span{
+    margin-top:4px;
+    color:#718078;
+    font-size:11px;
+    line-height:1.5;
+}

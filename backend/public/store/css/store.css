@@ -244,3 +244,69 @@ button{
         border-radius: 8px;
     }
 }
+
+/* =========================================================
+   RUKHNAV THEME ENGINE V2 — CINEMATIC STOREFRONT
+   ========================================================= */
+
+.hero{
+    background:var(--hero-gradient);
+}
+
+.page-hero{
+    background:var(--soft-gradient);
+}
+
+.story{
+    background:var(--deep-gradient);
+    box-shadow:
+        0 22px 55px var(--glow);
+}
+
+.categories-nav{
+    background:var(--deep-gradient);
+}
+
+.bottle{
+    background:
+        linear-gradient(
+            165deg,
+            var(--surface),
+            var(--shade-4)
+        );
+    box-shadow:
+        0 28px 50px var(--glow);
+}
+
+.categories i{
+    background:
+        color-mix(
+            in srgb,
+            var(--shade-4) 78%,
+            var(--surface)
+        );
+}
+
+.product-image,
+.gallery{
+    background:
+        color-mix(
+            in srgb,
+            var(--shade-4) 55%,
+            var(--surface)
+        );
+}
+
+.add-card{
+    background:var(--promo-gradient);
+}
+
+.spinner{
+    border-color:
+        color-mix(
+            in srgb,
+            var(--shade-4) 70%,
+            var(--surface)
+        );
+    border-top-color:var(--secondary);
+}
