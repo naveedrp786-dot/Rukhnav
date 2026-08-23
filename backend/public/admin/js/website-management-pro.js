@@ -628,6 +628,7 @@ async function load() {
         state.status = data.status || "Draft";
 
         bindFields();
+        renderThemePresets();
         renderNavigation();
         renderCategories();
         bindUploads();
