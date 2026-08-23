@@ -1455,3 +1455,705 @@ button{
         padding:24px !important;
     }
 }
+
+
+/* =========================================================
+   RUKHNAV THEME ENGINE V3.2
+   PREMIUM ATMOSPHERIC STOREFRONT
+
+   Visual treatment only.
+   V3.1 hero geometry remains unchanged.
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   DARK FAMILY — MULTI-COLOR CINEMATIC ATMOSPHERE
+   --------------------------------------------------------- */
+
+:root[data-theme-mode="dark"] body{
+    background:
+        radial-gradient(
+            circle at 12% 18%,
+            color-mix(in srgb,var(--secondary) 8%,transparent),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 88% 30%,
+            color-mix(in srgb,var(--highlight) 7%,transparent),
+            transparent 34%
+        ),
+        var(--background) !important;
+}
+
+
+/*
+ * Hero atmosphere.
+ *
+ * Important:
+ * These are large light fields — not smoke/cloud boxes.
+ */
+
+:root[data-theme-mode="dark"] .hero{
+    isolation:isolate;
+
+    background:
+        radial-gradient(
+            ellipse 52% 72%
+            at 8% 52%,
+            color-mix(
+                in srgb,
+                var(--secondary) 24%,
+                transparent
+            ),
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse 46% 74%
+            at 92% 28%,
+            color-mix(
+                in srgb,
+                var(--highlight) 22%,
+                transparent
+            ),
+            transparent 70%
+        ),
+
+        radial-gradient(
+            ellipse 38% 58%
+            at 62% 92%,
+            color-mix(
+                in srgb,
+                var(--glow-color) 15%,
+                transparent
+            ),
+            transparent 72%
+        ),
+
+        radial-gradient(
+            ellipse 45% 65%
+            at 48% 10%,
+            color-mix(
+                in srgb,
+                var(--shade-4) 12%,
+                transparent
+            ),
+            transparent 72%
+        ),
+
+        linear-gradient(
+            125deg,
+            color-mix(
+                in srgb,
+                var(--shade-1) 94%,
+                #02060b
+            ) 0%,
+
+            color-mix(
+                in srgb,
+                var(--primary) 76%,
+                #07101a
+            ) 52%,
+
+            color-mix(
+                in srgb,
+                var(--shade-2) 48%,
+                #0b0811
+            ) 100%
+        ) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.11) !important;
+
+    box-shadow:
+        0 34px 100px rgba(0,0,0,.38),
+        inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+
+
+/* soft cinematic illumination */
+
+:root[data-theme-mode="dark"] .hero::before{
+    content:"" !important;
+    display:block !important;
+
+    position:absolute;
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            ellipse 30% 52%
+            at 18% 70%,
+            color-mix(
+                in srgb,
+                var(--glow-color) 20%,
+                transparent
+            ),
+            transparent 72%
+        ),
+
+        radial-gradient(
+            ellipse 35% 55%
+            at 82% 22%,
+            color-mix(
+                in srgb,
+                var(--highlight) 18%,
+                transparent
+            ),
+            transparent 74%
+        );
+
+    filter:blur(26px);
+
+    opacity:.85;
+
+    z-index:0;
+}
+
+
+/* premium vignette + depth */
+
+:root[data-theme-mode="dark"] .hero::after{
+    content:"" !important;
+    display:block !important;
+
+    position:absolute;
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.16),
+            transparent 35%,
+            transparent 67%,
+            rgba(0,0,0,.12)
+        ),
+
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.025),
+            transparent 24%,
+            transparent 76%,
+            rgba(0,0,0,.14)
+        );
+
+    z-index:0;
+}
+
+
+/* ensure content stays above atmosphere */
+
+:root[data-theme-mode="dark"] .hero-copy,
+:root[data-theme-mode="dark"] .hero-art{
+    position:relative;
+    z-index:2;
+}
+
+
+/* remove flat rectangle feeling */
+
+:root[data-theme-mode="dark"] .hero-copy{
+    background:transparent !important;
+}
+
+
+/* product/image stage */
+
+:root[data-theme-mode="dark"] .hero-art{
+    background:
+        radial-gradient(
+            ellipse 65% 68%
+            at 50% 50%,
+            color-mix(
+                in srgb,
+                var(--highlight) 13%,
+                transparent
+            ),
+            transparent 70%
+        ) !important;
+}
+
+
+/* premium heading */
+
+:root[data-theme-mode="dark"] .hero h1{
+    color:
+        color-mix(
+            in srgb,
+            var(--accent) 34%,
+            #ffffff
+        ) !important;
+
+    text-shadow:
+        0 3px 28px rgba(0,0,0,.25);
+}
+
+
+/* second-line accent if markup supports strong/em */
+
+:root[data-theme-mode="dark"] .hero h1 strong,
+:root[data-theme-mode="dark"] .hero h1 em{
+    color:
+        color-mix(
+            in srgb,
+            var(--secondary) 64%,
+            #ffffff
+        ) !important;
+}
+
+
+/* eyebrow */
+
+:root[data-theme-mode="dark"] .hero-copy > span{
+    color:
+        color-mix(
+            in srgb,
+            var(--secondary) 82%,
+            #ffffff
+        ) !important;
+
+    letter-spacing:.16em;
+}
+
+
+/* paragraph */
+
+:root[data-theme-mode="dark"] .hero p{
+    color:rgba(255,255,255,.82) !important;
+}
+
+
+/* ---------------------------------------------------------
+   DARK BUTTONS
+   --------------------------------------------------------- */
+
+:root[data-theme-mode="dark"] .hero-actions a:first-child{
+    background:
+        linear-gradient(
+            135deg,
+            color-mix(
+                in srgb,
+                var(--primary) 62%,
+                var(--secondary)
+            ),
+            color-mix(
+                in srgb,
+                var(--secondary) 66%,
+                var(--shade-2)
+            )
+        ) !important;
+
+    color:#fff !important;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--secondary) 45%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 12px 32px
+        color-mix(
+            in srgb,
+            var(--glow-color) 18%,
+            transparent
+        ) !important;
+}
+
+
+:root[data-theme-mode="dark"] .hero-actions a:last-child{
+    background:rgba(255,255,255,.035) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.28) !important;
+
+    color:#fff !important;
+
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+}
+
+
+/* ---------------------------------------------------------
+   DARK TRUST ROW
+   --------------------------------------------------------- */
+
+:root[data-theme-mode="dark"] .trust{
+    color:rgba(255,255,255,.80) !important;
+}
+
+:root[data-theme-mode="dark"] .trust i{
+    color:
+        color-mix(
+            in srgb,
+            var(--secondary) 75%,
+            #ffffff
+        ) !important;
+}
+
+
+/* ---------------------------------------------------------
+   DARK BENEFITS — GLASS STRIP
+   --------------------------------------------------------- */
+
+:root[data-theme-mode="dark"] .benefits{
+    background:
+        linear-gradient(
+            100deg,
+            color-mix(
+                in srgb,
+                var(--primary) 20%,
+                rgba(4,12,20,.72)
+            ),
+            color-mix(
+                in srgb,
+                var(--highlight) 10%,
+                rgba(4,12,20,.72)
+            )
+        ) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.12) !important;
+
+    box-shadow:
+        0 24px 60px rgba(0,0,0,.26) !important;
+
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+}
+
+
+:root[data-theme-mode="dark"] .benefits article{
+    background:transparent !important;
+}
+
+
+:root[data-theme-mode="dark"] .benefits article + article{
+    border-left:
+        1px solid
+        rgba(255,255,255,.11) !important;
+}
+
+
+:root[data-theme-mode="dark"] .benefits i{
+    color:
+        color-mix(
+            in srgb,
+            var(--secondary) 78%,
+            #ffffff
+        ) !important;
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT FAMILY — PEARL / COSMETIC LUXURY
+   --------------------------------------------------------- */
+
+:root[data-theme-mode="light"] body{
+    background:
+        radial-gradient(
+            circle at 8% 18%,
+            color-mix(
+                in srgb,
+                var(--shade-4) 34%,
+                transparent
+            ),
+            transparent 32%
+        ),
+
+        radial-gradient(
+            circle at 92% 32%,
+            color-mix(
+                in srgb,
+                var(--highlight) 9%,
+                transparent
+            ),
+            transparent 34%
+        ),
+
+        var(--background) !important;
+}
+
+
+:root[data-theme-mode="light"] .hero{
+    isolation:isolate;
+
+    background:
+        radial-gradient(
+            ellipse 55% 82%
+            at 0% 15%,
+            color-mix(
+                in srgb,
+                var(--shade-4) 30%,
+                transparent
+            ),
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse 44% 68%
+            at 100% 92%,
+            color-mix(
+                in srgb,
+                var(--highlight) 15%,
+                transparent
+            ),
+            transparent 72%
+        ),
+
+        radial-gradient(
+            ellipse 34% 50%
+            at 68% 8%,
+            color-mix(
+                in srgb,
+                var(--secondary) 8%,
+                transparent
+            ),
+            transparent 72%
+        ),
+
+        linear-gradient(
+            130deg,
+            color-mix(
+                in srgb,
+                var(--surface) 96%,
+                var(--shade-4)
+            ),
+            var(--surface) 58%,
+            color-mix(
+                in srgb,
+                var(--surface) 95%,
+                var(--accent)
+            )
+        ) !important;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 28px 80px
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            transparent
+        ),
+        inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+
+
+/* pearl highlight */
+
+:root[data-theme-mode="light"] .hero::before{
+    content:"" !important;
+    display:block !important;
+
+    position:absolute;
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            ellipse 34% 58%
+            at 12% 74%,
+            color-mix(
+                in srgb,
+                var(--secondary) 10%,
+                transparent
+            ),
+            transparent 74%
+        ),
+
+        radial-gradient(
+            ellipse 30% 48%
+            at 88% 18%,
+            color-mix(
+                in srgb,
+                var(--glow-color) 8%,
+                transparent
+            ),
+            transparent 72%
+        );
+
+    filter:blur(30px);
+
+    opacity:.70;
+
+    z-index:0;
+}
+
+
+:root[data-theme-mode="light"] .hero::after{
+    content:"" !important;
+    display:block !important;
+
+    position:absolute;
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.28),
+            transparent 28%,
+            transparent 80%,
+            rgba(0,0,0,.025)
+        );
+
+    z-index:0;
+}
+
+
+:root[data-theme-mode="light"] .hero-copy,
+:root[data-theme-mode="light"] .hero-art{
+    position:relative;
+    z-index:2;
+}
+
+
+:root[data-theme-mode="light"] .hero-copy{
+    background:transparent !important;
+}
+
+
+:root[data-theme-mode="light"] .hero-art{
+    background:
+        radial-gradient(
+            ellipse 66% 68%
+            at 50% 50%,
+            color-mix(
+                in srgb,
+                var(--highlight) 11%,
+                transparent
+            ),
+            transparent 72%
+        ) !important;
+}
+
+
+:root[data-theme-mode="light"] .hero h1{
+    color:var(--heading) !important;
+
+    text-shadow:
+        0 2px 18px
+        color-mix(
+            in srgb,
+            var(--primary) 5%,
+            transparent
+        );
+}
+
+
+:root[data-theme-mode="light"] .hero-copy > span{
+    color:
+        color-mix(
+            in srgb,
+            var(--secondary) 72%,
+            var(--primary)
+        ) !important;
+}
+
+
+:root[data-theme-mode="light"] .hero p{
+    color:var(--text) !important;
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT BENEFITS
+   --------------------------------------------------------- */
+
+:root[data-theme-mode="light"] .benefits{
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 92%,
+            transparent
+        ) !important;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 8%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 18px 50px
+        color-mix(
+            in srgb,
+            var(--primary) 7%,
+            transparent
+        ) !important;
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+
+:root[data-theme-mode="light"] .benefits article{
+    background:transparent !important;
+}
+
+
+:root[data-theme-mode="light"] .benefits article + article{
+    border-left:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            transparent
+        ) !important;
+}
+
+
+/* ---------------------------------------------------------
+   PREMIUM MICRO-INTERACTIONS
+   --------------------------------------------------------- */
+
+.hero-actions a,
+.benefits article{
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+
+.hero-actions a:hover{
+    transform:translateY(-2px);
+}
+
+
+.benefits article:hover{
+    transform:translateY(-2px);
+}
+
+
+/* keep atmosphere elegant on smaller screens */
+
+@media(max-width:760px){
+
+    :root[data-theme-mode="dark"] .hero::before,
+    :root[data-theme-mode="light"] .hero::before{
+        opacity:.48;
+        filter:blur(20px);
+    }
+
+}
