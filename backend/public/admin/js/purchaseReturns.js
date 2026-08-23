@@ -557,37 +557,229 @@ async function viewPurchaseReturn(id) {
             result.data?.items ||
             [];
 
-        const detailText = [
-            `Return Number: ${
-                purchaseReturn.return_number ||
-                `PR-${id}`
-            }`,
-            `Supplier: ${
-                purchaseReturn.supplier_name ||
-                "-"
-            }`,
-            `Return Date: ${
-                formatDate(
-                    purchaseReturn.return_date
-                )
-            }`,
-            `Status: ${
-                purchaseReturn.status ||
-                "-"
-            }`,
-            `Reason: ${
-                purchaseReturn.reason ||
-                "-"
-            }`,
-            `Total: ${
-                formatMoney(
-                    purchaseReturn.total_amount
-                )
-            }`,
-            `Items: ${items.length}`
-        ].join("\n");
+        const modal =
+            byId("viewReturnModal");
 
-        alert(detailText);
+        if (!modal) {
+            throw new Error(
+                "Purchase Return details modal is unavailable."
+            );
+        }
+
+        const setText = (id, value) => {
+            const element = byId(id);
+
+            if (element) {
+                element.textContent =
+                    value ?? "-";
+            }
+        };
+
+        setText(
+            "viewReturnNumber",
+            purchaseReturn.return_number ||
+            `PR-${id}`
+        );
+
+        setText(
+            "viewPONumber",
+            purchaseReturn.po_number ||
+            purchaseReturn.purchase_order_number ||
+            (
+                purchaseReturn.purchase_order_id
+                    ? `PO ID: ${purchaseReturn.purchase_order_id}`
+                    : "-"
+            )
+        );
+
+        setText(
+            "viewSupplier",
+            purchaseReturn.supplier_name ||
+            "-"
+        );
+
+        setText(
+            "viewReturnDate",
+            formatDate(
+                purchaseReturn.return_date
+            )
+        );
+
+        setText(
+            "viewGrandTotal",
+            formatMoney(
+                purchaseReturn.total_amount
+            )
+        );
+
+        setText(
+            "viewReason",
+            purchaseReturn.reason ||
+            "-"
+        );
+
+        setText(
+            "viewRemarks",
+            purchaseReturn.remarks ||
+            "-"
+        );
+
+        const status =
+            String(
+                purchaseReturn.status ||
+                "Draft"
+            );
+
+        const statusElement =
+            byId("viewStatus");
+
+        if (statusElement) {
+            const normalizedStatus =
+                normalizeStatus(status);
+
+            let statusClass =
+                "status-draft";
+
+            if (
+                normalizedStatus === "completed"
+            ) {
+                statusClass =
+                    "status-completed";
+            }
+
+            if (
+                normalizedStatus === "cancelled" ||
+                normalizedStatus === "canceled"
+            ) {
+                statusClass =
+                    "status-cancelled";
+            }
+
+            statusElement.innerHTML = `
+                <span class="status-badge ${statusClass}">
+                    ${escapeHtml(status)}
+                </span>
+            `;
+        }
+
+        const itemsBody =
+            byId("viewItemsBody");
+
+        if (itemsBody) {
+
+            if (!items.length) {
+
+                itemsBody.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="5"
+                            class="empty"
+                        >
+                            No returned products found.
+                        </td>
+                    </tr>
+                `;
+
+            } else {
+
+                itemsBody.innerHTML =
+                    items
+                        .map(
+                            (
+                                item,
+                                index
+                            ) => `
+                                <tr>
+
+                                    <td>
+                                        ${index + 1}
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            ${escapeHtml(
+                                                item.product_name ||
+                                                "Product"
+                                            )}
+                                        </strong>
+
+                                        ${
+                                            item.sku
+                                                ? `
+                                                <small
+                                                    style="
+                                                        display:block;
+                                                        margin-top:3px;
+                                                        color:#6b7280;
+                                                    "
+                                                >
+                                                    SKU:
+                                                    ${escapeHtml(
+                                                        item.sku
+                                                    )}
+                                                </small>
+                                                `
+                                                : ""
+                                        }
+                                    </td>
+
+                                    <td>
+                                        ${Number(
+                                            item.quantity ||
+                                            0
+                                        )}
+                                        ${
+                                            item.unit
+                                                ? escapeHtml(
+                                                    ` ${item.unit}`
+                                                )
+                                                : ""
+                                        }
+                                    </td>
+
+                                    <td>
+                                        ${formatMoney(
+                                            item.unit_cost ||
+                                            0
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        ${formatMoney(
+                                            item.total_cost ||
+                                            item.total_amount ||
+                                            0
+                                        )}
+                                    </td>
+
+                                </tr>
+                            `
+                        )
+                        .join("");
+            }
+        }
+
+        modal.style.display =
+            "flex";
+
+        modal.classList.add(
+            "show"
+        );
+
+        modal.dataset.returnId =
+            String(id);
+
+        const printButton =
+            byId("printFromView");
+
+        if (printButton) {
+            printButton.onclick =
+                () =>
+                    printPurchaseReturn(
+                        id
+                    );
+        }
+
     } catch (error) {
         alert(
             error.message ||
@@ -991,6 +1183,8 @@ function closeViewModal() {
 
     if (modal) {
         modal.style.display = "none";
+        modal.classList.remove("show");
+        delete modal.dataset.returnId;
     }
 }
 
@@ -1012,3 +1206,35 @@ window.closeReturnModal =
 
 window.closeViewModal =
     closeViewModal;
+
+// ============================================================
+// Purchase Return View Modal Controls
+// ============================================================
+
+document
+    .getElementById("closeViewModal")
+    ?.addEventListener(
+        "click",
+        closeViewModal
+    );
+
+document
+    .getElementById("closeViewBtn")
+    ?.addEventListener(
+        "click",
+        closeViewModal
+    );
+
+document
+    .getElementById("viewReturnModal")
+    ?.addEventListener(
+        "click",
+        event => {
+            if (
+                event.target?.id ===
+                "viewReturnModal"
+            ) {
+                closeViewModal();
+            }
+        }
+    );
