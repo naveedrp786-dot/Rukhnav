@@ -12,6 +12,9 @@ window.API = {
     products:
         "/api/products",
 
+    categories:
+        "/api/categories",
+
     cart:
         "/api/cart",
 

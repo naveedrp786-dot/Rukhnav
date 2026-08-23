@@ -3,6 +3,9 @@
 window.Store = {
     settings: {},
 
+    categories: [],
+    categoryPromise: null,
+
     cartKey:
         "rukhnav_local_cart",
 
@@ -42,6 +45,373 @@ window.Store = {
         );
     },
 
+    async loadCategories() {
+
+        if (this.categoryPromise) {
+            return this.categoryPromise;
+        }
+
+        this.categoryPromise =
+            (async () => {
+
+                try {
+
+                    const response =
+                        await API.get(
+                            API.categories
+                        );
+
+                    const rows =
+                        Array.isArray(response)
+                            ? response
+                            : Array.isArray(
+                                response.categories
+                            )
+                                ? response.categories
+                                : Array.isArray(
+                                    response.data
+                                )
+                                    ? response.data
+                                    : [];
+
+                    this.categories =
+                        rows
+                            .filter(
+                                category =>
+                                    String(
+                                        category.status ||
+                                        "active"
+                                    )
+                                        .toLowerCase() ===
+                                    "active"
+                            )
+                            .map(
+                                category => ({
+                                    id:
+                                        Number(
+                                            category.id ||
+                                            0
+                                        ),
+
+                                    category_name:
+                                        String(
+                                            category.category_name ||
+                                            category.name ||
+                                            ""
+                                        ).trim(),
+
+                                    description:
+                                        String(
+                                            category.description ||
+                                            ""
+                                        ).trim(),
+
+                                    image:
+                                        category.image ||
+                                        category.image_url ||
+                                        ""
+                                })
+                            )
+                            .filter(
+                                category =>
+                                    Boolean(
+                                        category.category_name
+                                    )
+                            );
+
+                    return this.categories;
+
+                } catch (error) {
+
+                    console.warn(
+                        "Unable to load storefront categories:",
+                        error
+                    );
+
+                    this.categories = [];
+
+                    return [];
+                }
+
+            })();
+
+        return this.categoryPromise;
+    },
+
+
+    categoryUrl(categoryName) {
+
+        return (
+            "products.html?category=" +
+            encodeURIComponent(
+                String(
+                    categoryName ||
+                    ""
+                )
+            )
+        );
+    },
+
+
+    categoryImage(category = {}) {
+
+        const value =
+            String(
+                category.image ||
+                ""
+            ).trim();
+
+        if (!value) {
+            return "";
+        }
+
+        if (
+            /^(https?:)?\/\//i.test(value) ||
+            value.startsWith("data:")
+        ) {
+            return value;
+        }
+
+        if (value.startsWith("/")) {
+            return `${API.base}${value}`;
+        }
+
+        return (
+            `${API.base}/uploads/categories/` +
+            encodeURIComponent(value)
+        );
+    },
+
+
+    categoryIcon(categoryName = "") {
+
+        const value =
+            String(
+                categoryName
+            ).toLowerCase();
+
+        if (value.includes("hair")) {
+            return "fa-wand-magic-sparkles";
+        }
+
+        if (
+            value.includes("face") ||
+            value.includes("skin")
+        ) {
+            return "fa-droplet";
+        }
+
+        if (value.includes("body")) {
+            return "fa-spa";
+        }
+
+        if (value.includes("fashion")) {
+            return "fa-shirt";
+        }
+
+        if (
+            value.includes("herbal") ||
+            value.includes("natural")
+        ) {
+            return "fa-leaf";
+        }
+
+        return "fa-sparkles";
+    },
+
+
+    renderCategoryNavigation() {
+
+        const categories =
+            Array.isArray(
+                this.categories
+            )
+                ? this.categories
+                : [];
+
+        // ================================================
+        // Search Dropdown
+        // ================================================
+
+        const searchCategory =
+            document.getElementById(
+                "searchCategory"
+            );
+
+        if (searchCategory) {
+
+            const previousValue =
+                searchCategory.value;
+
+            searchCategory.innerHTML =
+                '<option value="">All categories</option>' +
+                categories
+                    .map(
+                        category => `
+                            <option value="${Components.e(
+                                category.category_name
+                            )}">
+                                ${Components.e(
+                                    category.category_name
+                                )}
+                            </option>
+                        `
+                    )
+                    .join("");
+
+            if (
+                categories.some(
+                    category =>
+                        category.category_name ===
+                        previousValue
+                )
+            ) {
+                searchCategory.value =
+                    previousValue;
+            }
+        }
+
+        // ================================================
+        // Main Navigation Categories
+        // ================================================
+
+        const navigation =
+            document.querySelector(
+                ".categories-nav > div"
+            );
+
+        if (navigation) {
+
+            const categoryLinks =
+                categories
+                    .map(
+                        category => `
+                            <a href="${Components.e(
+                                this.categoryUrl(
+                                    category.category_name
+                                )
+                            )}">
+                                ${Components.e(
+                                    category.category_name
+                                )}
+                            </a>
+                        `
+                    )
+                    .join("");
+
+            navigation.innerHTML = `
+                <a href="products.html">
+                    All Products
+                </a>
+
+                ${categoryLinks}
+
+                <a href="products.html?sort=newest">
+                    New Arrivals
+                </a>
+
+                <a href="rewards.html">
+                    Rewards
+                </a>
+
+                <a href="returns.html">
+                    Returns
+                </a>
+
+                <a href="contact.html">
+                    Help
+                </a>
+            `;
+        }
+    },
+
+
+    renderHomepageCategories() {
+
+        const grid =
+            document.querySelector(
+                ".section:has(.categories) .categories"
+            );
+
+        if (!grid) {
+            return false;
+        }
+
+        const categories =
+            Array.isArray(
+                this.categories
+            )
+                ? this.categories
+                : [];
+
+        if (!categories.length) {
+            return false;
+        }
+
+        grid.innerHTML =
+            categories
+                .map(
+                    category => {
+
+                        const name =
+                            category.category_name;
+
+                        const image =
+                            this.categoryImage(
+                                category
+                            );
+
+                        const description =
+                            category.description ||
+                            `Explore ${name} products`;
+
+                        return `
+                            <a href="${Components.e(
+                                this.categoryUrl(name)
+                            )}">
+
+                                ${
+                                    image
+                                        ? `
+                                            <img
+                                                class="cms-category-image"
+                                                src="${Components.e(
+                                                    image
+                                                )}"
+                                                alt="${Components.e(
+                                                    name
+                                                )}"
+                                            >
+                                        `
+                                        : `
+                                            <i class="fa-solid ${Components.e(
+                                                this.categoryIcon(
+                                                    name
+                                                )
+                                            )}"></i>
+                                        `
+                                }
+
+                                <b>
+                                    ${Components.e(name)}
+                                </b>
+
+                                <span>
+                                    ${Components.e(
+                                        description
+                                    )}
+                                </span>
+
+                            </a>
+                        `;
+                    }
+                )
+                .join("");
+
+        return true;
+    },
+
+
     async init() {
         try {
             this.settings =
@@ -57,6 +427,9 @@ window.Store = {
         }
 
         try {
+
+            await this.loadCategories();
+
             Components.header(
                 this.settings
             );
@@ -64,6 +437,9 @@ window.Store = {
             Components.footer(
                 this.settings
             );
+
+            this.renderCategoryNavigation();
+            this.renderHomepageCategories();
 
             this.bind();
         } finally {

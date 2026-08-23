@@ -608,64 +608,22 @@ window.RukhnavModernCMS = {
             }
         }
 
-        const cards =
-            Array.isArray(
-                home.category_cards
-            )
-                ? home.category_cards
-                    .filter(
-                        item =>
-                            item.enabled !==
-                            false
-                    )
-                : [];
+        /*
+         * Category content is sourced from the ERP categories table.
+         *
+         * Website Management still controls this section's
+         * visibility, eyebrow, title and View All button.
+         *
+         * This prevents CMS category cards from becoming a
+         * second, manually maintained category database.
+         */
 
-        const grid =
-            section.querySelector(
-                ".categories"
-            );
-
-        // Preserve the existing storefront category cards
-        // when Website Management has no category_cards configured.
         if (
-            grid &&
-            cards.length
+            window.Store &&
+            typeof Store.renderHomepageCategories ===
+                "function"
         ) {
-            grid.innerHTML =
-                cards
-                    .map(
-                        item => `
-                            <a href="${this.escape(
-                                item.url ||
-                                "products.html"
-                            )}">
-                                ${
-                                    item.image_url
-                                        ? `<img class="cms-category-image" src="${this.escape(
-                                            this.asset(
-                                                item.image_url
-                                            )
-                                        )}" alt="${this.escape(
-                                            item.title ||
-                                            "Category"
-                                        )}">`
-                                        : `<i class="fa-solid ${this.escape(
-                                            item.icon ||
-                                            "fa-leaf"
-                                        )}"></i>`
-                                }
-                                <b>${this.escape(
-                                    item.title ||
-                                    "Category"
-                                )}</b>
-                                <span>${this.escape(
-                                    item.text ||
-                                    ""
-                                )}</span>
-                            </a>
-                        `
-                    )
-                    .join("");
+            Store.renderHomepageCategories();
         }
     },
 
