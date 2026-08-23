@@ -183,6 +183,7 @@ function getProductName(item) {
 function getCurrentStock(product) {
 
     return Number(
+        product.stock_quantity ??
         product.stock ??
         product.quantity ??
         product.current_stock ??
