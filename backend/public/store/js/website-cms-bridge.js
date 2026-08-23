@@ -53,7 +53,103 @@ window.RukhnavModernCMS = {
         }
     },
 
+
+    ensureProceduralSmokeFilter() {
+        if (
+            document.getElementById(
+                "rukhnav-smoke-svg"
+            )
+        ) {
+            return;
+        }
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.id =
+            "rukhnav-smoke-svg";
+
+        wrapper.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        wrapper.style.position =
+            "absolute";
+
+        wrapper.style.width =
+            "0";
+
+        wrapper.style.height =
+            "0";
+
+        wrapper.style.overflow =
+            "hidden";
+
+        wrapper.innerHTML = `
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="0"
+                height="0"
+            >
+                <defs>
+
+                    <filter
+                        id="rukhnavSmokeFilter"
+                        x="-40%"
+                        y="-40%"
+                        width="180%"
+                        height="180%"
+                    >
+                        <feTurbulence
+                            type="fractalNoise"
+                            baseFrequency="0.008 0.018"
+                            numOctaves="4"
+                            seed="27"
+                            stitchTiles="stitch"
+                            result="noise"
+                        />
+
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="noise"
+                            scale="92"
+                            xChannelSelector="R"
+                            yChannelSelector="B"
+                            result="distorted"
+                        />
+
+                        <feGaussianBlur
+                            in="distorted"
+                            stdDeviation="9"
+                            result="blurred"
+                        />
+
+                        <feColorMatrix
+                            in="blurred"
+                            type="matrix"
+                            values="
+                                1 0 0 0 0
+                                0 1 0 0 0
+                                0 0 1 0 0
+                                0 0 0 1.18 -0.10
+                            "
+                        />
+
+                    </filter>
+
+                </defs>
+            </svg>
+        `;
+
+        document.body.appendChild(
+            wrapper
+        );
+    },
+
     applyTheme(settings) {
+        this.ensureProceduralSmokeFilter();
+
         const theme =
             settings.theme || {};
 

@@ -1029,3 +1029,264 @@ button{
         animation:none;
     }
 }
+
+/* =========================================================
+   RUKHNAV THEME ENGINE V2.4
+   PROCEDURAL TURBULENT SMOKE
+   ========================================================= */
+
+/*
+ * Important:
+ * Only cinematic themes receive procedural smoke.
+ */
+
+:root[data-theme-atmosphere="cinematic"]
+.hero-copy{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            color-mix(
+                in srgb,
+                var(--background) 84%,
+                var(--shade-1)
+            ),
+            color-mix(
+                in srgb,
+                var(--background) 82%,
+                var(--shade-3)
+            ),
+            color-mix(
+                in srgb,
+                var(--background) 86%,
+                var(--highlight)
+            )
+        );
+}
+
+
+/*
+ * Main coloured smoke body
+ */
+
+:root[data-theme-atmosphere="cinematic"]
+.hero-copy::before{
+    content:"";
+
+    position:absolute;
+    inset:-26%;
+
+    z-index:0;
+    pointer-events:none;
+
+    background:
+
+        radial-gradient(
+            ellipse 42% 55%
+            at 8% 58%,
+            var(--shade-1),
+            transparent 66%
+        ),
+
+        radial-gradient(
+            ellipse 38% 48%
+            at 30% 28%,
+            var(--shade-2),
+            transparent 64%
+        ),
+
+        radial-gradient(
+            ellipse 42% 52%
+            at 52% 62%,
+            var(--shade-3),
+            transparent 66%
+        ),
+
+        radial-gradient(
+            ellipse 38% 50%
+            at 74% 26%,
+            var(--shade-4),
+            transparent 64%
+        ),
+
+        radial-gradient(
+            ellipse 44% 48%
+            at 90% 72%,
+            var(--highlight),
+            transparent 66%
+        );
+
+    filter:
+        url("#rukhnavSmokeFilter")
+        blur(8px)
+        saturate(1.18);
+
+    opacity:.88;
+
+    transform:
+        scale(1.12)
+        rotate(-4deg);
+
+    animation:
+        rukhnavProceduralSmokeA
+        24s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/*
+ * Secondary luminous wisps
+ */
+
+:root[data-theme-atmosphere="cinematic"]
+.hero-copy::after{
+    content:"";
+
+    position:absolute;
+    inset:-24%;
+
+    z-index:0;
+    pointer-events:none;
+
+    background:
+
+        radial-gradient(
+            ellipse 34% 48%
+            at 22% 72%,
+            var(--glow-color),
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse 40% 40%
+            at 52% 24%,
+            var(--shade-4),
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse 36% 46%
+            at 78% 62%,
+            var(--highlight),
+            transparent 68%
+        );
+
+    filter:
+        url("#rukhnavSmokeFilter")
+        blur(18px)
+        saturate(1.10);
+
+    opacity:.62;
+
+    mix-blend-mode:screen;
+
+    transform:
+        scale(1.08)
+        rotate(6deg);
+
+    animation:
+        rukhnavProceduralSmokeB
+        31s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+/*
+ * Content remains crisp.
+ */
+
+:root[data-theme-atmosphere="cinematic"]
+.hero-copy > *{
+    position:relative;
+    z-index:3;
+}
+
+
+/*
+ * Remove the old hero-wide V2.1 / V2.2
+ * cloud layers for cinematic themes.
+ */
+
+:root[data-theme-atmosphere="cinematic"]
+.hero::before,
+
+:root[data-theme-atmosphere="cinematic"]
+.hero::after{
+    display:none;
+}
+
+
+/*
+ * Slow atmospheric movement.
+ */
+
+@keyframes rukhnavProceduralSmokeA{
+
+    0%{
+        transform:
+            translate3d(-3%, 1%, 0)
+            scale(1.12)
+            rotate(-4deg);
+    }
+
+    50%{
+        transform:
+            translate3d(2%, -2%, 0)
+            scale(1.18)
+            rotate(1deg);
+    }
+
+    100%{
+        transform:
+            translate3d(4%, 2%, 0)
+            scale(1.13)
+            rotate(4deg);
+    }
+}
+
+
+@keyframes rukhnavProceduralSmokeB{
+
+    0%{
+        transform:
+            translate3d(3%, -2%, 0)
+            scale(1.08)
+            rotate(6deg);
+    }
+
+    50%{
+        transform:
+            translate3d(-3%, 2%, 0)
+            scale(1.14)
+            rotate(0deg);
+    }
+
+    100%{
+        transform:
+            translate3d(2%, 3%, 0)
+            scale(1.10)
+            rotate(-5deg);
+    }
+}
+
+
+@media(
+    prefers-reduced-motion:
+    reduce
+){
+
+    :root[data-theme-atmosphere="cinematic"]
+    .hero-copy::before,
+
+    :root[data-theme-atmosphere="cinematic"]
+    .hero-copy::after{
+        animation:none;
+    }
+}
