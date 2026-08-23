@@ -2052,6 +2052,44 @@ exports.createPurchaseReturn = async (
                     ]
                 );
 
+                // ------------------------------------------
+                // Inventory Ledger - Purchase Return Out
+                // ------------------------------------------
+
+                const newStock =
+                    currentStock -
+                    preparedItem.quantity;
+
+                await connection.query(
+                    `
+                    INSERT INTO inventory_transactions
+                    (
+                        product_id,
+                        transaction_type,
+                        quantity,
+                        previous_stock,
+                        new_stock,
+                        cost_price,
+                        supplier_id,
+                        reference,
+                        remarks,
+                        created_by
+                    )
+                    VALUES (?, 'Stock Out', ?, ?, ?, ?, ?, ?, ?, ?)
+                    `,
+                    [
+                        preparedItem.product_id,
+                        preparedItem.quantity,
+                        currentStock,
+                        newStock,
+                        preparedItem.unit_cost || 0,
+                        supplierId,
+                        returnNumber,
+                        `Purchase Return - ${returnNumber}`,
+                        adminId
+                    ]
+                );
+
             }
 
         }
@@ -2747,6 +2785,61 @@ exports.completePurchaseReturn = async (
                 ]
             );
 
+            // ------------------------------------------
+            // Inventory Ledger - Purchase Return Out
+            // ------------------------------------------
+
+            const newStock =
+                currentStock -
+                quantity;
+
+            await connection.query(
+                `
+                INSERT INTO inventory_transactions
+                (
+                    product_id,
+                    transaction_type,
+                    quantity,
+                    previous_stock,
+                    new_stock,
+                    cost_price,
+                    supplier_id,
+                    reference,
+                    remarks,
+                    created_by
+                )
+                SELECT
+                    ?,
+                    'Stock Out',
+                    ?,
+                    ?,
+                    ?,
+                    COALESCE(pri.unit_cost, 0),
+                    pr.supplier_id,
+                    pr.return_number,
+                    CONCAT(
+                        'Purchase Return - ',
+                        pr.return_number
+                    ),
+                    ?
+                FROM purchase_returns pr
+                JOIN purchase_return_items pri
+                    ON pri.purchase_return_id = pr.id
+                WHERE pr.id = ?
+                  AND pri.id = ?
+                LIMIT 1
+                `,
+                [
+                    item.product_id,
+                    quantity,
+                    currentStock,
+                    newStock,
+                    adminId,
+                    purchaseReturnId,
+                    item.id
+                ]
+            );
+
         }
 
 
@@ -3052,6 +3145,67 @@ exports.cancelPurchaseReturn = async (
                         quantity,
                         quantity,
                         item.product_id
+                    ]
+                );
+
+                // ------------------------------------------
+                // Inventory Ledger - Cancel Return / Stock In
+                // ------------------------------------------
+
+                const previousStock =
+                    numberValue(
+                        productRows[0]
+                            .stock_quantity
+                    );
+
+                const newStock =
+                    previousStock +
+                    quantity;
+
+                await connection.query(
+                    `
+                    INSERT INTO inventory_transactions
+                    (
+                        product_id,
+                        transaction_type,
+                        quantity,
+                        previous_stock,
+                        new_stock,
+                        cost_price,
+                        supplier_id,
+                        reference,
+                        remarks,
+                        created_by
+                    )
+                    SELECT
+                        ?,
+                        'Stock In',
+                        ?,
+                        ?,
+                        ?,
+                        COALESCE(pri.unit_cost, 0),
+                        pr.supplier_id,
+                        pr.return_number,
+                        CONCAT(
+                            'Stock restored after cancellation of purchase return ',
+                            pr.return_number
+                        ),
+                        ?
+                    FROM purchase_returns pr
+                    JOIN purchase_return_items pri
+                        ON pri.purchase_return_id = pr.id
+                    WHERE pr.id = ?
+                      AND pri.id = ?
+                    LIMIT 1
+                    `,
+                    [
+                        item.product_id,
+                        quantity,
+                        previousStock,
+                        newStock,
+                        adminId,
+                        purchaseReturnId,
+                        item.id
                     ]
                 );
 
