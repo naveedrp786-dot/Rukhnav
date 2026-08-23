@@ -173,8 +173,71 @@ window.RukhnavModernCMS = {
         );
     },
 
+
+    ensureHeroSmokeLayers() {
+
+        const heroCopies =
+            document.querySelectorAll(
+                ".hero-copy"
+            );
+
+        heroCopies.forEach(
+            heroCopy => {
+
+                if (
+                    heroCopy.querySelector(
+                        ".rukhnav-smoke-layer"
+                    )
+                ) {
+                    return;
+                }
+
+                const smoke =
+                    document.createElement(
+                        "div"
+                    );
+
+                smoke.className =
+                    "rukhnav-smoke-stack";
+
+                smoke.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                smoke.innerHTML = `
+                    <div
+                        class="
+                            rukhnav-smoke-layer
+                            smoke-depth-back
+                        "
+                    ></div>
+
+                    <div
+                        class="
+                            rukhnav-smoke-layer
+                            smoke-depth-middle
+                        "
+                    ></div>
+
+                    <div
+                        class="
+                            rukhnav-smoke-layer
+                            smoke-depth-front
+                        "
+                    ></div>
+                `;
+
+                heroCopy.prepend(
+                    smoke
+                );
+            }
+        );
+    },
+
     applyTheme(settings) {
         this.ensureProceduralSmokeFilter();
+        this.ensureHeroSmokeLayers();
 
         const theme =
             settings.theme || {};
