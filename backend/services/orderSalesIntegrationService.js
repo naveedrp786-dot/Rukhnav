@@ -225,15 +225,6 @@ async function ensureSaleForOrder(
     const order =
         orderRows[0];
 
-    if (
-        !order.customer_id
-    ) {
-        throw createError(
-            "This order does not have a customer account and cannot yet be converted into an ERP sale.",
-            409
-        );
-    }
-
     /*
      * The UNIQUE sales.order_id index already
      * protects us against duplicate sales.
