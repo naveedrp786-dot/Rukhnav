@@ -1118,3 +1118,340 @@ button{
             1px solid var(--v3-border);
     }
 }
+
+/* =========================================================
+   RUKHNAV V3.1
+   PREMIUM HERO STRUCTURE CORRECTION
+   ========================================================= */
+
+/*
+ * Legacy smoke DOM must never affect V3 layout.
+ */
+.rukhnav-real-smoke,
+.rukhnav-smoke-stack,
+#rukhnav-smoke-svg{
+    display:none !important;
+}
+
+
+/* =========================================================
+   CORE HERO GEOMETRY
+   ========================================================= */
+
+.hero{
+    display:grid !important;
+    grid-template-columns:
+        minmax(0, 1.08fr)
+        minmax(360px, .92fr) !important;
+
+    align-items:stretch !important;
+
+    min-height:520px !important;
+    height:auto !important;
+
+    padding:0 !important;
+
+    overflow:hidden !important;
+}
+
+
+.hero-copy{
+    position:relative !important;
+
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+
+    min-width:0 !important;
+
+    padding:
+        clamp(48px, 6vw, 88px) !important;
+
+    overflow:hidden !important;
+}
+
+
+.hero-art{
+    position:relative !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    min-width:0 !important;
+    min-height:100% !important;
+
+    padding:
+        clamp(22px, 4vw, 54px) !important;
+
+    overflow:hidden !important;
+}
+
+
+/* =========================================================
+   DARK PREMIUM HERO
+   ========================================================= */
+
+:root[data-theme-mode="dark"] .hero{
+    background:
+
+        radial-gradient(
+            ellipse 64% 90%
+            at 2% 15%,
+            color-mix(
+                in srgb,
+                var(--shade-2) 30%,
+                transparent
+            ),
+            transparent 66%
+        ),
+
+        radial-gradient(
+            ellipse 55% 76%
+            at 96% 8%,
+            color-mix(
+                in srgb,
+                var(--highlight) 20%,
+                transparent
+            ),
+            transparent 70%
+        ),
+
+        radial-gradient(
+            ellipse 65% 58%
+            at 64% 105%,
+            color-mix(
+                in srgb,
+                var(--glow-color) 14%,
+                transparent
+            ),
+            transparent 72%
+        ),
+
+        linear-gradient(
+            125deg,
+            color-mix(
+                in srgb,
+                var(--shade-1) 94%,
+                #02060b
+            ) 0%,
+
+            color-mix(
+                in srgb,
+                var(--primary) 76%,
+                #07101a
+            ) 52%,
+
+            color-mix(
+                in srgb,
+                var(--shade-2) 48%,
+                #0b0811
+            ) 100%
+        ) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.10) !important;
+
+    box-shadow:
+        0 32px 90px
+        rgba(0,0,0,.34) !important;
+}
+
+
+:root[data-theme-mode="dark"] .hero-copy{
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.18),
+            transparent 88%
+        ) !important;
+}
+
+
+:root[data-theme-mode="dark"] .hero-art{
+    background:
+        radial-gradient(
+            ellipse 75% 70%
+            at 55% 50%,
+            color-mix(
+                in srgb,
+                var(--highlight) 10%,
+                transparent
+            ),
+            transparent 70%
+        ) !important;
+}
+
+
+/* =========================================================
+   LIGHT PREMIUM HERO
+   ========================================================= */
+
+:root[data-theme-mode="light"] .hero{
+    background:
+
+        radial-gradient(
+            ellipse 66% 88%
+            at 0% 10%,
+            color-mix(
+                in srgb,
+                var(--shade-2) 12%,
+                transparent
+            ),
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse 60% 76%
+            at 100% 100%,
+            color-mix(
+                in srgb,
+                var(--highlight) 10%,
+                transparent
+            ),
+            transparent 72%
+        ),
+
+        linear-gradient(
+            135deg,
+            color-mix(
+                in srgb,
+                var(--surface) 96%,
+                var(--shade-4)
+            ),
+            var(--surface)
+        ) !important;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 24px 70px
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            transparent
+        ) !important;
+}
+
+
+:root[data-theme-mode="light"] .hero-copy{
+    background:transparent !important;
+}
+
+
+:root[data-theme-mode="light"] .hero-art{
+    background:
+        radial-gradient(
+            ellipse 74% 70%
+            at 50% 48%,
+            color-mix(
+                in srgb,
+                var(--highlight) 9%,
+                transparent
+            ),
+            transparent 72%
+        ) !important;
+}
+
+
+/* =========================================================
+   HERO CONTENT PROPORTIONS
+   ========================================================= */
+
+.hero-copy > span{
+    margin-bottom:10px !important;
+}
+
+
+.hero h1{
+    max-width:650px !important;
+
+    margin:
+        8px 0
+        18px !important;
+
+    line-height:.96 !important;
+}
+
+
+.hero p{
+    max-width:560px !important;
+    margin:0 !important;
+}
+
+
+.hero-actions{
+    margin-top:28px !important;
+}
+
+
+.trust{
+    margin-top:30px !important;
+}
+
+
+/* =========================================================
+   HERO MEDIA
+   ========================================================= */
+
+.hero-art img{
+    display:block !important;
+
+    width:auto !important;
+    height:auto !important;
+
+    max-width:92% !important;
+    max-height:390px !important;
+
+    object-fit:contain !important;
+
+    position:relative !important;
+    z-index:3 !important;
+
+    filter:
+        drop-shadow(
+            0 28px 46px
+            rgba(0,0,0,.20)
+        ) !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width:900px){
+
+    .hero{
+        grid-template-columns:1fr !important;
+    }
+
+    .hero-art{
+        min-height:320px !important;
+    }
+}
+
+
+@media (max-width:620px){
+
+    .hero{
+        min-height:auto !important;
+    }
+
+    .hero-copy{
+        padding:
+            42px 24px !important;
+    }
+
+    .hero-art{
+        min-height:260px !important;
+        padding:24px !important;
+    }
+}

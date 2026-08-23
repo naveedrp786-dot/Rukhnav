@@ -585,9 +585,10 @@ window.RukhnavModernCMS = {
 
 
     applyTheme(settings) {
-        this.ensureProceduralSmokeFilter();
-        this.ensureHeroSmokeLayers();
-
+        /*
+         * V3 storefront does not inject legacy V2 smoke DOM.
+         * Atmosphere is handled by the V3 visual system.
+         */
         const theme =
             settings.theme || {};
 
