@@ -184,15 +184,9 @@ window.RukhnavModernCMS = {
         heroCopies.forEach(
             heroCopy => {
 
-                const oldSmoke =
-                    heroCopy.querySelector(
-                        ".rukhnav-real-smoke"
-                    );
-
-                if (oldSmoke) {
-                    oldSmoke.remove();
-                }
-
+                /*
+                 * Remove the previous V2.6 stack if it exists.
+                 */
                 const oldStack =
                     heroCopy.querySelector(
                         ".rukhnav-smoke-stack"
@@ -200,6 +194,14 @@ window.RukhnavModernCMS = {
 
                 if (oldStack) {
                     oldStack.remove();
+                }
+
+                if (
+                    heroCopy.querySelector(
+                        ".rukhnav-real-smoke"
+                    )
+                ) {
+                    return;
                 }
 
                 const smoke =
@@ -215,35 +217,43 @@ window.RukhnavModernCMS = {
                     "true"
                 );
 
+                /*
+                 * V2.7 uses actual SVG geometry.
+                 *
+                 * The coloured shapes are deliberately oversized.
+                 * fractalNoise + displacement + alpha shaping turns
+                 * them into irregular translucent smoke rather than
+                 * visible radial-gradient circles.
+                 */
                 smoke.innerHTML = `
                     <svg
                         class="rukhnav-smoke-svg"
-                        viewBox="0 0 1200 720"
+                        viewBox="0 0 1000 650"
                         preserveAspectRatio="xMidYMid slice"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <defs>
 
                             <filter
-                                id="rukhnavLuxurySmokeBack"
-                                x="-45%"
-                                y="-45%"
-                                width="190%"
-                                height="190%"
+                                id="rukhnavRealSmokeBack"
+                                x="-40%"
+                                y="-40%"
+                                width="180%"
+                                height="180%"
                                 color-interpolation-filters="sRGB"
                             >
                                 <feTurbulence
                                     type="fractalNoise"
-                                    baseFrequency="0.0025 0.006"
-                                    numOctaves="4"
-                                    seed="23"
+                                    baseFrequency="0.004 0.009"
+                                    numOctaves="5"
+                                    seed="17"
                                     result="noise"
                                 />
 
                                 <feDisplacementMap
                                     in="SourceGraphic"
                                     in2="noise"
-                                    scale="52"
+                                    scale="105"
                                     xChannelSelector="R"
                                     yChannelSelector="B"
                                     result="distorted"
@@ -252,12 +262,45 @@ window.RukhnavModernCMS = {
                                 <feGaussianBlur
                                     in="distorted"
                                     stdDeviation="30"
+                                    result="blurred"
+                                />
+
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.009 0.018"
+                                    numOctaves="4"
+                                    seed="41"
+                                    result="maskNoise"
+                                />
+
+                                <feColorMatrix
+                                    in="maskNoise"
+                                    type="luminanceToAlpha"
+                                    result="maskAlpha"
+                                />
+
+                                <feComponentTransfer
+                                    in="maskAlpha"
+                                    result="shapedMask"
+                                >
+                                    <feFuncA
+                                        type="gamma"
+                                        amplitude="1.35"
+                                        exponent="1.8"
+                                        offset="-0.18"
+                                    />
+                                </feComponentTransfer>
+
+                                <feComposite
+                                    in="blurred"
+                                    in2="shapedMask"
+                                    operator="in"
                                 />
                             </filter>
 
 
                             <filter
-                                id="rukhnavLuxurySmokeMid"
+                                id="rukhnavRealSmokeMid"
                                 x="-45%"
                                 y="-45%"
                                 width="190%"
@@ -266,16 +309,16 @@ window.RukhnavModernCMS = {
                             >
                                 <feTurbulence
                                     type="fractalNoise"
-                                    baseFrequency="0.0045 0.010"
-                                    numOctaves="4"
-                                    seed="47"
+                                    baseFrequency="0.006 0.016"
+                                    numOctaves="5"
+                                    seed="73"
                                     result="noise"
                                 />
 
                                 <feDisplacementMap
                                     in="SourceGraphic"
                                     in2="noise"
-                                    scale="36"
+                                    scale="78"
                                     xChannelSelector="G"
                                     yChannelSelector="B"
                                     result="distorted"
@@ -283,13 +326,46 @@ window.RukhnavModernCMS = {
 
                                 <feGaussianBlur
                                     in="distorted"
-                                    stdDeviation="17"
+                                    stdDeviation="18"
+                                    result="blurred"
+                                />
+
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.012 0.026"
+                                    numOctaves="4"
+                                    seed="29"
+                                    result="maskNoise"
+                                />
+
+                                <feColorMatrix
+                                    in="maskNoise"
+                                    type="luminanceToAlpha"
+                                    result="maskAlpha"
+                                />
+
+                                <feComponentTransfer
+                                    in="maskAlpha"
+                                    result="shapedMask"
+                                >
+                                    <feFuncA
+                                        type="gamma"
+                                        amplitude="1.5"
+                                        exponent="2"
+                                        offset="-0.22"
+                                    />
+                                </feComponentTransfer>
+
+                                <feComposite
+                                    in="blurred"
+                                    in2="shapedMask"
+                                    operator="in"
                                 />
                             </filter>
 
 
                             <filter
-                                id="rukhnavLuxurySmokeFront"
+                                id="rukhnavRealSmokeFront"
                                 x="-50%"
                                 y="-50%"
                                 width="200%"
@@ -298,16 +374,16 @@ window.RukhnavModernCMS = {
                             >
                                 <feTurbulence
                                     type="fractalNoise"
-                                    baseFrequency="0.007 0.016"
-                                    numOctaves="3"
-                                    seed="79"
+                                    baseFrequency="0.008 0.024"
+                                    numOctaves="5"
+                                    seed="101"
                                     result="noise"
                                 />
 
                                 <feDisplacementMap
                                     in="SourceGraphic"
                                     in2="noise"
-                                    scale="22"
+                                    scale="54"
                                     xChannelSelector="R"
                                     yChannelSelector="G"
                                     result="distorted"
@@ -315,151 +391,180 @@ window.RukhnavModernCMS = {
 
                                 <feGaussianBlur
                                     in="distorted"
-                                    stdDeviation="8"
+                                    stdDeviation="10"
+                                    result="blurred"
+                                />
+
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.016 0.035"
+                                    numOctaves="3"
+                                    seed="59"
+                                    result="maskNoise"
+                                />
+
+                                <feColorMatrix
+                                    in="maskNoise"
+                                    type="luminanceToAlpha"
+                                    result="maskAlpha"
+                                />
+
+                                <feComponentTransfer
+                                    in="maskAlpha"
+                                    result="shapedMask"
+                                >
+                                    <feFuncA
+                                        type="gamma"
+                                        amplitude="1.65"
+                                        exponent="2.2"
+                                        offset="-0.25"
+                                    />
+                                </feComponentTransfer>
+
+                                <feComposite
+                                    in="blurred"
+                                    in2="shapedMask"
+                                    operator="in"
                                 />
                             </filter>
 
                         </defs>
 
 
+                        <!-- DEEP BACKGROUND CLOUDS -->
+
                         <g
                             class="smoke-svg-back"
-                            filter="url(#rukhnavLuxurySmokeBack)"
+                            filter="url(#rukhnavRealSmokeBack)"
                         >
-                            <path
-                                d="
-                                    M -180 120
-                                    C 40 -10,
-                                      210 80,
-                                      330 210
-                                    C 430 320,
-                                      340 430,
-                                      160 520
-                                "
-                                fill="none"
-                                stroke="var(--shade-1)"
-                                stroke-width="270"
-                                stroke-linecap="round"
+                            <ellipse
+                                cx="70"
+                                cy="130"
+                                rx="330"
+                                ry="250"
+                                fill="var(--shade-1)"
                             />
 
-                            <path
-                                d="
-                                    M 1240 30
-                                    C 1010 30,
-                                      900 120,
-                                      860 270
-                                    C 820 410,
-                                      970 470,
-                                      1210 560
-                                "
-                                fill="none"
-                                stroke="var(--shade-4)"
-                                stroke-width="300"
-                                stroke-linecap="round"
+                            <ellipse
+                                cx="390"
+                                cy="80"
+                                rx="300"
+                                ry="220"
+                                fill="var(--shade-2)"
                             />
 
-                            <path
-                                d="
-                                    M -120 760
-                                    C 140 590,
-                                      330 650,
-                                      500 740
-                                "
-                                fill="none"
-                                stroke="var(--shade-3)"
-                                stroke-width="250"
-                                stroke-linecap="round"
+                            <ellipse
+                                cx="780"
+                                cy="170"
+                                rx="350"
+                                ry="260"
+                                fill="var(--shade-4)"
+                            />
+
+                            <ellipse
+                                cx="240"
+                                cy="570"
+                                rx="390"
+                                ry="230"
+                                fill="var(--shade-3)"
+                            />
+
+                            <ellipse
+                                cx="850"
+                                cy="560"
+                                rx="370"
+                                ry="250"
+                                fill="var(--highlight)"
                             />
                         </g>
 
+
+                        <!-- ROLLING MIDDLE PLUMES -->
 
                         <g
                             class="smoke-svg-middle"
-                            filter="url(#rukhnavLuxurySmokeMid)"
+                            filter="url(#rukhnavRealSmokeMid)"
                         >
-                            <path
-                                d="
-                                    M -80 530
-                                    C 120 390,
-                                      230 520,
-                                      370 400
-                                    C 470 310,
-                                      470 240,
-                                      400 130
-                                "
-                                fill="none"
-                                stroke="var(--shade-2)"
-                                stroke-width="132"
-                                stroke-linecap="round"
+                            <ellipse
+                                cx="20"
+                                cy="390"
+                                rx="270"
+                                ry="145"
+                                fill="var(--shade-2)"
                             />
 
-                            <path
-                                d="
-                                    M 1180 150
-                                    C 940 250,
-                                      850 170,
-                                      720 280
-                                    C 620 370,
-                                      690 470,
-                                      840 560
-                                "
-                                fill="none"
-                                stroke="var(--highlight)"
-                                stroke-width="118"
-                                stroke-linecap="round"
+                            <ellipse
+                                cx="280"
+                                cy="210"
+                                rx="250"
+                                ry="120"
+                                fill="var(--glow-color)"
                             />
 
-                            <path
-                                d="
-                                    M 130 760
-                                    C 330 610,
-                                      480 670,
-                                      610 560
-                                    C 720 470,
-                                      750 410,
-                                      690 320
-                                "
-                                fill="none"
-                                stroke="var(--glow-color)"
-                                stroke-width="96"
-                                stroke-linecap="round"
+                            <ellipse
+                                cx="520"
+                                cy="470"
+                                rx="310"
+                                ry="135"
+                                fill="var(--shade-3)"
+                            />
+
+                            <ellipse
+                                cx="780"
+                                cy="260"
+                                rx="290"
+                                ry="130"
+                                fill="var(--highlight)"
+                            />
+
+                            <ellipse
+                                cx="1030"
+                                cy="500"
+                                rx="310"
+                                ry="150"
+                                fill="var(--shade-4)"
                             />
                         </g>
 
 
+                        <!-- THIN FOREGROUND WISPS -->
+
                         <g
                             class="smoke-svg-front"
-                            filter="url(#rukhnavLuxurySmokeFront)"
+                            filter="url(#rukhnavRealSmokeFront)"
                         >
                             <path
                                 d="
-                                    M -100 610
-                                    C 170 500,
-                                      260 590,
-                                      430 470
-                                    C 520 405,
-                                      565 330,
-                                      520 245
+                                    M -120 520
+                                    C 80 380,
+                                      180 590,
+                                      350 430
+                                    C 500 290,
+                                      610 470,
+                                      760 330
+                                    C 870 230,
+                                      980 300,
+                                      1120 180
                                 "
                                 fill="none"
                                 stroke="var(--glow-color)"
-                                stroke-width="42"
+                                stroke-width="105"
                                 stroke-linecap="round"
                             />
 
                             <path
                                 d="
-                                    M 1230 210
-                                    C 980 290,
-                                      900 220,
-                                      780 320
-                                    C 690 395,
-                                      720 475,
-                                      860 560
+                                    M -100 180
+                                    C 120 310,
+                                      260 100,
+                                      430 250
+                                    C 600 400,
+                                      720 170,
+                                      1120 350
                                 "
                                 fill="none"
                                 stroke="var(--highlight)"
-                                stroke-width="38"
+                                stroke-width="72"
                                 stroke-linecap="round"
                             />
                         </g>
@@ -467,11 +572,7 @@ window.RukhnavModernCMS = {
                     </svg>
 
                     <div
-                        class="rukhnav-smoke-quiet-zone"
-                    ></div>
-
-                    <div
-                        class="rukhnav-smoke-luxury-veil"
+                        class="rukhnav-smoke-veil"
                     ></div>
                 `;
 
