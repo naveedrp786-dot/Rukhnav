@@ -603,6 +603,37 @@ window.RukhnavModernCMS = {
         root.dataset.themeAtmosphere =
             atmosphereMode;
 
+        /*
+         * RUKHNAV THEME ENGINE V3
+         * Premium light / dark storefront family.
+         */
+
+        const themeMode =
+            String(
+                theme.theme_mode ||
+                (
+                    atmosphereMode === "cinematic"
+                        ? "dark"
+                        : "light"
+                )
+            ).toLowerCase();
+
+        const themeTreatment =
+            String(
+                theme.theme_treatment ||
+                (
+                    themeMode === "dark"
+                        ? "cinematic"
+                        : "pearl"
+                )
+            ).toLowerCase();
+
+        root.dataset.themeMode =
+            themeMode;
+
+        root.dataset.themeTreatment =
+            themeTreatment;
+
         /* =========================================================
            RUKHNAV THEME ENGINE V2
            Derived cinematic palette
