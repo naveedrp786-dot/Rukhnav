@@ -297,65 +297,94 @@ window.RukhnavModernCMS = {
          * left-to-right gradient appearance of conventional themes.
          */
 
+        /*
+         * =========================================================
+         * RUKHNAV THEME ENGINE V2.2
+         * MULTI-CLOUD CINEMATIC MESH
+         * =========================================================
+         *
+         * Smaller independent colour clouds preserve visible
+         * colour identities instead of blending into one wash.
+         */
+
         const meshGradient =
-            `radial-gradient(ellipse 72% 62% at 5% 8%, ` +
-            `${alpha(shade2, 0.92)} 0%, ` +
-            `${alpha(shade2, 0.52)} 25%, ` +
+            `radial-gradient(ellipse 38% 42% at 4% 8%, ` +
+            `${alpha(shade1, 0.96)} 0%, ` +
+            `${alpha(shade1, 0.68)} 24%, ` +
             `transparent 58%), ` +
 
-            `radial-gradient(ellipse 58% 72% at 92% 5%, ` +
-            `${alpha(highlight, 0.82)} 0%, ` +
-            `${alpha(highlight, 0.38)} 28%, ` +
-            `transparent 62%), ` +
-
-            `radial-gradient(ellipse 70% 58% at 48% 34%, ` +
-            `${alpha(shade3, 0.78)} 0%, ` +
-            `${alpha(shade3, 0.30)} 32%, ` +
-            `transparent 64%), ` +
-
-            `radial-gradient(ellipse 54% 70% at 20% 92%, ` +
-            `${alpha(glowColor, 0.76)} 0%, ` +
-            `${alpha(glowColor, 0.30)} 30%, ` +
-            `transparent 62%), ` +
-
-            `radial-gradient(ellipse 64% 52% at 82% 84%, ` +
-            `${alpha(shade4, 0.82)} 0%, ` +
-            `${alpha(shade4, 0.34)} 30%, ` +
-            `transparent 64%), ` +
-
-            `radial-gradient(ellipse 48% 46% at 67% 52%, ` +
-            `${alpha(highlight, 0.52)} 0%, ` +
+            `radial-gradient(ellipse 32% 38% at 28% 18%, ` +
+            `${alpha(shade2, 0.94)} 0%, ` +
+            `${alpha(shade2, 0.62)} 26%, ` +
             `transparent 60%), ` +
 
-            `radial-gradient(ellipse 44% 56% at 34% 58%, ` +
-            `${alpha(shade2, 0.42)} 0%, ` +
+            `radial-gradient(ellipse 36% 34% at 56% 8%, ` +
+            `${alpha(glowColor, 0.90)} 0%, ` +
+            `${alpha(glowColor, 0.54)} 28%, ` +
             `transparent 62%), ` +
 
-            `linear-gradient(135deg, ` +
-            `${mix(background, shade2, 0.08)} 0%, ` +
-            `${mix(shade4, background, 0.55)} 48%, ` +
-            `${mix(accent, highlight, 0.16)} 100%)`;
+            `radial-gradient(ellipse 34% 42% at 88% 14%, ` +
+            `${alpha(highlight, 0.94)} 0%, ` +
+            `${alpha(highlight, 0.58)} 26%, ` +
+            `transparent 60%), ` +
 
-        /*
-         * A second mesh with displaced clouds creates visual depth.
-         * CSS applies this as the blurred atmospheric layer.
-         */
-        const meshCloudGradient =
-            `radial-gradient(ellipse 48% 66% at 18% 32%, ` +
+            `radial-gradient(ellipse 34% 38% at 12% 72%, ` +
+            `${alpha(shade3, 0.92)} 0%, ` +
+            `${alpha(shade3, 0.58)} 27%, ` +
+            `transparent 62%), ` +
+
+            `radial-gradient(ellipse 38% 44% at 40% 86%, ` +
+            `${alpha(shade4, 0.90)} 0%, ` +
+            `${alpha(shade4, 0.54)} 28%, ` +
+            `transparent 62%), ` +
+
+            `radial-gradient(ellipse 32% 38% at 68% 68%, ` +
+            `${alpha(highlight, 0.88)} 0%, ` +
+            `${alpha(highlight, 0.48)} 26%, ` +
+            `transparent 60%), ` +
+
+            `radial-gradient(ellipse 36% 40% at 96% 86%, ` +
+            `${alpha(shade2, 0.90)} 0%, ` +
+            `${alpha(shade2, 0.52)} 28%, ` +
+            `transparent 62%), ` +
+
+            `radial-gradient(ellipse 26% 30% at 48% 46%, ` +
             `${alpha(glowColor, 0.72)} 0%, ` +
             `transparent 64%), ` +
 
-            `radial-gradient(ellipse 66% 48% at 78% 18%, ` +
-            `${alpha(highlight, 0.68)} 0%, ` +
-            `transparent 62%), ` +
+            `linear-gradient(135deg, ` +
+            `${mix(background, shade1, 0.06)} 0%, ` +
+            `${mix(background, shade4, 0.14)} 48%, ` +
+            `${mix(background, highlight, 0.10)} 100%)`;
 
-            `radial-gradient(ellipse 54% 62% at 72% 82%, ` +
-            `${alpha(shade3, 0.62)} 0%, ` +
+        /*
+         * Secondary floating cloud field.
+         * Intentionally smaller than V2.1 so individual colour
+         * clouds remain visible after blur.
+         */
+
+        const meshCloudGradient =
+            `radial-gradient(ellipse 30% 34% at 12% 24%, ` +
+            `${alpha(glowColor, 0.78)} 0%, ` +
+            `${alpha(glowColor, 0.36)} 32%, ` +
             `transparent 66%), ` +
 
-            `radial-gradient(ellipse 62% 50% at 26% 78%, ` +
-            `${alpha(shade4, 0.58)} 0%, ` +
-            `transparent 64%)`;
+            `radial-gradient(ellipse 28% 36% at 38% 14%, ` +
+            `${alpha(shade2, 0.74)} 0%, ` +
+            `transparent 64%), ` +
+
+            `radial-gradient(ellipse 32% 30% at 68% 28%, ` +
+            `${alpha(highlight, 0.76)} 0%, ` +
+            `${alpha(highlight, 0.30)} 30%, ` +
+            `transparent 66%), ` +
+
+            `radial-gradient(ellipse 30% 36% at 88% 70%, ` +
+            `${alpha(shade3, 0.72)} 0%, ` +
+            `transparent 64%), ` +
+
+            `radial-gradient(ellipse 34% 30% at 26% 82%, ` +
+            `${alpha(shade4, 0.68)} 0%, ` +
+            `transparent 66%)`;
 
         const darkMeshGradient =
             `radial-gradient(ellipse 68% 60% at 8% 12%, ` +

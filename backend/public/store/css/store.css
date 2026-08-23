@@ -519,16 +519,16 @@ button{
  * Cinematic themes get the stronger atmospheric treatment.
  */
 :root[data-theme-atmosphere="cinematic"] .hero::before{
-    opacity:.96;
-    filter:blur(72px);
+    opacity:.88;
+    filter:blur(34px);
     transform:
-        rotate(-6deg)
-        scale(1.24);
+        rotate(-3deg)
+        scale(1.08);
 }
 
 :root[data-theme-atmosphere="cinematic"] .hero::after{
-    opacity:1;
-    filter:blur(42px);
+    opacity:.72;
+    filter:blur(24px);
 }
 
 :root[data-theme-atmosphere="cinematic"] .story::before{
