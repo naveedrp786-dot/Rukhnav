@@ -58,3 +58,8 @@ postman/
 # Redundant root Node package files
 /package.json
 /package-lock.json
+
+# RUKHNAV local safety snapshots
+*.backup-before-*
+*.backup-*
+*.stage2-backup

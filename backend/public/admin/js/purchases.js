@@ -1038,7 +1038,7 @@ async function printPurchase(id) {
         if (!printWindow) {
 
             alert(
-                "Print window was blocked. Please allow popups for localhost:3000."
+                "Print window was blocked. Please allow popups for this website."
             );
 
             return;

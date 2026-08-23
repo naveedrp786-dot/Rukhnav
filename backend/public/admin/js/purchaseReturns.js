@@ -1037,7 +1037,7 @@ async function printPurchaseReturn(id) {
 
         if (!printWindow) {
             alert(
-                "Please allow popups for localhost:3000."
+                "Please allow popups for this website."
             );
 
             return;

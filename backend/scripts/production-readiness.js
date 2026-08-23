@@ -21,7 +21,7 @@ const envPath =
 if (fs.existsSync(envPath)) {
     dotenv.config({
         path: envPath,
-        override: true
+        override: false
     });
 }
 

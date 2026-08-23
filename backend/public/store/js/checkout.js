@@ -723,11 +723,11 @@ this.calculate();
             ],
             easypaisa: [
                 "Easypaisa selected",
-                "Transfer to the Easypaisa account configured by RUKHNAV, then enter the payment phone and transaction reference."
+                "Manual verification: transfer to the Easypaisa account provided by RUKHNAV, then enter the payment phone and transaction reference. Your order remains pending until the payment is verified."
             ],
             jazzcash: [
                 "JazzCash selected",
-                "Transfer to the JazzCash account configured by RUKHNAV, then enter the payment phone and transaction reference."
+                "Manual verification: transfer to the JazzCash account provided by RUKHNAV, then enter the payment phone and transaction reference. Your order remains pending until the payment is verified."
             ],
             bank_transfer: [
                 "Bank Transfer selected",

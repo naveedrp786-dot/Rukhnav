@@ -26,11 +26,7 @@ const COMPANY = {
 
     email: "naveedrp786@gmail.com",
 
-    website: "www.rukhnav.com",
-
-    ntm: "NTN: XXXXXXXX",
-
-    strn: "STRN: XXXXXXXX"
+    website: "www.rukhnav.com"
 
 };
 
