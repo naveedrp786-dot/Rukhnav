@@ -1,6 +1,7 @@
 "use strict";
 
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 const db = require("../config/db");
 
 const customerLoyaltyService =
@@ -35,6 +36,138 @@ const sha256 = value =>
         .createHash("sha256")
         .update(String(value))
         .digest("hex");
+
+
+const verifyGuestReturnAccessToken = ({
+    token,
+    orderNumber = null,
+    orderId = null
+}) => {
+
+    token =
+        cleanText(
+            token,
+            4000
+        );
+
+    if (!token) {
+        throw fail(
+            "Guest return authorization is required.",
+            401
+        );
+    }
+
+    const secret =
+        process.env.JWT_SECRET;
+
+    if (!secret) {
+        console.error(
+            "Guest return authorization error: JWT_SECRET is not configured."
+        );
+
+        throw fail(
+            "Return verification is temporarily unavailable.",
+            500
+        );
+    }
+
+    let decoded;
+
+    try {
+
+        decoded =
+            jwt.verify(
+                token,
+                secret
+            );
+
+    } catch (error) {
+
+        if (
+            error?.name ===
+            "TokenExpiredError"
+        ) {
+            throw fail(
+                "Your return verification has expired. Please verify the order again.",
+                401
+            );
+        }
+
+        throw fail(
+            "Invalid return verification. Please verify the order again.",
+            401
+        );
+    }
+
+    if (
+        decoded?.scope !==
+        "guest_return"
+    ) {
+        throw fail(
+            "Invalid return verification.",
+            403
+        );
+    }
+
+    const tokenOrderId =
+        Number(
+            decoded.orderId
+        );
+
+    const tokenOrderNumber =
+        cleanText(
+            decoded.orderNumber,
+            50
+        );
+
+    if (
+        !Number.isInteger(
+            tokenOrderId
+        ) ||
+        tokenOrderId < 1 ||
+        !tokenOrderNumber
+    ) {
+        throw fail(
+            "Invalid return verification.",
+            403
+        );
+    }
+
+    if (
+        orderNumber &&
+        tokenOrderNumber !==
+            cleanText(
+                orderNumber,
+                50
+            )
+    ) {
+        throw fail(
+            "Return verification does not belong to this order.",
+            403
+        );
+    }
+
+    if (
+        orderId !== null &&
+        orderId !== undefined &&
+        tokenOrderId !==
+            Number(orderId)
+    ) {
+        throw fail(
+            "Return verification does not belong to this order.",
+            403
+        );
+    }
+
+    return {
+        orderId:
+            tokenOrderId,
+
+        orderNumber:
+            tokenOrderNumber
+    };
+};
+
 
 const money = value => {
     const n = Number(value);
@@ -205,7 +338,8 @@ const createReturnRequestForOrder = async ({
     customerId = null,
     payload = {},
     guestOrderNumber = null,
-    guestToken = null
+    guestToken = null,
+    returnAccessToken = null
 }) => {
 
     const reason =
@@ -239,8 +373,25 @@ const createReturnRequestForOrder = async ({
     const guestMode =
         Boolean(
             guestOrderNumber &&
-            guestToken
+            (
+                guestToken ||
+                returnAccessToken
+            )
         );
+
+    const returnAccess =
+        (
+            guestMode &&
+            returnAccessToken
+        )
+            ? verifyGuestReturnAccessToken({
+                token:
+                    returnAccessToken,
+
+                orderNumber:
+                    guestOrderNumber
+            })
+            : null;
 
     let orderId = null;
 
@@ -273,28 +424,60 @@ const createReturnRequestForOrder = async ({
 
         if (guestMode) {
 
-            const [rows] =
-                await connection.query(
-                    `
-                    SELECT
-                        id,
-                        order_number,
-                        customer_id,
-                        order_status,
-                        delivered_at
-                    FROM orders
-                    WHERE order_number = ?
-                      AND checkout_type = 'guest'
-                      AND customer_id IS NULL
-                      AND guest_access_token_hash = ?
-                    LIMIT 1
-                    FOR UPDATE
-                    `,
-                    [
-                        guestOrderNumber,
-                        sha256(guestToken)
-                    ]
-                );
+            let rows;
+
+            if (returnAccess) {
+
+                [rows] =
+                    await connection.query(
+                        `
+                        SELECT
+                            id,
+                            order_number,
+                            customer_id,
+                            order_status,
+                            delivered_at
+                        FROM orders
+                        WHERE id = ?
+                          AND order_number = ?
+                          AND checkout_type = 'guest'
+                          AND customer_id IS NULL
+                        LIMIT 1
+                        FOR UPDATE
+                        `,
+                        [
+                            returnAccess.orderId,
+                            returnAccess.orderNumber
+                        ]
+                    );
+
+            } else {
+
+                [rows] =
+                    await connection.query(
+                        `
+                        SELECT
+                            id,
+                            order_number,
+                            customer_id,
+                            order_status,
+                            delivered_at
+                        FROM orders
+                        WHERE order_number = ?
+                          AND checkout_type = 'guest'
+                          AND customer_id IS NULL
+                          AND guest_access_token_hash = ?
+                        LIMIT 1
+                        FOR UPDATE
+                        `,
+                        [
+                            guestOrderNumber,
+                            sha256(
+                                guestToken
+                            )
+                        ]
+                    );
+            }
 
             order =
                 rows[0] || null;
@@ -735,6 +918,7 @@ exports.createGuestReturnRequest =
     async ({
         orderNumber,
         guestToken,
+        returnAccessToken,
         payload
     }) => {
 
@@ -750,12 +934,22 @@ exports.createGuestReturnRequest =
                 200
             );
 
+        returnAccessToken =
+            cleanText(
+                returnAccessToken,
+                4000
+            );
+
         if (
             !orderNumber ||
-            !guestToken
+            (
+                !guestToken &&
+                !returnAccessToken
+            )
         ) {
             throw fail(
-                "Order number and guest access token are required."
+                "Order number and guest return authorization are required.",
+                401
             );
         }
 
@@ -769,7 +963,9 @@ exports.createGuestReturnRequest =
                 guestOrderNumber:
                     orderNumber,
 
-                guestToken
+                guestToken,
+
+                returnAccessToken
             }
         );
     };
@@ -849,6 +1045,7 @@ exports.saveReturnMedia = async ({
     returnId,
     customerId = null,
     guestToken = null,
+    returnAccessToken = null,
     files = []
 }) => {
 
@@ -859,7 +1056,21 @@ exports.saveReturnMedia = async ({
         );
 
     const guestMode =
-        Boolean(guestToken);
+        Boolean(
+            guestToken ||
+            returnAccessToken
+        );
+
+    const mediaReturnAccess =
+        (
+            guestMode &&
+            returnAccessToken
+        )
+            ? verifyGuestReturnAccessToken({
+                token:
+                    returnAccessToken
+            })
+            : null;
 
     if (!Array.isArray(files) || !files.length) {
         throw fail(
@@ -904,34 +1115,69 @@ exports.saveReturnMedia = async ({
 
         if (guestMode) {
 
-            const [rows] =
-                await connection.query(
-                    `
-                    SELECT
-                        crr.id,
-                        crr.order_id,
-                        crr.customer_id,
-                        crr.status
-                    FROM customer_return_requests crr
-                    JOIN orders o
-                        ON o.id = crr.order_id
-                    WHERE crr.id = ?
-                      AND crr.customer_id IS NULL
-                      AND o.checkout_type = 'guest'
-                      AND o.guest_access_token_hash = ?
-                    LIMIT 1
-                    FOR UPDATE
-                    `,
-                    [
-                        returnId,
-                        sha256(
-                            cleanText(
-                                guestToken,
-                                200
-                            ) || ""
-                        )
-                    ]
-                );
+            let rows;
+
+            if (mediaReturnAccess) {
+
+                [rows] =
+                    await connection.query(
+                        `
+                        SELECT
+                            crr.id,
+                            crr.order_id,
+                            crr.customer_id,
+                            crr.status
+                        FROM customer_return_requests crr
+                        JOIN orders o
+                            ON o.id =
+                               crr.order_id
+                        WHERE crr.id = ?
+                          AND crr.customer_id IS NULL
+                          AND o.checkout_type = 'guest'
+                          AND o.id = ?
+                          AND o.order_number = ?
+                        LIMIT 1
+                        FOR UPDATE
+                        `,
+                        [
+                            returnId,
+                            mediaReturnAccess.orderId,
+                            mediaReturnAccess.orderNumber
+                        ]
+                    );
+
+            } else {
+
+                [rows] =
+                    await connection.query(
+                        `
+                        SELECT
+                            crr.id,
+                            crr.order_id,
+                            crr.customer_id,
+                            crr.status
+                        FROM customer_return_requests crr
+                        JOIN orders o
+                            ON o.id =
+                               crr.order_id
+                        WHERE crr.id = ?
+                          AND crr.customer_id IS NULL
+                          AND o.checkout_type = 'guest'
+                          AND o.guest_access_token_hash = ?
+                        LIMIT 1
+                        FOR UPDATE
+                        `,
+                        [
+                            returnId,
+                            sha256(
+                                cleanText(
+                                    guestToken,
+                                    200
+                                ) || ""
+                            )
+                        ]
+                    );
+            }
 
             request =
                 rows[0] || null;

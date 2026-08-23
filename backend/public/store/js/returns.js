@@ -6,6 +6,7 @@ const ReturnsPage = {
     items: [],
     mode: null,
     guestToken: "",
+    returnAccessToken: "",
     selectedFiles: [],
 
 
@@ -35,7 +36,8 @@ const ReturnsPage = {
                     orderNumber;
 
             await this.findOrder(
-                orderNumber
+                orderNumber,
+                ""
             );
         }
     },
@@ -209,13 +211,27 @@ const ReturnsPage = {
             return;
         }
 
+        const identifier =
+            String(
+                document
+                    .getElementById(
+                        "returnIdentifier"
+                    )
+                    ?.value || ""
+            )
+                .trim();
+
         await this.findOrder(
-            orderNumber
+            orderNumber,
+            identifier
         );
     },
 
 
-    async findOrder(orderNumber) {
+    async findOrder(
+        orderNumber,
+        identifier = ""
+    ) {
 
         this.lookupMessage(
             "",
@@ -279,6 +295,9 @@ const ReturnsPage = {
                     this.guestToken =
                         "";
 
+                    this.returnAccessToken =
+                        "";
+
                     this.setOrderData(
                         details
                     );
@@ -294,24 +313,77 @@ const ReturnsPage = {
                 ) ||
                 "";
 
-            if (!token) {
+            if (token) {
+
+                const response =
+                    await fetch(
+                        `${API.base}/api/orders/guest/${encodeURIComponent(
+                            orderNumber
+                        )}?token=${encodeURIComponent(
+                            token
+                        )}`,
+                        {
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        "Order could not be verified."
+                    );
+                }
+
+                this.mode =
+                    "guest";
+
+                this.guestToken =
+                    token;
+
+                this.returnAccessToken =
+                    "";
+
+                this.setOrderData(
+                    data
+                );
+
+                return;
+            }
+
+            if (!identifier) {
                 throw new Error(
-                    "We could not verify this order on this browser. If this was a guest order, open the return page from the same browser used to place the order."
+                    "Enter the email or mobile number used at checkout to verify this guest order."
                 );
             }
 
             const response =
                 await fetch(
-                    `${API.base}/api/orders/guest/${encodeURIComponent(
-                        orderNumber
-                    )}?token=${encodeURIComponent(
-                        token
-                    )}`,
+                    `${API.base}/api/orders/guest/return-lookup`,
                     {
+                        method:
+                            "POST",
+
                         headers: {
+                            "Content-Type":
+                                "application/json",
+
                             "Accept":
                                 "application/json"
-                        }
+                        },
+
+                        body:
+                            JSON.stringify({
+                                order_number:
+                                    orderNumber,
+
+                                identifier
+                            })
                     }
                 );
 
@@ -321,7 +393,7 @@ const ReturnsPage = {
             if (!response.ok) {
                 throw new Error(
                     data.message ||
-                    "Order could not be verified."
+                    "We could not verify this order."
                 );
             }
 
@@ -329,7 +401,17 @@ const ReturnsPage = {
                 "guest";
 
             this.guestToken =
-                token;
+                "";
+
+            this.returnAccessToken =
+                data.return_access_token ||
+                "";
+
+            if (!this.returnAccessToken) {
+                throw new Error(
+                    "Return verification could not be established."
+                );
+            }
 
             this.setOrderData(
                 data
@@ -996,7 +1078,12 @@ const ReturnsPage = {
                                     ...payload,
 
                                     guest_token:
-                                        this.guestToken
+                                        this.guestToken ||
+                                        undefined,
+
+                                    return_access_token:
+                                        this.returnAccessToken ||
+                                        undefined
                                 })
                         }
                     );
@@ -1103,10 +1190,19 @@ const ReturnsPage = {
             "guest"
         ) {
 
-            formData.append(
-                "guest_token",
-                this.guestToken
-            );
+            if (this.guestToken) {
+                formData.append(
+                    "guest_token",
+                    this.guestToken
+                );
+            }
+
+            if (this.returnAccessToken) {
+                formData.append(
+                    "return_access_token",
+                    this.returnAccessToken
+                );
+            }
 
             url =
                 `${API.base}/api/returns/guest/${encodeURIComponent(
@@ -1210,6 +1306,9 @@ const ReturnsPage = {
             null;
 
         this.guestToken =
+            "";
+
+        this.returnAccessToken =
             "";
 
         this.selectedFiles =

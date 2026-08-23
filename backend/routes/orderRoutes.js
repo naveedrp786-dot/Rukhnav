@@ -28,6 +28,12 @@ router.post(
         .placeGuestOrder
 );
 
+router.post(
+    "/guest/return-lookup",
+    guestOrderController
+        .lookupGuestOrderForReturn
+);
+
 router.get(
     "/guest/:orderNumber",
     guestOrderController

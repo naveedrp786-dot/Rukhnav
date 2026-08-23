@@ -6,6 +6,7 @@ exports.createGuestReturn=async(req,res)=>{try{
     const result=await service.createGuestReturnRequest({
         orderNumber:req.body?.order_number,
         guestToken:req.body?.guest_token || req.query?.token,
+        returnAccessToken:req.body?.return_access_token || req.query?.return_access_token,
         payload:req.body||{}
     });
     return res.status(201).json({
@@ -33,6 +34,10 @@ exports.uploadGuestReturnMedia = async (req,res) => {
                 guestToken:
                     req.body?.guest_token ||
                     req.query?.token,
+
+                returnAccessToken:
+                    req.body?.return_access_token ||
+                    req.query?.return_access_token,
 
                 files:
                     req.files || []

@@ -1,6 +1,7 @@
 "use strict";
 
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 const db = require("../config/db");
 
 const inventoryService =
@@ -944,6 +945,288 @@ exports.placeGuestOrder = async (
  * Allows a guest to view only the order linked to the
  * secret token returned after checkout.
  */
+
+/**
+ * POST /api/orders/guest/return-lookup
+ *
+ * Allows a guest customer to recover an order for the
+ * Returns & Refunds Center using:
+ *
+ *     order number + original email/mobile
+ *
+ * This does NOT expose or recreate the original guest
+ * checkout token. A separate short-lived JWT is issued
+ * only for return operations.
+ */
+exports.lookupGuestOrderForReturn = async (
+    req,
+    res
+) => {
+    try {
+        const orderNumber =
+            cleanText(
+                req.body?.order_number,
+                50
+            );
+
+        const rawIdentifier =
+            cleanText(
+                req.body?.identifier,
+                150
+            );
+
+        if (
+            !orderNumber ||
+            !rawIdentifier
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Order number and email or mobile number are required."
+            });
+        }
+
+        const identifierLooksLikeEmail =
+            rawIdentifier.includes("@");
+
+        const email =
+            identifierLooksLikeEmail
+                ? normalizeEmail(
+                    rawIdentifier
+                )
+                : null;
+
+        const phone =
+            !identifierLooksLikeEmail
+                ? normalizePhone(
+                    rawIdentifier
+                )
+                : null;
+
+        /*
+         * Use one generic response for every ownership
+         * failure so this endpoint does not reveal whether
+         * a particular order number exists.
+         */
+        const verificationFailed = () =>
+            res.status(404).json({
+                success: false,
+                message:
+                    "We could not verify this order. Check the order number and the email or mobile number used at checkout."
+            });
+
+        if (
+            identifierLooksLikeEmail
+                ? !isValidEmail(email)
+                : !isValidPhone(phone)
+        ) {
+            return verificationFailed();
+        }
+
+        const [orders] =
+            await db.query(
+                `
+                SELECT
+                    id,
+                    order_number,
+                    checkout_type,
+                    full_name,
+                    phone,
+                    email,
+                    grand_total,
+                    discount_amount,
+                    delivery_charges,
+                    order_status,
+                    payment_method,
+                    payment_status,
+                    shipping_address,
+                    city,
+                    postal_code,
+                    tracking_number,
+                    tracking_url,
+                    estimated_delivery_date,
+                    created_at,
+                    delivered_at
+                FROM orders
+                WHERE order_number = ?
+                  AND checkout_type = 'guest'
+                LIMIT 1
+                `,
+                [
+                    orderNumber
+                ]
+            );
+
+        if (!orders.length) {
+            return verificationFailed();
+        }
+
+        const order =
+            orders[0];
+
+        const storedEmail =
+            normalizeEmail(
+                order.email
+            );
+
+        const storedPhone =
+            normalizePhone(
+                order.phone
+            );
+
+        const ownershipMatches =
+            identifierLooksLikeEmail
+                ? Boolean(
+                    email &&
+                    storedEmail &&
+                    email === storedEmail
+                )
+                : Boolean(
+                    phone &&
+                    storedPhone &&
+                    phone === storedPhone
+                );
+
+        if (!ownershipMatches) {
+            return verificationFailed();
+        }
+
+        const jwtSecret =
+            process.env.JWT_SECRET;
+
+        if (!jwtSecret) {
+            console.error(
+                "Guest return lookup error: JWT_SECRET is not configured."
+            );
+
+            return res.status(500).json({
+                success: false,
+                message:
+                    "Return verification is temporarily unavailable."
+            });
+        }
+
+        const [items] =
+            await db.query(
+                `
+                SELECT
+                    oi.id AS order_item_id,
+                    oi.product_id,
+                    p.product_name,
+                    p.image,
+                    oi.price,
+                    oi.quantity,
+                    oi.subtotal
+                FROM order_items oi
+                LEFT JOIN products p
+                    ON p.id = oi.product_id
+                WHERE oi.order_id = ?
+                ORDER BY oi.id
+                `,
+                [
+                    order.id
+                ]
+            );
+
+        const returnAccessToken =
+            jwt.sign(
+                {
+                    scope:
+                        "guest_return",
+
+                    orderId:
+                        Number(order.id),
+
+                    orderNumber:
+                        order.order_number
+                },
+                jwtSecret,
+                {
+                    expiresIn:
+                        "20m"
+                }
+            );
+
+        return res.json({
+            success: true,
+
+            message:
+                "Guest order verified successfully.",
+
+            return_access_token:
+                returnAccessToken,
+
+            return_access_expires_in:
+                1200,
+
+            order: {
+                id:
+                    order.id,
+
+                order_number:
+                    order.order_number,
+
+                checkout_type:
+                    order.checkout_type,
+
+                full_name:
+                    order.full_name,
+
+                grand_total:
+                    order.grand_total,
+
+                discount_amount:
+                    order.discount_amount,
+
+                delivery_charges:
+                    order.delivery_charges,
+
+                order_status:
+                    order.order_status,
+
+                payment_method:
+                    order.payment_method,
+
+                payment_status:
+                    order.payment_status,
+
+                city:
+                    order.city,
+
+                tracking_number:
+                    order.tracking_number,
+
+                tracking_url:
+                    order.tracking_url,
+
+                estimated_delivery_date:
+                    order.estimated_delivery_date,
+
+                created_at:
+                    order.created_at,
+
+                delivered_at:
+                    order.delivered_at
+            },
+
+            items
+        });
+
+    } catch (error) {
+        console.error(
+            "Guest return lookup error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to verify this order for return."
+        });
+    }
+};
+
+
 exports.getGuestOrder = async (
     req,
     res
