@@ -21,3 +21,64 @@ exports.createReturn=async(req,res)=>{try{const result=await service.createRetur
 exports.getMyReturns=async(req,res)=>{try{const rows=await service.getCustomerReturns(customerIdFrom(req));return res.json({success:true,total:rows.length,returns:rows});}catch(e){return handle(res,e,"Get customer returns error");}};
 exports.getMyReturnDetails=async(req,res)=>{try{return res.json({success:true,...await service.getReturnDetails({returnId:req.params.id,customerId:customerIdFrom(req)})});}catch(e){return handle(res,e,"Get customer return details error");}};
 exports.cancelMyReturn=async(req,res)=>{try{const result=await service.cancelCustomerReturn({returnId:req.params.id,customerId:customerIdFrom(req),notes:req.body?.notes});return res.json({success:true,message:"Return request cancelled successfully.",return_request:result});}catch(e){return handle(res,e,"Cancel customer return error");}};
+
+
+exports.uploadGuestReturnMedia = async (req,res) => {
+    try {
+        const media =
+            await service.saveReturnMedia({
+                returnId:
+                    req.params.id,
+
+                guestToken:
+                    req.body?.guest_token ||
+                    req.query?.token,
+
+                files:
+                    req.files || []
+            });
+
+        return res.status(201).json({
+            success:true,
+            message:"Return evidence uploaded successfully.",
+            media
+        });
+
+    } catch(e) {
+        return handle(
+            res,
+            e,
+            "Upload guest return evidence error"
+        );
+    }
+};
+
+
+exports.uploadCustomerReturnMedia = async (req,res) => {
+    try {
+        const media =
+            await service.saveReturnMedia({
+                returnId:
+                    req.params.id,
+
+                customerId:
+                    customerIdFrom(req),
+
+                files:
+                    req.files || []
+            });
+
+        return res.status(201).json({
+            success:true,
+            message:"Return evidence uploaded successfully.",
+            media
+        });
+
+    } catch(e) {
+        return handle(
+            res,
+            e,
+            "Upload customer return evidence error"
+        );
+    }
+};

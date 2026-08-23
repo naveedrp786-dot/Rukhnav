@@ -816,8 +816,310 @@ exports.getReturnDetails = async ({ returnId, customerId = null, admin = false }
         `SELECT rim.*, p.product_name FROM return_inventory_movements rim
          LEFT JOIN products p ON p.id = rim.product_id WHERE rim.return_request_id = ? ORDER BY rim.id`, [returnId]
     );
-    return { return_request: request, items, activity, inventory_movements: movements };
+
+    const [media] = await db.query(
+        `SELECT
+            id,
+            return_request_id,
+            return_item_id,
+            media_type,
+            file_path,
+            original_filename,
+            mime_type,
+            file_size,
+            uploaded_by,
+            created_at
+         FROM customer_return_media
+         WHERE return_request_id = ?
+         ORDER BY id`,
+        [returnId]
+    );
+
+    return {
+        return_request: request,
+        items,
+        activity,
+        inventory_movements: movements,
+        media
+    };
 };
+
+
+exports.saveReturnMedia = async ({
+    returnId,
+    customerId = null,
+    guestToken = null,
+    files = []
+}) => {
+
+    returnId =
+        positiveId(
+            returnId,
+            "return ID"
+        );
+
+    const guestMode =
+        Boolean(guestToken);
+
+    if (!Array.isArray(files) || !files.length) {
+        throw fail(
+            "Select at least one return photo or video."
+        );
+    }
+
+    const images =
+        files.filter(
+            file =>
+                String(file.mimetype || "")
+                    .startsWith("image/")
+        );
+
+    const videos =
+        files.filter(
+            file =>
+                String(file.mimetype || "")
+                    .startsWith("video/")
+        );
+
+    if (images.length > 5) {
+        throw fail(
+            "Upload no more than five return images."
+        );
+    }
+
+    if (videos.length > 1) {
+        throw fail(
+            "Upload no more than one return video."
+        );
+    }
+
+    const connection =
+        await db.getConnection();
+
+    try {
+
+        await connection.beginTransaction();
+
+        let request = null;
+
+        if (guestMode) {
+
+            const [rows] =
+                await connection.query(
+                    `
+                    SELECT
+                        crr.id,
+                        crr.order_id,
+                        crr.customer_id,
+                        crr.status
+                    FROM customer_return_requests crr
+                    JOIN orders o
+                        ON o.id = crr.order_id
+                    WHERE crr.id = ?
+                      AND crr.customer_id IS NULL
+                      AND o.checkout_type = 'guest'
+                      AND o.guest_access_token_hash = ?
+                    LIMIT 1
+                    FOR UPDATE
+                    `,
+                    [
+                        returnId,
+                        sha256(
+                            cleanText(
+                                guestToken,
+                                200
+                            ) || ""
+                        )
+                    ]
+                );
+
+            request =
+                rows[0] || null;
+
+        } else {
+
+            customerId =
+                positiveId(
+                    customerId,
+                    "customer ID"
+                );
+
+            const [rows] =
+                await connection.query(
+                    `
+                    SELECT
+                        id,
+                        order_id,
+                        customer_id,
+                        status
+                    FROM customer_return_requests
+                    WHERE id = ?
+                      AND customer_id = ?
+                    LIMIT 1
+                    FOR UPDATE
+                    `,
+                    [
+                        returnId,
+                        customerId
+                    ]
+                );
+
+            request =
+                rows[0] || null;
+        }
+
+        if (!request) {
+            throw fail(
+                "Return request was not found.",
+                404
+            );
+        }
+
+        if (
+            ![
+                "Requested",
+                "Under Review",
+                "Approved",
+                "Awaiting Return"
+            ].includes(
+                String(request.status)
+            )
+        ) {
+            throw fail(
+                "Evidence can no longer be added to this return request.",
+                409
+            );
+        }
+
+        const created = [];
+
+        for (const file of files) {
+
+            const mediaType =
+                String(file.mimetype || "")
+                    .startsWith("video/")
+                    ? "Video"
+                    : "Image";
+
+            const filePath =
+                `/uploads/returns/${file.filename}`;
+
+            const [result] =
+                await connection.query(
+                    `
+                    INSERT INTO customer_return_media
+                    (
+                        return_request_id,
+                        return_item_id,
+                        media_type,
+                        file_path,
+                        original_filename,
+                        mime_type,
+                        file_size,
+                        uploaded_by
+                    )
+                    VALUES
+                    (
+                        ?,
+                        NULL,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?
+                    )
+                    `,
+                    [
+                        returnId,
+                        mediaType,
+                        filePath,
+                        cleanText(
+                            file.originalname,
+                            255
+                        ),
+                        cleanText(
+                            file.mimetype,
+                            100
+                        ),
+                        Number(
+                            file.size || 0
+                        ),
+                        guestMode
+                            ? "Guest"
+                            : "Customer"
+                    ]
+                );
+
+            created.push({
+                id:
+                    result.insertId,
+
+                return_request_id:
+                    returnId,
+
+                media_type:
+                    mediaType,
+
+                file_path:
+                    filePath,
+
+                original_filename:
+                    file.originalname || null,
+
+                mime_type:
+                    file.mimetype || null,
+
+                file_size:
+                    Number(file.size || 0),
+
+                uploaded_by:
+                    guestMode
+                        ? "Guest"
+                        : "Customer"
+            });
+        }
+
+        await addActivity(
+            connection,
+            {
+                returnRequestId:
+                    returnId,
+
+                actorType:
+                    guestMode
+                        ? "Guest"
+                        : "Customer",
+
+                actorId:
+                    customerId,
+
+                action:
+                    "Return evidence uploaded",
+
+                notes:
+                    `${created.length} evidence file(s) uploaded`
+            }
+        );
+
+        await connection.commit();
+
+        return created;
+
+    } catch (error) {
+
+        await rollbackQuietly(
+            connection
+        );
+
+        throw error;
+
+    } finally {
+
+        connection.release();
+    }
+};
+
 
 exports.cancelCustomerReturn = async ({ returnId, customerId, notes }) => {
     returnId = positiveId(returnId, "return ID"); customerId = positiveId(customerId, "customer ID");
@@ -871,7 +1173,7 @@ exports.getAdminReturns = async filters => {
                 crr.created_at, crr.updated_at, COUNT(cri.id) item_count,
                 COALESCE(SUM(cri.requested_quantity),0) total_quantity
          FROM customer_return_requests crr JOIN orders o ON o.id=crr.order_id
-         JOIN customers c ON c.id=crr.customer_id LEFT JOIN customer_return_items cri ON cri.return_request_id=crr.id
+         LEFT JOIN customers c ON c.id=crr.customer_id LEFT JOIN customer_return_items cri ON cri.return_request_id=crr.id
          ${sqlWhere} GROUP BY crr.id ORDER BY crr.created_at DESC, crr.id DESC LIMIT ? OFFSET ?`,
         [...params, limit, (page-1)*limit]
     );
