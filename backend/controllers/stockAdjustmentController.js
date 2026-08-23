@@ -1,4 +1,6 @@
 const db = require("../config/db");
+const inventoryService =
+    require("../services/inventoryService");
 
 
 // =======================================
@@ -130,7 +132,8 @@ exports.createStockAdjustment = async (req, res) => {
         SELECT
             id,
             product_name,
-            stock_quantity
+            stock_quantity,
+            low_stock_level
         FROM products
         WHERE id = ?
         FOR UPDATE
@@ -220,66 +223,76 @@ exports.createStockAdjustment = async (req, res) => {
             );
 
 
-        // Update product stock
+        // =======================================
+        // Calculate New Stock
+        // =======================================
 
-if (adjustmentType === "IN") {
+        const newStock =
+            adjustmentType === "IN"
+                ? currentStock + adjustmentQuantity
+                : currentStock - adjustmentQuantity;
 
-    await connection.query(
+        const newStockStatus =
+            inventoryService.getStockStatus(
+                newStock,
+                Number(
+                    productRows[0].low_stock_level ||
+                    0
+                )
+            );
 
-        `
-        UPDATE products
-        SET stock_quantity = stock_quantity + ?
-        WHERE id = ?
-        `,
+        // =======================================
+        // Update Product Stock
+        // =======================================
 
-        [
-            adjustmentQuantity,
-            productId
-        ]
+        await connection.query(
+            `
+            UPDATE products
+            SET
+                stock_quantity = ?,
+                stock_status = ?
+            WHERE id = ?
+            `,
+            [
+                newStock,
+                newStockStatus,
+                productId
+            ]
+        );
 
-    );
+        // =======================================
+        // Central Inventory Ledger
+        // =======================================
 
-} else {
+        await inventoryService.recordMovement(
+            connection,
+            {
+                productId,
+                transactionType:
+                    adjustmentType === "IN"
+                        ? "Stock In"
+                        : "Stock Out",
+                quantity:
+                    adjustmentQuantity,
+                previousStock:
+                    currentStock,
+                newStock,
+                reference:
+                    adjustmentNumber,
+                remarks:
+                    [
+                        "Stock Adjustment",
+                        String(reason).trim(),
+                        String(remarks || "").trim()
+                    ]
+                        .filter(Boolean)
+                        .join(" - "),
+                createdBy:
+                    adjustedBy
+            }
+        );
 
-    await connection.query(
-
-        `
-        UPDATE products
-        SET stock_quantity = stock_quantity - ?
-        WHERE id = ?
-        `,
-
-        [
-            adjustmentQuantity,
-            productId
-        ]
-
-    );
-
-}
-
-
-// Update Stock Status
-
-await connection.query(
-
-    `
-    UPDATE products
-    SET stock_status =
-        CASE
-            WHEN stock_quantity <= 0 THEN 'Out of Stock'
-            WHEN stock_quantity <= low_stock_level THEN 'Low Stock'
-            ELSE 'In Stock'
-        END
-    WHERE id = ?
-    `,
-
-    [productId]
-
-);
-
-
-// Commit Transaction
+        // Commit Transaction
 
 await connection.commit();
 
