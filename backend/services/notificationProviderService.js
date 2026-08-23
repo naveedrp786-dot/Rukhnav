@@ -152,7 +152,7 @@ function getTwilioClient() {
 }
 
 /**
- * Send a WhatsApp reminder through Twilio.
+ * Send a WhatsApp reminder through WasenderAPI.
  */
 async function sendWhatsApp({
     to,
@@ -172,41 +172,72 @@ async function sendWhatsApp({
         );
     }
 
-    if (
-        !process.env
-            .TWILIO_WHATSAPP_FROM
-    ) {
+    const apiToken =
+        process.env.WASENDER_API_TOKEN;
+
+    if (!apiToken) {
         throw new Error(
-            "Twilio WhatsApp sender is not configured."
+            "WasenderAPI WhatsApp configuration is incomplete."
         );
     }
 
-    const client =
-        getTwilioClient();
+    /*
+     * WasenderAPI accepts the recipient in
+     * international E.164 format.
+     */
+    const response = await fetch(
+        "https://www.wasenderapi.com/api/send-message",
+        {
+            method: "POST",
+            headers: {
+                "Authorization":
+                    `Bearer ${apiToken}`,
+                "Content-Type":
+                    "application/json",
+                "Accept":
+                    "application/json"
+            },
+            body: JSON.stringify({
+                to: recipient,
+                text: String(message || "")
+            })
+        }
+    );
 
-    const fromValue =
-        process.env
-            .TWILIO_WHATSAPP_FROM
-            .startsWith("whatsapp:")
-            ? process.env
-                .TWILIO_WHATSAPP_FROM
-            : `whatsapp:${normalizePhone(
-                process.env
-                    .TWILIO_WHATSAPP_FROM
-            )}`;
+    let data = null;
 
-    const result =
-        await client.messages.create({
-            body: message,
-            from: fromValue,
-            to: `whatsapp:${recipient}`
-        });
+    try {
+        data = await response.json();
+    } catch (error) {
+        data = null;
+    }
+
+    if (
+        !response.ok ||
+        !data ||
+        data.success !== true
+    ) {
+        const providerMessage =
+            data?.message ||
+            data?.error ||
+            `HTTP ${response.status}`;
+
+        throw new Error(
+            `WasenderAPI WhatsApp delivery failed: ${providerMessage}`
+        );
+    }
+
+    const providerMessageId =
+        data?.data?.msgId ??
+        data?.data?.messageId ??
+        data?.data?.id ??
+        data?.msgId ??
+        null;
 
     return {
         success: true,
         simulated: false,
-        providerMessageId:
-            result.sid || null
+        providerMessageId
     };
 }
 
