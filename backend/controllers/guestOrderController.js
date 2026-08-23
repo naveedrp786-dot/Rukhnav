@@ -1022,6 +1022,7 @@ exports.getGuestOrder = async (
             await db.query(
                 `
                 SELECT
+                    oi.id AS order_item_id,
                     oi.product_id,
                     p.product_name,
                     p.image,

@@ -71,6 +71,11 @@
         <div id="guestSuccessItems" class="guest-success-items"></div>
 
         <div class="guest-success-actions">
+            <button id="guestRequestReturnButton" type="button" class="btn secondary hidden">
+                <i class="fa-solid fa-rotate-left"></i>
+                Request Return
+            </button>
+
             <a href="products.html" class="btn primary">
                 Continue shopping
             </a>
@@ -79,6 +84,48 @@
                 Create or sign in to an account
             </a>
         </div>
+
+        <section id="guestReturnPanel" class="guest-return-panel hidden">
+            <div class="guest-return-heading">
+                <div>
+                    <span>Return request</span>
+                    <h2>Request a product return</h2>
+                    <p>Select the item and quantity you want to return.</p>
+                </div>
+
+                <button id="closeGuestReturnButton" type="button" class="guest-return-close" aria-label="Close return form">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="guestReturnForm">
+                <div id="guestReturnItems" class="guest-return-items"></div>
+
+                <label class="guest-field">
+                    <span>Reason</span>
+                    <select id="guestReturnReason" required>
+                        <option value="">Select a reason</option>
+                        <option value="Damaged Product">Damaged product</option>
+                        <option value="Wrong Product">Wrong product</option>
+                        <option value="Product Quality">Product quality issue</option>
+                        <option value="Changed Mind">Changed my mind</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </label>
+
+                <label class="guest-field">
+                    <span>Additional notes</span>
+                    <textarea id="guestReturnNotes" rows="4" placeholder="Optional details about your return"></textarea>
+                </label>
+
+                <div id="guestReturnMessage" class="guest-checkout-message" role="alert"></div>
+
+                <button id="submitGuestReturnButton" type="submit" class="guest-place-order-button">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Submit Return Request
+                </button>
+            </form>
+        </section>
 
         <p class="guest-success-note">
             Guest orders do not automatically earn loyalty points. Contact support if you need help with this order.
