@@ -1,5 +1,6 @@
 "use strict";
 
+const crypto = require("crypto");
 const db = require("../config/db");
 
 const customerLoyaltyService =
@@ -28,6 +29,12 @@ const cleanText = (value, maxLength = 2000) => {
     const text = String(value).trim();
     return text ? text.slice(0, maxLength) : null;
 };
+
+const sha256 = value =>
+    crypto
+        .createHash("sha256")
+        .update(String(value))
+        .digest("hex");
 
 const money = value => {
     const n = Number(value);
@@ -194,78 +201,412 @@ const calculateReturnFinancials = async (
     };
 };
 
-exports.createReturnRequest = async ({ customerId, payload }) => {
-    customerId = positiveId(customerId, "customer ID");
-    const orderId = positiveId(payload.order_id, "order ID");
-    const reason = cleanText(payload.reason, 100);
-    const customerNotes = cleanText(payload.customer_notes);
-    const requestedItems = Array.isArray(payload.items) ? payload.items : [];
-    if (!reason) throw fail("A return reason is required.");
-    if (!requestedItems.length) throw fail("At least one return item is required.");
+const createReturnRequestForOrder = async ({
+    customerId = null,
+    payload = {},
+    guestOrderNumber = null,
+    guestToken = null
+}) => {
 
-    const connection = await db.getConnection();
-    try {
-        await connection.beginTransaction();
-        const [[order]] = await connection.query(
-            `SELECT id, order_number, customer_id, order_status, delivered_at
-             FROM orders WHERE id = ? AND customer_id = ? LIMIT 1 FOR UPDATE`,
-            [orderId, customerId]
+    const reason =
+        cleanText(
+            payload.reason,
+            100
         );
-        if (!order) throw fail("Order not found.", 404);
-        if (String(order.order_status).toLowerCase() !== "delivered") throw fail("Only delivered orders can be returned.", 409);
-        assertReturnWindow(order.delivered_at);
 
-        const quantities = new Map();
-        for (const row of requestedItems) {
-            const orderItemId = positiveId(row.order_item_id, "order item ID");
-            const quantity = Number(row.quantity);
-            if (!Number.isInteger(quantity) || quantity < 1) throw fail("Each return quantity must be a positive whole number.");
-            quantities.set(orderItemId, (quantities.get(orderItemId) || 0) + quantity);
+    const customerNotes =
+        cleanText(
+            payload.customer_notes
+        );
+
+    const requestedItems =
+        Array.isArray(payload.items)
+            ? payload.items
+            : [];
+
+    if (!reason) {
+        throw fail(
+            "A return reason is required."
+        );
+    }
+
+    if (!requestedItems.length) {
+        throw fail(
+            "At least one return item is required."
+        );
+    }
+
+    const guestMode =
+        Boolean(
+            guestOrderNumber &&
+            guestToken
+        );
+
+    let orderId = null;
+
+    if (!guestMode) {
+        customerId =
+            positiveId(
+                customerId,
+                "customer ID"
+            );
+
+        orderId =
+            positiveId(
+                payload.order_id,
+                "order ID"
+            );
+    }
+
+    const connection =
+        await db.getConnection();
+
+    try {
+
+        await connection.beginTransaction();
+
+        let order = null;
+
+        // ==========================================
+        // Secure Guest Order Ownership
+        // ==========================================
+
+        if (guestMode) {
+
+            const [rows] =
+                await connection.query(
+                    `
+                    SELECT
+                        id,
+                        order_number,
+                        customer_id,
+                        order_status,
+                        delivered_at
+                    FROM orders
+                    WHERE order_number = ?
+                      AND checkout_type = 'guest'
+                      AND customer_id IS NULL
+                      AND guest_access_token_hash = ?
+                    LIMIT 1
+                    FOR UPDATE
+                    `,
+                    [
+                        guestOrderNumber,
+                        sha256(guestToken)
+                    ]
+                );
+
+            order =
+                rows[0] || null;
+
+            if (!order) {
+                throw fail(
+                    "Guest order was not found.",
+                    404
+                );
+            }
+
+            orderId =
+                Number(order.id);
+
+            customerId =
+                null;
+
+        } else {
+
+            const [rows] =
+                await connection.query(
+                    `
+                    SELECT
+                        id,
+                        order_number,
+                        customer_id,
+                        order_status,
+                        delivered_at
+                    FROM orders
+                    WHERE id = ?
+                      AND customer_id = ?
+                    LIMIT 1
+                    FOR UPDATE
+                    `,
+                    [
+                        orderId,
+                        customerId
+                    ]
+                );
+
+            order =
+                rows[0] || null;
+
+            if (!order) {
+                throw fail(
+                    "Order not found.",
+                    404
+                );
+            }
         }
 
-        const ids = [...quantities.keys()];
-        const marks = ids.map(() => "?").join(",");
-        const [orderItems] = await connection.query(
-            `SELECT oi.id, oi.product_id, oi.quantity, oi.price, p.product_name
-             FROM order_items oi LEFT JOIN products p ON p.id = oi.product_id
-             WHERE oi.order_id = ? AND oi.id IN (${marks}) FOR UPDATE`, [orderId, ...ids]
-        );
-        if (orderItems.length !== ids.length) throw fail("One or more selected items do not belong to this order.");
+        if (
+            String(
+                order.order_status
+            ).toLowerCase() !==
+            "delivered"
+        ) {
+            throw fail(
+                "Only delivered orders can be returned.",
+                409
+            );
+        }
 
-        const [usedRows] = await connection.query(
-            `SELECT cri.order_item_id, COALESCE(SUM(cri.requested_quantity),0) already_requested
-             FROM customer_return_items cri
-             JOIN customer_return_requests crr ON crr.id = cri.return_request_id
-             WHERE crr.order_id = ? AND crr.status IN (${ACTIVE_REQUEST_STATUSES.map(() => "?").join(",")})
-             GROUP BY cri.order_item_id`, [orderId, ...ACTIVE_REQUEST_STATUSES]
+        assertReturnWindow(
+            order.delivered_at
         );
-        const used = new Map(usedRows.map(r => [Number(r.order_item_id), Number(r.already_requested)]));
+
+        // ==========================================
+        // Requested Quantities
+        // ==========================================
+
+        const quantities =
+            new Map();
+
+        for (
+            const row of requestedItems
+        ) {
+
+            const orderItemId =
+                positiveId(
+                    row.order_item_id,
+                    "order item ID"
+                );
+
+            const quantity =
+                Number(
+                    row.quantity
+                );
+
+            if (
+                !Number.isInteger(quantity) ||
+                quantity < 1
+            ) {
+                throw fail(
+                    "Each return quantity must be a positive whole number."
+                );
+            }
+
+            quantities.set(
+                orderItemId,
+                (
+                    quantities.get(
+                        orderItemId
+                    ) || 0
+                ) + quantity
+            );
+        }
+
+        const ids =
+            [...quantities.keys()];
+
+        const marks =
+            ids
+                .map(() => "?")
+                .join(",");
+
+        const [orderItems] =
+            await connection.query(
+                `
+                SELECT
+                    oi.id,
+                    oi.product_id,
+                    oi.quantity,
+                    oi.price,
+                    p.product_name
+                FROM order_items oi
+                LEFT JOIN products p
+                    ON p.id = oi.product_id
+                WHERE oi.order_id = ?
+                  AND oi.id IN (${marks})
+                FOR UPDATE
+                `,
+                [
+                    orderId,
+                    ...ids
+                ]
+            );
+
+        if (
+            orderItems.length !==
+            ids.length
+        ) {
+            throw fail(
+                "One or more selected items do not belong to this order."
+            );
+        }
+
+        const [usedRows] =
+            await connection.query(
+                `
+                SELECT
+                    cri.order_item_id,
+                    COALESCE(
+                        SUM(
+                            cri.requested_quantity
+                        ),
+                        0
+                    ) AS already_requested
+                FROM customer_return_items cri
+                JOIN customer_return_requests crr
+                    ON crr.id =
+                       cri.return_request_id
+                WHERE crr.order_id = ?
+                  AND crr.status IN (
+                    ${ACTIVE_REQUEST_STATUSES
+                        .map(() => "?")
+                        .join(",")}
+                  )
+                GROUP BY
+                    cri.order_item_id
+                `,
+                [
+                    orderId,
+                    ...ACTIVE_REQUEST_STATUSES
+                ]
+            );
+
+        const used =
+            new Map(
+                usedRows.map(
+                    row => [
+                        Number(
+                            row.order_item_id
+                        ),
+                        Number(
+                            row.already_requested
+                        )
+                    ]
+                )
+            );
 
         let requestedAmount = 0;
-        const items = orderItems.map(item => {
-            const requestedQuantity = quantities.get(Number(item.id));
-            const remaining = Number(item.quantity) - (used.get(Number(item.id)) || 0);
-            if (requestedQuantity > remaining) throw fail(`${item.product_name || "Product"}: only ${remaining} unit(s) remain returnable.`, 409);
-            const unitPrice = money(item.price);
-            const amount = money(unitPrice * requestedQuantity);
-            requestedAmount = money(requestedAmount + amount);
-            return { ...item, requestedQuantity, unitPrice, amount };
-        });
 
-        const [result] = await connection.query(
-            `INSERT INTO customer_return_requests
-             (order_id, customer_id, reason, customer_notes, status, requested_amount)
-             VALUES (?, ?, ?, ?, 'Requested', ?)`,
-            [orderId, customerId, reason, customerNotes, requestedAmount]
-        );
-        const returnId = result.insertId;
-        const returnNumber = makeNumber("RET", returnId);
-        await connection.query(`UPDATE customer_return_requests SET return_number = ? WHERE id = ?`, [returnNumber, returnId]);
+        const items =
+            orderItems.map(
+                item => {
 
-        for (const item of items) {
+                    const requestedQuantity =
+                        quantities.get(
+                            Number(item.id)
+                        );
+
+                    const remaining =
+                        Number(
+                            item.quantity
+                        ) -
+                        (
+                            used.get(
+                                Number(item.id)
+                            ) || 0
+                        );
+
+                    if (
+                        requestedQuantity >
+                        remaining
+                    ) {
+                        throw fail(
+                            `${item.product_name || "Product"}: only ${remaining} unit(s) remain returnable.`,
+                            409
+                        );
+                    }
+
+                    const unitPrice =
+                        money(
+                            item.price
+                        );
+
+                    const amount =
+                        money(
+                            unitPrice *
+                            requestedQuantity
+                        );
+
+                    requestedAmount =
+                        money(
+                            requestedAmount +
+                            amount
+                        );
+
+                    return {
+                        ...item,
+                        requestedQuantity,
+                        unitPrice,
+                        amount
+                    };
+                }
+            );
+
+        // ==========================================
+        // Return Request
+        // ==========================================
+
+        const [result] =
             await connection.query(
-                `INSERT INTO customer_return_items
-                 (
+                `
+                INSERT INTO customer_return_requests
+                (
+                    order_id,
+                    customer_id,
+                    reason,
+                    customer_notes,
+                    status,
+                    requested_amount
+                )
+                VALUES
+                (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    'Requested',
+                    ?
+                )
+                `,
+                [
+                    orderId,
+                    customerId,
+                    reason,
+                    customerNotes,
+                    requestedAmount
+                ]
+            );
+
+        const returnId =
+            result.insertId;
+
+        const returnNumber =
+            makeNumber(
+                "RET",
+                returnId
+            );
+
+        await connection.query(
+            `
+            UPDATE customer_return_requests
+            SET return_number = ?
+            WHERE id = ?
+            `,
+            [
+                returnNumber,
+                returnId
+            ]
+        );
+
+        for (
+            const item of items
+        ) {
+
+            await connection.query(
+                `
+                INSERT INTO customer_return_items
+                (
                     return_request_id,
                     order_item_id,
                     product_id,
@@ -275,8 +616,20 @@ exports.createReturnRequest = async ({ customerId, payload }) => {
                     gross_return_amount,
                     effective_refund_amount,
                     item_status
-                 )
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Requested')`,
+                )
+                VALUES
+                (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    'Requested'
+                )
+                `,
                 [
                     returnId,
                     item.id,
@@ -289,15 +642,138 @@ exports.createReturnRequest = async ({ customerId, payload }) => {
                 ]
             );
         }
-        await addActivity(connection, { returnRequestId: returnId, actorType: "Customer", actorId: customerId,
-            action: "Return request submitted", toStatus: "Requested", notes: reason });
+
+        await addActivity(
+            connection,
+            {
+                returnRequestId:
+                    returnId,
+
+                actorType:
+                    guestMode
+                        ? "Guest"
+                        : "Customer",
+
+                actorId:
+                    customerId,
+
+                action:
+                    "Return request submitted",
+
+                toStatus:
+                    "Requested",
+
+                notes:
+                    reason
+            }
+        );
+
         await connection.commit();
-        return { id: returnId, return_number: returnNumber, order_id: orderId, order_number: order.order_number,
-            status: "Requested", requested_amount: requestedAmount, item_count: items.length };
+
+        return {
+            id:
+                returnId,
+
+            return_number:
+                returnNumber,
+
+            order_id:
+                orderId,
+
+            order_number:
+                order.order_number,
+
+            customer_id:
+                customerId,
+
+            checkout_type:
+                guestMode
+                    ? "guest"
+                    : "customer",
+
+            status:
+                "Requested",
+
+            requested_amount:
+                requestedAmount,
+
+            item_count:
+                items.length
+        };
+
     } catch (error) {
-        await rollbackQuietly(connection); throw error;
-    } finally { connection.release(); }
+
+        await rollbackQuietly(
+            connection
+        );
+
+        throw error;
+
+    } finally {
+
+        connection.release();
+    }
 };
+
+
+exports.createReturnRequest =
+    async ({
+        customerId,
+        payload
+    }) => {
+
+        return createReturnRequestForOrder(
+            {
+                customerId,
+                payload
+            }
+        );
+    };
+
+
+exports.createGuestReturnRequest =
+    async ({
+        orderNumber,
+        guestToken,
+        payload
+    }) => {
+
+        orderNumber =
+            cleanText(
+                orderNumber,
+                50
+            );
+
+        guestToken =
+            cleanText(
+                guestToken,
+                200
+            );
+
+        if (
+            !orderNumber ||
+            !guestToken
+        ) {
+            throw fail(
+                "Order number and guest access token are required."
+            );
+        }
+
+        return createReturnRequestForOrder(
+            {
+                customerId:
+                    null,
+
+                payload,
+
+                guestOrderNumber:
+                    orderNumber,
+
+                guestToken
+            }
+        );
+    };
+
 
 exports.getCustomerReturns = async customerId => {
     customerId = positiveId(customerId, "customer ID");
@@ -319,9 +795,12 @@ exports.getReturnDetails = async ({ returnId, customerId = null, admin = false }
     if (!admin) { customerId = positiveId(customerId, "customer ID"); owner = "AND crr.customer_id = ?"; params.push(customerId); }
     const [[request]] = await db.query(
         `SELECT crr.*, o.order_number, o.order_status, o.payment_status, o.payment_method, o.grand_total,
-                o.delivered_at, c.full_name customer_name, c.email customer_email, c.phone customer_phone
+                o.delivered_at,
+                COALESCE(c.full_name, o.full_name) customer_name,
+                COALESCE(c.email, o.email) customer_email,
+                COALESCE(c.phone, o.phone) customer_phone
          FROM customer_return_requests crr JOIN orders o ON o.id = crr.order_id
-         JOIN customers c ON c.id = crr.customer_id WHERE crr.id = ? ${owner} LIMIT 1`, params
+         LEFT JOIN customers c ON c.id = crr.customer_id WHERE crr.id = ? ${owner} LIMIT 1`, params
     );
     if (!request) throw fail("Return request not found.", 404);
     const [items] = await db.query(
