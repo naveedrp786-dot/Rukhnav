@@ -96,46 +96,72 @@ window.RukhnavModernCMS = {
 
                     <filter
                         id="rukhnavSmokeFilter"
-                        x="-40%"
-                        y="-40%"
-                        width="180%"
-                        height="180%"
+                        x="-45%"
+                        y="-45%"
+                        width="190%"
+                        height="190%"
+                        color-interpolation-filters="sRGB"
                     >
                         <feTurbulence
                             type="fractalNoise"
-                            baseFrequency="0.008 0.018"
-                            numOctaves="4"
-                            seed="27"
+                            baseFrequency="0.006 0.013"
+                            numOctaves="5"
+                            seed="37"
                             stitchTiles="stitch"
                             result="noise"
                         />
 
-                        <feDisplacementMap
-                            in="SourceGraphic"
-                            in2="noise"
-                            scale="92"
-                            xChannelSelector="R"
-                            yChannelSelector="B"
-                            result="distorted"
-                        />
-
                         <feGaussianBlur
-                            in="distorted"
-                            stdDeviation="9"
-                            result="blurred"
+                            in="noise"
+                            stdDeviation="1.8"
+                            result="softNoise"
                         />
 
                         <feColorMatrix
-                            in="blurred"
-                            type="matrix"
-                            values="
-                                1 0 0 0 0
-                                0 1 0 0 0
-                                0 0 1 0 0
-                                0 0 0 1.18 -0.10
-                            "
+                            in="softNoise"
+                            type="luminanceToAlpha"
+                            result="noiseAlpha"
                         />
 
+                        <feComponentTransfer
+                            in="noiseAlpha"
+                            result="shapedNoise"
+                        >
+                            <feFuncA
+                                type="gamma"
+                                amplitude="1.18"
+                                exponent="1.45"
+                                offset="-0.12"
+                            />
+                        </feComponentTransfer>
+
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="noise"
+                            scale="28"
+                            xChannelSelector="R"
+                            yChannelSelector="B"
+                            result="softDistortion"
+                        />
+
+                        <feComposite
+                            in="softDistortion"
+                            in2="shapedNoise"
+                            operator="in"
+                            result="texturedSmoke"
+                        />
+
+                        <feGaussianBlur
+                            in="texturedSmoke"
+                            stdDeviation="12"
+                            result="featheredSmoke"
+                        />
+
+                        <feBlend
+                            in="featheredSmoke"
+                            in2="texturedSmoke"
+                            mode="screen"
+                        />
                     </filter>
 
                 </defs>
