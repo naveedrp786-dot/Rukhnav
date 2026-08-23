@@ -551,26 +551,158 @@ this.calculate();
         );
     },
 
-    applyCouponPreview() {
+    async applyCouponPreview() {
+        const input =
+            document.getElementById(
+                "checkoutCoupon"
+            );
+
         const code =
-            document.getElementById("checkoutCoupon")
+            input
                 ?.value
                 ?.trim()
-                .toUpperCase() || "";
+                .toUpperCase() ||
+            "";
 
         if (!code) {
             this.couponDiscount = 0;
             this.calculate();
-            this.message("Enter a coupon code.", "error");
+
+            this.message(
+                "Enter a coupon code.",
+                "error"
+            );
+
             return;
         }
 
+        if (
+            !Number.isFinite(
+                Number(this.subtotal)
+            ) ||
+            Number(this.subtotal) <= 0
+        ) {
+            this.couponDiscount = 0;
+            this.calculate();
+
+            this.message(
+                "Your cart does not contain an amount eligible for a coupon.",
+                "error"
+            );
+
+            return;
+        }
+
+        const button =
+            document.getElementById(
+                "applyCouponButton"
+            );
+
+        const originalButtonText =
+            button?.innerHTML;
+
+        if (button) {
+            button.disabled = true;
+            button.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Applying...';
+        }
+
+        /*
+         * Always clear the previous preview before validating
+         * another code. The order endpoint remains the final
+         * authority when the customer places the order.
+         */
         this.couponDiscount = 0;
         this.calculate();
-        this.message(
-            "Coupon will be validated securely by the backend when you place the order.",
-            "info"
-        );
+
+        try {
+            const customerId =
+                this.profile?.id ??
+                this.profile?.customer_id ??
+                null;
+
+            const data =
+                await API.post(
+                    "/api/coupons/apply",
+                    {
+                        code,
+                        orderTotal:
+                            Number(
+                                Number(
+                                    this.subtotal
+                                ).toFixed(2)
+                            ),
+                        customerId:
+                            customerId
+                                ? Number(customerId)
+                                : null
+                    }
+                );
+
+            const discountAmount =
+                Number(
+                    data?.calculation
+                        ?.discountAmount ??
+                    0
+                );
+
+            if (
+                !Number.isFinite(
+                    discountAmount
+                ) ||
+                discountAmount < 0
+            ) {
+                throw new Error(
+                    "The coupon service returned an invalid discount."
+                );
+            }
+
+            this.couponDiscount =
+                Number(
+                    Math.min(
+                        Number(this.subtotal),
+                        discountAmount
+                    ).toFixed(2)
+                );
+
+            if (input) {
+                input.value =
+                    data?.coupon?.code ||
+                    code;
+            }
+
+            /*
+             * calculate() also revalidates the maximum useful
+             * reward points after the coupon discount changes.
+             */
+            this.calculate();
+
+            this.message(
+                data?.message ||
+                `Coupon ${code} applied successfully. You saved ${Store.money(
+                    this.couponDiscount
+                )}.`,
+                "success"
+            );
+
+        } catch (error) {
+            this.couponDiscount = 0;
+            this.calculate();
+
+            this.message(
+                error?.message ||
+                "Unable to apply this coupon.",
+                "error"
+            );
+
+        } finally {
+            if (button) {
+                button.disabled = false;
+                button.innerHTML =
+                    originalButtonText ||
+                    "Apply";
+            }
+        }
     },
 
     updatePaymentInstructions() {
