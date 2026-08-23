@@ -1709,7 +1709,7 @@ exports.completeReturn = async ({ returnId, adminId, payload }) => {
         if(restock){
             for(const item of items){
                 const accepted=Number(item.accepted_quantity||0);
-                const eligible=["Good","Opened"].includes(item.condition_status) ? accepted : 0;
+                const eligible=item.condition_status === "Good" ? accepted : 0;
                 if(eligible<1) continue;
                 const [[product]]=await connection.query(`SELECT id,stock_quantity,low_stock_level FROM products WHERE id=? LIMIT 1 FOR UPDATE`,[item.product_id]);
                 if(!product) continue;
