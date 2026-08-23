@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Returns | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/customerReturns.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page returns-page">
+
+            <header class="page-header erp-v5-hero">
+
+                <div>
+                    <span class="page-label erp-v5-eyebrow">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Sales Operations
+                    </span>
+
+                    <h1>Customer Returns</h1>
+
+                    <p>
+                        Review return requests, receive returned merchandise,
+                        inspect products, manage refunds and restore inventory.
+                    </p>
+                </div>
+
+                <div class="header-actions">
+
+                    <button
+                        type="button"
+                        id="clearReturnFiltersButton"
+                        class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                    >
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+
+                    <button
+                        type="button"
+                        id="refreshReturnsButton"
+                        class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                    >
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+
+                </div>
+
+            </header>
+
+            <div
+                id="returnsMessage"
+                class="returns-message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+
+            <!-- SUMMARY -->
+
+            <section class="returns-summary-grid">
+
+                <article class="summary-card">
+                    <div class="summary-icon total">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <div>
+                        <span>Total Returns</span>
+                        <h2 id="totalReturns">0</h2>
+                        <small>All return requests</small>
+                    </div>
+                </article>
+
+
+                <article class="summary-card">
+                    <div class="summary-icon requested">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div>
+                        <span>Requested</span>
+                        <h2 id="requestedReturns">0</h2>
+                        <small>Awaiting review</small>
+                    </div>
+                </article>
+
+
+                <article class="summary-card">
+                    <div class="summary-icon approved">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div>
+                        <span>Approved</span>
+                        <h2 id="approvedReturns">0</h2>
+                        <small>Waiting for goods</small>
+                    </div>
+                </article>
+
+
+                <article class="summary-card">
+                    <div class="summary-icon received">
+                        <i class="fa-solid fa-box"></i>
+                    </div>
+                    <div>
+                        <span>Received</span>
+                        <h2 id="receivedReturns">0</h2>
+                        <small>Awaiting inspection</small>
+                    </div>
+                </article>
+
+
+                <article class="summary-card">
+                    <div class="summary-icon inspected">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <div>
+                        <span>Inspected</span>
+                        <h2 id="inspectedReturns">0</h2>
+                        <small>Ready to complete</small>
+                    </div>
+                </article>
+
+
+                <article class="summary-card">
+                    <div class="summary-icon refunded">
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+                    </div>
+                    <div>
+                        <span>Refunded</span>
+                        <h2 id="refundedReturns">0</h2>
+                        <small>Refund completed</small>
+                    </div>
+                </article>
+
+            </section>
+
+
+            <!-- FILTERS -->
+
+            <section class="returns-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-label">Return Directory</span>
+                        <h2>Search and Filters</h2>
+                        <p>
+                            Search by return number, order number,
+                            customer or return status.
+                        </p>
+                    </div>
+                </div>
+
+                <form id="returnFiltersForm"
+                      class="return-filters"
+                      autocomplete="off">
+
+                    <div class="filter-field search-field">
+                        <label for="returnSearch">
+                            Search Returns
+                        </label>
+
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="search"
+                                id="returnSearch"
+                                placeholder="Return number, order, customer, phone or email"
+                            >
+                        </div>
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="returnStatusFilter">
+                            Return Status
+                        </label>
+
+                        <select id="returnStatusFilter">
+
+                            <option value="">
+                                All Statuses
+                            </option>
+
+                            <option value="Requested">
+                                Requested
+                            </option>
+
+                            <option value="Approved">
+                                Approved
+                            </option>
+
+                            <option value="Rejected">
+                                Rejected
+                            </option>
+
+                            <option value="Received">
+                                Received
+                            </option>
+
+                            <option value="Inspected">
+                                Inspected
+                            </option>
+
+                            <option value="Completed">
+                                Completed
+                            </option>
+
+                            <option value="Refunded">
+                                Refunded
+                            </option>
+
+                            <option value="Cancelled">
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="returnLimitFilter">
+                            Rows Per Page
+                        </label>
+
+                        <select id="returnLimitFilter">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-actions">
+
+                        <button
+                            type="submit"
+                            class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                        >
+                            <i class="fa-solid fa-filter"></i>
+                            Apply Filters
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- TABLE -->
+
+            <section class="returns-panel">
+
+                <div class="panel-heading table-panel-heading">
+
+                    <div>
+                        <span class="section-label">
+                            Customer Returns
+                        </span>
+
+                        <h2>Return Requests</h2>
+
+                        <p id="returnsResultText">
+                            Loading return records.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div id="returnsLoading"
+                     class="returns-state">
+
+                    <div class="returns-spinner"></div>
+
+                    <h3>Loading returns</h3>
+
+                    <p>
+                        Please wait while return records
+                        are retrieved.
+                    </p>
+
+                </div>
+
+
+                <div id="returnsEmptyState"
+                     class="returns-state hidden">
+
+                    <div class="state-icon">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+
+                    <h3>No returns found</h3>
+
+                    <p>
+                        No return requests match the
+                        selected filters.
+                    </p>
+
+                </div>
+
+
+                <div id="returnsTableWrapper"
+                     class="table-responsive hidden">
+
+                    <table class="returns-table">
+
+                        <thead>
+                        <tr>
+                            <th>Return</th>
+                            <th>Order</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Requested</th>
+                            <th>Approved</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="returnsTableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- DETAILS MODAL -->
+
+<div id="returnDetailsModal"
+     class="return-modal"
+     aria-hidden="true">
+
+    <div class="return-modal-overlay"
+         data-close-return-modal></div>
+
+    <div class="return-modal-dialog">
+
+        <div class="return-modal-header">
+
+            <div>
+                <span class="modal-label">
+                    Return Management
+                </span>
+
+                <h2 id="returnModalTitle">
+                    Return Details
+                </h2>
+            </div>
+
+            <button
+                type="button"
+                class="modal-close-button"
+                data-close-return-modal
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div id="returnModalBody"
+             class="return-modal-body">
+
+            <div class="returns-state">
+                <div class="returns-spinner"></div>
+                <h3>Loading return</h3>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/customerReturns.js"></script>
+
+</body>
+</html>

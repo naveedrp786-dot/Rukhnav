@@ -1404,17 +1404,19 @@ exports.getAdminReturns = async filters => {
     const where = [], params = [];
     if (filters.status) { where.push("crr.status = ?"); params.push(cleanText(filters.status, 40)); }
     if (filters.search) {
-        where.push("(crr.return_number LIKE ? OR o.order_number LIKE ? OR c.full_name LIKE ? OR c.email LIKE ? OR c.phone LIKE ?)");
+        where.push("(crr.return_number LIKE ? OR o.order_number LIKE ? OR COALESCE(c.full_name,o.full_name) LIKE ? OR COALESCE(c.email,o.email) LIKE ? OR COALESCE(c.phone,o.phone) LIKE ?)");
         const p = `%${cleanText(filters.search, 150)}%`; params.push(p,p,p,p,p);
     }
     const sqlWhere = where.length ? `WHERE ${where.join(" AND ")}` : "";
     const [[count]] = await db.query(
         `SELECT COUNT(*) total FROM customer_return_requests crr JOIN orders o ON o.id=crr.order_id
-         JOIN customers c ON c.id=crr.customer_id ${sqlWhere}`, params
+         LEFT JOIN customers c ON c.id=crr.customer_id ${sqlWhere}`, params
     );
     const [rows] = await db.query(
         `SELECT crr.id, crr.return_number, crr.order_id, o.order_number, crr.customer_id,
-                c.full_name customer_name, c.email customer_email, c.phone customer_phone,
+                COALESCE(c.full_name,o.full_name) customer_name,
+                COALESCE(c.email,o.email) customer_email,
+                COALESCE(c.phone,o.phone) customer_phone,
                 crr.reason, crr.status, crr.requested_amount, crr.approved_amount, crr.refund_amount,
                 crr.created_at, crr.updated_at, COUNT(cri.id) item_count,
                 COALESCE(SUM(cri.requested_quantity),0) total_quantity
