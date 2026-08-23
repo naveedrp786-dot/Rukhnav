@@ -2,113 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Invoice | RUKHNAV ERP</title>
-    <!-- Core UI CSS Framework Mapping -->
-    <link href="https://jsdelivr.net" rel="stylesheet">
-    <link href="https://jsdelivr.net" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
-    <link rel="stylesheet" href="css/erp.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>New Sale | RUKHNAV ERP</title>
+
+    <script>
+        /*
+         * Legacy manual invoice creation has been retired.
+         *
+         * Invoices are authoritative financial documents
+         * generated from the Sales / Order workflow.
+         */
+        window.location.replace(
+            "/admin/sales.html"
+        );
+    </script>
 </head>
+
 <body>
-
-<div class="dashboard">
-    <div id="sidebar-container"></div>
-
-    <main class="main main-content">
-        <div id="topbar-container"></div>
-
-        <div class="container-fluid mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="bi bi-file-earmark-plus text-success me-2"></i>Create New Invoice</h2>
-                <a href="invoices.html" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to List</a>
-            </div>
-
-            <form id="invoiceForm" class="card shadow-sm border-0 p-4">
-                <!-- Customer & Metadata Block -->
-                <div class="row g-3 mb-4">
-                    <div class="col-md-4">
-                        <label class="form-label font-weight-bold">Select Customer</label>
-                        <select id="customerId" class="form-select" required>
-                            <option value="">-- Choose Customer --</option>
-                            <!-- Injected dynamically from database via javascript -->
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label font-weight-bold">Payment Method</label>
-                        <select id="paymentMethod" class="form-select" required>
-                            <option value="Cash">Cash</option>
-                            <option value="Bank Transfer">Bank Transfer</option>
-                            <option value="EasyPaisa/JazzCash">EasyPaisa / JazzCash</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label font-weight-bold">Payment Status</label>
-                        <select id="paymentStatus" class="form-select" required>
-                            <option value="Pending">Pending</option>
-                            <option value="Partial">Partial</option>
-                            <option value="Paid">Paid</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Dynamic Item Builder Grid Segment -->
-                <h5 class="text-success mb-3">Order Line Items</h5>
-                <div class="table-responsive mb-3">
-                    <table class="table table-bordered align-middle" id="itemsTable">
-                        <thead class="table-success">
-                            <tr>
-                                <th>Product Item Name</th>
-                                <th style="width: 130px;">Quantity</th>
-                                <th style="width: 180px;">Unit Price (PKR)</th>
-                                <th style="width: 180px;">Total (PKR)</th>
-                                <th style="width: 70px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="invoiceItemRows">
-                            <!-- Dynamic Product Entry Rows are injected here -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <button type="button" class="btn btn-outline-success btn-sm mb-4" id="addItemBtn">
-                    <i class="bi bi-plus-circle"></i> Add Another Item
-                </button>
-
-                <!-- Totals Balancing Information Grid -->
-                <div class="row justify-content-end mb-4">
-                    <div class="col-md-4">
-                        <div class="d-flex justify-content-between mb-2">
-                            <strong>Grand Total:</strong>
-                            <span id="grandTotalLabel">PKR 0</span>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label small">Amount Paid (PKR)</label>
-                            <input type="number" id="paidAmount" class="form-control" value="0" min="0">
-                        </div>
-                        <div class="d-flex justify-content-between border-top pt-2">
-                            <strong>Balance Amount:</strong>
-                            <span id="balanceAmountLabel" class="text-danger font-weight-bold">PKR 0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-end">
-                    <button type="submit" class="btn btn-success px-5" id="saveInvoiceBtn">
-                        <i class="bi bi-check-circle"></i> Generate Invoice Record
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div id="footer-container"></div>
-    </main>
-</div>
-
-<script src="https://jsdelivr.net"></script>
-<script src="js/add-invoice.js"></script>
-
-<script src="/admin/js/adminLayout.js"></script>
+    <p>
+        Invoice creation has moved to
+        <a href="/admin/sales.html">
+            Sales
+        </a>.
+    </p>
 </body>
 </html>
