@@ -1031,12 +1031,154 @@ exports.getReturnDetails = async ({ returnId, customerId = null, admin = false }
         [returnId]
     );
 
+    // ==========================================
+    // Return Payment Settlement Summary
+    // ==========================================
+    //
+    // A return value is not automatically a cash
+    // refund. Only money that was actually recorded
+    // as paid can be refunded.
+    //
+    // This is especially important for unpaid COD
+    // orders, where approved merchandise may be
+    // returned but no customer payment exists.
+
+    const [[paymentTotals]] = await db.query(
+        `SELECT
+            COALESCE(
+                SUM(
+                    CASE
+                        WHEN status IN (
+                            'Paid',
+                            'Partially Refunded',
+                            'Refunded'
+                        )
+                        THEN amount
+                        ELSE 0
+                    END
+                ),
+                0
+            ) AS gross_paid_amount,
+
+            COALESCE(
+                SUM(refunded_amount),
+                0
+            ) AS refunded_amount
+
+         FROM payment_transactions
+         WHERE order_id = ?`,
+        [request.order_id]
+    );
+
+    const grossPaidAmount =
+        Math.max(
+            0,
+            money(
+                paymentTotals?.gross_paid_amount || 0
+            )
+        );
+
+    const alreadyRefundedAmount =
+        Math.max(
+            0,
+            money(
+                paymentTotals?.refunded_amount || 0
+            )
+        );
+
+    const refundableAmount =
+        Math.max(
+            0,
+            money(
+                grossPaidAmount -
+                alreadyRefundedAmount
+            )
+        );
+
+    const approvedReturnAmount =
+        Math.max(
+            0,
+            money(
+                request.approved_amount || 0
+            )
+        );
+
+    const maximumReturnRefund =
+        Math.min(
+            approvedReturnAmount,
+            refundableAmount
+        );
+
+    const paymentMethod =
+        String(
+            request.payment_method || ""
+        ).trim().toLowerCase();
+
+    const paymentStatus =
+        String(
+            request.payment_status || ""
+        ).trim().toLowerCase();
+
+    const unpaidCod =
+        paymentMethod === "cash_on_delivery" &&
+        grossPaidAmount <= 0 &&
+        ![
+            "paid",
+            "partially paid",
+            "partially refunded",
+            "refunded"
+        ].includes(paymentStatus);
+
+    const payment_settlement = {
+        payment_method:
+            request.payment_method || null,
+
+        payment_status:
+            request.payment_status || null,
+
+        order_grand_total:
+            money(
+                request.grand_total || 0
+            ),
+
+        approved_return_amount:
+            approvedReturnAmount,
+
+        gross_paid_amount:
+            grossPaidAmount,
+
+        already_refunded_amount:
+            alreadyRefundedAmount,
+
+        net_paid_amount:
+            Math.max(
+                0,
+                money(
+                    grossPaidAmount -
+                    alreadyRefundedAmount
+                )
+            ),
+
+        refundable_amount:
+            refundableAmount,
+
+        maximum_return_refund:
+            maximumReturnRefund,
+
+        monetary_refund_available:
+            maximumReturnRefund > 0,
+
+        unpaid_cod:
+            unpaidCod
+    };
+
     return {
         return_request: request,
         items,
         activity,
         inventory_movements: movements,
-        media
+        media,
+        payment_settlement
     };
 };
 

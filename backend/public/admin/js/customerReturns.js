@@ -24,7 +24,8 @@ const $ = id =>
 
 const state = {
     returns: [],
-    currentReturn: null
+    currentReturn: null,
+    paymentSettlement: null
 };
 
 
@@ -751,6 +752,10 @@ function renderDetails(data) {
     state.currentReturn =
         request;
 
+    state.paymentSettlement =
+        data?.payment_settlement ||
+        null;
+
     const status =
         valueOf(
             request,
@@ -1051,6 +1056,15 @@ function renderDetails(data) {
             </section>
 
 
+            ${
+                status === "Inspected"
+                    ? renderSettlementPanel(
+                        data?.payment_settlement ||
+                        {}
+                    )
+                    : ""
+            }
+
             <div class="return-actions">
                 ${actions}
             </div>
@@ -1118,6 +1132,9 @@ function closeModal() {
         );
 
     state.currentReturn =
+        null;
+
+    state.paymentSettlement =
         null;
 
 }
@@ -1294,6 +1311,190 @@ async function inspectReturn() {
 }
 
 
+
+function renderSettlementPanel(
+    settlement = {}
+) {
+
+    const approved =
+        Number(
+            settlement
+                .approved_return_amount || 0
+        );
+
+    const grossPaid =
+        Number(
+            settlement
+                .gross_paid_amount || 0
+        );
+
+    const alreadyRefunded =
+        Number(
+            settlement
+                .already_refunded_amount || 0
+        );
+
+    const refundable =
+        Number(
+            settlement
+                .refundable_amount || 0
+        );
+
+    const maximumRefund =
+        Number(
+            settlement
+                .maximum_return_refund || 0
+        );
+
+    const unpaidCod =
+        settlement.unpaid_cod === true;
+
+    const monetaryAvailable =
+        settlement
+            .monetary_refund_available === true;
+
+    return `
+        <section class="return-section return-settlement">
+
+            <div class="settlement-heading">
+                <div>
+                    <span class="section-label">
+                        Return Settlement
+                    </span>
+
+                    <h3>
+                        Financial Settlement
+                    </h3>
+                </div>
+
+                <span class="return-status ${
+                    monetaryAvailable
+                        ? "approved"
+                        : "completed"
+                }">
+                    ${
+                        monetaryAvailable
+                            ? "Refund Available"
+                            : "No Monetary Refund"
+                    }
+                </span>
+            </div>
+
+
+            <div class="settlement-grid">
+
+                <div class="settlement-card">
+                    <span>Inspected Return Value</span>
+                    <strong>
+                        ${money(approved)}
+                    </strong>
+                </div>
+
+                <div class="settlement-card">
+                    <span>Recorded Gross Payment</span>
+                    <strong>
+                        ${money(grossPaid)}
+                    </strong>
+                </div>
+
+                <div class="settlement-card">
+                    <span>Already Refunded</span>
+                    <strong>
+                        ${money(alreadyRefunded)}
+                    </strong>
+                </div>
+
+                <div class="settlement-card">
+                    <span>Available to Refund</span>
+                    <strong>
+                        ${money(refundable)}
+                    </strong>
+                </div>
+
+                <div class="settlement-card highlight">
+                    <span>Maximum Return Refund</span>
+                    <strong>
+                        ${money(maximumRefund)}
+                    </strong>
+                </div>
+
+                <div class="settlement-card">
+                    <span>Payment Status</span>
+                    <strong>
+                        ${escapeHtml(
+                            settlement
+                                .payment_status ||
+                            "Pending"
+                        )}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            ${
+                unpaidCod
+                    ? `
+                    <div class="settlement-note warning">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        <div>
+                            <strong>
+                                No monetary refund required
+                            </strong>
+
+                            <p>
+                                This Cash on Delivery order has no recorded paid transaction.
+                                Complete the merchandise return without issuing a cash refund.
+                            </p>
+                        </div>
+
+                    </div>
+                    `
+                    : monetaryAvailable
+                        ? `
+                        <div class="settlement-note success">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <div>
+                                <strong>
+                                    Monetary refund is available
+                                </strong>
+
+                                <p>
+                                    Up to ${money(maximumRefund)} may be refunded against recorded paid transactions.
+                                </p>
+                            </div>
+
+                        </div>
+                        `
+                        : `
+                        <div class="settlement-note">
+
+                            <i class="fa-solid fa-circle-info"></i>
+
+                            <div>
+                                <strong>
+                                    No refundable payment balance
+                                </strong>
+
+                                <p>
+                                    The return can be completed without issuing a monetary refund.
+                                </p>
+                            </div>
+
+                        </div>
+                        `
+            }
+
+        </section>
+    `;
+
+}
+
+
 async function completeReturn() {
 
     const id =
@@ -1303,50 +1504,80 @@ async function completeReturn() {
             "return_id"
         );
 
-    const approved =
-        Number(
-            valueOf(
-                state.currentReturn,
-                "approved_amount"
-            ) || 0
+    const settlement =
+        state.paymentSettlement ||
+        {};
+
+    const maximumRefund =
+        Math.max(
+            0,
+            Number(
+                settlement
+                    .maximum_return_refund || 0
+            )
         );
 
-    const refundInput =
-        window.prompt(
-            "Refund amount:",
-            approved.toFixed(2)
-        );
+    const monetaryAvailable =
+        settlement
+            .monetary_refund_available === true &&
+        maximumRefund > 0;
 
-    if (refundInput === null) {
-        return;
-    }
-
-    const refundAmount =
-        Number(refundInput);
-
-    if (
-        !Number.isFinite(refundAmount) ||
-        refundAmount < 0
-    ) {
-
-        throw new Error(
-            "Enter a valid refund amount."
-        );
-    }
-
-    const issueRefund =
-        refundAmount > 0;
+    const unpaidCod =
+        settlement.unpaid_cod === true;
 
     const restock =
         window.confirm(
             "Restock eligible Good/Opened items into inventory?"
         );
 
+    let issueRefund =
+        monetaryAvailable;
+
+    let refundAmount =
+        monetaryAvailable
+            ? maximumRefund
+            : 0;
+
+    if (monetaryAvailable) {
+
+        const refundInput =
+            window.prompt(
+                `Refund amount (maximum ${money(maximumRefund)}):`,
+                maximumRefund.toFixed(2)
+            );
+
+        if (refundInput === null) {
+            return;
+        }
+
+        refundAmount =
+            Number(refundInput);
+
+        if (
+            !Number.isFinite(refundAmount) ||
+            refundAmount < 0 ||
+            refundAmount > maximumRefund
+        ) {
+
+            throw new Error(
+                `Refund amount must be between PKR 0.00 and ${money(maximumRefund)}.`
+            );
+        }
+
+        issueRefund =
+            refundAmount > 0;
+    }
+
+    const confirmationMessage =
+        issueRefund
+            ? `Complete this return and issue ${money(refundAmount)} refund?`
+            : unpaidCod
+                ? "This COD order has no recorded payment. Complete the merchandise return without issuing a monetary refund?"
+                : "Complete this return without issuing a monetary refund?";
+
     const confirmed =
         window.confirm(
-            issueRefund
-                ? `Complete this return and issue PKR ${refundAmount.toFixed(2)} refund?`
-                : "Complete this return without issuing a monetary refund?"
+            confirmationMessage
         );
 
     if (!confirmed) {
@@ -1366,18 +1597,25 @@ async function completeReturn() {
                     restock,
 
                     refund_amount:
-                        refundAmount
+                        refundAmount,
+
+                    notes:
+                        unpaidCod &&
+                        !issueRefund
+                            ? "Return completed without monetary refund because no paid COD transaction was recorded."
+                            : null
                 })
         }
     );
 
     showMessage(
-        "Return completed successfully.",
+        issueRefund
+            ? `Return completed and ${money(refundAmount)} refund recorded successfully.`
+            : "Return completed successfully without a monetary refund.",
         "success"
     );
 
     await reloadCurrentReturn();
-
 }
 
 
