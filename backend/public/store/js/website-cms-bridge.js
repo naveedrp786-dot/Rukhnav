@@ -429,6 +429,7 @@ window.RukhnavModernCMS = {
             "--shade-4": shade4,
 
             "--highlight": highlight,
+            "--glow-color": glowColor,
             "--glow": glow,
 
             "--hero-gradient":
