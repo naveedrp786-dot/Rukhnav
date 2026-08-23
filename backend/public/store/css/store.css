@@ -132,3 +132,115 @@ button{
 .store-footer .footer-brand strong {
     color: #ffffff !important;
 }
+
+
+/* =====================================================
+   RUKHNAV PREMIUM STOREFRONT NAVIGATION
+   ===================================================== */
+
+.categories-nav {
+    background: #244633;
+    padding: 7px 0;
+    border-top: 1px solid rgba(255,255,255,.06);
+    border-bottom: 1px solid rgba(0,0,0,.12);
+}
+
+.categories-nav > div {
+    max-width: var(--max);
+    margin: auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.categories-nav > div::-webkit-scrollbar {
+    display: none;
+}
+
+.categories-nav a {
+    min-height: 34px;
+    padding: 0 15px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    white-space: nowrap;
+
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 9px;
+
+    background: rgba(255,255,255,.035);
+
+    color: #fff !important;
+    text-decoration: none;
+
+    font-size: var(--cms-nav-size,12px);
+    font-weight: 700;
+
+    transition:
+        background .18s ease,
+        color .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease,
+        transform .18s ease;
+}
+
+.categories-nav a:hover,
+.categories-nav a:focus-visible {
+    background: #f4e5b7;
+    color: #173c2a !important;
+
+    border-color: #d9b64c;
+
+    box-shadow:
+        0 5px 14px rgba(0,0,0,.16),
+        inset 0 1px 0 rgba(255,255,255,.5);
+
+    transform: translateY(-1px);
+
+    outline: none;
+}
+
+.categories-nav a:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+
+/* Mobile / tablet navigation */
+
+@media (max-width: 920px) {
+
+    .categories-nav {
+        padding-top: 65px;
+        padding-bottom: 7px;
+    }
+
+    .categories-nav > div {
+        padding-left: 16px;
+        padding-right: 16px;
+        gap: 6px;
+    }
+
+    .categories-nav a {
+        min-height: 33px;
+        padding: 0 13px;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .categories-nav {
+        padding-top: 64px;
+    }
+
+    .categories-nav a {
+        font-size: 11px;
+        padding: 0 12px;
+        border-radius: 8px;
+    }
+}
