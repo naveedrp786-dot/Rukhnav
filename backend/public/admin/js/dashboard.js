@@ -194,6 +194,96 @@ function showLoading(show) {
         );
 }
 
+function renderActionRequired(action = {}) {
+    const values = {
+        pendingOrders:
+            number(action.pendingOrders),
+
+        paidPendingOrders:
+            number(action.paidPendingOrders),
+
+        deliveredUnpaid:
+            number(action.deliveredUnpaid),
+
+        fulfilmentAttention:
+            number(action.fulfilmentAttention),
+
+        failedPayments:
+            number(action.failedPayments),
+
+        lowStock:
+            number(action.lowStock),
+
+        outOfStock:
+            number(action.outOfStock),
+
+        pendingReturns:
+            number(action.pendingReturns),
+
+        activeShipments:
+            number(action.activeShipments)
+    };
+
+    setText(
+        "actionPendingOrders",
+        count(values.pendingOrders)
+    );
+
+    setText(
+        "actionPaidPending",
+        count(values.paidPendingOrders)
+    );
+
+    setText(
+        "actionDeliveredUnpaid",
+        count(values.deliveredUnpaid)
+    );
+
+    setText(
+        "actionFulfilment",
+        count(values.fulfilmentAttention)
+    );
+
+    setText(
+        "actionFailedPayments",
+        count(values.failedPayments)
+    );
+
+    setText(
+        "actionLowStock",
+        count(values.lowStock)
+    );
+
+    setText(
+        "actionOutOfStock",
+        count(values.outOfStock)
+    );
+
+    setText(
+        "actionPendingReturns",
+        count(values.pendingReturns)
+    );
+
+    setText(
+        "actionActiveShipments",
+        count(values.activeShipments)
+    );
+
+    document
+        .querySelectorAll(
+            "[data-action-key]"
+        )
+        .forEach(card => {
+            const key =
+                card.dataset.actionKey;
+
+            card.classList.toggle(
+                "is-clear",
+                !number(values[key])
+            );
+        });
+}
+
 function renderSummary(data) {
     const dashboard =
         data.dashboard || {};
@@ -214,6 +304,13 @@ function renderSummary(data) {
 
     const suppliers =
         dashboard.suppliers || {};
+
+    const actionRequired =
+        dashboard.actionRequired || {};
+
+    renderActionRequired(
+        actionRequired
+    );
 
     setText(
         "totalRevenue",

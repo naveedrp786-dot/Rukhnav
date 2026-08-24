@@ -278,6 +278,124 @@ exports.getDashboardSummary = async (req, res) => {
         `);
 
         // =====================================
+        // ERP Action Required Summary
+        // =====================================
+
+        const [
+            [orderAttentionRows],
+            [paymentAttentionRows],
+            [returnAttentionRows],
+            [shipmentAttentionRows]
+        ] = await Promise.all([
+            db.query(`
+                SELECT
+                    COUNT(
+                        CASE
+                            WHEN order_status = 'Pending'
+                            THEN 1
+                        END
+                    ) AS pending_orders,
+
+                    COUNT(
+                        CASE
+                            WHEN order_status = 'Pending'
+                             AND payment_status = 'Paid'
+                            THEN 1
+                        END
+                    ) AS paid_pending_orders,
+
+                    COUNT(
+                        CASE
+                            WHEN order_status = 'Delivered'
+                             AND payment_status NOT IN (
+                                'Paid',
+                                'Refunded'
+                             )
+                            THEN 1
+                        END
+                    ) AS delivered_unpaid,
+
+                    COUNT(
+                        CASE
+                            WHEN order_status IN (
+                                'Processing',
+                                'Ready For Pickup'
+                            )
+                            THEN 1
+                        END
+                    ) AS fulfilment_attention
+
+                FROM orders
+            `),
+
+            db.query(`
+                SELECT
+                    COUNT(
+                        CASE
+                            WHEN status = 'Failed'
+                            THEN 1
+                        END
+                    ) AS failed_payments,
+
+                    COUNT(
+                        CASE
+                            WHEN status = 'Pending'
+                            THEN 1
+                        END
+                    ) AS pending_transactions
+
+                FROM payment_transactions
+            `),
+
+            db.query(`
+                SELECT
+                    COUNT(
+                        CASE
+                            WHEN status NOT IN (
+                                'Completed',
+                                'Refunded',
+                                'Rejected',
+                                'Cancelled'
+                            )
+                            THEN 1
+                        END
+                    ) AS pending_returns
+
+                FROM customer_return_requests
+            `),
+
+            db.query(`
+                SELECT
+                    COUNT(
+                        CASE
+                            WHEN status IN (
+                                'Created',
+                                'Ready',
+                                'Picked Up',
+                                'In Transit',
+                                'Out For Delivery'
+                            )
+                            THEN 1
+                        END
+                    ) AS active_shipments
+
+                FROM shipments
+            `)
+        ]);
+
+        const orderAttention =
+            orderAttentionRows[0] || {};
+
+        const paymentAttention =
+            paymentAttentionRows[0] || {};
+
+        const returnAttention =
+            returnAttentionRows[0] || {};
+
+        const shipmentAttention =
+            shipmentAttentionRows[0] || {};
+
+        // =====================================
         // Recent sales
         // =====================================
 
@@ -496,6 +614,58 @@ exports.getDashboardSummary = async (req, res) => {
                         Number(
                             supplierSummary
                                 .supplier_current_balance || 0
+                        )
+                },
+
+                actionRequired: {
+                    pendingOrders:
+                        Number(
+                            orderAttention.pending_orders || 0
+                        ),
+
+                    paidPendingOrders:
+                        Number(
+                            orderAttention.paid_pending_orders || 0
+                        ),
+
+                    deliveredUnpaid:
+                        Number(
+                            orderAttention.delivered_unpaid || 0
+                        ),
+
+                    fulfilmentAttention:
+                        Number(
+                            orderAttention.fulfilment_attention || 0
+                        ),
+
+                    lowStock:
+                        Number(
+                            inventorySummary.low_stock_products || 0
+                        ),
+
+                    outOfStock:
+                        Number(
+                            inventorySummary.out_of_stock_products || 0
+                        ),
+
+                    failedPayments:
+                        Number(
+                            paymentAttention.failed_payments || 0
+                        ),
+
+                    pendingTransactions:
+                        Number(
+                            paymentAttention.pending_transactions || 0
+                        ),
+
+                    pendingReturns:
+                        Number(
+                            returnAttention.pending_returns || 0
+                        ),
+
+                    activeShipments:
+                        Number(
+                            shipmentAttention.active_shipments || 0
                         )
                 }
             },

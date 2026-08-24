@@ -342,3 +342,117 @@
 .chart-empty-state.hidden{
     display:none;
 }
+
+/* ==========================================
+   ERP ACTION REQUIRED CENTER
+   ========================================== */
+
+.action-center-panel{
+    border-color:#ded5c5;
+}
+
+.action-center-heading p{
+    max-width:760px;
+    margin:6px 0 0;
+    color:#81786b;
+    font-size:11px;
+    line-height:1.6;
+}
+
+.action-required-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(180px,1fr));
+    gap:12px;
+}
+
+.action-alert{
+    min-height:112px;
+    padding:15px;
+    border:1px solid #e5ddcf;
+    border-radius:14px;
+    display:grid;
+    grid-template-columns:42px 1fr;
+    align-items:start;
+    gap:12px;
+    color:#2b2a26;
+    background:#fffdf8;
+    text-decoration:none;
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease,
+        opacity .15s ease;
+}
+
+.action-alert:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 24px rgba(45,37,24,.09);
+}
+
+.action-alert>i{
+    width:42px;
+    height:42px;
+    border-radius:11px;
+    display:grid;
+    place-items:center;
+    font-size:16px;
+}
+
+.action-alert span{
+    display:block;
+    color:#82796c;
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.35px;
+    text-transform:uppercase;
+}
+
+.action-alert strong{
+    display:block;
+    margin:5px 0 3px;
+    color:#252a27;
+    font-size:24px;
+    line-height:1;
+}
+
+.action-alert small{
+    color:#91877a;
+    font-size:9px;
+    line-height:1.45;
+}
+
+.action-alert.warning>i{
+    color:#8a610e;
+    background:#fff0c8;
+}
+
+.action-alert.urgent>i{
+    color:#a13b32;
+    background:#fae8e5;
+}
+
+.action-alert.info>i{
+    color:#245e91;
+    background:#e8f2fc;
+}
+
+.action-alert.is-clear{
+    opacity:.55;
+    background:#faf9f6;
+}
+
+.action-alert.is-clear>i{
+    color:#397255;
+    background:#eaf5ee;
+}
+
+@media(max-width:1100px){
+    .action-required-grid{
+        grid-template-columns:repeat(2,minmax(180px,1fr));
+    }
+}
+
+@media(max-width:650px){
+    .action-required-grid{
+        grid-template-columns:1fr;
+    }
+}

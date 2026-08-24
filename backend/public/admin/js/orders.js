@@ -2197,6 +2197,45 @@ async function updateOrderStatus(
     }
 }
 
+function applyUrlFilters() {
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const status =
+        params.get("status");
+
+    const paymentStatus =
+        params.get("payment_status");
+
+    if (status) {
+        const statusFilter =
+            $("orderStatusFilter");
+
+        if (statusFilter) {
+            statusFilter.value =
+                status;
+
+            state.status =
+                status;
+        }
+    }
+
+    if (paymentStatus) {
+        const paymentFilter =
+            $("paymentStatusFilter");
+
+        if (paymentFilter) {
+            paymentFilter.value =
+                paymentStatus;
+
+            state.paymentStatus =
+                paymentStatus;
+        }
+    }
+}
+
 function readFilters() {
     state.search =
         $("orderSearch")
@@ -2654,6 +2693,8 @@ document.addEventListener(
                         state.totalPages
                     )
             );
+
+        applyUrlFilters();
 
         await Promise.all([
             loadSummary(),
