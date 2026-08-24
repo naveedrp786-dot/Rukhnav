@@ -42,6 +42,7 @@
                 <button data-tab="templates"><i class="fa-solid fa-file-lines"></i> Templates</button>
                 <button data-tab="logs"><i class="fa-solid fa-list-check"></i> Delivery Logs</button>
                 <button data-tab="whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp Messages</button>
+                <button data-tab="campaigns"><i class="fa-solid fa-bullhorn"></i> Campaigns</button>
             </nav>
 
             <section id="channelsView" class="tab-view">
@@ -270,6 +271,430 @@
                     </aside>
 
                 </div>
+            </section>
+
+
+            <section id="campaignsView" class="tab-view hidden">
+
+                <div class="campaign-layout">
+
+                    <article class="erp-v5-panel campaign-composer">
+
+                        <div class="erp-v5-panel-heading">
+                            <div>
+                                <span class="erp-v5-section-label">
+                                    Marketing & Invitations
+                                </span>
+
+                                <h2>
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                    Create Communication Campaign
+                                </h2>
+
+                                <p>
+                                    Prepare consent-aware Email and WhatsApp
+                                    campaigns for RUKHNAV customers and approved
+                                    external contacts.
+                                </p>
+                            </div>
+
+                            <span class="campaign-draft-badge">
+                                Draft Builder
+                            </span>
+                        </div>
+
+                        <form id="campaignForm">
+
+                            <div class="campaign-form-grid">
+
+                                <div class="erp-v5-field">
+                                    <label for="campaignName">
+                                        Campaign Name
+                                    </label>
+
+                                    <input
+                                        id="campaignName"
+                                        required
+                                        placeholder="Summer Herbal Beauty Offer"
+                                    >
+                                </div>
+
+                                <div class="erp-v5-field">
+                                    <label for="campaignType">
+                                        Campaign Type
+                                    </label>
+
+                                    <select id="campaignType">
+                                        <option>Promotion</option>
+                                        <option>Invitation</option>
+                                        <option>New Product</option>
+                                        <option>Sale</option>
+                                        <option>Birthday Offer</option>
+                                        <option>Event</option>
+                                        <option>Announcement</option>
+                                        <option>Custom</option>
+                                    </select>
+                                </div>
+
+                                <div class="erp-v5-field campaign-full">
+                                    <label for="campaignAudience">
+                                        Audience
+                                    </label>
+
+                                    <select id="campaignAudience">
+                                        <option>All Marketing Customers</option>
+                                        <option>Selected Customers</option>
+                                        <option>Gold Members</option>
+                                        <option>Platinum Members</option>
+                                        <option>Gold & Platinum</option>
+                                        <option>Manual Recipients</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+
+                            <section class="campaign-channel-box">
+
+                                <span>Delivery Channels</span>
+
+                                <label>
+                                    <input
+                                        id="campaignSendWhatsapp"
+                                        type="checkbox"
+                                        checked
+                                    >
+
+                                    <i class="fa-brands fa-whatsapp"></i>
+
+                                    WhatsApp
+                                </label>
+
+                                <label>
+                                    <input
+                                        id="campaignSendEmail"
+                                        type="checkbox"
+                                    >
+
+                                    <i class="fa-solid fa-envelope"></i>
+
+                                    Email
+                                </label>
+
+                            </section>
+
+
+                            <section
+                                id="campaignSelectedCustomers"
+                                class="campaign-audience-panel hidden"
+                            >
+
+                                <div class="campaign-panel-head">
+                                    <div>
+                                        <strong>
+                                            Select Customers
+                                        </strong>
+
+                                        <span>
+                                            Only customers with marketing
+                                            permission will ultimately be
+                                            eligible.
+                                        </span>
+                                    </div>
+
+                                    <span id="selectedCampaignCustomerCount">
+                                        0 selected
+                                    </span>
+                                </div>
+
+                                <input
+                                    id="campaignCustomerSearch"
+                                    type="search"
+                                    placeholder="Search customer name, phone, email or ID"
+                                >
+
+                                <div
+                                    id="campaignCustomerPicker"
+                                    class="campaign-customer-picker"
+                                ></div>
+
+                            </section>
+
+
+                            <section
+                                id="campaignManualRecipients"
+                                class="campaign-audience-panel hidden"
+                            >
+
+                                <div class="campaign-panel-head">
+                                    <div>
+                                        <strong>
+                                            Manual Recipients
+                                        </strong>
+
+                                        <span>
+                                            One recipient per line:
+                                            Name | email | WhatsApp
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <textarea
+                                    id="campaignManualRecipientsText"
+                                    rows="6"
+                                    placeholder="Ahmed Ali | ahmed@example.com | +923001234567&#10;Sara Khan | sara@example.com | +923111234567"
+                                ></textarea>
+
+                                <label class="campaign-consent-confirm">
+                                    <input
+                                        id="campaignManualConsent"
+                                        type="checkbox"
+                                    >
+
+                                    <span>
+                                        I confirm these external recipients
+                                        have explicitly agreed to receive
+                                        RUKHNAV marketing communications.
+                                    </span>
+                                </label>
+
+                            </section>
+
+
+                            <section class="campaign-message-section">
+
+                                <div class="campaign-message-heading">
+                                    <div>
+                                        <strong>
+                                            Message Design
+                                        </strong>
+
+                                        <span>
+                                            Use one of the RUKHNAV branded
+                                            presets or write your own.
+                                        </span>
+                                    </div>
+
+                                    <div class="campaign-preset-buttons">
+                                        <button
+                                            type="button"
+                                            data-campaign-preset="promotion"
+                                        >
+                                            Promotion
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            data-campaign-preset="invitation"
+                                        >
+                                            Invitation
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            data-campaign-preset="launch"
+                                        >
+                                            Product Launch
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            data-campaign-preset="sale"
+                                        >
+                                            Sale
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                                <div
+                                    id="campaignWhatsappComposer"
+                                    class="campaign-channel-composer"
+                                >
+
+                                    <div class="campaign-composer-title">
+                                        <i class="fa-brands fa-whatsapp"></i>
+
+                                        <div>
+                                            <strong>
+                                                WhatsApp Message
+                                            </strong>
+
+                                            <span>
+                                                Supports variables such as
+                                                {{customer_name}}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <textarea
+                                        id="campaignWhatsappMessage"
+                                        rows="12"
+                                        maxlength="4000"
+                                    ></textarea>
+
+                                    <div class="campaign-char-count">
+                                        <span id="campaignWhatsappCount">
+                                            0 / 4000
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    id="campaignEmailComposer"
+                                    class="campaign-channel-composer hidden"
+                                >
+
+                                    <div class="campaign-composer-title">
+                                        <i class="fa-solid fa-envelope"></i>
+
+                                        <div>
+                                            <strong>
+                                                Email Message
+                                            </strong>
+
+                                            <span>
+                                                Branded email content
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="erp-v5-field">
+                                        <label for="campaignEmailSubject">
+                                            Subject
+                                        </label>
+
+                                        <input
+                                            id="campaignEmailSubject"
+                                            placeholder="A special offer from RUKHNAV"
+                                        >
+                                    </div>
+
+                                    <div class="erp-v5-field">
+                                        <label for="campaignEmailBody">
+                                            Email Body
+                                        </label>
+
+                                        <textarea
+                                            id="campaignEmailBody"
+                                            rows="12"
+                                        ></textarea>
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+
+                            <section class="campaign-preview-panel">
+
+                                <div>
+                                    <span>Audience Preview</span>
+                                    <strong id="campaignPreviewTotal">—</strong>
+                                    <small>Total contacts</small>
+                                </div>
+
+                                <div>
+                                    <span>Email Eligible</span>
+                                    <strong id="campaignPreviewEmail">—</strong>
+                                    <small>Marketing permission</small>
+                                </div>
+
+                                <div>
+                                    <span>WhatsApp Eligible</span>
+                                    <strong id="campaignPreviewWhatsapp">—</strong>
+                                    <small>Marketing permission</small>
+                                </div>
+
+                            </section>
+
+
+                            <div class="campaign-schedule-field">
+                                <label for="campaignScheduledAt">
+                                    Schedule Date & Time
+                                </label>
+
+                                <input
+                                    id="campaignScheduledAt"
+                                    type="datetime-local"
+                                >
+
+                                <small>
+                                    Uses the RUKHNAV server schedule.
+                                    Leave empty for Draft or Send Now.
+                                </small>
+                            </div>
+
+                            <div class="campaign-actions">
+
+                                <button
+                                    id="previewCampaignAudience"
+                                    type="button"
+                                    class="erp-v5-btn erp-v5-btn--soft"
+                                >
+                                    <i class="fa-solid fa-users-viewfinder"></i>
+                                    Preview Audience
+                                </button>
+
+                                <button
+                                    id="saveCampaignButton"
+                                    type="submit"
+                                    class="erp-v5-btn erp-v5-btn--soft"
+                                >
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    Save Draft
+                                </button>
+
+                                <button
+                                    id="scheduleCampaignButton"
+                                    type="button"
+                                    class="erp-v5-btn erp-v5-btn--gold"
+                                >
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                    Schedule
+                                </button>
+
+                                <button
+                                    id="sendCampaignNowButton"
+                                    type="button"
+                                    class="erp-v5-btn erp-v5-btn--gold"
+                                >
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    Send Now
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </article>
+
+
+                    <aside class="erp-v5-panel campaign-history-panel">
+
+                        <div class="erp-v5-panel-heading">
+                            <div>
+                                <span class="erp-v5-section-label">
+                                    Campaign History
+                                </span>
+
+                                <h3>
+                                    Recent Campaigns
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div
+                            id="campaignList"
+                            class="campaign-list"
+                        ></div>
+
+                    </aside>
+
+                </div>
+
             </section>
 
             <section id="logsView" class="tab-view hidden">

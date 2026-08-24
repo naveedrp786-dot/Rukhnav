@@ -4,7 +4,13 @@ const API = "/api/admin/notification-center";
 const token = localStorage.getItem("adminToken") || localStorage.getItem("token") || sessionStorage.getItem("adminToken") || sessionStorage.getItem("token");
 if (!token) window.location.href = "/admin/login.html";
 
-const state = { dashboard: null, templates: [], logs: [], customers: [] };
+const state = {
+    dashboard: null,
+    templates: [],
+    logs: [],
+    customers: [],
+    campaigns: []
+};
 const $ = id => document.getElementById(id);
 
 async function request(path, options = {}) {
@@ -66,12 +72,14 @@ async function loadAll(options = {}) {
             dashboard,
             templates,
             logs,
-            customers
+            customers,
+            campaigns
         ] = await Promise.all([
             request("/dashboard"),
             request("/templates"),
             request("/logs"),
-            request("/customer-preferences")
+            request("/customer-preferences"),
+            request("/campaigns")
         ]);
 
         state.dashboard = dashboard;
@@ -82,10 +90,15 @@ async function loadAll(options = {}) {
         state.customers =
             customers.customers || [];
 
+        state.campaigns =
+            campaigns.campaigns || [];
+
         renderDashboard();
         renderTemplates();
         renderLogs();
         renderPreferences();
+        renderCampaigns();
+        renderCampaignCustomerPicker();
 
         // Restore temporary recipient values after
         // renderDashboard() recreates the cards.
@@ -280,7 +293,7 @@ function renderLogs() {
 
 function activateTab(tab) {
     document.querySelectorAll("[data-tab]").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
-    ["channels", "preferences", "templates", "logs", "whatsapp"].forEach(name => $(`${name}View`).classList.toggle("hidden", name !== tab));
+    ["channels", "preferences", "templates", "logs", "whatsapp", "campaigns"].forEach(name => $(`${name}View`).classList.toggle("hidden", name !== tab));
 }
 
 let selectedWhatsappCustomerId = null;
@@ -548,6 +561,897 @@ async function sendManualWhatsapp(event) {
     }
 }
 
+
+const campaignPresets = {
+
+    promotion: {
+        subject:
+            "A Special RUKHNAV Offer Just for You",
+
+        whatsapp:
+`🌿 *RUKHNAV*
+_Beauty Inspired by Nature_
+
+━━━━━━━━━━━━━━
+🎁 *EXCLUSIVE OFFER*
+━━━━━━━━━━━━━━
+
+Assalam-o-Alaikum *{{customer_name}}* 👋
+
+We have prepared a special RUKHNAV offer for you.
+
+✨ Discover herbal beauty and hair-care products created with nature in mind.
+
+🎟 *Offer:* [Add offer details]
+📅 *Valid Until:* [Add expiry date]
+
+🛍 Shop Now
+{{shop_url}}
+
+Thank you for being part of the RUKHNAV family. 💚
+
+━━━━━━━━━━━━━━
+🌿 *RUKHNAV*
+_Herbal Beauty • Naturally Yours_`,
+
+        email:
+`Dear {{customer_name}},
+
+We have prepared a special RUKHNAV offer for you.
+
+Discover our herbal beauty and hair-care collection and enjoy this exclusive promotion.
+
+Offer:
+[Add offer details]
+
+Valid Until:
+[Add expiry date]
+
+Shop online:
+{{shop_url}}
+
+Thank you for choosing RUKHNAV.
+
+RUKHNAV
+Beauty Inspired by Nature`
+    },
+
+
+    invitation: {
+        subject:
+            "You're Invited — A Special RUKHNAV Event",
+
+        whatsapp:
+`🌿 *RUKHNAV INVITATION*
+
+Dear *{{customer_name}}*,
+
+You are warmly invited to a special RUKHNAV event.
+
+━━━━━━━━━━━━━━
+✨ *EVENT DETAILS*
+━━━━━━━━━━━━━━
+
+📅 Date: [Add date]
+🕒 Time: [Add time]
+📍 Venue: [Add venue]
+
+We would be delighted to have you with us.
+
+Please reply to this message to confirm your attendance.
+
+🌿 *RUKHNAV*
+_Beauty Inspired by Nature_`,
+
+        email:
+`Dear {{customer_name}},
+
+You are warmly invited to a special RUKHNAV event.
+
+EVENT DETAILS
+
+Date:
+[Add date]
+
+Time:
+[Add time]
+
+Venue:
+[Add venue]
+
+We would be delighted to have you with us.
+
+Please contact RUKHNAV to confirm your attendance.
+
+Warm regards,
+RUKHNAV`
+    },
+
+
+    launch: {
+        subject:
+            "Introducing Something New from RUKHNAV",
+
+        whatsapp:
+`🌿 *RUKHNAV*
+✨ *NEW PRODUCT LAUNCH*
+
+Assalam-o-Alaikum *{{customer_name}}* 👋
+
+Something new has arrived at RUKHNAV.
+
+🌱 *[Product Name]*
+
+[Add a short product introduction here.]
+
+✨ Herbal inspired
+✨ Quality focused
+✨ Created with care
+
+🛍 Discover it now:
+{{shop_url}}
+
+🌿 *RUKHNAV*
+_Herbal Beauty • Naturally Yours_`,
+
+        email:
+`Dear {{customer_name}},
+
+We are excited to introduce something new from RUKHNAV.
+
+NEW PRODUCT:
+[Product Name]
+
+[Add product description]
+
+Discover the new product:
+{{shop_url}}
+
+Thank you for choosing RUKHNAV.
+
+RUKHNAV
+Herbal Beauty • Naturally Yours`
+    },
+
+
+    sale: {
+        subject:
+            "RUKHNAV Sale — Limited Time Offer",
+
+        whatsapp:
+`🌿 *RUKHNAV SALE*
+
+━━━━━━━━━━━━━━
+🔥 *LIMITED TIME OFFER*
+━━━━━━━━━━━━━━
+
+Assalam-o-Alaikum *{{customer_name}}* 👋
+
+Enjoy a special RUKHNAV sale for a limited time.
+
+💚 Discount: [Add discount]
+🎟 Code: [Add promo code]
+📅 Ends: [Add expiry]
+
+🛍 Shop:
+{{shop_url}}
+
+Don't miss out.
+
+🌿 *RUKHNAV*
+_Beauty Inspired by Nature_`,
+
+        email:
+`Dear {{customer_name}},
+
+Our RUKHNAV sale is now live.
+
+Discount:
+[Add discount]
+
+Promo Code:
+[Add promo code]
+
+Offer Ends:
+[Add expiry]
+
+Shop now:
+{{shop_url}}
+
+RUKHNAV
+Beauty Inspired by Nature`
+    }
+};
+
+
+function updateCampaignAudienceUI() {
+
+    const audience =
+        $("campaignAudience").value;
+
+    $("campaignSelectedCustomers")
+        .classList.toggle(
+            "hidden",
+            audience !==
+                "Selected Customers"
+        );
+
+    $("campaignManualRecipients")
+        .classList.toggle(
+            "hidden",
+            audience !==
+                "Manual Recipients"
+        );
+}
+
+
+function updateCampaignChannelUI() {
+
+    $("campaignWhatsappComposer")
+        .classList.toggle(
+            "hidden",
+            !$("campaignSendWhatsapp")
+                .checked
+        );
+
+    $("campaignEmailComposer")
+        .classList.toggle(
+            "hidden",
+            !$("campaignSendEmail")
+                .checked
+        );
+}
+
+
+function renderCampaignCustomerPicker() {
+
+    const container =
+        $("campaignCustomerPicker");
+
+    if (!container) {
+        return;
+    }
+
+    const search =
+        String(
+            $("campaignCustomerSearch")
+                ?.value || ""
+        )
+            .trim()
+            .toLowerCase();
+
+    const customers =
+        state.customers
+            .filter(customer => {
+                if (!search) {
+                    return true;
+                }
+
+                return [
+                    customer.id,
+                    customer.full_name,
+                    customer.email,
+                    customer.phone
+                ]
+                    .join(" ")
+                    .toLowerCase()
+                    .includes(search);
+            })
+            .slice(0, 100);
+
+    if (!customers.length) {
+        container.innerHTML =
+            `<div class="campaign-empty">
+                No customers found.
+            </div>`;
+
+        updateSelectedCampaignCount();
+        return;
+    }
+
+    const existingSelected =
+        new Set(
+            Array.from(
+                document.querySelectorAll(
+                    ".campaign-customer-check:checked"
+                )
+            ).map(
+                input =>
+                    String(input.value)
+            )
+        );
+
+    container.innerHTML =
+        customers
+            .map(customer => `
+                <label class="campaign-customer-row">
+                    <input
+                        type="checkbox"
+                        class="campaign-customer-check"
+                        value="${customer.id}"
+                        ${
+                            existingSelected.has(
+                                String(customer.id)
+                            )
+                                ? "checked"
+                                : ""
+                        }
+                    >
+
+                    <span class="campaign-customer-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+
+                    <span>
+                        <strong>
+                            ${escapeHtml(
+                                customer.full_name ||
+                                `Customer #${customer.id}`
+                            )}
+                        </strong>
+
+                        <small>
+                            ${escapeHtml(
+                                [
+                                    customer.phone || "",
+                                    customer.email || ""
+                                ]
+                                    .filter(Boolean)
+                                    .join(" · ")
+                            )}
+                        </small>
+                    </span>
+                </label>
+            `)
+            .join("");
+
+    document
+        .querySelectorAll(
+            ".campaign-customer-check"
+        )
+        .forEach(input => {
+            input.addEventListener(
+                "change",
+                updateSelectedCampaignCount
+            );
+        });
+
+    updateSelectedCampaignCount();
+}
+
+
+function updateSelectedCampaignCount() {
+
+    const count =
+        document.querySelectorAll(
+            ".campaign-customer-check:checked"
+        ).length;
+
+    if (
+        $("selectedCampaignCustomerCount")
+    ) {
+        $("selectedCampaignCustomerCount")
+            .textContent =
+            `${count} selected`;
+    }
+}
+
+
+function selectedCampaignCustomerIds() {
+
+    return Array.from(
+        document.querySelectorAll(
+            ".campaign-customer-check:checked"
+        )
+    )
+        .map(
+            input =>
+                Number(input.value)
+        )
+        .filter(Boolean);
+}
+
+
+function parseManualCampaignRecipients() {
+
+    const consent =
+        $("campaignManualConsent")
+            .checked;
+
+    const lines =
+        String(
+            $("campaignManualRecipientsText")
+                .value || ""
+        )
+            .split(/\n+/)
+            .map(line => line.trim())
+            .filter(Boolean);
+
+    return lines.map(line => {
+
+        const parts =
+            line.split("|")
+                .map(value => value.trim());
+
+        const name =
+            parts[0] || "";
+
+        const email =
+            parts[1] || "";
+
+        const phone =
+            parts[2] || "";
+
+        return {
+            name,
+            email,
+
+            whatsapp_number:
+                phone,
+
+            email_marketing_consent:
+                Boolean(
+                    consent &&
+                    email
+                ),
+
+            whatsapp_marketing_consent:
+                Boolean(
+                    consent &&
+                    phone
+                )
+        };
+    });
+}
+
+
+function campaignRecipientPayload() {
+
+    return {
+        audience_type:
+            $("campaignAudience")
+                .value,
+
+        selected_customer_ids:
+            selectedCampaignCustomerIds(),
+
+        manual_recipients:
+            parseManualCampaignRecipients()
+    };
+}
+
+
+async function previewCampaignAudience() {
+
+    try {
+        const data =
+            await request(
+                "/campaigns/preview-audience",
+                {
+                    method: "POST",
+                    body:
+                        JSON.stringify(
+                            campaignRecipientPayload()
+                        )
+                }
+            );
+
+        $("campaignPreviewTotal")
+            .textContent =
+            data.summary.total;
+
+        $("campaignPreviewEmail")
+            .textContent =
+            data.summary.emailEligible;
+
+        $("campaignPreviewWhatsapp")
+            .textContent =
+            data.summary
+                .whatsappEligible;
+
+        showMessage(
+            "Campaign audience preview updated.",
+            "success"
+        );
+
+    } catch (error) {
+        showMessage(
+            error.message,
+            "error"
+        );
+    }
+}
+
+
+function applyCampaignPreset(
+    presetKey
+) {
+    const preset =
+        campaignPresets[presetKey];
+
+    if (!preset) {
+        return;
+    }
+
+    $("campaignEmailSubject")
+        .value =
+        preset.subject;
+
+    $("campaignEmailBody")
+        .value =
+        preset.email;
+
+    $("campaignWhatsappMessage")
+        .value =
+        preset.whatsapp;
+
+    updateCampaignWhatsappCount();
+}
+
+
+function updateCampaignWhatsappCount() {
+
+    const length =
+        $("campaignWhatsappMessage")
+            ?.value.length || 0;
+
+    if (
+        $("campaignWhatsappCount")
+    ) {
+        $("campaignWhatsappCount")
+            .textContent =
+            `${length} / 4000`;
+    }
+}
+
+
+async function createCampaignFromComposer(
+    action = "draft"
+) {
+
+    const sendEmail =
+        $("campaignSendEmail")
+            .checked;
+
+    const sendWhatsapp =
+        $("campaignSendWhatsapp")
+            .checked;
+
+    if (
+        !sendEmail &&
+        !sendWhatsapp
+    ) {
+        throw new Error(
+            "Select Email, WhatsApp, or both."
+        );
+    }
+
+    if (
+        $("campaignAudience").value ===
+            "Manual Recipients" &&
+        !$("campaignManualConsent")
+            .checked
+    ) {
+        throw new Error(
+            "Confirm marketing consent for manual recipients before continuing."
+        );
+    }
+
+    const scheduledValue =
+        $("campaignScheduledAt")
+            .value;
+
+    if (
+        action === "schedule" &&
+        !scheduledValue
+    ) {
+        throw new Error(
+            "Choose a schedule date and time."
+        );
+    }
+
+    const created =
+        await request(
+            "/campaigns",
+            {
+                method:
+                    "POST",
+
+                body:
+                    JSON.stringify({
+                        campaign_name:
+                            $("campaignName")
+                                .value,
+
+                        campaign_type:
+                            $("campaignType")
+                                .value,
+
+                        audience_type:
+                            $("campaignAudience")
+                                .value,
+
+                        send_email:
+                            sendEmail,
+
+                        send_whatsapp:
+                            sendWhatsapp,
+
+                        email_subject:
+                            $("campaignEmailSubject")
+                                .value,
+
+                        email_body:
+                            $("campaignEmailBody")
+                                .value,
+
+                        whatsapp_message:
+                            $("campaignWhatsappMessage")
+                                .value,
+
+                        scheduled_at:
+                            action === "schedule"
+                                ? new Date(
+                                    scheduledValue
+                                  )
+                                    .toISOString()
+                                    .slice(0, 19)
+                                    .replace(
+                                        "T",
+                                        " "
+                                    )
+                                : null
+                    })
+            }
+        );
+
+    const campaignId =
+        created.campaign.id;
+
+    const saved =
+        await request(
+            `/campaigns/${campaignId}/recipients`,
+            {
+                method:
+                    "PUT",
+
+                body:
+                    JSON.stringify(
+                        campaignRecipientPayload()
+                    )
+            }
+        );
+
+    const eligible =
+        Number(
+            saved.campaign
+                .queued_count || 0
+        );
+
+    if (
+        action !== "draft" &&
+        eligible < 1
+    ) {
+        throw new Error(
+            "Campaign has no eligible recipients. Review marketing consent and audience selection."
+        );
+    }
+
+    if (
+        action === "send"
+    ) {
+        const confirmed =
+            window.confirm(
+                `Send this campaign now?\n\nEligible recipient records: ${eligible}\n\nOnly recipients that passed server-side marketing consent checks will be queued.`
+            );
+
+        if (!confirmed) {
+            return {
+                cancelled:
+                    true,
+                campaign:
+                    created.campaign
+            };
+        }
+
+        await request(
+            `/campaigns/${campaignId}/queue`,
+            {
+                method:
+                    "POST"
+            }
+        );
+    }
+
+    return {
+        cancelled:
+            false,
+
+        campaign:
+            created.campaign,
+
+        eligible
+    };
+}
+
+
+async function runCampaignAction(
+    action,
+    button
+) {
+
+    const originalHtml =
+        button.innerHTML;
+
+    try {
+
+        button.disabled = true;
+
+        button.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Working...';
+
+        const result =
+            await createCampaignFromComposer(
+                action
+            );
+
+        if (result.cancelled) {
+
+            showMessage(
+                "Campaign saved as Draft. Sending was cancelled.",
+                "success"
+            );
+
+        } else if (
+            action === "send"
+        ) {
+
+            showMessage(
+                "Campaign queued for delivery. WhatsApp messages will be paced by the notification worker.",
+                "success"
+            );
+
+        } else if (
+            action === "schedule"
+        ) {
+
+            showMessage(
+                "Campaign scheduled successfully.",
+                "success"
+            );
+
+        } else {
+
+            showMessage(
+                "Campaign saved as Draft.",
+                "success"
+            );
+        }
+
+        await loadAll({
+            preserveMessage:
+                true,
+            preserveRecipients:
+                true
+        });
+
+    } catch (error) {
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    } finally {
+
+        button.disabled = false;
+        button.innerHTML =
+            originalHtml;
+    }
+}
+
+
+async function saveCampaignDraft(
+    event
+) {
+    event.preventDefault();
+
+    await runCampaignAction(
+        "draft",
+        $("saveCampaignButton")
+    );
+}
+
+
+function renderCampaigns() {
+
+    const container =
+        $("campaignList");
+
+    if (!container) {
+        return;
+    }
+
+    if (!state.campaigns.length) {
+
+        container.innerHTML =
+            `<div class="campaign-empty">
+                No campaigns created yet.
+            </div>`;
+
+        return;
+    }
+
+    container.innerHTML =
+        state.campaigns
+            .slice(0, 30)
+            .map(campaign => {
+
+                const channels = [
+                    campaign.send_whatsapp
+                        ? "WhatsApp"
+                        : null,
+
+                    campaign.send_email
+                        ? "Email"
+                        : null
+                ]
+                    .filter(Boolean)
+                    .join(" + ");
+
+                return `
+                    <article class="campaign-history-card">
+
+                        <div class="campaign-history-top">
+                            <span>
+                                ${escapeHtml(
+                                    campaign.campaign_type
+                                )}
+                            </span>
+
+                            <span class="campaign-status ${String(
+                                campaign.status
+                            ).toLowerCase()}">
+                                ${escapeHtml(
+                                    campaign.status
+                                )}
+                            </span>
+                        </div>
+
+                        <h4>
+                            ${escapeHtml(
+                                campaign.campaign_name
+                            )}
+                        </h4>
+
+                        <p>
+                            <i class="fa-solid fa-users"></i>
+                            ${Number(
+                                campaign.total_recipients ||
+                                0
+                            )} recipient(s)
+                        </p>
+
+                        <p>
+                            <i class="fa-solid fa-paper-plane"></i>
+                            ${escapeHtml(
+                                channels || "No channel"
+                            )}
+                        </p>
+
+                        <small>
+                            ${new Date(
+                                campaign.created_at
+                            ).toLocaleString()}
+                        </small>
+
+                    </article>
+                `;
+            })
+            .join("");
+}
+
+
 function closeTemplate() { $("templateModal").classList.add("hidden"); }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -574,6 +1478,93 @@ document.addEventListener("DOMContentLoaded", () => {
         "input",
         updateWhatsappCharacterCount
     );
+
+    $("campaignAudience").addEventListener(
+        "change",
+        updateCampaignAudienceUI
+    );
+
+    $("campaignSendWhatsapp").addEventListener(
+        "change",
+        updateCampaignChannelUI
+    );
+
+    $("campaignSendEmail").addEventListener(
+        "change",
+        updateCampaignChannelUI
+    );
+
+    $("campaignCustomerSearch").addEventListener(
+        "input",
+        renderCampaignCustomerPicker
+    );
+
+    $("campaignWhatsappMessage").addEventListener(
+        "input",
+        updateCampaignWhatsappCount
+    );
+
+    $("previewCampaignAudience").addEventListener(
+        "click",
+        previewCampaignAudience
+    );
+
+    $("campaignForm").addEventListener(
+        "submit",
+        saveCampaignDraft
+    );
+
+    $("scheduleCampaignButton").addEventListener(
+        "click",
+        () => runCampaignAction(
+            "schedule",
+            $("scheduleCampaignButton")
+        )
+    );
+
+    $("sendCampaignNowButton").addEventListener(
+        "click",
+        () => runCampaignAction(
+            "send",
+            $("sendCampaignNowButton")
+        )
+    );
+
+    $("scheduleCampaignButton").addEventListener(
+        "click",
+        () => runCampaignAction(
+            "schedule",
+            $("scheduleCampaignButton")
+        )
+    );
+
+    $("sendCampaignNowButton").addEventListener(
+        "click",
+        () => runCampaignAction(
+            "send",
+            $("sendCampaignNowButton")
+        )
+    );
+
+    document
+        .querySelectorAll(
+            "[data-campaign-preset]"
+        )
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    applyCampaignPreset(
+                        button.dataset
+                            .campaignPreset
+                    );
+                }
+            );
+        });
+
+    updateCampaignAudienceUI();
+    updateCampaignChannelUI();
+    applyCampaignPreset("promotion");
 
     document
         .querySelectorAll("[data-wa-message]")

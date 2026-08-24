@@ -4,6 +4,16 @@ const cron = require("node-cron");
 const queueService =
     require("../services/notificationQueueService");
 
+const campaignStatusService =
+    require(
+        "../services/notificationCampaignStatusService"
+    );
+
+const campaignSchedulerService =
+    require(
+        "../services/notificationCampaignSchedulerService"
+    );
+
 let running = false;
 let task = null;
 
@@ -20,6 +30,29 @@ async function runCycle() {
     running = true;
 
     try {
+        try {
+            const campaignSummary =
+                await campaignSchedulerService
+                    .processDueCampaigns({
+                        limit: 10
+                    });
+
+            if (
+                campaignSummary.found > 0
+            ) {
+                console.log(
+                    "Scheduled campaign cycle:",
+                    campaignSummary
+                );
+            }
+
+        } catch (campaignError) {
+            console.error(
+                "Scheduled campaign cycle failed:",
+                campaignError
+            );
+        }
+
         const summary =
             await queueService
                 .processQueue({
@@ -37,6 +70,16 @@ async function runCycle() {
             console.log(
                 "Notification queue cycle:",
                 summary
+            );
+        }
+
+        try {
+            await campaignStatusService
+                .syncAllCampaignStatuses();
+        } catch (syncError) {
+            console.error(
+                "Campaign status synchronization failed:",
+                syncError
             );
         }
 

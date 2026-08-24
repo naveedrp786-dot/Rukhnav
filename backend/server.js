@@ -296,6 +296,9 @@ const {
     startEventReminderJob
 } = require("./jobs/eventReminderJob");
 
+const notificationQueueWorker =
+    require("./jobs/notificationQueueWorker");
+
 // Optional legacy reminder scheduler
 if (
     process.env.ENABLE_REMINDER_SCHEDULER ===
@@ -618,6 +621,16 @@ const server = app.listen(
         } catch (error) {
             logger.error(
                 `Unable to start event reminder job: ${
+                    error.message
+                }`
+            );
+        }
+
+        try {
+            notificationQueueWorker.start();
+        } catch (error) {
+            logger.error(
+                `Unable to start notification queue worker: ${
                     error.message
                 }`
             );
