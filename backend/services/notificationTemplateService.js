@@ -56,9 +56,16 @@ async function getTemplate(
             SELECT
                 template_key,
                 template_name,
+                template_category,
                 channel,
                 subject,
+                email_heading,
+                email_preheader,
                 body,
+                email_button_text,
+                email_button_url,
+                email_banner_url,
+                is_system_template,
                 status
             FROM notification_templates
             WHERE template_key = ?
@@ -90,16 +97,48 @@ async function renderTemplate({
 
     return {
         template,
+
         subject:
             renderString(
                 template?.subject ||
                 fallbackSubject,
                 variables
             ),
+
         message:
             renderString(
                 template?.body ||
                 fallbackMessage,
+                variables
+            ),
+
+        emailHeading:
+            renderString(
+                template?.email_heading || "",
+                variables
+            ),
+
+        emailPreheader:
+            renderString(
+                template?.email_preheader || "",
+                variables
+            ),
+
+        emailButtonText:
+            renderString(
+                template?.email_button_text || "",
+                variables
+            ),
+
+        emailButtonUrl:
+            renderString(
+                template?.email_button_url || "",
+                variables
+            ),
+
+        emailBannerUrl:
+            renderString(
+                template?.email_banner_url || "",
                 variables
             )
     };

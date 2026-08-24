@@ -415,40 +415,225 @@ exports.sendManualWhatsApp = async (req, res) => {
 exports.getTemplates = async (req, res) => {
     try {
         const [templates] = await db.query(`
-            SELECT id, template_key, template_name, channel, subject, body, status, updated_at
+            SELECT
+                id,
+                template_key,
+                template_name,
+                template_category,
+                channel,
+                subject,
+                body,
+                email_heading,
+                email_preheader,
+                email_button_text,
+                email_button_url,
+                email_banner_url,
+                is_system_template,
+                status,
+                updated_at
             FROM notification_templates
-            ORDER BY channel, template_name
+            ORDER BY
+                template_category,
+                channel,
+                template_name
         `);
-        res.json({ success: true, templates });
+
+        res.json({
+            success: true,
+            templates
+        });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
+
 
 exports.saveTemplate = async (req, res) => {
     try {
-        const id = Number(req.params.id);
-        const templateName = String(req.body.template_name || "").trim();
-        const channel = String(req.body.channel || "").trim();
-        const subject = String(req.body.subject || "").trim() || null;
-        const body = String(req.body.body || "").trim();
-        const status = req.body.status === "Inactive" ? "Inactive" : "Active";
+        const id =
+            Number(req.params.id);
 
-        if (!id || !templateName || !CHANNELS.includes(channel) || !body) {
-            return res.status(400).json({ success: false, message: "Template name, valid channel and body are required." });
+        const templateName =
+            String(
+                req.body.template_name || ""
+            ).trim();
+
+        const templateCategory =
+            String(
+                req.body.template_category ||
+                "General"
+            ).trim();
+
+        const channel =
+            String(
+                req.body.channel || ""
+            ).trim();
+
+        const subject =
+            String(
+                req.body.subject || ""
+            ).trim() || null;
+
+        const body =
+            String(
+                req.body.body || ""
+            ).trim();
+
+        const emailHeading =
+            String(
+                req.body.email_heading || ""
+            ).trim() || null;
+
+        const emailPreheader =
+            String(
+                req.body.email_preheader || ""
+            ).trim() || null;
+
+        const emailButtonText =
+            String(
+                req.body.email_button_text || ""
+            ).trim() || null;
+
+        const emailButtonUrl =
+            String(
+                req.body.email_button_url || ""
+            ).trim() || null;
+
+        const emailBannerUrl =
+            String(
+                req.body.email_banner_url || ""
+            ).trim() || null;
+
+        const status =
+            req.body.status === "Inactive"
+                ? "Inactive"
+                : "Active";
+
+        if (
+            !id ||
+            !templateName ||
+            !CHANNELS.includes(channel) ||
+            !body
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Template name, valid channel and body are required."
+            });
         }
 
-        await db.query(`
-            UPDATE notification_templates
-            SET template_name = ?, channel = ?, subject = ?, body = ?, status = ?, updated_by_admin_id = ?
-            WHERE id = ?
-        `, [templateName, channel, subject, body, status, req.admin?.id || req.user?.id || null, id]);
+        if (
+            channel === "Email" &&
+            !subject
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Email templates require a subject."
+            });
+        }
 
-        res.json({ success: true, message: "Notification template updated successfully." });
+        const [existingRows] =
+            await db.query(
+                `
+                SELECT
+                    id,
+                    template_key,
+                    is_system_template
+                FROM notification_templates
+                WHERE id = ?
+                LIMIT 1
+                `,
+                [id]
+            );
+
+        if (!existingRows.length) {
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Notification template not found."
+            });
+        }
+
+        await db.query(
+            `
+            UPDATE notification_templates
+            SET
+                template_name = ?,
+                template_category = ?,
+                channel = ?,
+                subject = ?,
+                body = ?,
+                email_heading = ?,
+                email_preheader = ?,
+                email_button_text = ?,
+                email_button_url = ?,
+                email_banner_url = ?,
+                status = ?,
+                updated_by_admin_id = ?
+            WHERE id = ?
+            `,
+            [
+                templateName,
+                templateCategory,
+                channel,
+                subject,
+                body,
+                emailHeading,
+                emailPreheader,
+                emailButtonText,
+                emailButtonUrl,
+                emailBannerUrl,
+                status,
+                req.admin?.id ||
+                    req.user?.id ||
+                    null,
+                id
+            ]
+        );
+
+        const [[template]] =
+            await db.query(
+                `
+                SELECT
+                    id,
+                    template_key,
+                    template_name,
+                    template_category,
+                    channel,
+                    subject,
+                    body,
+                    email_heading,
+                    email_preheader,
+                    email_button_text,
+                    email_button_url,
+                    email_banner_url,
+                    is_system_template,
+                    status,
+                    updated_at
+                FROM notification_templates
+                WHERE id = ?
+                `,
+                [id]
+            );
+
+        res.json({
+            success: true,
+            message:
+                "Notification template updated successfully.",
+            template
+        });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
+
 
 exports.getLogs = async (req, res) => {
     try {

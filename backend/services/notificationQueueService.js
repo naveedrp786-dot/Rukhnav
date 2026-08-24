@@ -408,8 +408,30 @@ async function queueCustomerEvent({
                     rendered.subject,
                 message:
                     rendered.message,
-                payload:
-                    allVariables,
+                payload: {
+                    ...allVariables,
+
+                    emailHeading:
+                        rendered.emailHeading ||
+                        "",
+
+                    emailPreheader:
+                        rendered.emailPreheader ||
+                        "",
+
+                    emailButtonText:
+                        rendered.emailButtonText ||
+                        "",
+
+                    emailButtonUrl:
+                        rendered.emailButtonUrl ||
+                        "",
+
+                    emailBannerUrl:
+                        rendered.emailBannerUrl ||
+                        ""
+                },
+
                 priority:
                     rule.priority,
                 maxAttempts:
@@ -439,19 +461,78 @@ async function queueCustomerEvent({
     };
 }
 
+function queuePayload(item) {
+
+    const raw =
+        item?.payload_json;
+
+    if (!raw) {
+        return {};
+    }
+
+    if (
+        typeof raw === "object" &&
+        !Buffer.isBuffer(raw)
+    ) {
+        return raw;
+    }
+
+    try {
+        return JSON.parse(
+            Buffer.isBuffer(raw)
+                ? raw.toString("utf8")
+                : String(raw)
+        );
+    } catch (error) {
+        console.error(
+            `Unable to parse notification payload for queue ${item?.id || "unknown"}:`,
+            error.message
+        );
+
+        return {};
+    }
+}
+
+
 async function sendByChannel(
     item
 ) {
     if (item.channel === "Email") {
+
+        const payload =
+            queuePayload(item);
+
         return providerService
             .sendEmail({
                 to:
                     item.recipient,
+
                 subject:
                     item.subject ||
                     "RUKHNAV Notification",
+
                 message:
-                    item.message
+                    item.message,
+
+                heading:
+                    payload.emailHeading ||
+                    "",
+
+                preheader:
+                    payload.emailPreheader ||
+                    "",
+
+                buttonText:
+                    payload.emailButtonText ||
+                    "",
+
+                buttonUrl:
+                    payload.emailButtonUrl ||
+                    "",
+
+                bannerUrl:
+                    payload.emailBannerUrl ||
+                    ""
             });
     }
 

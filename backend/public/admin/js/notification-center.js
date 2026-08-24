@@ -267,25 +267,924 @@ async function savePreferences(event) {
     } catch (error) { showMessage(error.message, "error"); }
 }
 
-function renderTemplates() {
-    $("templatesBody").innerHTML = state.templates.map(t => `<tr><td><strong>${escapeHtml(t.template_name)}</strong><small>${escapeHtml(t.template_key)}</small></td><td>${escapeHtml(t.channel)}</td><td>${escapeHtml(t.subject || "—")}</td><td><span class="status ${t.status.toLowerCase()}">${escapeHtml(t.status)}</span></td><td><button class="edit-template" data-template-id="${t.id}" type="button"><i class="fa-solid fa-pen"></i> Edit</button></td></tr>`).join("");
-    document.querySelectorAll(".edit-template").forEach(button => button.addEventListener("click", () => openTemplate(button.dataset.templateId)));
+
+/* =========================================================
+   RUKHNAV VISUAL MESSAGE DESIGNER V2
+   ========================================================= */
+
+let activeDesignerField = null;
+
+const designerSampleVariables = {
+    customer_name: "Muhammad Naveed",
+    customer_email: "customer@example.com",
+    customer_phone: "+92 300 1234567",
+    order_number: "RUK-20260824-000125",
+    order_status: "Confirmed",
+    grand_total: "1,950",
+    event_name: "Mother's Birthday",
+    event_date: "29 August 2026",
+    membership_level: "Gold",
+    points: "125",
+    available_points: "5,225"
+};
+
+
+function designerValue(value) {
+    return value == null
+        ? ""
+        : String(value);
 }
+
+
+function renderDesignerVariables(text) {
+    let output =
+        designerValue(text);
+
+    Object.entries(
+        designerSampleVariables
+    ).forEach(([key, value]) => {
+        output =
+            output.replace(
+                new RegExp(
+                    `{{\\s*${key}\\s*}}`,
+                    "gi"
+                ),
+                value
+            );
+    });
+
+    return output;
+}
+
+
+function templateMatchesFilters(template) {
+
+    const search =
+        designerValue(
+            $("templateSearch")?.value
+        )
+            .trim()
+            .toLowerCase();
+
+    const category =
+        designerValue(
+            $("templateCategoryFilter")?.value
+        );
+
+    const channel =
+        designerValue(
+            $("templateChannelFilter")?.value
+        );
+
+    const haystack = [
+        template.template_name,
+        template.template_key,
+        template.template_category,
+        template.channel,
+        template.subject,
+        template.body
+    ]
+        .map(designerValue)
+        .join(" ")
+        .toLowerCase();
+
+    if (
+        search &&
+        !haystack.includes(search)
+    ) {
+        return false;
+    }
+
+    if (
+        category &&
+        designerValue(
+            template.template_category
+        ) !== category
+    ) {
+        return false;
+    }
+
+    if (
+        channel &&
+        designerValue(
+            template.channel
+        ) !== channel
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+
+function renderTemplates() {
+
+    const body =
+        $("templatesBody");
+
+    if (!body) {
+        return;
+    }
+
+    const templates =
+        (state.templates || [])
+            .filter(
+                templateMatchesFilters
+            );
+
+    if ($("templateVisibleCount")) {
+        $("templateVisibleCount").textContent =
+            templates.length;
+    }
+
+    if (!templates.length) {
+        body.innerHTML = `
+            <tr>
+                <td
+                    colspan="6"
+                    class="empty"
+                >
+                    No notification templates match
+                    the current filters.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    body.innerHTML =
+        templates
+            .map(template => {
+
+                const category =
+                    designerValue(
+                        template.template_category
+                    ) || "General";
+
+                const channel =
+                    designerValue(
+                        template.channel
+                    ) || "—";
+
+                const purpose =
+                    template.subject ||
+                    (
+                        channel === "WhatsApp"
+                            ? "WhatsApp customer message"
+                            : channel === "SMS"
+                                ? "SMS customer message"
+                                : "Customer notification"
+                    );
+
+                const systemBadge =
+                    Number(
+                        template.is_system_template
+                    )
+                        ? `
+                            <span class="designer-system-mini">
+                                <i class="fa-solid fa-lock"></i>
+                                System
+                            </span>
+                        `
+                        : "";
+
+                const status =
+                    designerValue(
+                        template.status
+                    ) || "Active";
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="designer-template-name">
+                                <strong>
+                                    ${escapeHtml(
+                                        template.template_name ||
+                                        "Untitled Template"
+                                    )}
+                                </strong>
+
+                                <code>
+                                    ${escapeHtml(
+                                        template.template_key ||
+                                        "—"
+                                    )}
+                                </code>
+
+                                ${systemBadge}
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="designer-category-badge">
+                                ${escapeHtml(category)}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="designer-channel-badge">
+                                ${escapeHtml(channel)}
+                            </span>
+                        </td>
+
+                        <td>
+                            ${escapeHtml(purpose)}
+                        </td>
+
+                        <td>
+                            <span class="status ${escapeHtml(
+                                status.toLowerCase()
+                            )}">
+                                ${escapeHtml(status)}
+                            </span>
+                        </td>
+
+                        <td>
+                            <button
+                                class="edit-template"
+                                data-template-id="${template.id}"
+                                type="button"
+                            >
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                Design
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            })
+            .join("");
+
+    body
+        .querySelectorAll(
+            ".edit-template"
+        )
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                () => openTemplate(
+                    button.dataset.templateId
+                )
+            );
+        });
+}
+
 
 function openTemplate(id) {
-    const t = state.templates.find(item => String(item.id) === String(id));
-    if (!t) return;
-    $("templateId").value = t.id; $("templateName").value = t.template_name; $("templateChannel").value = t.channel; $("templateSubject").value = t.subject || ""; $("templateBody").value = t.body; $("templateStatus").value = t.status;
-    $("templateModal").classList.remove("hidden");
+
+    const template =
+        (state.templates || [])
+            .find(
+                item =>
+                    String(item.id) ===
+                    String(id)
+            );
+
+    if (!template) {
+        showMessage(
+            "Notification template not found.",
+            "error"
+        );
+
+        return;
+    }
+
+    $("templateId").value =
+        template.id;
+
+    $("templateName").value =
+        designerValue(
+            template.template_name
+        );
+
+    $("templateCategory").value =
+        designerValue(
+            template.template_category
+        ) || "General";
+
+    $("templateChannel").value =
+        designerValue(
+            template.channel
+        ) || "Email";
+
+    $("templateSubject").value =
+        designerValue(
+            template.subject
+        );
+
+    $("templatePreheader").value =
+        designerValue(
+            template.email_preheader
+        );
+
+    $("templateHeading").value =
+        designerValue(
+            template.email_heading
+        );
+
+    $("templateBody").value =
+        designerValue(
+            template.body
+        );
+
+    $("templateButtonText").value =
+        designerValue(
+            template.email_button_text
+        );
+
+    $("templateButtonUrl").value =
+        designerValue(
+            template.email_button_url
+        );
+
+    $("templateBannerUrl").value =
+        designerValue(
+            template.email_banner_url
+        );
+
+    $("templateStatus").value =
+        designerValue(
+            template.status
+        ) || "Active";
+
+    $("templateKeyDisplay").textContent =
+        template.template_key ||
+        "—";
+
+    $("templateTitle").textContent =
+        template.template_name ||
+        "Message Designer";
+
+    const system =
+        Number(
+            template.is_system_template
+        ) === 1;
+
+    $("templateSystemBadge")
+        .classList.toggle(
+            "hidden",
+            !system
+        );
+
+    activeDesignerField =
+        $("templateBody");
+
+    updateDesignerChannelUI();
+    updateDesignerPreview();
+    updateDesignerCharacterCount();
+
+    $("templateModal")
+        .classList.remove("hidden");
 }
 
-async function saveTemplate(event) {
-    event.preventDefault();
-    try {
-        await request(`/templates/${$("templateId").value}`, { method: "PUT", body: JSON.stringify({ template_name: $("templateName").value, channel: $("templateChannel").value, subject: $("templateSubject").value, body: $("templateBody").value, status: $("templateStatus").value }) });
-        closeTemplate(); showMessage("Template saved.", "success"); await loadAll();
-    } catch (error) { showMessage(error.message, "error"); }
+
+function closeTemplate() {
+
+    $("templateModal")
+        .classList.add("hidden");
+
+    activeDesignerField = null;
 }
+
+
+function updateDesignerCharacterCount() {
+
+    const body =
+        $("templateBody");
+
+    const count =
+        designerValue(
+            body?.value
+        ).length;
+
+    if ($("designerCharacterCount")) {
+        $("designerCharacterCount")
+            .textContent =
+                `${count} character${count === 1 ? "" : "s"}`;
+    }
+}
+
+
+function updateDesignerChannelUI() {
+
+    const channel =
+        $("templateChannel")?.value ||
+        "Email";
+
+    const isEmail =
+        channel === "Email";
+
+    $("designerEmailFields")
+        ?.classList.toggle(
+            "hidden",
+            !isEmail
+        );
+
+    $("designerEmailExtras")
+        ?.classList.toggle(
+            "hidden",
+            !isEmail
+        );
+
+    $("designerEmailPreview")
+        ?.classList.toggle(
+            "hidden",
+            !isEmail
+        );
+
+    $("designerWhatsappPreview")
+        ?.classList.toggle(
+            "hidden",
+            channel !== "WhatsApp"
+        );
+
+    $("designerSmsPreview")
+        ?.classList.toggle(
+            "hidden",
+            channel !== "SMS"
+        );
+
+    if ($("designerPreviewLabel")) {
+        $("designerPreviewLabel")
+            .textContent =
+                `${channel} Preview`;
+    }
+
+    updateDesignerPreview();
+}
+
+
+function updateDesignerPreview() {
+
+    const channel =
+        $("templateChannel")?.value ||
+        "Email";
+
+    const subject =
+        renderDesignerVariables(
+            $("templateSubject")?.value ||
+            "RUKHNAV Notification"
+        );
+
+    const preheader =
+        renderDesignerVariables(
+            $("templatePreheader")?.value ||
+            "Beauty inspired by nature"
+        );
+
+    const heading =
+        renderDesignerVariables(
+            $("templateHeading")?.value ||
+            "A Message from RUKHNAV"
+        );
+
+    const message =
+        renderDesignerVariables(
+            $("templateBody")?.value ||
+            "Your message preview will appear here."
+        );
+
+    if ($("previewEmailSubject")) {
+        $("previewEmailSubject")
+            .textContent =
+                subject;
+    }
+
+    if ($("previewEmailPreheader")) {
+        $("previewEmailPreheader")
+            .textContent =
+                preheader;
+    }
+
+    if ($("previewEmailHeading")) {
+        $("previewEmailHeading")
+            .textContent =
+                heading;
+    }
+
+    if ($("previewEmailBody")) {
+        $("previewEmailBody")
+            .textContent =
+                message;
+    }
+
+    const buttonText =
+        renderDesignerVariables(
+            $("templateButtonText")?.value
+        );
+
+    const button =
+        $("previewEmailButton");
+
+    if (button) {
+        button.textContent =
+            buttonText ||
+            "View Details";
+
+        button.classList.toggle(
+            "hidden",
+            !buttonText
+        );
+    }
+
+    const bannerUrl =
+        designerValue(
+            $("templateBannerUrl")?.value
+        ).trim();
+
+    const banner =
+        $("previewEmailBanner");
+
+    if (banner) {
+
+        if (
+            channel === "Email" &&
+            bannerUrl
+        ) {
+            banner.src =
+                bannerUrl;
+
+            banner.classList.remove(
+                "hidden"
+            );
+        } else {
+            banner.removeAttribute(
+                "src"
+            );
+
+            banner.classList.add(
+                "hidden"
+            );
+        }
+    }
+
+    if ($("previewWhatsappBody")) {
+        $("previewWhatsappBody")
+            .textContent =
+                message;
+    }
+
+    if ($("previewSmsBody")) {
+        $("previewSmsBody")
+            .textContent =
+                message;
+    }
+
+    updateDesignerCharacterCount();
+}
+
+
+function rememberDesignerField(event) {
+
+    const target =
+        event.target;
+
+    if (
+        target &&
+        (
+            target.tagName === "INPUT" ||
+            target.tagName === "TEXTAREA"
+        )
+    ) {
+        activeDesignerField =
+            target;
+    }
+}
+
+
+function insertDesignerVariable(variable) {
+
+    let field =
+        activeDesignerField;
+
+    if (
+        !field ||
+        !(
+            field.tagName === "INPUT" ||
+            field.tagName === "TEXTAREA"
+        ) ||
+        field.disabled ||
+        field.readOnly
+    ) {
+        field =
+            $("templateBody");
+    }
+
+    if (!field) {
+        return;
+    }
+
+    const value =
+        designerValue(
+            field.value
+        );
+
+    const start =
+        typeof field.selectionStart ===
+            "number"
+            ? field.selectionStart
+            : value.length;
+
+    const end =
+        typeof field.selectionEnd ===
+            "number"
+            ? field.selectionEnd
+            : start;
+
+    field.value =
+        value.slice(0, start) +
+        variable +
+        value.slice(end);
+
+    const cursor =
+        start +
+        variable.length;
+
+    field.focus();
+
+    if (
+        typeof field.setSelectionRange ===
+        "function"
+    ) {
+        field.setSelectionRange(
+            cursor,
+            cursor
+        );
+    }
+
+    activeDesignerField =
+        field;
+
+    updateDesignerPreview();
+}
+
+
+async function saveTemplate(event) {
+
+    event.preventDefault();
+
+    const id =
+        Number(
+            $("templateId").value
+        );
+
+    if (!id) {
+        showMessage(
+            "A valid template is required.",
+            "error"
+        );
+
+        return;
+    }
+
+    const channel =
+        $("templateChannel").value;
+
+    const templateName =
+        $("templateName").value.trim();
+
+    const body =
+        $("templateBody").value.trim();
+
+    const subject =
+        $("templateSubject").value.trim();
+
+    if (
+        !templateName ||
+        !body
+    ) {
+        showMessage(
+            "Template name and message body are required.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (
+        channel === "Email" &&
+        !subject
+    ) {
+        showMessage(
+            "Email templates require a subject.",
+            "error"
+        );
+
+        return;
+    }
+
+    const saveButton =
+        $("saveTemplateButton");
+
+    const originalHtml =
+        saveButton?.innerHTML;
+
+    try {
+
+        if (saveButton) {
+            saveButton.disabled =
+                true;
+
+            saveButton.innerHTML =
+                `
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Saving...
+                `;
+        }
+
+        const result =
+            await request(
+                `/templates/${id}`,
+                {
+                    method:
+                        "PUT",
+
+                    body:
+                        JSON.stringify({
+                            template_name:
+                                templateName,
+
+                            template_category:
+                                $("templateCategory").value,
+
+                            channel,
+
+                            subject:
+                                channel === "Email"
+                                    ? subject
+                                    : "",
+
+                            body,
+
+                            email_heading:
+                                channel === "Email"
+                                    ? $("templateHeading").value.trim()
+                                    : "",
+
+                            email_preheader:
+                                channel === "Email"
+                                    ? $("templatePreheader").value.trim()
+                                    : "",
+
+                            email_button_text:
+                                channel === "Email"
+                                    ? $("templateButtonText").value.trim()
+                                    : "",
+
+                            email_button_url:
+                                channel === "Email"
+                                    ? $("templateButtonUrl").value.trim()
+                                    : "",
+
+                            email_banner_url:
+                                channel === "Email"
+                                    ? $("templateBannerUrl").value.trim()
+                                    : "",
+
+                            status:
+                                $("templateStatus").value
+                        })
+                }
+            );
+
+        const index =
+            state.templates
+                .findIndex(
+                    item =>
+                        String(item.id) ===
+                        String(id)
+                );
+
+        if (
+            index !== -1 &&
+            result?.template
+        ) {
+            state.templates[index] =
+                result.template;
+        }
+
+        closeTemplate();
+
+        showMessage(
+            result?.message ||
+            "Template saved successfully.",
+            "success"
+        );
+
+        await loadAll();
+
+    } catch (error) {
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    } finally {
+
+        if (saveButton) {
+            saveButton.disabled =
+                false;
+
+            saveButton.innerHTML =
+                originalHtml ||
+                `
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Template
+                `;
+        }
+    }
+}
+
+
+function initializeMessageDesigner() {
+
+    [
+        "templateSearch",
+        "templateCategoryFilter",
+        "templateChannelFilter"
+    ].forEach(id => {
+        $(id)?.addEventListener(
+            id === "templateSearch"
+                ? "input"
+                : "change",
+            renderTemplates
+        );
+    });
+
+
+    [
+        "templateName",
+        "templateSubject",
+        "templatePreheader",
+        "templateHeading",
+        "templateBody",
+        "templateButtonText",
+        "templateButtonUrl",
+        "templateBannerUrl"
+    ].forEach(id => {
+
+        const element =
+            $(id);
+
+        if (!element) {
+            return;
+        }
+
+        element.addEventListener(
+            "focus",
+            rememberDesignerField
+        );
+
+        element.addEventListener(
+            "click",
+            rememberDesignerField
+        );
+
+        element.addEventListener(
+            "input",
+            updateDesignerPreview
+        );
+    });
+
+
+    $("templateChannel")
+        ?.addEventListener(
+            "change",
+            updateDesignerChannelUI
+        );
+
+
+    document
+        .querySelectorAll(
+            "[data-template-variable]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+                    insertDesignerVariable(
+                        button.dataset
+                            .templateVariable
+                    );
+                }
+            );
+        });
+
+
+    $("previewEmailBanner")
+        ?.addEventListener(
+            "error",
+            () => {
+                $("previewEmailBanner")
+                    ?.classList.add(
+                        "hidden"
+                    );
+            }
+        );
+}
+
 
 function renderLogs() {
     $("logsBody").innerHTML = state.logs.length ? state.logs.map(log => `<tr><td>${new Date(log.created_at).toLocaleString()}</td><td>${escapeHtml(log.channel)}</td><td>${escapeHtml(log.recipient)}</td><td><span class="status ${String(log.status).toLowerCase()}">${escapeHtml(log.status)}</span></td><td>${escapeHtml(log.provider || "—")}</td><td>${escapeHtml(log.error_message || log.provider_message_id || "—")}</td></tr>`).join("") : `<tr><td colspan="6" class="empty">No delivery logs yet.</td></tr>`;
@@ -1459,6 +2358,8 @@ document.addEventListener("DOMContentLoaded", () => {
     $("preferenceSearch").addEventListener("input", renderPreferences);
     $("templateForm").addEventListener("submit", saveTemplate);
 
+    initializeMessageDesigner();
+
     $("whatsappForm").addEventListener(
         "submit",
         sendManualWhatsapp
@@ -1512,22 +2413,6 @@ document.addEventListener("DOMContentLoaded", () => {
     $("campaignForm").addEventListener(
         "submit",
         saveCampaignDraft
-    );
-
-    $("scheduleCampaignButton").addEventListener(
-        "click",
-        () => runCampaignAction(
-            "schedule",
-            $("scheduleCampaignButton")
-        )
-    );
-
-    $("sendCampaignNowButton").addEventListener(
-        "click",
-        () => runCampaignAction(
-            "send",
-            $("sendCampaignNowButton")
-        )
     );
 
     $("scheduleCampaignButton").addEventListener(

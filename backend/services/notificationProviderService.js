@@ -2,6 +2,9 @@
 
 const twilio = require("twilio");
 
+const emailRenderer =
+    require("./notificationEmailRenderer");
+
 /**
  * Development simulation is enabled by default
  * unless the application is running in production.
@@ -71,7 +74,12 @@ function simulatedResult(channel, recipient) {
 async function sendEmail({
     to,
     subject,
-    message
+    message,
+    heading = "",
+    preheader = "",
+    buttonText = "",
+    buttonUrl = "",
+    bannerUrl = ""
 }) {
     if (isSimulationMode()) {
         console.log(
@@ -94,21 +102,16 @@ async function sendEmail({
         sendEmail: sendTransactionalEmail
     } = require("./emailService");
 
-    const html = `
-        <div style="
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #222222;
-        ">
-            <h2 style="color: #b8860b;">
-                RUKHNAV
-            </h2>
-
-            <p>
-                ${escapeHtml(message)}
-            </p>
-        </div>
-    `;
+    const html =
+        emailRenderer.renderEmail({
+            subject,
+            message,
+            heading,
+            preheader,
+            buttonText,
+            buttonUrl,
+            bannerUrl
+        });
 
     const sent = await sendTransactionalEmail(
         to,
