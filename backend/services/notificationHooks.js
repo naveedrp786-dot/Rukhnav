@@ -200,6 +200,102 @@ function orderStatusChanged({
     );
 }
 
+function shipmentStatusChanged({
+    customerId,
+    orderId,
+    orderNumber,
+    orderStatus = "",
+    shipmentId = "",
+    shipmentNumber = "",
+    shipmentStatus = "",
+    courierName = "",
+    serviceType = "",
+    trackingNumber = "",
+    trackingUrl = "",
+    estimatedDeliveryDate = "",
+    grandTotal = "",
+    paymentMethod = "",
+    paymentStatus = "",
+    orderUrl = ""
+}) {
+
+    const shipmentEventMap = {
+        "Picked Up":
+            "SHIPMENT_PICKED_UP",
+        "In Transit":
+            "SHIPMENT_IN_TRANSIT",
+        "Out For Delivery":
+            "SHIPMENT_OUT_FOR_DELIVERY",
+        "Delivered":
+            "SHIPMENT_DELIVERED",
+        "Returned":
+            "SHIPMENT_RETURNED",
+        "Cancelled":
+            "SHIPMENT_CANCELLED"
+    };
+
+    const eventKey =
+        shipmentEventMap[shipmentStatus];
+
+    if (!eventKey) {
+        return Promise.resolve({
+            queued: false,
+            skipped: true,
+            reason:
+                "No dedicated customer shipment event for this status."
+        });
+    }
+
+    return safeQueue(
+        queueService
+            .queueCustomerEvent({
+                eventKey,
+                customerId,
+                variables: {
+                    order_id:
+                        orderId,
+                    order_number:
+                        orderNumber,
+                    order_status:
+                        orderStatus || "",
+                    shipment_id:
+                        shipmentId || "",
+                    shipment_number:
+                        shipmentNumber || "",
+                    shipment_status:
+                        shipmentStatus || "",
+                    courier_name:
+                        courierName || "",
+                    service_type:
+                        serviceType || "",
+                    tracking_number:
+                        trackingNumber || "",
+                    tracking_url:
+                        trackingUrl || "",
+                    estimated_delivery_date:
+                        estimatedDeliveryDate || "",
+                    grand_total:
+                        grandTotal === ""
+                            ? ""
+                            : Number(
+                                grandTotal || 0
+                            ).toFixed(2),
+                    payment_method:
+                        formatPaymentMethod(
+                            paymentMethod
+                        ),
+                    payment_status:
+                        paymentStatus || "",
+                    order_url:
+                        orderUrl || ""
+                },
+                dedupeReference:
+                    `shipment-${shipmentId}-${shipmentStatus}`
+            }),
+        eventKey
+    );
+}
+
 function loyaltyPointsEarned({
     customerId,
     points,
@@ -284,6 +380,7 @@ function customerEventReminder({
 }
 
 module.exports = {
+    shipmentStatusChanged,
     customerRegistered,
     orderPlaced,
     orderStatusChanged,

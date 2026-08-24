@@ -360,13 +360,19 @@ const updateShipmentStatus = async ({ shipmentId, requestedStatus, adminId, payl
 
         await connection.commit();
 
-        if (
-            order.customer_id &&
-            String(previousOrderStatus) !==
-                String(order.order_status)
-        ) {
+        // =================================================
+        // Dedicated Customer Shipment Notification
+        //
+        // This runs after the shipment transaction commits.
+        // Shipment notifications are based on the actual
+        // courier lifecycle, not only the related order
+        // status. This prevents missing notifications when
+        // multiple shipment states map to one order status.
+        // =================================================
+
+        if (order.customer_id) {
             notificationHooks
-                .orderStatusChanged({
+                .shipmentStatusChanged({
                     customerId:
                         order.customer_id,
                     orderId:
@@ -375,24 +381,41 @@ const updateShipmentStatus = async ({ shipmentId, requestedStatus, adminId, payl
                         order.order_number,
                     orderStatus:
                         order.order_status,
-                    grandTotal:
-                        order.grand_total,
-                    paymentMethod:
-                        order.payment_method,
-                    paymentStatus:
-                        order.payment_status,
+                    shipmentId:
+                        updatedShipment.id,
+                    shipmentNumber:
+                        updatedShipment.shipment_number ||
+                        "",
+                    shipmentStatus:
+                        newStatus,
+                    courierName:
+                        updatedShipment.courier_name ||
+                        "",
+                    serviceType:
+                        updatedShipment.service_type ||
+                        "",
                     trackingNumber:
                         updatedShipment.tracking_number ||
                         "",
                     trackingUrl:
                         updatedShipment.tracking_url ||
                         "",
+                    estimatedDeliveryDate:
+                        updatedShipment
+                            .estimated_delivery_date ||
+                        "",
+                    grandTotal:
+                        order.grand_total,
+                    paymentMethod:
+                        order.payment_method,
+                    paymentStatus:
+                        order.payment_status,
                     orderUrl:
                         `/store/order-details.html?id=${order.id}`
                 })
                 .catch(error => {
                     console.error(
-                        "Shipment order-status notification queue error:",
+                        "Shipment lifecycle notification queue error:",
                         error.message
                     );
                 });
