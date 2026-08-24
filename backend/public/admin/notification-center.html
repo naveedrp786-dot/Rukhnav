@@ -41,6 +41,7 @@
                 <button data-tab="preferences"><i class="fa-solid fa-user-gear"></i> Customer Preferences</button>
                 <button data-tab="templates"><i class="fa-solid fa-file-lines"></i> Templates</button>
                 <button data-tab="logs"><i class="fa-solid fa-list-check"></i> Delivery Logs</button>
+                <button data-tab="whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp Messages</button>
             </nav>
 
             <section id="channelsView" class="tab-view">
@@ -60,6 +61,215 @@
                     <div class="erp-v5-panel-heading"><div><span class="erp-v5-section-label">Message Library</span><h2>Notification Templates</h2><p>Edit reusable messages and variables such as {{customer_name}}, {{order_number}} and {{event_date}}.</p></div></div>
                     <div class="erp-v5-table-wrap"><table class="erp-v5-table templates-table"><thead><tr><th>Template</th><th>Channel</th><th>Subject</th><th>Status</th><th>Action</th></tr></thead><tbody id="templatesBody"></tbody></table></div>
                 </article>
+            </section>
+
+            <section id="whatsappView" class="tab-view hidden">
+                <div class="whatsapp-console-grid">
+
+                    <article class="erp-v5-panel whatsapp-compose-panel">
+                        <div class="erp-v5-panel-heading">
+                            <div>
+                                <span class="erp-v5-section-label">
+                                    Direct Communication
+                                </span>
+                                <h2>
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    Send WhatsApp Message
+                                </h2>
+                                <p>
+                                    Send a live WhatsApp message through the
+                                    RUKHNAV WasenderAPI connection.
+                                </p>
+                            </div>
+                            <span class="wa-provider-badge">
+                                <i class="fa-solid fa-circle"></i>
+                                WasenderAPI
+                            </span>
+                        </div>
+
+                        <form id="whatsappForm" class="whatsapp-form">
+
+                            <div class="erp-v5-field">
+                                <label for="whatsappCustomerSearch">
+                                    Find registered customer
+                                </label>
+
+                                <input
+                                    id="whatsappCustomerSearch"
+                                    type="search"
+                                    autocomplete="off"
+                                    placeholder="Search by name, phone, email or customer ID"
+                                >
+
+                                <div
+                                    id="whatsappCustomerResults"
+                                    class="wa-customer-results hidden"
+                                ></div>
+                            </div>
+
+                            <div
+                                id="selectedWhatsappCustomer"
+                                class="wa-selected-customer hidden"
+                            >
+                                <div>
+                                    <span>Selected customer</span>
+                                    <strong id="selectedWhatsappCustomerName"></strong>
+                                    <small id="selectedWhatsappCustomerDetails"></small>
+                                </div>
+
+                                <button
+                                    id="clearWhatsappCustomer"
+                                    type="button"
+                                    title="Remove selected customer"
+                                >
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <input
+                                id="whatsappCustomerId"
+                                type="hidden"
+                            >
+
+                            <div class="erp-v5-field">
+                                <label for="whatsappRecipient">
+                                    WhatsApp Number
+                                </label>
+
+                                <input
+                                    id="whatsappRecipient"
+                                    type="tel"
+                                    autocomplete="off"
+                                    placeholder="+923001234567"
+                                    required
+                                >
+
+                                <small class="wa-help">
+                                    Use international format, for example
+                                    +923001234567. You can also send to a
+                                    number that is not registered as a customer.
+                                </small>
+                            </div>
+
+                            <div class="erp-v5-field">
+                                <div class="wa-message-label">
+                                    <label for="whatsappMessage">
+                                        Message
+                                    </label>
+                                    <span id="whatsappCharacterCount">
+                                        0 / 4000
+                                    </span>
+                                </div>
+
+                                <textarea
+                                    id="whatsappMessage"
+                                    rows="10"
+                                    maxlength="4000"
+                                    required
+                                    placeholder="Type your WhatsApp message here..."
+                                ></textarea>
+                            </div>
+
+                            <div class="wa-quick-messages">
+                                <span>Quick message</span>
+
+                                <div>
+                                    <button
+                                        type="button"
+                                        data-wa-message="Dear Customer, thank you for choosing RUKHNAV. If you need any assistance, please reply to this WhatsApp message."
+                                    >
+                                        Thank You
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-wa-message="Dear Customer, your RUKHNAV order has been updated. Please contact us if you require any assistance."
+                                    >
+                                        Order Update
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-wa-message="Dear Customer, your RUKHNAV order is ready for dispatch. Thank you for shopping with us."
+                                    >
+                                        Ready to Dispatch
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-wa-message="Dear Customer, this is a friendly payment reminder from RUKHNAV. Please contact us if you need any assistance."
+                                    >
+                                        Payment Reminder
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="wa-send-footer">
+                                <div class="wa-live-warning">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <div>
+                                        <strong>Live customer communication</strong>
+                                        <span>
+                                            Verify the recipient and message
+                                            before sending.
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    id="sendWhatsappButton"
+                                    class="erp-v5-btn erp-v5-btn--gold wa-send-button"
+                                    type="submit"
+                                >
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    Send WhatsApp
+                                </button>
+                            </div>
+                        </form>
+                    </article>
+
+                    <aside class="erp-v5-panel whatsapp-info-panel">
+                        <span class="erp-v5-section-label">
+                            Message Information
+                        </span>
+
+                        <h3>WhatsApp Console</h3>
+
+                        <div class="wa-info-row">
+                            <i class="fa-solid fa-server"></i>
+                            <div>
+                                <span>Provider</span>
+                                <strong>WasenderAPI</strong>
+                            </div>
+                        </div>
+
+                        <div class="wa-info-row">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <div>
+                                <span>Access</span>
+                                <strong>Admin only</strong>
+                            </div>
+                        </div>
+
+                        <div class="wa-info-row">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div>
+                                <span>Audit</span>
+                                <strong>Delivery Logs</strong>
+                            </div>
+                        </div>
+
+                        <div class="wa-info-note">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <p>
+                                Every attempt is recorded in Delivery Logs
+                                with the recipient, provider, status and
+                                provider message ID or failure reason.
+                            </p>
+                        </div>
+                    </aside>
+
+                </div>
             </section>
 
             <section id="logsView" class="tab-view hidden">

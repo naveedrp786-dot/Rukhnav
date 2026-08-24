@@ -280,14 +280,316 @@ function renderLogs() {
 
 function activateTab(tab) {
     document.querySelectorAll("[data-tab]").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
-    ["channels", "preferences", "templates", "logs"].forEach(name => $(`${name}View`).classList.toggle("hidden", name !== tab));
+    ["channels", "preferences", "templates", "logs", "whatsapp"].forEach(name => $(`${name}View`).classList.toggle("hidden", name !== tab));
 }
+
+let selectedWhatsappCustomerId = null;
+
+function clearWhatsappCustomer() {
+    selectedWhatsappCustomerId = null;
+
+    $("whatsappCustomerId").value = "";
+    $("whatsappCustomerSearch").value = "";
+
+    $("selectedWhatsappCustomer")
+        .classList.add("hidden");
+
+    $("whatsappCustomerResults")
+        .classList.add("hidden");
+
+    $("whatsappCustomerResults")
+        .innerHTML = "";
+}
+
+function selectWhatsappCustomer(customer) {
+    selectedWhatsappCustomerId =
+        Number(customer.id);
+
+    $("whatsappCustomerId").value =
+        customer.id;
+
+    $("whatsappCustomerSearch").value = "";
+
+    $("whatsappRecipient").value =
+        customer.phone || "";
+
+    $("selectedWhatsappCustomerName")
+        .textContent =
+        customer.full_name ||
+        `Customer #${customer.id}`;
+
+    $("selectedWhatsappCustomerDetails")
+        .textContent =
+        [
+            customer.phone || "",
+            customer.email || ""
+        ]
+            .filter(Boolean)
+            .join(" · ");
+
+    $("selectedWhatsappCustomer")
+        .classList.remove("hidden");
+
+    $("whatsappCustomerResults")
+        .classList.add("hidden");
+
+    $("whatsappCustomerResults")
+        .innerHTML = "";
+}
+
+function renderWhatsappCustomerSearch() {
+    const search =
+        String(
+            $("whatsappCustomerSearch")
+                .value || ""
+        )
+            .trim()
+            .toLowerCase();
+
+    const results =
+        $("whatsappCustomerResults");
+
+    if (!search) {
+        results.innerHTML = "";
+        results.classList.add("hidden");
+        return;
+    }
+
+    const customers =
+        state.customers
+            .filter(customer => {
+                const haystack = [
+                    customer.id,
+                    customer.full_name,
+                    customer.email,
+                    customer.phone
+                ]
+                    .join(" ")
+                    .toLowerCase();
+
+                return haystack.includes(search);
+            })
+            .slice(0, 12);
+
+    if (!customers.length) {
+        results.innerHTML =
+            `<div class="wa-no-customer">
+                No registered customer found.
+                You can still enter a WhatsApp
+                number manually.
+            </div>`;
+
+        results.classList.remove("hidden");
+        return;
+    }
+
+    results.innerHTML =
+        customers
+            .map(customer => `
+                <button
+                    type="button"
+                    class="wa-customer-option"
+                    data-wa-customer-id="${customer.id}"
+                >
+                    <span class="wa-customer-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+
+                    <span>
+                        <strong>
+                            ${escapeHtml(
+                                customer.full_name ||
+                                `Customer #${customer.id}`
+                            )}
+                        </strong>
+
+                        <small>
+                            ${escapeHtml(
+                                [
+                                    customer.phone || "",
+                                    customer.email || ""
+                                ]
+                                    .filter(Boolean)
+                                    .join(" · ") ||
+                                `Customer ID ${customer.id}`
+                            )}
+                        </small>
+                    </span>
+                </button>
+            `)
+            .join("");
+
+    results
+        .querySelectorAll(
+            "[data-wa-customer-id]"
+        )
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    const customer =
+                        state.customers.find(
+                            item =>
+                                String(item.id) ===
+                                String(
+                                    button.dataset
+                                        .waCustomerId
+                                )
+                        );
+
+                    if (customer) {
+                        selectWhatsappCustomer(
+                            customer
+                        );
+                    }
+                }
+            );
+        });
+
+    results.classList.remove("hidden");
+}
+
+function updateWhatsappCharacterCount() {
+    const length =
+        $("whatsappMessage")
+            .value.length;
+
+    $("whatsappCharacterCount")
+        .textContent =
+        `${length} / 4000`;
+}
+
+async function sendManualWhatsapp(event) {
+    event.preventDefault();
+
+    const button =
+        $("sendWhatsappButton");
+
+    const recipient =
+        $("whatsappRecipient")
+            .value
+            .trim();
+
+    const message =
+        $("whatsappMessage")
+            .value
+            .trim();
+
+    if (!recipient) {
+        showMessage(
+            "Enter a WhatsApp number.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (!message) {
+        showMessage(
+            "Enter a WhatsApp message.",
+            "error"
+        );
+
+        return;
+    }
+
+    const originalHtml =
+        button.innerHTML;
+
+    try {
+        button.disabled = true;
+
+        button.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+
+        const data =
+            await request(
+                "/whatsapp/send",
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        customer_id:
+                            selectedWhatsappCustomerId,
+                        to:
+                            recipient,
+                        message
+                    })
+                }
+            );
+
+        $("whatsappMessage").value = "";
+        updateWhatsappCharacterCount();
+
+        /*
+         * Refresh dashboard and delivery logs
+         * while preserving the success message.
+         */
+        await loadAll({
+            preserveMessage: true,
+            preserveRecipients: true
+        });
+
+        showMessage(
+            data.message ||
+            "WhatsApp message sent successfully.",
+            "success"
+        );
+
+    } catch (error) {
+        showMessage(
+            error.message ||
+            "Unable to send WhatsApp message.",
+            "error"
+        );
+
+    } finally {
+        button.disabled = false;
+        button.innerHTML = originalHtml;
+    }
+}
+
 function closeTemplate() { $("templateModal").classList.add("hidden"); }
 
 document.addEventListener("DOMContentLoaded", () => {
     $("refreshButton").addEventListener("click", loadAll);
     $("preferenceSearch").addEventListener("input", renderPreferences);
     $("templateForm").addEventListener("submit", saveTemplate);
+
+    $("whatsappForm").addEventListener(
+        "submit",
+        sendManualWhatsapp
+    );
+
+    $("whatsappCustomerSearch").addEventListener(
+        "input",
+        renderWhatsappCustomerSearch
+    );
+
+    $("clearWhatsappCustomer").addEventListener(
+        "click",
+        clearWhatsappCustomer
+    );
+
+    $("whatsappMessage").addEventListener(
+        "input",
+        updateWhatsappCharacterCount
+    );
+
+    document
+        .querySelectorAll("[data-wa-message]")
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    $("whatsappMessage").value =
+                        button.dataset.waMessage || "";
+
+                    updateWhatsappCharacterCount();
+
+                    $("whatsappMessage").focus();
+                }
+            );
+        });
     document.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => activateTab(b.dataset.tab)));
     document.querySelectorAll("[data-close-template]").forEach(b => b.addEventListener("click", closeTemplate));
     loadAll();

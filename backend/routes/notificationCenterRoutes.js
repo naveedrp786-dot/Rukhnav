@@ -11,6 +11,10 @@ router.use(adminAuth);
 router.get("/dashboard", controller.getDashboard);
 router.patch("/channels/:channel", controller.updateChannel);
 router.post("/channels/:channel/test", controller.testChannel);
+router.post(
+    "/whatsapp/send",
+    controller.sendManualWhatsApp
+);
 router.get("/templates", controller.getTemplates);
 router.put("/templates/:id", controller.saveTemplate);
 router.get("/logs", controller.getLogs);

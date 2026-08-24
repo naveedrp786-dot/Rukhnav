@@ -19,8 +19,12 @@ function environmentReadiness(channel) {
 
     if (channel === "WhatsApp") {
         return {
-            ready: Boolean(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_WHATSAPP_FROM),
-            required: ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_WHATSAPP_FROM"]
+            ready: Boolean(
+                process.env.WASENDER_API_TOKEN
+            ),
+            required: [
+                "WASENDER_API_TOKEN"
+            ]
         };
     }
 
@@ -98,7 +102,16 @@ exports.updateChannel = async (req, res) => {
 
         const enabled = bool(req.body.enabled);
         const simulationMode = bool(req.body.simulation_mode);
-        const provider = String(req.body.provider || (channel === "Email" ? "Resend" : "Twilio")).trim();
+        const provider = String(
+            req.body.provider ||
+            (
+                channel === "Email"
+                    ? "Resend"
+                    : channel === "WhatsApp"
+                        ? "WasenderAPI"
+                        : "Twilio"
+            )
+        ).trim();
         const fromName = String(req.body.from_name || "RUKHNAV").trim();
         const fromAddress = String(req.body.from_address || "").trim() || null;
 
@@ -149,7 +162,12 @@ exports.testChannel = async (req, res) => {
             INSERT INTO notification_delivery_logs
                 (channel, recipient, subject, message, status, provider, provider_message_id, sent_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-        `, [channel, recipient, channel === "Email" ? subject : null, message, result.simulated ? "Simulated" : "Sent", channel === "Email" ? "Resend" : "Twilio", result.providerMessageId || null]);
+        `, [channel, recipient, channel === "Email" ? subject : null, message, result.simulated ? "Simulated" : "Sent", channel === "Email"
+            ? "Resend"
+            : channel === "WhatsApp"
+                ? "WasenderAPI"
+                : "Twilio",
+            result.providerMessageId || null]);
 
         res.json({ success: true, simulated: Boolean(result.simulated), message: result.simulated ? `${channel} test simulated successfully.` : `${channel} test sent successfully.` });
     } catch (error) {
@@ -157,11 +175,242 @@ exports.testChannel = async (req, res) => {
             INSERT INTO notification_delivery_logs
                 (channel, recipient, subject, message, status, provider, error_message)
             VALUES (?, ?, ?, ?, 'Failed', ?, ?)
-        `, [channel, recipient, channel === "Email" ? subject : null, message, channel === "Email" ? "Resend" : "Twilio", error.message]);
+        `, [channel, recipient, channel === "Email" ? subject : null, message, channel === "Email"
+            ? "Resend"
+            : channel === "WhatsApp"
+                ? "WasenderAPI"
+                : "Twilio",
+            error.message]);
 
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
+/**
+ * Send a manual WhatsApp message from the
+ * authenticated RUKHNAV admin Notification Center.
+ *
+ * A registered customer may be selected, or an
+ * administrator may enter another WhatsApp number.
+ */
+exports.sendManualWhatsApp = async (req, res) => {
+    let customerId =
+        Number(req.body.customer_id) || null;
+
+    let recipient =
+        String(req.body.to || "")
+            .trim();
+
+    const message =
+        String(req.body.message || "")
+            .trim();
+
+    if (!message) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "WhatsApp message is required."
+        });
+    }
+
+    if (message.length > 4000) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "WhatsApp message is too long."
+        });
+    }
+
+    try {
+        let customer = null;
+
+        if (customerId) {
+            const [rows] =
+                await db.query(
+                    `
+                    SELECT
+                        id,
+                        full_name,
+                        phone,
+                        status
+                    FROM customers
+                    WHERE id = ?
+                      AND deleted_at IS NULL
+                    LIMIT 1
+                    `,
+                    [customerId]
+                );
+
+            customer = rows[0] || null;
+
+            if (!customer) {
+                return res.status(404).json({
+                    success: false,
+                    message:
+                        "Customer was not found."
+                });
+            }
+
+            /*
+             * If the administrator did not manually
+             * enter another recipient, use the
+             * customer's saved phone number.
+             */
+            if (!recipient) {
+                recipient =
+                    String(
+                        customer.phone || ""
+                    ).trim();
+            }
+        }
+
+        if (!recipient) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "A WhatsApp number is required."
+            });
+        }
+
+        /*
+         * Require a sensible international number.
+         * The provider service performs final
+         * normalization before sending.
+         */
+        const digits =
+            recipient.replace(/\D/g, "");
+
+        if (
+            digits.length < 10 ||
+            digits.length > 15
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Enter a valid WhatsApp number in international format, for example +923001234567."
+            });
+        }
+
+        const result =
+            await providerService
+                .sendWhatsApp({
+                    to: recipient,
+                    message
+                });
+
+        await db.query(
+            `
+            INSERT INTO notification_delivery_logs
+                (
+                    customer_id,
+                    channel,
+                    recipient,
+                    subject,
+                    message,
+                    status,
+                    provider,
+                    provider_message_id,
+                    sent_at
+                )
+            VALUES
+                (
+                    ?,
+                    'WhatsApp',
+                    ?,
+                    NULL,
+                    ?,
+                    ?,
+                    'WasenderAPI',
+                    ?,
+                    CURRENT_TIMESTAMP
+                )
+            `,
+            [
+                customerId,
+                recipient,
+                message,
+                result.simulated
+                    ? "Simulated"
+                    : "Sent",
+                result.providerMessageId ||
+                    null
+            ]
+        );
+
+        return res.json({
+            success: true,
+            simulated:
+                Boolean(result.simulated),
+            provider:
+                "WasenderAPI",
+            providerMessageId:
+                result.providerMessageId ||
+                null,
+            customer: customer
+                ? {
+                    id:
+                        customer.id,
+                    name:
+                        customer.full_name
+                }
+                : null,
+            recipient,
+            message:
+                result.simulated
+                    ? "WhatsApp message simulated successfully."
+                    : "WhatsApp message sent successfully."
+        });
+
+    } catch (error) {
+        try {
+            await db.query(
+                `
+                INSERT INTO notification_delivery_logs
+                    (
+                        customer_id,
+                        channel,
+                        recipient,
+                        subject,
+                        message,
+                        status,
+                        provider,
+                        error_message
+                    )
+                VALUES
+                    (
+                        ?,
+                        'WhatsApp',
+                        ?,
+                        NULL,
+                        ?,
+                        'Failed',
+                        'WasenderAPI',
+                        ?
+                    )
+                `,
+                [
+                    customerId,
+                    recipient || null,
+                    message,
+                    error.message
+                ]
+            );
+        } catch (logError) {
+            console.error(
+                "Unable to log manual WhatsApp failure:",
+                logError.message
+            );
+        }
+
+        return res.status(500).json({
+            success: false,
+            message:
+                error.message
+        });
+    }
+};
+
 
 exports.getTemplates = async (req, res) => {
     try {
