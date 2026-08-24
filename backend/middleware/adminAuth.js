@@ -19,18 +19,7 @@ module.exports = (req, res, next) => {
     }
 
     // ============================
-    // 2. Check URL Query Token
-    // Used for PDF Downloads
-    // ============================
-
-    if (!token && req.query.token) {
-
-        token = req.query.token;
-
-    }
-
-    // ============================
-    // 3. No Token
+    // 2. No Token
     // ============================
 
     if (!token) {
