@@ -3,6 +3,45 @@
 const queueService =
     require("./notificationQueueService");
 
+function formatPaymentMethod(value) {
+    const raw =
+        String(value || "")
+            .trim()
+            .toLowerCase();
+
+    const labels = {
+        cash_on_delivery:
+            "Cash on Delivery",
+        cod:
+            "Cash on Delivery",
+        bank_transfer:
+            "Bank Transfer",
+        easypaisa:
+            "Easypaisa",
+        jazzcash:
+            "JazzCash",
+        card:
+            "Card",
+        credit_card:
+            "Credit Card",
+        debit_card:
+            "Debit Card"
+    };
+
+    if (!raw) {
+        return "";
+    }
+
+    return (
+        labels[raw] ||
+        raw
+            .replace(/[_-]+/g, " ")
+            .replace(/\b\w/g, char =>
+                char.toUpperCase()
+            )
+    );
+}
+
 function safeQueue(
     promise,
     label
@@ -82,7 +121,9 @@ function orderPlaced({
                     order_status:
                         orderStatus,
                     payment_method:
-                        paymentMethod || "",
+                        formatPaymentMethod(
+                            paymentMethod
+                        ),
                     payment_status:
                         paymentStatus || "",
                     tracking_number:
@@ -140,7 +181,9 @@ function orderStatusChanged({
                                 grandTotal || 0
                             ).toFixed(2),
                     payment_method:
-                        paymentMethod || "",
+                        formatPaymentMethod(
+                            paymentMethod
+                        ),
                     payment_status:
                         paymentStatus || "",
                     tracking_number:
