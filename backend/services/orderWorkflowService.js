@@ -14,6 +14,9 @@ const orderSalesIntegrationService =
 const inventoryService =
     require("./inventoryService");
 
+const notificationHooks =
+    require("./notificationHooks");
+
 const cleanNotes = value => {
     if (value === undefined || value === null) {
         return null;
@@ -53,7 +56,11 @@ const updateOrderStatus = async ({ orderId, requestedStatus, adminId, notes }) =
                     order_number,
                     customer_id,
                     order_status,
+                    grand_total,
+                    payment_method,
                     payment_status,
+                    tracking_number,
+                    tracking_url,
                     cancellation_reason
                 FROM orders
                 WHERE id = ?
@@ -309,6 +316,45 @@ const updateOrderStatus = async ({ orderId, requestedStatus, adminId, notes }) =
         );
 
         await connection.commit();
+
+        // =============================================
+        // Customer Order Status Notification
+        //
+        // The order transaction has already committed.
+        // Notification delivery is asynchronous and must
+        // never roll back a successful order transition.
+        // =============================================
+
+        if (order.customer_id) {
+            notificationHooks
+                .orderStatusChanged({
+                    customerId:
+                        order.customer_id,
+                    orderId,
+                    orderNumber:
+                        order.order_number,
+                    orderStatus:
+                        newStatus,
+                    grandTotal:
+                        order.grand_total,
+                    paymentMethod:
+                        order.payment_method,
+                    paymentStatus:
+                        order.payment_status,
+                    trackingNumber:
+                        order.tracking_number || "",
+                    trackingUrl:
+                        order.tracking_url || "",
+                    orderUrl:
+                        `/store/order-details.html?id=${orderId}`
+                })
+                .catch(error => {
+                    console.error(
+                        "Order status notification queue error:",
+                        error.message
+                    );
+                });
+        }
 
         // =============================================
         // Already-Paid Order -> Loyalty -> Referral

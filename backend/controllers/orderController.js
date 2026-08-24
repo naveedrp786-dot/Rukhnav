@@ -1275,7 +1275,11 @@ exports.placeOrder = async (req, res) => {
                 orderNumber,
                 grandTotal,
                 orderStatus:
-                    "Pending"
+                    "Pending",
+                paymentMethod,
+                paymentStatus,
+                orderUrl:
+                    `/store/order-details.html?id=${orderId}`
             });
 
         return res.status(201).json({

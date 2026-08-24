@@ -57,7 +57,12 @@ function orderPlaced({
     orderId,
     orderNumber,
     grandTotal,
-    orderStatus = "Pending"
+    orderStatus = "Pending",
+    paymentMethod = "",
+    paymentStatus = "",
+    trackingNumber = "",
+    trackingUrl = "",
+    orderUrl = ""
 }) {
     return safeQueue(
         queueService
@@ -75,7 +80,17 @@ function orderPlaced({
                             grandTotal || 0
                         ).toFixed(2),
                     order_status:
-                        orderStatus
+                        orderStatus,
+                    payment_method:
+                        paymentMethod || "",
+                    payment_status:
+                        paymentStatus || "",
+                    tracking_number:
+                        trackingNumber || "",
+                    tracking_url:
+                        trackingUrl || "",
+                    order_url:
+                        orderUrl || ""
                 },
                 dedupeReference:
                     `order-${orderId}`
@@ -88,13 +103,28 @@ function orderStatusChanged({
     customerId,
     orderId,
     orderNumber,
-    orderStatus
+    orderStatus,
+    grandTotal = "",
+    paymentMethod = "",
+    paymentStatus = "",
+    trackingNumber = "",
+    trackingUrl = "",
+    orderUrl = ""
 }) {
+
+    const statusEventMap = {
+        Confirmed:
+            "ORDER_CONFIRMED"
+    };
+
+    const eventKey =
+        statusEventMap[orderStatus] ||
+        "ORDER_STATUS_CHANGED";
+
     return safeQueue(
         queueService
             .queueCustomerEvent({
-                eventKey:
-                    "ORDER_STATUS_CHANGED",
+                eventKey,
                 customerId,
                 variables: {
                     order_id:
@@ -102,12 +132,28 @@ function orderStatusChanged({
                     order_number:
                         orderNumber,
                     order_status:
-                        orderStatus
+                        orderStatus,
+                    grand_total:
+                        grandTotal === ""
+                            ? ""
+                            : Number(
+                                grandTotal || 0
+                            ).toFixed(2),
+                    payment_method:
+                        paymentMethod || "",
+                    payment_status:
+                        paymentStatus || "",
+                    tracking_number:
+                        trackingNumber || "",
+                    tracking_url:
+                        trackingUrl || "",
+                    order_url:
+                        orderUrl || ""
                 },
                 dedupeReference:
                     `order-${orderId}-${orderStatus}`
             }),
-        "ORDER_STATUS_CHANGED"
+        eventKey
     );
 }
 

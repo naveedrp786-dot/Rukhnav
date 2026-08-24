@@ -281,6 +281,11 @@ const designerSampleVariables = {
     order_number: "RUK-20260824-000125",
     order_status: "Confirmed",
     grand_total: "1,950",
+    payment_method: "Cash on Delivery",
+    payment_status: "Pending",
+    tracking_number: "RUKHNAV-TRK-125",
+    tracking_url: "https://www.rukhnav.store/track/example",
+    order_url: "/store/order-details.html?id=125",
     event_name: "Mother's Birthday",
     event_date: "29 August 2026",
     membership_level: "Gold",
@@ -630,6 +635,7 @@ function openTemplate(id) {
         $("templateBody");
 
     updateDesignerChannelUI();
+    updateDesignerVariableVisibility();
     updateDesignerPreview();
     updateDesignerCharacterCount();
 
@@ -662,6 +668,105 @@ function updateDesignerCharacterCount() {
             .textContent =
                 `${count} character${count === 1 ? "" : "s"}`;
     }
+}
+
+
+
+function updateDesignerVariableVisibility() {
+
+    const category =
+        $("templateCategory")?.value ||
+        "General";
+
+    const buttons =
+        document.querySelectorAll(
+            "[data-template-variable]"
+        );
+
+    const categoryMap = {
+        Orders: [
+            "customer_name",
+            "customer_email",
+            "customer_phone",
+            "order_number",
+            "order_status",
+            "grand_total",
+            "payment_method",
+            "payment_status",
+            "tracking_number",
+            "tracking_url",
+            "order_url"
+        ],
+
+        Events: [
+            "customer_name",
+            "customer_email",
+            "customer_phone",
+            "event_name",
+            "event_date"
+        ],
+
+        Loyalty: [
+            "customer_name",
+            "customer_email",
+            "membership_level",
+            "points",
+            "available_points"
+        ],
+
+        Customer: [
+            "customer_name",
+            "customer_email",
+            "customer_phone",
+            "membership_level",
+            "available_points"
+        ],
+
+        Security: [
+            "customer_name",
+            "customer_email",
+            "customer_phone"
+        ],
+
+        Marketing: [
+            "customer_name",
+            "customer_email",
+            "customer_phone",
+            "membership_level",
+            "available_points"
+        ],
+
+        General: []
+    };
+
+    const preferred =
+        categoryMap[category] || [];
+
+    buttons.forEach(button => {
+
+        const raw =
+            button.dataset
+                .templateVariable || "";
+
+        const key =
+            raw
+                .replace("{{", "")
+                .replace("}}", "")
+                .trim();
+
+        if (
+            preferred.length === 0 ||
+            preferred.includes(key)
+        ) {
+            button.classList.remove(
+                "designer-variable-muted"
+            );
+        } else {
+            button.classList.add(
+                "designer-variable-muted"
+            );
+        }
+    });
 }
 
 
@@ -1152,6 +1257,12 @@ function initializeMessageDesigner() {
         ?.addEventListener(
             "change",
             updateDesignerChannelUI
+        );
+
+    $("templateCategory")
+        ?.addEventListener(
+            "change",
+            updateDesignerVariableVisibility
         );
 
 

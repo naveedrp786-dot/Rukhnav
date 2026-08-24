@@ -1788,3 +1788,12 @@
         flex:1;
     }
 }
+
+.designer-variable-list button.designer-variable-muted{
+    opacity:.42;
+    filter:grayscale(.15);
+}
+
+.designer-variable-list button.designer-variable-muted:hover{
+    opacity:1;
+}

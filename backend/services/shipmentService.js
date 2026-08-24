@@ -1,6 +1,9 @@
 "use strict";
 
 const db = require("../config/db");
+
+const notificationHooks =
+    require("./notificationHooks");
 const {
     normaliseStatus,
     canTransition,
@@ -109,7 +112,14 @@ const createShipment = async ({ orderId, adminId, payload }) => {
 
         const [orderRows] = await connection.query(
             `
-                SELECT id, order_number, customer_id, order_status
+                SELECT
+                    id,
+                    order_number,
+                    customer_id,
+                    order_status,
+                    grand_total,
+                    payment_method,
+                    payment_status
                 FROM orders
                 WHERE id = ?
                 LIMIT 1
@@ -166,6 +176,9 @@ const createShipment = async ({ orderId, adminId, payload }) => {
             [shipmentId, deliveryNotes || "Shipment created and ready for courier pickup.", adminId || null]
         );
 
+        const previousOrderStatus =
+            order.order_status;
+
         await applyOrderStatus({
             connection,
             order,
@@ -189,6 +202,43 @@ const createShipment = async ({ orderId, adminId, payload }) => {
         );
 
         await connection.commit();
+
+        if (
+            order.customer_id &&
+            String(previousOrderStatus) !==
+                String(order.order_status)
+        ) {
+            notificationHooks
+                .orderStatusChanged({
+                    customerId:
+                        order.customer_id,
+                    orderId:
+                        order.id,
+                    orderNumber:
+                        order.order_number,
+                    orderStatus:
+                        order.order_status,
+                    grandTotal:
+                        order.grand_total,
+                    paymentMethod:
+                        order.payment_method,
+                    paymentStatus:
+                        order.payment_status,
+                    trackingNumber:
+                        trackingNumber || "",
+                    trackingUrl:
+                        trackingUrl || "",
+                    orderUrl:
+                        `/store/order-details.html?id=${order.id}`
+                })
+                .catch(error => {
+                    console.error(
+                        "Shipment order-status notification queue error:",
+                        error.message
+                    );
+                });
+        }
+
         return shipment;
     } catch (error) {
         if (connection) await rollbackQuietly(connection);
@@ -214,7 +264,14 @@ const updateShipmentStatus = async ({ shipmentId, requestedStatus, adminId, payl
 
         const [rows] = await connection.query(
             `
-                SELECT s.*, o.order_number, o.order_status
+                SELECT
+                    s.*,
+                    o.order_number,
+                    o.order_status,
+                    o.customer_id,
+                    o.grand_total,
+                    o.payment_method,
+                    o.payment_status
                 FROM shipments s
                 INNER JOIN orders o ON o.id = s.order_id
                 WHERE s.id = ?
@@ -269,9 +326,24 @@ const updateShipmentStatus = async ({ shipmentId, requestedStatus, adminId, payl
         );
 
         const order = {
-            id: shipment.order_id,
-            order_status: shipment.order_status
+            id:
+                shipment.order_id,
+            order_number:
+                shipment.order_number,
+            customer_id:
+                shipment.customer_id,
+            order_status:
+                shipment.order_status,
+            grand_total:
+                shipment.grand_total,
+            payment_method:
+                shipment.payment_method,
+            payment_status:
+                shipment.payment_status
         };
+
+        const previousOrderStatus =
+            order.order_status;
 
         await applyOrderStatus({
             connection,
@@ -287,6 +359,45 @@ const updateShipmentStatus = async ({ shipmentId, requestedStatus, adminId, payl
         );
 
         await connection.commit();
+
+        if (
+            order.customer_id &&
+            String(previousOrderStatus) !==
+                String(order.order_status)
+        ) {
+            notificationHooks
+                .orderStatusChanged({
+                    customerId:
+                        order.customer_id,
+                    orderId:
+                        order.id,
+                    orderNumber:
+                        order.order_number,
+                    orderStatus:
+                        order.order_status,
+                    grandTotal:
+                        order.grand_total,
+                    paymentMethod:
+                        order.payment_method,
+                    paymentStatus:
+                        order.payment_status,
+                    trackingNumber:
+                        updatedShipment.tracking_number ||
+                        "",
+                    trackingUrl:
+                        updatedShipment.tracking_url ||
+                        "",
+                    orderUrl:
+                        `/store/order-details.html?id=${order.id}`
+                })
+                .catch(error => {
+                    console.error(
+                        "Shipment order-status notification queue error:",
+                        error.message
+                    );
+                });
+        }
+
         return {
             shipment: updatedShipment,
             oldStatus,
