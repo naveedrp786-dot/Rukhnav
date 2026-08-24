@@ -117,6 +117,39 @@ const OrdersPage = {
             this.hideStates();
             document.getElementById("ordersWorkspace").classList.remove("hidden");
             this.render();
+
+            // =============================================
+            // Review Reminder Deep Link
+            // Example:
+            // /store/orders.html?review_order=19
+            // =============================================
+
+            const reviewOrderId =
+                new URLSearchParams(
+                    window.location.search
+                ).get("review_order");
+
+            if (reviewOrderId) {
+                const reviewOrder =
+                    this.orders.find(
+                        order =>
+                            String(order.id) ===
+                            String(reviewOrderId)
+                    );
+
+                if (
+                    reviewOrder &&
+                    String(
+                        reviewOrder.order_status || ""
+                    ).toLowerCase() === "delivered"
+                ) {
+                    await this.openDeliveredReview(
+                        reviewOrder.id,
+                        reviewOrder.order_number ||
+                            `#${reviewOrder.id}`
+                    );
+                }
+            }
         } catch (error) {
             if (error.status === 401 || error.status === 403) {
                 API.clearCustomerSession?.();

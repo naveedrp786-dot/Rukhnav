@@ -177,6 +177,7 @@ async function queueNotification({
     payload = {},
     priority = 5,
     maxAttempts = 3,
+    scheduledFor = null,
     dedupeKey = null
 }) {
     if (
@@ -198,6 +199,28 @@ async function queueNotification({
         };
     }
 
+    let nextAttemptAt = null;
+
+    if (scheduledFor) {
+        const scheduledDate =
+            scheduledFor instanceof Date
+                ? scheduledFor
+                : new Date(scheduledFor);
+
+        if (
+            Number.isNaN(
+                scheduledDate.getTime()
+            )
+        ) {
+            throw new Error(
+                "Invalid notification scheduled time."
+            );
+        }
+
+        nextAttemptAt =
+            scheduledDate;
+    }
+
     const [result] =
         await db.query(
             `
@@ -213,10 +236,15 @@ async function queueNotification({
                     payload_json,
                     priority,
                     max_attempts,
+                    next_attempt_at,
                     dedupe_key
                 )
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    COALESCE(?, CURRENT_TIMESTAMP),
+                    ?
+                )
 
             ON DUPLICATE KEY UPDATE
                 id = LAST_INSERT_ID(id)
@@ -234,6 +262,7 @@ async function queueNotification({
                 ),
                 Number(priority) || 5,
                 Number(maxAttempts) || 3,
+                nextAttemptAt,
                 makeDedupeKey(
                     dedupeKey
                 )
@@ -254,7 +283,8 @@ async function queueCustomerEvent({
     customerId,
     variables = {},
     dedupeReference = "",
-    forceChannels = null
+    forceChannels = null,
+    scheduledFor = null
 }) {
     const customer =
         await customerProfile(
@@ -436,6 +466,7 @@ async function queueCustomerEvent({
                     rule.priority,
                 maxAttempts:
                     rule.max_attempts,
+                scheduledFor,
                 dedupeKey:
                     dedupeReference
                         ? [

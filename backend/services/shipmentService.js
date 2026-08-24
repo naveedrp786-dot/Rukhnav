@@ -421,6 +421,38 @@ const updateShipmentStatus = async ({ shipmentId, requestedStatus, adminId, payl
                 });
         }
 
+        // =================================================
+        // Post-Delivery Review Reminder
+        //
+        // Queue the review request only after a shipment
+        // reaches Delivered. The notification itself is
+        // scheduled for two days after actual delivery.
+        // =================================================
+
+        if (
+            order.customer_id &&
+            newStatus === SHIPMENT_STATUS.DELIVERED &&
+            updatedShipment.actual_delivery_date
+        ) {
+            notificationHooks
+                .reviewRequestReminder({
+                    customerId:
+                        order.customer_id,
+                    orderId:
+                        order.id,
+                    orderNumber:
+                        order.order_number,
+                    deliveredAt:
+                        updatedShipment.actual_delivery_date
+                })
+                .catch(error => {
+                    console.error(
+                        "Post-delivery review reminder queue error:",
+                        error.message
+                    );
+                });
+        }
+
         return {
             shipment: updatedShipment,
             oldStatus,

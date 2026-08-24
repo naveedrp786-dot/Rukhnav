@@ -296,6 +296,62 @@ function shipmentStatusChanged({
     );
 }
 
+function reviewRequestReminder({
+    customerId,
+    orderId,
+    orderNumber,
+    deliveredAt = new Date()
+}) {
+    const deliveredDate =
+        deliveredAt instanceof Date
+            ? deliveredAt
+            : new Date(deliveredAt);
+
+    if (
+        Number.isNaN(
+            deliveredDate.getTime()
+        )
+    ) {
+        return Promise.reject(
+            new Error(
+                "Invalid delivery date for review reminder."
+            )
+        );
+    }
+
+    const scheduledFor =
+        new Date(
+            deliveredDate.getTime() +
+            (2 * 24 * 60 * 60 * 1000)
+        );
+
+    const reviewUrl =
+        `/store/orders.html?review_order=${encodeURIComponent(
+            orderId
+        )}`;
+
+    return safeQueue(
+        queueService
+            .queueCustomerEvent({
+                eventKey:
+                    "REVIEW_REQUEST",
+                customerId,
+                variables: {
+                    order_id:
+                        orderId,
+                    order_number:
+                        orderNumber || "",
+                    review_url:
+                        reviewUrl
+                },
+                dedupeReference:
+                    `review-request-order-${orderId}`,
+                scheduledFor
+            }),
+        "REVIEW_REQUEST"
+    );
+}
+
 function loyaltyPointsEarned({
     customerId,
     points,
@@ -381,6 +437,7 @@ function customerEventReminder({
 
 module.exports = {
     shipmentStatusChanged,
+    reviewRequestReminder,
     customerRegistered,
     orderPlaced,
     orderStatusChanged,
