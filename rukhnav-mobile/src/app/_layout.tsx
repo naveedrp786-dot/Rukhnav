@@ -71,6 +71,10 @@ export default function RootLayout() {
           />
 
           <Stack.Screen
+            name="edit-profile"
+          />
+
+          <Stack.Screen
             name="product/[id]"
           />
         </Stack>

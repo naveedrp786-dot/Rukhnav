@@ -407,6 +407,22 @@ export default function AccountScreen() {
           </View>
 
           <Pressable
+            style={styles.editProfileButton}
+            onPress={() =>
+              router.push("/edit-profile")
+            }
+            disabled={loading}
+          >
+            <Text
+              style={
+                styles.editProfileButtonText
+              }
+            >
+              Edit Profile
+            </Text>
+          </Pressable>
+
+          <Pressable
             style={styles.shopButton}
             onPress={() =>
               router.push("/shop")
@@ -1064,6 +1080,23 @@ const styles = StyleSheet.create({
 
   shopButtonText: {
     color: "#ffffff",
+    fontSize: 15,
+    fontWeight: "900",
+  },
+
+  editProfileButton: {
+    height: 53,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: "#b18a36",
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 18,
+  },
+
+  editProfileButtonText: {
+    color: "#173f2b",
     fontSize: 15,
     fontWeight: "900",
   },
