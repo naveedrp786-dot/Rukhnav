@@ -67,6 +67,10 @@ export default function RootLayout() {
           />
 
           <Stack.Screen
+            name="change-password"
+          />
+
+          <Stack.Screen
             name="product/[id]"
           />
         </Stack>

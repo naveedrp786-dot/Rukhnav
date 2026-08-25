@@ -206,3 +206,31 @@ export async function resetPassword(
     }
   );
 }
+
+// ========================================
+// Customer Change Password
+// ========================================
+
+export type ChangePasswordPayload = {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+};
+
+export type ChangePasswordResponse = {
+  success: boolean;
+  message?: string;
+};
+
+export async function changePassword(
+  payload: ChangePasswordPayload
+) {
+  return apiRequest<ChangePasswordResponse>(
+    "/customers/account/password",
+    {
+      method: "PUT",
+      authenticated: true,
+      body: JSON.stringify(payload),
+    }
+  );
+}

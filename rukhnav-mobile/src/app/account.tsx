@@ -420,6 +420,22 @@ export default function AccountScreen() {
           </Pressable>
 
           <Pressable
+            style={styles.changePasswordButton}
+            onPress={() =>
+              router.push("/change-password")
+            }
+            disabled={loading}
+          >
+            <Text
+              style={
+                styles.changePasswordButtonText
+              }
+            >
+              Change Password
+            </Text>
+          </Pressable>
+
+          <Pressable
             style={styles.logoutButton}
             onPress={handleLogout}
             disabled={loading}
@@ -1047,6 +1063,21 @@ const styles = StyleSheet.create({
   },
 
   shopButtonText: {
+    color: "#ffffff",
+    fontSize: 15,
+    fontWeight: "900",
+  },
+
+  changePasswordButton: {
+    height: 53,
+    borderRadius: 16,
+    backgroundColor: "#173f2b",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+
+  changePasswordButtonText: {
     color: "#ffffff",
     fontSize: 15,
     fontWeight: "900",
