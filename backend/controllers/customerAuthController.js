@@ -7,6 +7,13 @@ const {
     sendEmail
 } = require("../services/emailService");
 
+const {
+    sendWhatsApp,
+    isSimulationMode
+} = require(
+    "../services/notificationProviderService"
+);
+
 // =========================================
 // Configuration
 // =========================================
@@ -93,19 +100,17 @@ exports.requestVerificationCode = async (
 
         // =========================================
         // Phone Verification Provider Check
+        // WhatsApp OTP through WasenderAPI
         // =========================================
         if (
             identifierData.type === "Phone" &&
-            (
-                !process.env.TWILIO_ACCOUNT_SID ||
-                !process.env.TWILIO_AUTH_TOKEN ||
-                !process.env.TWILIO_SMS_FROM
-            )
+            !isSimulationMode() &&
+            !process.env.WASENDER_API_TOKEN
         ) {
             return res.status(503).json({
                 success: false,
                 message:
-                    "Mobile verification is temporarily unavailable. Please try again later."
+                    "WhatsApp verification is temporarily unavailable. Please try again later."
             });
         }
 
@@ -279,12 +284,66 @@ exports.requestVerificationCode = async (
 
     }
 
+    // =========================================
+    // Deliver Phone Verification via WhatsApp
+    // =========================================
+
+    if (identifierData.type === "Phone") {
+
+        try {
+
+            await sendWhatsApp({
+                to:
+                    identifierData.value,
+
+                message:
+                    `Your RUKHNAV verification code is ${code}. ` +
+                    `This code expires in ${OTP_EXPIRY_MINUTES} minutes. ` +
+                    `Do not share this code with anyone.`
+            });
+
+        } catch (deliveryError) {
+
+            // Do not leave a usable OTP behind when
+            // delivery to WhatsApp has failed.
+            await db.query(`
+                UPDATE customer_auth_codes
+
+                SET status = 'Cancelled'
+
+                WHERE customer_id = ?
+                AND identifier = ?
+                AND purpose = ?
+                AND status = 'Pending'
+            `, [
+                customer.id,
+                identifierData.value,
+                purpose
+            ]);
+
+            console.error(
+                "WhatsApp verification delivery error:",
+                deliveryError
+            );
+
+            return res.status(502).json({
+                success: false,
+                message:
+                    "The verification code could not be sent through WhatsApp. Please try again."
+            });
+
+        }
+
+    }
+
 
         const response = {
             success: true,
 
             message:
-                `Verification code created for your ${identifierData.type.toLowerCase()}.`,
+                identifierData.type === "Phone"
+                    ? "Verification code sent to your WhatsApp number."
+                    : "Verification code sent to your email address.",
 
             identifier:
                 maskIdentifier(
