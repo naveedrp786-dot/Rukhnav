@@ -781,6 +781,51 @@ exports.requestPasswordReset = async (
             }
         }
 
+        if (identifierData.type === "Phone") {
+
+            try {
+
+                await sendWhatsApp({
+                    to:
+                        identifierData.value,
+
+                    message:
+                        `Your RUKHNAV password reset code is ${code}. ` +
+                        `This code expires in ${OTP_EXPIRY_MINUTES} minutes. ` +
+                        `Do not share this code with anyone.`
+                });
+
+            } catch (deliveryError) {
+
+                await db.query(`
+                    UPDATE customer_auth_codes
+
+                    SET status = 'Cancelled'
+
+                    WHERE customer_id = ?
+                    AND identifier = ?
+                    AND purpose = 'Password Reset'
+                    AND status = 'Pending'
+                `, [
+                    customer.id,
+                    identifierData.value
+                ]);
+
+                console.error(
+                    "Password reset WhatsApp delivery failed:",
+                    deliveryError
+                );
+
+                return res.status(502).json({
+                    success: false,
+                    message:
+                        "The password-reset code could not be sent through WhatsApp. Please try again."
+                });
+
+            }
+
+        }
+
         const response = {
             success: true,
             message:
