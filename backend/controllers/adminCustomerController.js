@@ -2021,6 +2021,18 @@ exports.deleteCustomer = async (
             UPDATE customers
 
             SET
+                deleted_email =
+                    COALESCE(
+                        deleted_email,
+                        email
+                    ),
+                deleted_phone =
+                    COALESCE(
+                        deleted_phone,
+                        phone
+                    ),
+                email = NULL,
+                phone = NULL,
                 status = 'Inactive',
                 deleted_at =
                     CURRENT_TIMESTAMP,
@@ -2541,7 +2553,9 @@ exports.restoreDeletedCustomer = async (
                     id,
                     full_name,
                     email,
+                    deleted_email,
                     phone,
+                    deleted_phone,
                     status,
                     email_verified_at,
                     phone_verified_at,
@@ -2577,6 +2591,83 @@ exports.restoreDeletedCustomer = async (
             );
         }
 
+        const restoreEmail =
+            customer.deleted_email ||
+            customer.email ||
+            null;
+
+        const restorePhone =
+            customer.deleted_phone ||
+            customer.phone ||
+            null;
+
+        // =========================================
+        // Prevent identity takeover on restore
+        // =========================================
+
+        const [identityConflicts] =
+            await connection.query(
+                `
+                SELECT
+                    id,
+                    email,
+                    phone
+                FROM customers
+                WHERE id <> ?
+                  AND deleted_at IS NULL
+                  AND (
+                        (
+                            ? IS NOT NULL
+                            AND email = ?
+                        )
+                        OR
+                        (
+                            ? IS NOT NULL
+                            AND phone = ?
+                        )
+                  )
+                LIMIT 1
+                FOR UPDATE
+                `,
+                [
+                    customerId,
+                    restoreEmail,
+                    restoreEmail,
+                    restorePhone,
+                    restorePhone
+                ]
+            );
+
+        if (identityConflicts.length > 0) {
+            await connection.rollback();
+
+            const conflict =
+                identityConflicts[0];
+
+            let message =
+                "This deleted customer cannot be restored because its account identity is already in use.";
+
+            if (
+                restoreEmail &&
+                conflict.email === restoreEmail
+            ) {
+                message =
+                    "This customer cannot be restored because the previous email address is now registered to another account.";
+            } else if (
+                restorePhone &&
+                conflict.phone === restorePhone
+            ) {
+                message =
+                    "This customer cannot be restored because the previous phone number is now registered to another account.";
+            }
+
+            return errorResponse(
+                res,
+                message,
+                409
+            );
+        }
+
         const restoredStatus =
             customer.email_verified_at ||
             customer.phone_verified_at
@@ -2587,6 +2678,10 @@ exports.restoreDeletedCustomer = async (
             `
             UPDATE customers
             SET
+                email = ?,
+                phone = ?,
+                deleted_email = NULL,
+                deleted_phone = NULL,
                 deleted_at = NULL,
                 status = ?,
                 failed_login_attempts = 0,
@@ -2596,6 +2691,8 @@ exports.restoreDeletedCustomer = async (
             WHERE id = ?
             `,
             [
+                restoreEmail,
+                restorePhone,
                 restoredStatus,
                 customerId
             ]
@@ -2642,10 +2739,10 @@ exports.restoreDeletedCustomer = async (
                         customer.full_name,
 
                     email:
-                        customer.email,
+                        restoreEmail,
 
                     phone:
-                        customer.phone,
+                        restorePhone,
 
                     status:
                         restoredStatus
@@ -3804,6 +3901,18 @@ exports.updateAccountDeletionRequestStatus = async (
                 `
                 UPDATE customers
                 SET
+                    deleted_email =
+                        COALESCE(
+                            deleted_email,
+                            email
+                        ),
+                    deleted_phone =
+                        COALESCE(
+                            deleted_phone,
+                            phone
+                        ),
+                    email = NULL,
+                    phone = NULL,
                     status =
                         'Inactive',
                     deleted_at =
