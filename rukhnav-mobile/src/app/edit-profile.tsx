@@ -5,6 +5,8 @@ import {
 
 import {
   ActivityIndicator,
+  Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -27,13 +29,19 @@ import DateTimePicker, {
   type DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 
+import * as ImagePicker from "expo-image-picker";
+
+import * as ImageManipulator from "expo-image-manipulator";
+
 import {
   ApiError,
 } from "../api/client";
 
 import {
+  deleteProfilePicture,
   getCustomerProfile,
   updateCustomerProfile,
+  uploadProfilePicture,
   type CustomerProfile,
 } from "../api/profile";
 
@@ -54,6 +62,18 @@ export default function EditProfileScreen() {
   ] = useState<CustomerProfile | null>(
     null
   );
+
+  const [
+    pendingPhotoUri,
+    setPendingPhotoUri,
+  ] = useState<string | null>(
+    null
+  );
+
+  const [
+    photoBusy,
+    setPhotoBusy,
+  ] = useState(false);
 
   const [
     message,
@@ -368,6 +388,379 @@ export default function EditProfileScreen() {
     );
   }
 
+  async function prepareSelectedPhoto(
+    uri: string
+  ) {
+    setPhotoBusy(true);
+    setMessage("");
+
+    try {
+      const result =
+        await ImageManipulator.manipulateAsync(
+          uri,
+          [
+            {
+              resize: {
+                width: 1024,
+                height: 1024,
+              },
+            },
+          ],
+          {
+            compress: 0.82,
+            format:
+              ImageManipulator.SaveFormat
+                .JPEG,
+          }
+        );
+
+      setPendingPhotoUri(
+        result.uri
+      );
+
+      setMessage(
+        "Photo ready. Preview it, rotate if needed, then tap Save Profile Picture."
+      );
+    } catch (error) {
+      console.error(
+        "Prepare profile picture error:",
+        error
+      );
+
+      setMessage(
+        "Unable to prepare that photo. Please try another image."
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  async function chooseFromGallery() {
+    setPhotoBusy(true);
+    setMessage("");
+
+    try {
+      const permission =
+        await ImagePicker
+          .requestMediaLibraryPermissionsAsync();
+
+      if (!permission.granted) {
+        setMessage(
+          "Photo-library permission is required to choose a profile picture."
+        );
+        return;
+      }
+
+      const result =
+        await ImagePicker
+          .launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+          });
+
+      if (
+        result.canceled ||
+        !result.assets?.length
+      ) {
+        return;
+      }
+
+      await prepareSelectedPhoto(
+        result.assets[0].uri
+      );
+    } catch (error) {
+      console.error(
+        "Choose profile picture error:",
+        error
+      );
+
+      setMessage(
+        "Unable to open your photo library."
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  async function takeProfilePhoto() {
+    setPhotoBusy(true);
+    setMessage("");
+
+    try {
+      const permission =
+        await ImagePicker
+          .requestCameraPermissionsAsync();
+
+      if (!permission.granted) {
+        setMessage(
+          "Camera permission is required to take a profile picture."
+        );
+        return;
+      }
+
+      const result =
+        await ImagePicker
+          .launchCameraAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+          });
+
+      if (
+        result.canceled ||
+        !result.assets?.length
+      ) {
+        return;
+      }
+
+      await prepareSelectedPhoto(
+        result.assets[0].uri
+      );
+    } catch (error) {
+      console.error(
+        "Take profile picture error:",
+        error
+      );
+
+      setMessage(
+        "Unable to open the camera."
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  function openProfilePictureMenu() {
+    if (photoBusy) {
+      return;
+    }
+
+    const buttons: {
+      text: string;
+      onPress?: () => void;
+      style?:
+        | "default"
+        | "cancel"
+        | "destructive";
+    }[] = [
+      {
+        text: "Take Photo",
+        onPress: () => {
+          void takeProfilePhoto();
+        },
+      },
+      {
+        text: "Choose from Gallery",
+        onPress: () => {
+          void chooseFromGallery();
+        },
+      },
+    ];
+
+    if (
+      profile?.profile_picture_url ||
+      profile?.profile_picture
+    ) {
+      buttons.push({
+        text: "Remove Current Photo",
+        style: "destructive",
+        onPress: () => {
+          confirmRemoveProfilePicture();
+        },
+      });
+    }
+
+    buttons.push({
+      text: "Cancel",
+      style: "cancel",
+    });
+
+    Alert.alert(
+      "Profile Picture",
+      "Choose how you would like to update your RUKHNAV profile picture.",
+      buttons
+    );
+  }
+
+  async function rotatePendingPhoto(
+    degrees: number
+  ) {
+    if (
+      !pendingPhotoUri ||
+      photoBusy
+    ) {
+      return;
+    }
+
+    setPhotoBusy(true);
+
+    try {
+      const result =
+        await ImageManipulator.manipulateAsync(
+          pendingPhotoUri,
+          [
+            {
+              rotate: degrees,
+            },
+          ],
+          {
+            compress: 0.82,
+            format:
+              ImageManipulator.SaveFormat
+                .JPEG,
+          }
+        );
+
+      setPendingPhotoUri(
+        result.uri
+      );
+    } catch (error) {
+      console.error(
+        "Rotate profile picture error:",
+        error
+      );
+
+      setMessage(
+        "Unable to rotate the picture."
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  async function saveProfilePicture() {
+    if (
+      !pendingPhotoUri ||
+      photoBusy
+    ) {
+      return;
+    }
+
+    setPhotoBusy(true);
+    setMessage("");
+
+    try {
+      const formData =
+        new FormData();
+
+      formData.append(
+        "profile_picture",
+        {
+          uri: pendingPhotoUri,
+          name:
+            "rukhnav-profile.jpg",
+          type: "image/jpeg",
+        } as any
+      );
+
+      const result =
+        await uploadProfilePicture(
+          formData
+        );
+
+      if (result.profile) {
+        setProfile(
+          result.profile
+        );
+      }
+
+      setPendingPhotoUri(null);
+
+      setMessage(
+        result.message ||
+          "Profile picture saved successfully."
+      );
+    } catch (error) {
+      if (
+        error instanceof ApiError
+      ) {
+        setMessage(
+          error.message
+        );
+      } else if (
+        error instanceof Error
+      ) {
+        setMessage(
+          error.message
+        );
+      } else {
+        setMessage(
+          "Unable to upload your profile picture."
+        );
+      }
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  function confirmRemoveProfilePicture() {
+    Alert.alert(
+      "Remove Profile Picture?",
+      "Your current profile picture will be removed from your RUKHNAV account.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Remove",
+          style: "destructive",
+          onPress: () => {
+            void removeProfilePicture();
+          },
+        },
+      ]
+    );
+  }
+
+  async function removeProfilePicture() {
+    if (photoBusy) {
+      return;
+    }
+
+    setPhotoBusy(true);
+    setMessage("");
+
+    try {
+      const result =
+        await deleteProfilePicture();
+
+      setProfile(current =>
+        current
+          ? {
+              ...current,
+              profile_picture:
+                null,
+              profile_picture_url:
+                null,
+            }
+          : current
+      );
+
+      setPendingPhotoUri(null);
+
+      setMessage(
+        result.message ||
+          "Profile picture removed successfully."
+      );
+    } catch (error) {
+      if (
+        error instanceof ApiError
+      ) {
+        setMessage(
+          error.message
+        );
+      } else {
+        setMessage(
+          "Unable to remove your profile picture."
+        );
+      }
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
   async function handleSave() {
     if (saving) {
       return;
@@ -546,34 +939,181 @@ export default function EditProfileScreen() {
             <View
               style={styles.avatar}
             >
-              <Text
-                style={styles.avatarText}
-              >
-                {fullName
-                  .charAt(0)
-                  .toUpperCase() ||
-                  "R"}
-              </Text>
+              {
+                pendingPhotoUri ||
+                profile?.profile_picture_url
+                  ? (
+                    <Image
+                      source={{
+                        uri:
+                          pendingPhotoUri ||
+                          profile
+                            ?.profile_picture_url ||
+                          "",
+                      }}
+                      style={
+                        styles.avatarImage
+                      }
+                    />
+                  )
+                  : (
+                    <Text
+                      style={
+                        styles.avatarText
+                      }
+                    >
+                      {fullName
+                        .charAt(0)
+                        .toUpperCase() ||
+                        "R"}
+                    </Text>
+                  )
+              }
+
+              {photoBusy ? (
+                <View
+                  style={
+                    styles.avatarLoading
+                  }
+                >
+                  <ActivityIndicator
+                    color="#ffffff"
+                  />
+                </View>
+              ) : null}
             </View>
 
             <Pressable
               style={
                 styles.photoButton
               }
-              onPress={() => {
-                setMessage(
-                  "Profile Picture Studio is coming next."
-                );
-              }}
+              disabled={photoBusy}
+              onPress={
+                openProfilePictureMenu
+              }
             >
               <Text
                 style={
                   styles.photoButtonText
                 }
               >
-                Edit Profile Picture
+                {
+                  profile?.profile_picture_url
+                    ? "Change Profile Picture"
+                    : "Add Profile Picture"
+                }
               </Text>
             </Pressable>
+
+            {pendingPhotoUri ? (
+              <View
+                style={
+                  styles.photoStudioActions
+                }
+              >
+                <View
+                  style={
+                    styles.rotateRow
+                  }
+                >
+                  <Pressable
+                    style={
+                      styles.rotateButton
+                    }
+                    onPress={() =>
+                      void rotatePendingPhoto(
+                        -90
+                      )
+                    }
+                    disabled={
+                      photoBusy
+                    }
+                  >
+                    <Text
+                      style={
+                        styles.rotateButtonText
+                      }
+                    >
+                      ↺ Rotate Left
+                    </Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={
+                      styles.rotateButton
+                    }
+                    onPress={() =>
+                      void rotatePendingPhoto(
+                        90
+                      )
+                    }
+                    disabled={
+                      photoBusy
+                    }
+                  >
+                    <Text
+                      style={
+                        styles.rotateButtonText
+                      }
+                    >
+                      Rotate Right ↻
+                    </Text>
+                  </Pressable>
+                </View>
+
+                <Pressable
+                  style={
+                    styles.savePhotoButton
+                  }
+                  onPress={() =>
+                    void saveProfilePicture()
+                  }
+                  disabled={
+                    photoBusy
+                  }
+                >
+                  {
+                    photoBusy
+                      ? (
+                        <ActivityIndicator
+                          color="#ffffff"
+                        />
+                      )
+                      : (
+                        <Text
+                          style={
+                            styles.savePhotoButtonText
+                          }
+                        >
+                          Save Profile Picture
+                        </Text>
+                      )
+                  }
+                </Pressable>
+
+                <Pressable
+                  style={
+                    styles.cancelPhotoButton
+                  }
+                  disabled={
+                    photoBusy
+                  }
+                  onPress={() =>
+                    setPendingPhotoUri(
+                      null
+                    )
+                  }
+                >
+                  <Text
+                    style={
+                      styles.cancelPhotoButtonText
+                    }
+                  >
+                    Cancel Photo Edit
+                  </Text>
+                </Pressable>
+              </View>
+            ) : null}
 
             <Text
               style={styles.eyebrow}
@@ -1077,6 +1617,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 52,
+  },
+
+  avatarLoading: {
+    ...StyleSheet.absoluteFill,
+    borderRadius: 52,
+    backgroundColor:
+      "rgba(23,63,43,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   avatarText: {
     color: "#ffffff",
     fontSize: 42,
@@ -1093,6 +1648,65 @@ const styles = StyleSheet.create({
     color: "#b18a36",
     fontSize: 13,
     fontWeight: "900",
+  },
+
+  photoStudioActions: {
+    width: "100%",
+    maxWidth: 420,
+    marginTop: 10,
+  },
+
+  rotateRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+
+  rotateButton: {
+    flex: 1,
+    minHeight: 44,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#b18a36",
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
+
+  rotateButtonText: {
+    color: "#173f2b",
+    fontSize: 12,
+    fontWeight: "900",
+    textAlign: "center",
+  },
+
+  savePhotoButton: {
+    minHeight: 52,
+    borderRadius: 16,
+    backgroundColor: "#173f2b",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+
+  savePhotoButtonText: {
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "900",
+  },
+
+  cancelPhotoButton: {
+    minHeight: 44,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 6,
+  },
+
+  cancelPhotoButtonText: {
+    color: "#8a6b2d",
+    fontSize: 12,
+    fontWeight: "800",
   },
 
   eyebrow: {
