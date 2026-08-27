@@ -534,3 +534,140 @@
         overflow: hidden;
     }
 }
+
+
+/* =========================================================
+   TEMPORARY PROFESSIONAL STOREFRONT PHOTOGRAPHY
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    .product-card,
+    .category-card,
+    .shop-category-card,
+    .home-shop-card {
+        background: #ffffff;
+        border:
+            1px solid
+            rgba(91, 63, 112, 0.10);
+        box-shadow:
+            0 10px 30px
+            rgba(56, 36, 69, 0.06);
+        overflow: hidden;
+    }
+
+
+    .product-card img,
+    .category-card img,
+    .shop-category-card img,
+    .home-shop-card img,
+    .product-image,
+    .category-image {
+        display: block;
+        width: 100%;
+        object-fit: cover;
+        object-position: center;
+        background:
+            linear-gradient(
+                145deg,
+                #fbf8f3,
+                #f1eaf4
+            );
+    }
+
+
+    /* Category photography */
+
+    .category-card img,
+    .shop-category-card img,
+    .home-shop-card img {
+        aspect-ratio: 1.25 / 1;
+        min-height: 135px;
+    }
+
+
+    /* Product photography */
+
+    .product-card img,
+    .product-image {
+        aspect-ratio: 0.88 / 1;
+        min-height: 190px;
+    }
+
+
+    /* Better product card proportions */
+
+    .product-card {
+        border-radius: 20px !important;
+    }
+
+
+    /* Smooth image treatment */
+
+    .product-card img,
+    .category-card img,
+    .shop-category-card img,
+    .home-shop-card img {
+        transition:
+            transform .35s ease,
+            filter .35s ease;
+    }
+
+
+    /* Premium section spacing */
+
+    .home-shop-shortcuts,
+    .products-section,
+    .featured-products,
+    .shop-section {
+        margin-top: 26px;
+    }
+
+
+    /* Cleaner section titles */
+
+    .home-shop-shortcuts h2,
+    .products-section h2,
+    .featured-products h2,
+    .shop-section h2 {
+        letter-spacing: -0.02em;
+    }
+
+
+    /* Prevent broken-image icon showing */
+
+    img[src=""],
+    img:not([src]) {
+        visibility: hidden;
+    }
+}
+
+
+/* Desktop enhancement */
+
+@media (min-width: 651px) {
+
+    .product-card img,
+    .category-card img,
+    .shop-category-card img,
+    .home-shop-card img {
+        object-fit: cover;
+        object-position: center;
+        transition:
+            transform .35s ease,
+            filter .35s ease;
+    }
+
+
+    .product-card:hover img,
+    .category-card:hover img,
+    .shop-category-card:hover img,
+    .home-shop-card:hover img {
+        transform: scale(1.025);
+    }
+
+
+    .product-card {
+        overflow: hidden;
+    }
+}

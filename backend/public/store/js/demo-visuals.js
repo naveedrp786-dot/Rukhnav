@@ -1,361 +1,268 @@
-"use strict";
+/* =========================================================
+   RUKHNAV — TEMPORARY STOREFRONT VISUALS
+   Professional development photography fallbacks
 
-/*
- * =========================================================
- * RUKHNAV Temporary Storefront Visuals
- *
- * Real ERP images always have priority.
- * Temporary pictures are only used when a real image
- * is missing or cannot be loaded.
- * =========================================================
- */
+   IMPORTANT:
+   1. Real ERP images always have priority.
+   2. These images are temporary presentation fallbacks.
+   3. Remove/replace when final RUKHNAV photography is ready.
+   ========================================================= */
 
 (() => {
-    const base =
-        "assets/demo/";
+    "use strict";
 
-    const assets = {
-        hair:
-            base + "hair-care.svg",
+    const TEMP_IMAGES = {
+        fashion: [
+            "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=1000&q=85"
+        ],
 
-        face:
-            base + "face-care.svg",
+        body: [
+            "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1000&q=85"
+        ],
 
-        skin:
-            base + "face-care.svg",
+        face: [
+            "https://images.unsplash.com/photo-1570194065650-d99fb4b8ccb0?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=85"
+        ],
 
-        body:
-            base + "body-care.svg",
+        hair: [
+            "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=1000&q=85"
+        ],
 
-        fashion:
-            base + "fashion.svg",
+        herbal: [
+            "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=1000&q=85"
+        ],
 
-        herbal:
-            base + "herbal.svg",
-
-        product:
-            base + "product.svg"
+        beauty: [
+            "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?auto=format&fit=crop&w=1000&q=85"
+        ]
     };
 
+    const normalize = value =>
+        String(value || "")
+            .toLowerCase()
+            .replace(/&/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
 
-    function classify(value = "") {
-        const text =
-            String(value)
-                .toLowerCase();
-
-        if (
-            text.includes("hair") ||
-            text.includes("shampoo") ||
-            text.includes("conditioner")
-        ) {
-            return "hair";
-        }
+    function detectCategory(text) {
+        const value = normalize(text);
 
         if (
-            text.includes("face") ||
-            text.includes("cream") ||
-            text.includes("facial")
-        ) {
-            return "face";
-        }
-
-        if (
-            text.includes("skin")
-        ) {
-            return "skin";
-        }
-
-        if (
-            text.includes("body")
-        ) {
-            return "body";
-        }
-
-        if (
-            text.includes("fashion")
+            value.includes("fashion") ||
+            value.includes("bag") ||
+            value.includes("accessor")
         ) {
             return "fashion";
         }
 
         if (
-            text.includes("herbal") ||
-            text.includes("natural")
+            value.includes("hair") ||
+            value.includes("shampoo") ||
+            value.includes("conditioner") ||
+            value.includes("oil")
+        ) {
+            return "hair";
+        }
+
+        if (
+            value.includes("face") ||
+            value.includes("cream") ||
+            value.includes("skin") ||
+            value.includes("serum")
+        ) {
+            return "face";
+        }
+
+        if (
+            value.includes("body") ||
+            value.includes("lotion") ||
+            value.includes("wash")
+        ) {
+            return "body";
+        }
+
+        if (
+            value.includes("herbal") ||
+            value.includes("natural")
         ) {
             return "herbal";
         }
 
-        return "product";
+        return "beauty";
     }
 
+    function chooseImage(category, index = 0) {
+        const list =
+            TEMP_IMAGES[category] ||
+            TEMP_IMAGES.beauty;
 
-    function fallbackFor(
-        value = ""
-    ) {
-        return assets[
-            classify(value)
-        ] || assets.product;
+        return list[
+            Math.abs(index) % list.length
+        ];
     }
 
+    function imageLooksBroken(img) {
+        if (!img) return true;
 
-    function imageContext(
-        image
-    ) {
-        const parentText =
-            image.closest(
-                "article, a, .card, .product-card, .category-card"
-            )?.textContent || "";
+        const src =
+            String(
+                img.getAttribute("src") || ""
+            ).trim();
 
-        return [
-            image.alt || "",
-            image.dataset.category || "",
-            image.dataset.productName || "",
-            parentText
-        ].join(" ");
-    }
+        if (!src) return true;
 
-
-    function useFallback(
-        image
-    ) {
         if (
-            !image ||
-            image.dataset.rukhnavFallback ===
-                "1"
+            src.includes("/assets/demo/") ||
+            src.includes("product.svg") ||
+            src === "#" ||
+            src === "null" ||
+            src === "undefined"
         ) {
+            return true;
+        }
+
+        if (
+            img.complete &&
+            img.naturalWidth === 0
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function installFallback(
+        img,
+        category,
+        index
+    ) {
+        if (!img || img.dataset.rukhnavFallbackReady) {
             return;
         }
 
-        image.dataset.rukhnavFallback =
-            "1";
+        img.dataset.rukhnavFallbackReady = "1";
 
-        image.src =
-            fallbackFor(
-                imageContext(image)
-            );
+        const fallback =
+            chooseImage(category, index);
+
+        img.addEventListener(
+            "error",
+            () => {
+                if (
+                    img.dataset.rukhnavFallbackApplied === "1"
+                ) {
+                    return;
+                }
+
+                img.dataset.rukhnavFallbackApplied = "1";
+                img.src = fallback;
+            },
+            { once: true }
+        );
+
+        if (imageLooksBroken(img)) {
+            img.dataset.rukhnavFallbackApplied = "1";
+            img.src = fallback;
+        }
     }
 
+    function enhanceCards() {
+        const selectors = [
+            ".product-card",
+            ".category-card",
+            ".shop-category-card",
+            ".home-shop-card",
+            ".pd-related-card",
+            ".related-product-card"
+        ];
 
-    /*
-     * Broken product/category images.
-     */
+        document
+            .querySelectorAll(
+                selectors.join(",")
+            )
+            .forEach(
+                (card, index) => {
+                    const category =
+                        detectCategory(
+                            card.textContent
+                        );
 
-    document.addEventListener(
-        "error",
-        event => {
-            const image =
-                event.target;
+                    const img =
+                        card.querySelector("img");
 
-            if (
-                !(image instanceof HTMLImageElement)
-            ) {
-                return;
-            }
-
-            const context =
-                imageContext(image);
-
-            const className =
-                String(
-                    image.className || ""
-                );
-
-            const relevant =
-                /product|category|cms-category|gallery/i
-                    .test(
-                        className +
-                        " " +
-                        context
-                    );
-
-            if (relevant) {
-                useFallback(image);
-            }
-        },
-        true
-    );
-
-
-    /*
-     * Patch Store helpers so products/categories with
-     * completely empty image fields also receive a
-     * temporary visual.
-     */
-
-    function patchStore() {
-        if (
-            !window.Store ||
-            window.Store
-                .__demoVisualsPatched
-        ) {
-            return Boolean(
-                window.Store
-            );
-        }
-
-        const Store =
-            window.Store;
-
-
-        if (
-            typeof Store.categoryImage ===
-            "function"
-        ) {
-            const original =
-                Store.categoryImage
-                    .bind(Store);
-
-            Store.categoryImage =
-                function (
-                    category = {}
-                ) {
-                    const result =
-                        original(category);
-
-                    if (result) {
-                        return result;
-                    }
-
-                    return fallbackFor(
-                        category.category_name ||
-                        category.name ||
-                        category.title ||
-                        "category"
-                    );
-                };
-        }
-
-
-        if (
-            typeof Store.img ===
-            "function"
-        ) {
-            const original =
-                Store.img
-                    .bind(Store);
-
-            Store.img =
-                function (
-                    product = {}
-                ) {
-                    const result =
-                        original(product);
-
-                    if (result) {
-                        return result;
-                    }
-
-                    return fallbackFor(
-                        [
-                            product.product_name,
-                            product.name,
-                            product.category,
-                            product.category_name
-                        ]
-                            .filter(Boolean)
-                            .join(" ")
-                    );
-                };
-        }
-
-
-        Store.__demoVisualsPatched =
-            true;
-
-        return true;
-    }
-
-
-    if (!patchStore()) {
-        const timer =
-            setInterval(
-                () => {
-                    if (patchStore()) {
-                        clearInterval(
-                            timer
+                    if (img) {
+                        installFallback(
+                            img,
+                            category,
+                            index
                         );
                     }
-                },
-                25
+                }
             );
-
-        setTimeout(
-            () =>
-                clearInterval(
-                    timer
-                ),
-            5000
-        );
     }
 
+    function enhanceLooseImages() {
+        document
+            .querySelectorAll(
+                "img.product-image, img.category-image"
+            )
+            .forEach(
+                (img, index) => {
+                    const parent =
+                        img.closest(
+                            ".product-card, .category-card"
+                        );
 
-    /*
-     * Handle images added later by dynamic ERP rendering.
-     */
+                    const category =
+                        detectCategory(
+                            parent?.textContent ||
+                            img.alt
+                        );
+
+                    installFallback(
+                        img,
+                        category,
+                        index
+                    );
+                }
+            );
+    }
+
+    function run() {
+        enhanceCards();
+        enhanceLooseImages();
+    }
+
+    if (
+        document.readyState === "loading"
+    ) {
+        document.addEventListener(
+            "DOMContentLoaded",
+            run
+        );
+    } else {
+        run();
+    }
+
+    let timer = null;
 
     const observer =
-        new MutationObserver(
-            mutations => {
-                for (
-                    const mutation
-                    of mutations
-                ) {
-                    for (
-                        const node
-                        of mutation.addedNodes
-                    ) {
-                        if (
-                            !(
-                                node instanceof
-                                HTMLElement
-                            )
-                        ) {
-                            continue;
-                        }
+        new MutationObserver(() => {
+            clearTimeout(timer);
 
-                        const images =
-                            node.matches?.(
-                                "img"
-                            )
-                                ? [node]
-                                : [
-                                    ...node
-                                        .querySelectorAll?.(
-                                            "img"
-                                        ) || []
-                                ];
-
-                        for (
-                            const image
-                            of images
-                        ) {
-                            if (
-                                image.complete &&
-                                image.naturalWidth ===
-                                    0
-                            ) {
-                                const text =
-                                    imageContext(
-                                        image
-                                    );
-
-                                if (
-                                    /product|category|hair|skin|face|body|fashion|herbal/i
-                                        .test(
-                                            text +
-                                            " " +
-                                            image.className
-                                        )
-                                ) {
-                                    useFallback(
-                                        image
-                                    );
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        );
+            timer =
+                setTimeout(
+                    run,
+                    80
+                );
+        });
 
     observer.observe(
         document.documentElement,
