@@ -254,6 +254,29 @@ exports.getProductById = async (
         const product =
             productRows[0];
 
+        const normalizeProductImageUrl =
+            value => {
+                const raw =
+                    String(value || "").trim();
+
+                if (!raw) {
+                    return null;
+                }
+
+                if (
+                    raw.startsWith("http://") ||
+                    raw.startsWith("https://")
+                ) {
+                    return raw;
+                }
+
+                if (raw.startsWith("/")) {
+                    return raw;
+                }
+
+                return `/uploads/products/${raw}`;
+            };
+
         const normalizedImages =
             images.map(
                 (
@@ -264,7 +287,9 @@ exports.getProductById = async (
                     is_main:
                         index === 0,
                     image_url:
-                        `/uploads/products/${image.image_url}`
+                        normalizeProductImageUrl(
+                            image.image_url
+                        )
                 })
             );
 
@@ -282,9 +307,9 @@ exports.getProductById = async (
                 main_image:
                     mainImage,
                 image_url:
-                    mainImage
-                        ? `/uploads/products/${mainImage}`
-                        : null,
+                    normalizeProductImageUrl(
+                        mainImage
+                    ),
                 images:
                     normalizedImages
             }
