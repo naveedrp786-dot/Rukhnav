@@ -412,6 +412,206 @@ window.Store = {
     },
 
 
+    async refreshAccountAvatar() {
+        const image =
+            document.getElementById(
+                "headerAccountImage"
+            );
+
+        const initials =
+            document.getElementById(
+                "headerAccountInitials"
+            );
+
+        const icon =
+            document.getElementById(
+                "headerAccountIcon"
+            );
+
+        if (
+            !image ||
+            !initials ||
+            !icon
+        ) {
+            return;
+        }
+
+        const showGuest = () => {
+            image.classList.add(
+                "hidden"
+            );
+
+            image.removeAttribute(
+                "src"
+            );
+
+            initials.classList.add(
+                "hidden"
+            );
+
+            initials.textContent = "";
+
+            icon.classList.remove(
+                "hidden"
+            );
+        };
+
+        const showInitials = customer => {
+            const name =
+                String(
+                    customer?.full_name ||
+                    customer?.first_name ||
+                    customer?.name ||
+                    "RUKHNAV Customer"
+                )
+                    .trim();
+
+            const letters =
+                name
+                    .split(/\s+/)
+                    .filter(Boolean)
+                    .slice(0, 2)
+                    .map(part =>
+                        part
+                            .charAt(0)
+                            .toUpperCase()
+                    )
+                    .join("") ||
+                "R";
+
+            image.classList.add(
+                "hidden"
+            );
+
+            image.removeAttribute(
+                "src"
+            );
+
+            icon.classList.add(
+                "hidden"
+            );
+
+            initials.textContent =
+                letters;
+
+            initials.classList.remove(
+                "hidden"
+            );
+        };
+
+        const showImage = url => {
+            image.src = url;
+
+            image.onload = () => {
+                icon.classList.add(
+                    "hidden"
+                );
+
+                initials.classList.add(
+                    "hidden"
+                );
+
+                image.classList.remove(
+                    "hidden"
+                );
+            };
+
+            image.onerror = () => {
+                const customer =
+                    API.customerRecord();
+
+                showInitials(
+                    customer
+                );
+            };
+        };
+
+        if (
+            !API.isAuthenticated()
+        ) {
+            showGuest();
+            return;
+        }
+
+        const storedCustomer =
+            API.customerRecord() ||
+            {};
+
+        try {
+            const data =
+                await API.get(
+                    "/api/profile"
+                );
+
+            const profile =
+                data?.profile ||
+                data?.customer ||
+                data ||
+                {};
+
+            const mergedCustomer = {
+                ...storedCustomer,
+                ...profile
+            };
+
+            const picture =
+                profile.profile_picture_url ||
+                profile.profile_picture ||
+                storedCustomer.profile_picture_url ||
+                storedCustomer.profile_picture ||
+                "";
+
+            if (picture) {
+                const url =
+                    /^https?:\/\//i.test(
+                        picture
+                    )
+                        ? picture
+                        : `${API.base}/${String(
+                            picture
+                        ).replace(
+                            /^\/+/, ""
+                        )}`;
+
+                showImage(url);
+            } else {
+                showInitials(
+                    mergedCustomer
+                );
+            }
+        } catch (error) {
+            console.warn(
+                "Unable to refresh storefront account avatar.",
+                error
+            );
+
+            const picture =
+                storedCustomer.profile_picture_url ||
+                storedCustomer.profile_picture ||
+                "";
+
+            if (picture) {
+                const url =
+                    /^https?:\/\//i.test(
+                        picture
+                    )
+                        ? picture
+                        : `${API.base}/${String(
+                            picture
+                        ).replace(
+                            /^\/+/, ""
+                        )}`;
+
+                showImage(url);
+            } else {
+                showInitials(
+                    storedCustomer
+                );
+            }
+        }
+    },
+
+
     async init() {
         try {
             this.settings =
@@ -437,6 +637,8 @@ window.Store = {
             Components.footer(
                 this.settings
             );
+
+            await this.refreshAccountAvatar();
 
             this.renderCategoryNavigation();
             this.renderHomepageCategories();
