@@ -330,7 +330,7 @@ window.Store = {
 
         const grid =
             document.querySelector(
-                ".section:has(.categories) .categories"
+                ".home-shop-shortcuts .categories, .section:has(.categories) .categories"
             );
 
         if (!grid) {

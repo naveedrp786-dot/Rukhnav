@@ -12,45 +12,77 @@
 </head>
 <body>
 <div id="announcement"></div><div id="header"></div>
-<main>
-<section class="hero">
-<div class="hero-copy">
-<span id="heroEyebrow">Nature, Beauty & Care</span>
-<h1 id="heroTitle">Premium beauty inspired by nature</h1>
-<p id="heroText">Discover RUKHNAV herbal cosmetics and hair-care essentials made for everyday confidence.</p>
-<div class="hero-actions"><a class="btn primary" href="products.html">Shop products</a><a class="btn secondary" href="about.html">Our story</a></div>
-<div class="trust"><b><i class="fa-solid fa-leaf"></i> Herbal care</b><b><i class="fa-solid fa-truck-fast"></i> Pakistan delivery</b><b><i class="fa-solid fa-shield-heart"></i> Quality checked</b></div>
-</div>
-<div class="hero-art"><div class="bottle"><i class="fa-solid fa-spa"></i><small>RUKHNAV</small><strong>Nature-led beauty</strong></div></div>
-</section>
+<main class="marketplace-home">
 
-<section class="benefits">
-<article><i class="fa-solid fa-truck-fast"></i><div><b>Nationwide delivery</b><span>Across Pakistan</span></div></article>
-<article><i class="fa-solid fa-money-bill-wave"></i><div><b>Flexible payments</b><span>COD, EasyPaisa & more</span></div></article>
-<article><i class="fa-solid fa-medal"></i><div><b>Loyalty rewards</b><span>Earn and redeem points</span></div></article>
-<article><i class="fa-solid fa-headset"></i><div><b>Customer support</b><span>We're here to help</span></div></article>
-</section>
+    <!-- =====================================================
+         QUICK SHOP
+         Compact shortcuts — no long descriptions.
+         Existing Store.renderHomepageCategories() can still
+         replace these with live ERP categories.
+         ===================================================== -->
+    <section class="home-shop-shortcuts">
+        <div class="home-section-title">
+            <h2>Shop</h2>
 
-<section class="section">
-<div class="section-head"><div><span>Shop by need</span><h2>Popular categories</h2></div><a href="products.html">View all <i class="fa-solid fa-arrow-right"></i></a></div>
-<div class="categories">
-<a href="products.html?category=Hair%20Care"><i class="fa-solid fa-wand-magic-sparkles"></i><b>Hair Care</b><span>Shampoo, oils and treatments</span></a>
-<a href="products.html?category=Skin%20Care"><i class="fa-solid fa-droplet"></i><b>Skin Care</b><span>Face wash, creams and essentials</span></a>
-<a href="products.html?category=Herbal"><i class="fa-solid fa-leaf"></i><b>Herbal Collection</b><span>Nature-inspired everyday care</span></a>
-<a href="products.html?sort=newest"><i class="fa-solid fa-sparkles"></i><b>New Arrivals</b><span>Explore the latest products</span></a>
-</div>
-</section>
+            <a href="products.html">
+                See all
+            </a>
+        </div>
 
-<section class="section">
-<div class="section-head"><div><span>Customer favourites</span><h2>Featured products</h2></div><a href="products.html">Shop all <i class="fa-solid fa-arrow-right"></i></a></div>
-<div id="homeLoading" class="state"><div class="spinner"></div><p>Loading products</p></div>
-<div id="homeEmpty" class="state hidden"><i class="fa-solid fa-box-open"></i><h3>Products are coming soon</h3></div>
-<div id="homeProducts" class="products hidden"></div>
-</section>
+        <div class="categories">
+            <a href="products.html?category=Hair%20Care">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <b>Hair Care</b>
+            </a>
 
-<section class="story"><div><span>Why RUKHNAV</span><h2>Carefully selected products for everyday beauty</h2><p>Quality-checked cosmetics and hair-care products with a shopping experience you can trust.</p><a class="btn light" href="about.html">Discover our story</a></div><div class="story-points"><b><i class="fa-solid fa-seedling"></i> Nature inspired</b><b><i class="fa-solid fa-flask-vial"></i> Quality focused</b><b><i class="fa-solid fa-heart"></i> Customer first</b></div></section>
+            <a href="products.html?category=Skin%20Care">
+                <i class="fa-solid fa-droplet"></i>
+                <b>Skin Care</b>
+            </a>
 
-<section class="section newsletter"><div><div><span>Stay connected</span><h2 id="newsletterTitle">Beauty tips, new arrivals and special offers</h2><p id="newsletterText">Join the RUKHNAV community and be the first to know.</p></div><form id="newsletterForm"><input type="email" id="newsletterEmail" placeholder="Enter your email" required><button class="btn primary">Subscribe</button></form></div></section>
+            <a href="products.html?category=Herbal">
+                <i class="fa-solid fa-leaf"></i>
+                <b>Herbal</b>
+            </a>
+
+            <a href="products.html?sort=newest">
+                <i class="fa-solid fa-sparkles"></i>
+                <b>New Arrivals</b>
+            </a>
+        </div>
+    </section>
+
+
+    <!-- =====================================================
+         PRODUCTS — PRIMARY HOMEPAGE CONTENT
+         ===================================================== -->
+    <section class="home-products-section">
+
+        <div class="home-section-title">
+            <h2>Products</h2>
+
+            <a href="products.html">
+                See all
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div id="homeLoading" class="state">
+            <div class="spinner"></div>
+            <p>Loading products</p>
+        </div>
+
+        <div id="homeEmpty" class="state hidden">
+            <i class="fa-solid fa-box-open"></i>
+            <h3>No products available</h3>
+        </div>
+
+        <div id="homeProducts"
+             class="products hidden">
+        </div>
+
+    </section>
+
 </main>
 <div id="footer"></div><div id="toast" class="toast-region"></div><div id="overlay" class="overlay"></div>
 <script src="js/api.js"></script><script src="js/theme.js"></script><script src="js/components.js?v=20260823-2"></script><script src="js/store.js"></script><script src="js/home.js"></script><script src="js/website-cms-bridge.js"></script>
