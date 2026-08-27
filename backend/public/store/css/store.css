@@ -5109,3 +5109,448 @@ button{
     }
 
 }
+
+
+/* =========================================================
+   RUKHNAV — STORE BENEFITS + LOYALTY FOOTER AREA
+   ========================================================= */
+
+.rk-store-benefits {
+    width: min(calc(100% - 40px), var(--max));
+    margin: 44px auto 0;
+
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    background: var(--surface);
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            var(--border)
+        );
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 10px 30px
+        color-mix(
+            in srgb,
+            var(--primary) 7%,
+            transparent
+        );
+}
+
+.rk-benefit-item {
+    min-height: 100px;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    border-right:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 9%,
+            var(--border)
+        );
+
+    transition:
+        transform .22s ease,
+        background-color .22s ease;
+}
+
+.rk-benefit-item:last-child {
+    border-right: 0;
+}
+
+.rk-benefit-item:hover {
+    background:
+        color-mix(
+            in srgb,
+            var(--secondary) 7%,
+            var(--surface)
+        );
+}
+
+.rk-benefit-icon {
+    width: 46px;
+    height: 46px;
+
+    flex: 0 0 46px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 14px;
+
+    color: var(--primary);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--secondary) 18%,
+            var(--surface)
+        );
+
+    font-size: 19px;
+
+    transition:
+        transform .22s ease;
+}
+
+.rk-benefit-item:hover .rk-benefit-icon {
+    transform:
+        translateY(-2px)
+        scale(1.07);
+}
+
+.rk-benefit-item strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.rk-benefit-item small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   LOYALTY GUIDE
+   ========================================================= */
+
+.rk-loyalty-guide {
+    width: min(calc(100% - 40px), var(--max));
+
+    margin: 18px auto 34px;
+
+    padding: 24px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            color-mix(
+                in srgb,
+                var(--primary) 97%,
+                #000
+            ),
+            color-mix(
+                in srgb,
+                var(--primary) 82%,
+                var(--shade-2)
+            )
+        );
+
+    color: #fff;
+
+    box-shadow:
+        0 16px 38px
+        color-mix(
+            in srgb,
+            var(--primary) 16%,
+            transparent
+        );
+}
+
+.rk-loyalty-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin-bottom: 18px;
+}
+
+.rk-loyalty-heading span {
+    color: var(--secondary);
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+}
+
+.rk-loyalty-heading h2 {
+    margin: 4px 0 0;
+
+    color: #fff;
+
+    font-size: 21px;
+}
+
+.rk-loyalty-heading a {
+    color: var(--secondary);
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-decoration: none;
+
+    transition:
+        transform .2s ease;
+}
+
+.rk-loyalty-heading a:hover {
+    transform: translateX(4px);
+}
+
+
+/* ---------- TIERS ---------- */
+
+.rk-tier-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.rk-tier-card {
+    min-height: 116px;
+
+    padding: 16px;
+
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,.055);
+
+    transition:
+        transform .22s ease,
+        background-color .22s ease,
+        border-color .22s ease;
+}
+
+.rk-tier-card:hover {
+    transform: translateY(-4px);
+
+    background:
+        rgba(255,255,255,.09);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--secondary) 55%,
+            transparent
+        );
+}
+
+.rk-tier-icon {
+    width: 37px;
+    height: 37px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 37px;
+
+    border-radius: 50%;
+
+    color: var(--secondary);
+
+    background:
+        rgba(255,255,255,.09);
+}
+
+.rk-tier-card strong {
+    display: block;
+
+    color: #fff;
+
+    font-size: 13px;
+}
+
+.rk-tier-card b {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--secondary);
+
+    font-size: 11px;
+}
+
+.rk-tier-card small {
+    display: block;
+
+    margin-top: 6px;
+
+    color:
+        rgba(255,255,255,.70);
+
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.rk-tier-highlight {
+    background:
+        color-mix(
+            in srgb,
+            var(--secondary) 10%,
+            transparent
+        );
+}
+
+.rk-tier-premium {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--secondary) 35%,
+            transparent
+        );
+}
+
+
+/* =========================================================
+   COMPACT EXISTING FOOTER
+   ========================================================= */
+
+.store-footer {
+    margin-top: 0 !important;
+
+    padding-top: 34px !important;
+    padding-bottom: 18px !important;
+}
+
+.store-footer .footer-grid {
+    padding-top: 0 !important;
+    padding-bottom: 24px !important;
+
+    gap: 34px !important;
+}
+
+.store-footer .footer-brand p {
+    margin-top: 10px;
+    margin-bottom: 0;
+
+    line-height: 1.55;
+}
+
+.store-footer .footer-col h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.store-footer .footer-col a,
+.store-footer .footer-col span {
+    line-height: 1.55;
+}
+
+.store-footer .footer-bottom {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 980px) {
+
+    .rk-store-benefits,
+    .rk-loyalty-guide {
+        width: calc(100% - 28px);
+    }
+
+    .rk-store-benefits {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .rk-benefit-item:nth-child(2) {
+        border-right: 0;
+    }
+
+    .rk-tier-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 620px) {
+
+    .rk-store-benefits,
+    .rk-loyalty-guide {
+        width: calc(100% - 20px);
+    }
+
+    .rk-store-benefits {
+        margin-top: 26px;
+
+        grid-template-columns: 1fr;
+    }
+
+    .rk-benefit-item {
+        min-height: 76px;
+
+        padding: 13px;
+
+        border-right: 0;
+
+        border-bottom:
+            1px solid
+            var(--border);
+    }
+
+    .rk-benefit-item:last-child {
+        border-bottom: 0;
+    }
+
+    .rk-loyalty-guide {
+        padding: 18px;
+
+        margin-bottom: 22px;
+    }
+
+    .rk-loyalty-heading {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .rk-tier-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rk-tier-card {
+        min-height: 92px;
+    }
+
+}
