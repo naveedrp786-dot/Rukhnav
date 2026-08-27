@@ -337,6 +337,21 @@ exports.addProduct = async (
             req.body.description || ""
         ).trim();
 
+    const ingredients =
+        String(
+            req.body.ingredients || ""
+        ).trim();
+
+    const directions =
+        String(
+            req.body.directions || ""
+        ).trim();
+
+    const warnings =
+        String(
+            req.body.warnings || ""
+        ).trim();
+
     const sellingPrice =
         Number(
             req.body.selling_price
@@ -413,17 +428,23 @@ exports.addProduct = async (
                     sku,
                     category,
                     description,
+                    ingredients,
+                    directions,
+                    warnings,
                     selling_price,
                     stock_quantity,
                     status
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `,
                 [
                     productName,
                     sku || null,
                     category,
                     description || null,
+                    ingredients || null,
+                    directions || null,
+                    warnings || null,
                     sellingPrice,
                     stockQuantity,
                     status
@@ -606,6 +627,21 @@ exports.updateProduct = async (
             req.body.description || ""
         ).trim();
 
+    const ingredients =
+        String(
+            req.body.ingredients || ""
+        ).trim();
+
+    const directions =
+        String(
+            req.body.directions || ""
+        ).trim();
+
+    const warnings =
+        String(
+            req.body.warnings || ""
+        ).trim();
+
     const sellingPrice =
         Number(
             req.body.selling_price
@@ -720,6 +756,9 @@ exports.updateProduct = async (
                 sku = ?,
                 category = ?,
                 description = ?,
+                ingredients = ?,
+                directions = ?,
+                warnings = ?,
                 selling_price = ?,
                 stock_quantity = ?,
                 stock_status = ?,
@@ -731,6 +770,9 @@ exports.updateProduct = async (
                 sku || null,
                 category,
                 description || null,
+                ingredients || null,
+                directions || null,
+                warnings || null,
                 sellingPrice,
                 stockQuantity,
                 stockStatus,

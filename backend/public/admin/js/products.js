@@ -848,6 +848,21 @@ async function editProduct(id) {
         ).value =
             product.description || "";
 
+        document.getElementById(
+            "ingredients"
+        ).value =
+            product.ingredients || "";
+
+        document.getElementById(
+            "directions"
+        ).value =
+            product.directions || "";
+
+        document.getElementById(
+            "warnings"
+        ).value =
+            product.warnings || "";
+
         productForm.dataset.editId =
             product.id;
 
@@ -1154,6 +1169,27 @@ productForm.addEventListener(
                 "description",
                 document.getElementById(
                     "description"
+                ).value.trim()
+            );
+
+            formData.append(
+                "ingredients",
+                document.getElementById(
+                    "ingredients"
+                ).value.trim()
+            );
+
+            formData.append(
+                "directions",
+                document.getElementById(
+                    "directions"
+                ).value.trim()
+            );
+
+            formData.append(
+                "warnings",
+                document.getElementById(
+                    "warnings"
                 ).value.trim()
             );
 
