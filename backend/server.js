@@ -144,6 +144,9 @@ app.use(
 const productRoutes =
     require("./routes/productRoutes");
 
+const productMediaRoutes =
+    require("./routes/productMediaRoutes");
+
 const customerRoutes =
     require("./routes/customerRoutes");
 
@@ -314,6 +317,11 @@ if (
 app.use(
     "/api/products",
     productRoutes
+);
+
+app.use(
+    "/api/product-media",
+    productMediaRoutes
 );
 
 app.use(
