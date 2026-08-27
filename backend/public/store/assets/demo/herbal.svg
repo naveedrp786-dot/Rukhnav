@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 900 700">
+
+  <rect width="900" height="700"
+        fill="#f5f1df"/>
+
+  <g fill="#668151">
+    <ellipse cx="210" cy="360"
+             rx="95" ry="38"
+             transform="rotate(-40 210 360)"/>
+    <ellipse cx="285" cy="275"
+             rx="90" ry="36"
+             transform="rotate(-30 285 275)"/>
+    <ellipse cx="690" cy="340"
+             rx="105" ry="42"
+             transform="rotate(35 690 340)"/>
+  </g>
+
+  <rect x="350" y="215"
+        width="200" height="360"
+        rx="42"
+        fill="#9b682f"/>
+
+  <rect x="385" y="145"
+        width="130" height="90"
+        rx="18"
+        fill="#2d2924"/>
+
+  <rect x="372" y="345"
+        width="156" height="125"
+        rx="18"
+        fill="#efe6c8"/>
+
+  <text x="450" y="392"
+        text-anchor="middle"
+        font-family="Georgia,serif"
+        font-size="27"
+        font-weight="700"
+        fill="#5b3f70">
+    RUKHNAV
+  </text>
+
+  <text x="450" y="430"
+        text-anchor="middle"
+        font-family="Arial,sans-serif"
+        font-size="20"
+        fill="#544934">
+    HERBAL
+  </text>
+
+  <text x="450" y="650"
+        text-anchor="middle"
+        font-family="Georgia,serif"
+        font-size="34"
+        font-weight="700"
+        fill="#5b3f70">
+    Herbal Essentials
+  </text>
+</svg>

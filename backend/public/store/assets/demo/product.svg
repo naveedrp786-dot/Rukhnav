@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 900 700">
+
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fbf7ee"/>
+      <stop offset=".55" stop-color="#eee5f0"/>
+      <stop offset="1" stop-color="#e7efe1"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="700"
+        fill="url(#bg)"/>
+
+  <ellipse cx="450" cy="590"
+           rx="280" ry="32"
+           fill="#d7ccd5"
+           opacity=".6"/>
+
+  <g fill="#647f54">
+    <ellipse cx="190" cy="380"
+             rx="95" ry="36"
+             transform="rotate(-38 190 380)"/>
+    <ellipse cx="720" cy="325"
+             rx="105" ry="40"
+             transform="rotate(32 720 325)"/>
+  </g>
+
+  <rect x="235" y="305"
+        width="150" height="265"
+        rx="35"
+        fill="#7a5b87"/>
+
+  <rect x="270" y="250"
+        width="80" height="75"
+        rx="14"
+        fill="#c5a35c"/>
+
+  <rect x="408" y="235"
+        width="165" height="335"
+        rx="38"
+        fill="#4d6a4b"/>
+
+  <rect x="450" y="175"
+        width="80" height="85"
+        rx="15"
+        fill="#c5a35c"/>
+
+  <rect x="600" y="365"
+        width="150" height="205"
+        rx="45"
+        fill="#d0b89a"/>
+
+  <rect x="585" y="330"
+        width="180" height="65"
+        rx="24"
+        fill="#b09374"/>
+
+  <text x="450" y="630"
+        text-anchor="middle"
+        font-family="Georgia,serif"
+        font-size="34"
+        font-weight="700"
+        fill="#5b3f70">
+    RUKHNAV COLLECTION
+  </text>
+
+  <text x="450" y="670"
+        text-anchor="middle"
+        font-family="Arial,sans-serif"
+        font-size="19"
+        fill="#756d75">
+    Product photography coming soon
+  </text>
+</svg>
