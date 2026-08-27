@@ -5554,3 +5554,282 @@ button{
     }
 
 }
+
+
+/* =========================================================
+   RUKHNAV — FULL STOREFRONT THEME SYNC
+   Header, navigation, footer and headings follow CMS theme.
+   ========================================================= */
+
+
+/* ---------- TOP NAV ---------- */
+
+.store-header .categories-nav {
+    background:
+        var(
+            --deep-gradient,
+            linear-gradient(
+                135deg,
+                var(--primary),
+                var(--shade-2)
+            )
+        ) !important;
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--secondary) 18%,
+            transparent
+        ) !important;
+}
+
+.store-header .categories-nav a {
+    color: var(--surface) !important;
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--surface) 16%,
+            transparent
+        ) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 5%,
+            transparent
+        ) !important;
+}
+
+.store-header .categories-nav a:hover {
+    background:
+        color-mix(
+            in srgb,
+            var(--secondary) 18%,
+            var(--primary)
+        ) !important;
+
+    color: var(--surface) !important;
+}
+
+
+/* ---------- PAGE HEADINGS ---------- */
+
+.marketplace-home h1,
+.marketplace-home h2,
+.marketplace-home h3,
+.marketplace-home .home-section-title h2 {
+    color:
+        var(
+            --heading-color,
+            var(--text)
+        ) !important;
+}
+
+.marketplace-home .home-section-title > a {
+    color: var(--primary) !important;
+}
+
+.marketplace-home .home-section-title > a:hover {
+    color: var(--secondary) !important;
+}
+
+
+/* ---------- BENEFITS AREA ---------- */
+
+.rk-store-benefits {
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 96%,
+            var(--background)
+        ) !important;
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            var(--border)
+        ) !important;
+}
+
+.rk-benefit-item strong {
+    color: var(--text) !important;
+}
+
+.rk-benefit-item small {
+    color: var(--muted) !important;
+}
+
+
+/* ---------- LOYALTY PANEL ---------- */
+
+.rk-loyalty-guide {
+    background:
+        var(
+            --deep-gradient,
+            linear-gradient(
+                135deg,
+                var(--primary),
+                var(--shade-2)
+            )
+        ) !important;
+}
+
+.rk-loyalty-heading h2 {
+    color: var(--surface) !important;
+}
+
+.rk-loyalty-heading span,
+.rk-loyalty-heading a,
+.rk-tier-card b,
+.rk-tier-icon {
+    color: var(--secondary) !important;
+}
+
+
+/* =========================================================
+   FOOTER THEME SYNC
+   ========================================================= */
+
+.store-footer {
+    background:
+        var(
+            --deep-gradient,
+            linear-gradient(
+                135deg,
+                var(--primary),
+                var(--shade-1)
+            )
+        ) !important;
+
+    color: var(--surface) !important;
+
+    border-top:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--secondary) 22%,
+            transparent
+        ) !important;
+}
+
+.store-footer strong,
+.store-footer h3 {
+    color: var(--surface) !important;
+}
+
+.store-footer p,
+.store-footer span,
+.store-footer a {
+    color:
+        color-mix(
+            in srgb,
+            var(--surface) 76%,
+            transparent
+        ) !important;
+}
+
+.store-footer a:hover {
+    color: var(--secondary) !important;
+}
+
+.store-footer .footer-bottom {
+    border-top:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--surface) 12%,
+            transparent
+        ) !important;
+}
+
+
+/* ---------- BRAND ---------- */
+
+.store-footer .footer-brand > strong {
+    color: var(--secondary) !important;
+}
+
+
+/* ---------- HEADER BRAND ---------- */
+
+.store-header .brand strong {
+    color: var(--primary) !important;
+}
+
+.store-header .brand small {
+    color: var(--muted) !important;
+}
+
+
+/* ---------- ANNOUNCEMENT BAR ---------- */
+
+#announcement,
+.store-announcement-bar {
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 86%,
+            var(--secondary)
+        ) !important;
+
+    color: var(--surface) !important;
+}
+
+
+/* ---------- SEARCH BUTTON ---------- */
+
+.store-header .search button {
+    background:
+        var(
+            --button-gradient,
+            linear-gradient(
+                135deg,
+                var(--primary),
+                var(--shade-2)
+            )
+        ) !important;
+
+    color: var(--surface) !important;
+}
+
+
+/* ---------- CART BUTTONS / ACCENTS ---------- */
+
+.marketplace-home .add-card {
+    background:
+        linear-gradient(
+            135deg,
+            var(--secondary),
+            color-mix(
+                in srgb,
+                var(--secondary) 74%,
+                var(--primary)
+            )
+        ) !important;
+}
+
+
+/* ---------- SUPPORT COLOR-MIX FALLBACK ---------- */
+
+@supports not (
+    color:
+        color-mix(
+            in srgb,
+            #000,
+            #fff
+        )
+) {
+
+    .store-footer {
+        background:
+            var(--primary) !important;
+    }
+
+    .store-header .categories-nav {
+        background:
+            var(--primary) !important;
+    }
+
+}
