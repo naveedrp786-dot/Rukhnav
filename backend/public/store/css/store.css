@@ -4176,3 +4176,936 @@ button{
     }
 
 }
+
+
+/* =========================================================
+   RUKHNAV STOREFRONT — PREMIUM SHOPPING INTERACTIONS
+   ========================================================= */
+
+
+/* ---------- TOP CATEGORY NAVIGATION ---------- */
+
+.store-header .categories-nav a {
+    position: relative;
+    overflow: hidden;
+
+    transition:
+        transform .22s ease,
+        background-color .22s ease,
+        border-color .22s ease,
+        color .22s ease,
+        box-shadow .22s ease;
+}
+
+.store-header .categories-nav a::after {
+    content: "";
+
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+
+    width: 0;
+    height: 2px;
+
+    border-radius: 999px;
+
+    background: var(--secondary);
+
+    transform: translateX(-50%);
+
+    transition: width .22s ease;
+}
+
+.store-header .categories-nav a:hover {
+    transform: translateY(-2px);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--secondary) 72%,
+            transparent
+        );
+
+    box-shadow:
+        0 7px 18px
+        color-mix(
+            in srgb,
+            var(--primary) 18%,
+            transparent
+        );
+}
+
+.store-header .categories-nav a:hover::after {
+    width: 48%;
+}
+
+
+/* ---------- HEADER ACCOUNT / WISHLIST / CART ---------- */
+
+.store-header .actions .action {
+    transition:
+        transform .2s ease,
+        color .2s ease;
+}
+
+.store-header .actions .action:hover {
+    transform: translateY(-2px);
+}
+
+.store-header .actions .action > i {
+    transition:
+        transform .22s ease,
+        color .22s ease;
+}
+
+.store-header .actions .action:hover > i {
+    transform: scale(1.12);
+    color: var(--secondary);
+}
+
+.store-header .account-action
+.header-account-avatar {
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+}
+
+.store-header .account-action:hover
+.header-account-avatar {
+    transform: scale(1.08);
+
+    border-color: var(--secondary);
+
+    box-shadow:
+        0 5px 15px
+        color-mix(
+            in srgb,
+            var(--secondary) 28%,
+            transparent
+        );
+}
+
+
+/* ---------- HOMEPAGE CATEGORY CARDS ---------- */
+
+.marketplace-home .categories > a {
+    position: relative;
+
+    isolation: isolate;
+
+    overflow: hidden;
+
+    transition:
+        transform .25s cubic-bezier(.2,.7,.2,1),
+        box-shadow .25s ease,
+        border-color .25s ease,
+        background-color .25s ease;
+}
+
+.marketplace-home .categories > a::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: -1;
+
+    opacity: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            color-mix(
+                in srgb,
+                var(--secondary) 11%,
+                transparent
+            ),
+            transparent 62%
+        );
+
+    transition: opacity .25s ease;
+}
+
+.marketplace-home .categories > a:hover {
+    transform: translateY(-5px);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--secondary) 65%,
+            transparent
+        );
+
+    box-shadow:
+        0 16px 34px
+        color-mix(
+            in srgb,
+            var(--primary) 13%,
+            transparent
+        );
+}
+
+.marketplace-home .categories > a:hover::before {
+    opacity: 1;
+}
+
+.marketplace-home .categories > a i {
+    transition:
+        transform .28s cubic-bezier(.2,.8,.2,1),
+        box-shadow .25s ease;
+}
+
+.marketplace-home .categories > a:hover i {
+    transform:
+        translateY(-2px)
+        scale(1.09)
+        rotate(-3deg);
+}
+
+.marketplace-home .categories > a b {
+    transition:
+        color .22s ease,
+        transform .22s ease;
+}
+
+.marketplace-home .categories > a:hover b {
+    color: var(--primary);
+    transform: translateX(2px);
+}
+
+
+/* ---------- SECTION LINKS ---------- */
+
+.marketplace-home
+.home-section-title > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    transition:
+        color .2s ease,
+        transform .2s ease;
+}
+
+.marketplace-home
+.home-section-title > a:hover {
+    color: var(--secondary);
+    transform: translateX(3px);
+}
+
+.marketplace-home
+.home-section-title > a i {
+    transition: transform .2s ease;
+}
+
+.marketplace-home
+.home-section-title > a:hover i {
+    transform: translateX(4px);
+}
+
+
+/* =========================================================
+   PRODUCT CARDS
+   ========================================================= */
+
+.marketplace-home .product-card {
+    position: relative;
+
+    overflow: hidden;
+
+    transform: translateZ(0);
+
+    transition:
+        transform .28s cubic-bezier(.2,.7,.2,1),
+        box-shadow .28s ease,
+        border-color .28s ease;
+}
+
+.marketplace-home .product-card:hover {
+    transform: translateY(-7px);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--secondary) 46%,
+            transparent
+        );
+
+    box-shadow:
+        0 20px 42px
+        color-mix(
+            in srgb,
+            var(--primary) 15%,
+            transparent
+        );
+}
+
+
+/* Product image zoom */
+
+.marketplace-home
+.product-card
+.product-image {
+    overflow: hidden;
+}
+
+.marketplace-home
+.product-card
+.product-image img {
+    transition:
+        transform .5s cubic-bezier(.2,.7,.2,1),
+        filter .3s ease;
+}
+
+.marketplace-home
+.product-card:hover
+.product-image img {
+    transform: scale(1.045);
+}
+
+
+/* Wishlist */
+
+.marketplace-home .wish-card {
+    transition:
+        transform .2s ease,
+        background-color .2s ease,
+        color .2s ease,
+        box-shadow .2s ease;
+}
+
+.marketplace-home .wish-card:hover {
+    transform: scale(1.10);
+
+    color: var(--primary);
+
+    box-shadow:
+        0 7px 18px
+        rgba(0,0,0,.10);
+}
+
+.marketplace-home
+.wish-card i {
+    transition: transform .2s ease;
+}
+
+.marketplace-home
+.wish-card:hover i {
+    transform: scale(1.08);
+}
+
+
+/* Product name */
+
+.marketplace-home
+.product-card
+.product-body > a {
+    transition: color .2s ease;
+}
+
+.marketplace-home
+.product-card
+.product-body > a:hover {
+    color: var(--secondary);
+}
+
+
+/* Stars */
+
+.marketplace-home
+.product-card .stars {
+    transition:
+        transform .22s ease,
+        filter .22s ease;
+}
+
+.marketplace-home
+.product-card:hover .stars {
+    transform: translateX(2px);
+}
+
+
+/* Add to cart */
+
+.marketplace-home .add-card {
+    position: relative;
+    overflow: hidden;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background-color .2s ease,
+        color .2s ease;
+}
+
+.marketplace-home .add-card:not(:disabled):hover {
+    transform:
+        translateY(-2px)
+        scale(1.05);
+
+    box-shadow:
+        0 8px 18px
+        color-mix(
+            in srgb,
+            var(--secondary) 30%,
+            transparent
+        );
+}
+
+.marketplace-home
+.add-card:not(:disabled) i {
+    transition: transform .2s ease;
+}
+
+.marketplace-home
+.add-card:not(:disabled):hover i {
+    transform: scale(1.10);
+}
+
+
+/* ---------- FOOTER LINKS ---------- */
+
+.store-footer a {
+    position: relative;
+
+    transition:
+        color .2s ease,
+        transform .2s ease;
+}
+
+.store-footer a:hover {
+    color: var(--secondary);
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   KEYBOARD ACCESSIBILITY
+   ========================================================= */
+
+.marketplace-home a:focus-visible,
+.marketplace-home button:focus-visible,
+.store-header a:focus-visible {
+    outline:
+        2px solid
+        var(--secondary);
+
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   TOUCH DEVICES
+   Don't leave cards artificially raised on phones/tablets.
+   ========================================================= */
+
+@media (hover: none) {
+
+    .marketplace-home .product-card:hover,
+    .marketplace-home .categories > a:hover,
+    .store-header .categories-nav a:hover,
+    .store-header .actions .action:hover {
+        transform: none;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .marketplace-home *,
+    .store-header *,
+    .store-footer * {
+        scroll-behavior: auto !important;
+
+        transition-duration:
+            .01ms !important;
+
+        animation-duration:
+            .01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+    }
+
+}
+
+
+/* =========================================================
+   RUKHNAV STOREFRONT — PREMIUM MARKETPLACE VISUAL POLISH
+   ========================================================= */
+
+.marketplace-home {
+    position: relative;
+
+    background:
+        radial-gradient(
+            circle at 12% 5%,
+            color-mix(
+                in srgb,
+                var(--secondary) 7%,
+                transparent
+            ),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 25%,
+            color-mix(
+                in srgb,
+                var(--primary) 5%,
+                transparent
+            ),
+            transparent 30%
+        );
+}
+
+
+/* ---------- PAGE WIDTH / SPACING ---------- */
+
+.home-shop-shortcuts,
+.home-products-section {
+    width: min(
+        calc(100% - 40px),
+        var(--max)
+    );
+}
+
+
+/* ---------- SECTION HEADINGS ---------- */
+
+.home-section-title {
+    padding-bottom: 10px;
+
+    border-bottom:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--border) 72%,
+            transparent
+        );
+}
+
+.home-section-title h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.35px;
+}
+
+
+/* ---------- CATEGORY STRIP ---------- */
+
+.marketplace-home .categories {
+    gap: 14px;
+}
+
+.marketplace-home .categories > a {
+    min-height: 88px;
+
+    padding: 16px 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--surface),
+            color-mix(
+                in srgb,
+                var(--secondary) 5%,
+                var(--surface)
+            )
+        );
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            var(--border)
+        );
+
+    box-shadow:
+        0 5px 18px
+        color-mix(
+            in srgb,
+            var(--primary) 5%,
+            transparent
+        );
+}
+
+.marketplace-home .categories > a i {
+    display: grid;
+    place-items: center;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--secondary) 17%,
+            var(--surface)
+        );
+
+    color: var(--primary);
+}
+
+.marketplace-home .categories > a b {
+    color: var(--text);
+
+    font-size: 13px;
+}
+
+
+/* ---------- PRODUCT GRID ---------- */
+
+.marketplace-home .products {
+    align-items: stretch;
+    gap: 16px;
+}
+
+
+/* ---------- PRODUCT CARD ---------- */
+
+.marketplace-home .product-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    border-radius: 18px;
+
+    background: var(--surface);
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 8%,
+            var(--border)
+        );
+
+    box-shadow:
+        0 5px 18px
+        color-mix(
+            in srgb,
+            var(--primary) 6%,
+            transparent
+        );
+}
+
+
+/* ---------- PRODUCT IMAGE ---------- */
+
+.marketplace-home
+.product-card
+.product-image {
+    position: relative;
+
+    aspect-ratio: 1 / 1;
+
+    display: grid;
+    place-items: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            color-mix(
+                in srgb,
+                var(--background) 72%,
+                var(--surface)
+            ),
+            color-mix(
+                in srgb,
+                var(--secondary) 5%,
+                var(--surface)
+            )
+        );
+}
+
+.marketplace-home
+.product-card
+.product-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    padding: 8px;
+}
+
+
+/* ---------- PLACEHOLDER ---------- */
+
+.marketplace-home
+.product-card
+.placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    place-items: center;
+
+    color:
+        color-mix(
+            in srgb,
+            var(--primary) 78%,
+            var(--secondary)
+        );
+
+    font-size: 46px;
+}
+
+
+/* ---------- WISHLIST FLOATING BUTTON ---------- */
+
+.marketplace-home .wish-card {
+    top: 12px;
+    right: 12px;
+
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 92%,
+            transparent
+        );
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            var(--border)
+        );
+
+    backdrop-filter: blur(10px);
+}
+
+
+/* ---------- PRODUCT CONTENT ---------- */
+
+.marketplace-home .product-body {
+    flex: 1;
+
+    padding: 15px 15px 14px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.marketplace-home
+.product-body > small {
+    margin-bottom: 6px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: .8px;
+
+    text-transform: uppercase;
+}
+
+.marketplace-home
+.product-body > a {
+    min-height: 38px;
+
+    color: var(--text);
+
+    font-size: 14px;
+    line-height: 1.35;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+/* ---------- RATING ---------- */
+
+.marketplace-home .stars {
+    margin-top: 9px;
+
+    color:
+        color-mix(
+            in srgb,
+            var(--secondary) 82%,
+            #d68b00
+        );
+
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+
+/* ---------- PRICE ---------- */
+
+.marketplace-home .price-row {
+    margin-top: auto;
+    padding-top: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.marketplace-home .price {
+    color: var(--primary);
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+/* ---------- CART BUTTON ---------- */
+
+.marketplace-home .add-card {
+    width: 36px;
+    height: 36px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 36px;
+
+    border: 0;
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--secondary),
+            color-mix(
+                in srgb,
+                var(--secondary) 72%,
+                var(--primary)
+            )
+        );
+
+    color:
+        color-mix(
+            in srgb,
+            var(--primary) 90%,
+            #000
+        );
+
+    cursor: pointer;
+}
+
+.marketplace-home .add-card:disabled {
+    opacity: .42;
+    cursor: not-allowed;
+}
+
+
+/* ---------- HEADER SEARCH POLISH ---------- */
+
+.store-header .search {
+    box-shadow:
+        0 3px 14px
+        color-mix(
+            in srgb,
+            var(--primary) 7%,
+            transparent
+        );
+
+    transition:
+        box-shadow .22s ease,
+        transform .22s ease;
+}
+
+.store-header .search:focus-within {
+    box-shadow:
+        0 6px 24px
+        color-mix(
+            in srgb,
+            var(--primary) 13%,
+            transparent
+        );
+}
+
+
+/* ---------- FOOTER ---------- */
+
+.store-footer {
+    margin-top: 44px;
+
+    border-top:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--secondary) 18%,
+            transparent
+        );
+}
+
+
+/* ---------- DESKTOP LARGE ---------- */
+
+@media (min-width: 1280px) {
+
+    .marketplace-home .products {
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ---------- TABLET ---------- */
+
+@media (max-width: 980px) {
+
+    .home-shop-shortcuts,
+    .home-products-section {
+        width: calc(100% - 28px);
+    }
+
+}
+
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 620px) {
+
+    .home-shop-shortcuts,
+    .home-products-section {
+        width: calc(100% - 20px);
+
+        padding-inline: 0;
+    }
+
+    .home-section-title h2 {
+        font-size: 18px;
+    }
+
+    .marketplace-home .categories > a {
+        min-height: 68px;
+
+        padding: 10px 12px;
+    }
+
+    .marketplace-home .product-body {
+        padding: 11px;
+    }
+
+    .marketplace-home
+    .product-body > a {
+        font-size: 12px;
+        min-height: 34px;
+    }
+
+    .marketplace-home .price {
+        font-size: 14px;
+    }
+
+}
