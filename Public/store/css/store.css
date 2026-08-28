@@ -132,3 +132,15 @@ button{
 .store-footer .footer-brand strong {
     color: #ffffff !important;
 }
+
+/* Hard hide the home hero slider components */
+#header + main > div:first-of-type,
+[class*="hero"],
+.story,
+.carousel {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
