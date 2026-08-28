@@ -37,6 +37,10 @@ import type {
   Product,
 } from "../types/product";
 
+import {
+  useWebsiteTheme,
+} from "../theme/website-theme";
+
 function money(
   value: string | number
 ) {
@@ -49,6 +53,12 @@ function ProductCard({
 }: {
   product: Product;
 }) {
+  const theme =
+    useWebsiteTheme();
+
+  const styles =
+    createStyles(theme);
+
   const image =
     productImageUrl(product.image);
 
@@ -145,6 +155,12 @@ function ProductCard({
 }
 
 export default function ShopScreen() {
+  const theme =
+    useWebsiteTheme();
+
+  const styles =
+    createStyles(theme);
+
   const [products, setProducts] =
     useState<Product[]>([]);
 
@@ -388,89 +404,36 @@ export default function ShopScreen() {
         }
       />
 
-      <View style={styles.bottomBar}>
-        <Pressable
-          style={styles.tab}
-          onPress={() =>
-            router.replace("/")
-          }
-        >
-          <Text style={styles.tabIcon}>
-            ⌂
-          </Text>
-          <Text style={styles.tabText}>
-            Home
-          </Text>
-        </Pressable>
-
-        <Pressable style={styles.tab}>
-          <Text style={styles.tabIcon}>
-            ◫
-          </Text>
-          <Text style={styles.activeTab}>
-            Shop
-          </Text>
-        </Pressable>
-
-        <Pressable style={styles.tab}>
-          <View style={styles.cartCircle}>
-            <Text style={styles.cartText}>
-              🛒
-            </Text>
-          </View>
-          <Text style={styles.tabText}>
-            Cart
-          </Text>
-        </Pressable>
-
-        <Pressable style={styles.tab}>
-          <Text style={styles.tabIcon}>
-            ♡
-          </Text>
-          <Text style={styles.tabText}>
-            Wishlist
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.tab}
-          onPress={() =>
-            router.push("/account")
-          }
-        >
-          <Text style={styles.tabIcon}>
-            ♙
-          </Text>
-          <Text style={styles.tabText}>
-            Account
-          </Text>
-        </Pressable>
-      </View>
+      
     </SafeAreaView>
   );
 }
 
-const styles =
-  StyleSheet.create({
+function createStyles(
+  theme: ReturnType<
+    typeof useWebsiteTheme
+  >
+) {
+  return StyleSheet.create({
     page: {
       flex: 1,
-      backgroundColor: "#f8f5ed",
+      backgroundColor: theme.background,
     },
 
     loading: {
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: "#f8f5ed",
+      backgroundColor: theme.background,
       gap: 15,
     },
 
     loadingText: {
-      color: "#173f2b",
+      color: theme.primary,
     },
 
     header: {
-      backgroundColor: "#173f2b",
+      backgroundColor: theme.primary,
       paddingHorizontal: 20,
       paddingVertical: 18,
       flexDirection: "row",
@@ -480,14 +443,14 @@ const styles =
     },
 
     logo: {
-      color: "#d9b95b",
+      color: theme.secondary,
       fontSize: 27,
       fontWeight: "800",
       letterSpacing: 5,
     },
 
     tagline: {
-      color: "#eee6d0",
+      color: theme.surface,
       fontSize: 11,
       marginTop: 4,
     },
@@ -497,13 +460,13 @@ const styles =
       height: 42,
       borderRadius: 21,
       borderWidth: 1,
-      borderColor: "#d9b95b",
+      borderColor: theme.secondary,
       alignItems: "center",
       justifyContent: "center",
     },
 
     accountText: {
-      color: "#ffffff",
+      color: theme.surface,
       fontSize: 22,
     },
 
@@ -514,7 +477,7 @@ const styles =
     title: {
       marginTop: 24,
       marginHorizontal: 18,
-      color: "#173f2b",
+      color: theme.primary,
       fontSize: 32,
       fontWeight: "800",
     },
@@ -529,13 +492,13 @@ const styles =
     search: {
       marginHorizontal: 18,
       marginTop: 18,
-      backgroundColor: "#ffffff",
+      backgroundColor: theme.surface,
       borderWidth: 1,
-      borderColor: "#e6e0d3",
+      borderColor: theme.shade4,
       borderRadius: 16,
       paddingHorizontal: 16,
       paddingVertical: 13,
-      color: "#173f2b",
+      color: theme.primary,
     },
 
     categoryList: {
@@ -546,26 +509,26 @@ const styles =
 
     categoryChip: {
       borderWidth: 1,
-      borderColor: "#d9d0ba",
+      borderColor: theme.shade4,
       paddingHorizontal: 15,
       paddingVertical: 9,
       borderRadius: 22,
-      backgroundColor: "#ffffff",
+      backgroundColor: theme.surface,
     },
 
     categoryChipActive: {
-      backgroundColor: "#173f2b",
-      borderColor: "#173f2b",
+      backgroundColor: theme.primary,
+      borderColor: theme.primary,
     },
 
     categoryChipText: {
-      color: "#526058",
+      color: theme.text,
       fontSize: 12,
       fontWeight: "700",
     },
 
     categoryChipTextActive: {
-      color: "#ffffff",
+      color: theme.surface,
     },
 
     resultRow: {
@@ -578,13 +541,13 @@ const styles =
     },
 
     resultTitle: {
-      color: "#173f2b",
+      color: theme.primary,
       fontSize: 22,
       fontWeight: "800",
     },
 
     resultCount: {
-      color: "#7e867f",
+      color: theme.muted,
       fontSize: 12,
     },
 
@@ -595,18 +558,18 @@ const styles =
 
     card: {
       flex: 1,
-      backgroundColor: "#ffffff",
+      backgroundColor: theme.surface,
       borderRadius: 18,
       overflow: "hidden",
       marginBottom: 12,
       borderWidth: 1,
-      borderColor: "#ebe5d7",
+      borderColor: theme.shade4,
     },
 
     imageBox: {
       width: "100%",
       aspectRatio: 1,
-      backgroundColor: "#efede5",
+      backgroundColor: theme.shade4,
     },
 
     image: {
@@ -621,7 +584,7 @@ const styles =
     },
 
     placeholderText: {
-      color: "#173f2b",
+      color: theme.primary,
       fontWeight: "800",
       letterSpacing: 2,
     },
@@ -631,14 +594,14 @@ const styles =
     },
 
     category: {
-      color: "#a18031",
+      color: theme.secondary,
       fontSize: 9,
       fontWeight: "800",
       textTransform: "uppercase",
     },
 
     name: {
-      color: "#173f2b",
+      color: theme.primary,
       fontSize: 15,
       lineHeight: 20,
       minHeight: 40,
@@ -653,23 +616,23 @@ const styles =
     },
 
     star: {
-      color: "#b58d30",
+      color: theme.secondary,
     },
 
     ratingText: {
-      color: "#5f6962",
+      color: theme.text,
       fontSize: 11,
       marginLeft: 4,
     },
 
     reviewText: {
-      color: "#969c98",
+      color: theme.muted,
       fontSize: 10,
       marginLeft: 3,
     },
 
     price: {
-      color: "#173f2b",
+      color: theme.primary,
       fontSize: 17,
       fontWeight: "800",
       marginTop: 7,
@@ -699,9 +662,9 @@ const styles =
       bottom: 0,
       minHeight: 78,
       paddingBottom: 8,
-      backgroundColor: "#ffffff",
+      backgroundColor: theme.surface,
       borderTopWidth: 1,
-      borderTopColor: "#e9e4d7",
+      borderTopColor: theme.shade4,
       flexDirection: "row",
       alignItems: "center",
       justifyContent:
@@ -715,19 +678,19 @@ const styles =
     },
 
     tabIcon: {
-      color: "#173f2b",
+      color: theme.primary,
       fontSize: 21,
       height: 27,
     },
 
     activeTab: {
-      color: "#173f2b",
+      color: theme.primary,
       fontSize: 10,
       fontWeight: "800",
     },
 
     tabText: {
-      color: "#7b837d",
+      color: theme.muted,
       fontSize: 10,
     },
 
@@ -735,7 +698,7 @@ const styles =
       width: 42,
       height: 42,
       borderRadius: 21,
-      backgroundColor: "#173f2b",
+      backgroundColor: theme.primary,
       alignItems: "center",
       justifyContent: "center",
       marginTop: -19,
@@ -745,4 +708,5 @@ const styles =
     cartText: {
       fontSize: 17,
     },
-  });
+    });
+}

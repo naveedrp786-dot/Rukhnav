@@ -1,0 +1,54 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "RUKHNAV Backend API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node scripts/start-environment.js production",
+    "dev": "nodemon scripts/start-environment.js development",
+    "staging": "node scripts/start-environment.js staging",
+    "staging:watch": "nodemon scripts/start-environment.js staging",
+    "production": "node scripts/start-environment.js production",
+    "env:check:development": "node scripts/check-environment.js development",
+    "env:check:staging": "node scripts/check-environment.js staging",
+    "env:check:production": "node scripts/check-environment.js production",
+    "prod:check": "node scripts/production-readiness.js production",
+    "dev:check": "node scripts/production-readiness.js development",
+    "backup:dev": "node scripts/backup-database.js development",
+    "backup:prod": "node scripts/backup-database.js production"
+  },
+  "keywords": [
+    "rukhnav",
+    "express",
+    "api",
+    "ecommerce"
+  ],
+  "author": "Muhammad Naveed",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bwip-js": "^4.11.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
+    "multer": "^2.2.0",
+    "mysql2": "^3.22.6",
+    "node-cron": "^4.6.0",
+    "nodemailer": "^9.0.3",
+    "pdfkit": "^0.19.1",
+    "qrcode": "^1.5.4",
+    "twilio": "^6.0.2",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
+  }
+}

@@ -15,6 +15,8 @@ export type StoredCustomer = {
   phone?: string | null;
   referral_code?: string | null;
   status?: string | null;
+  profile_picture?: string | null;
+  profile_picture_url?: string | null;
 };
 
 export async function getToken() {

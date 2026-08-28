@@ -85,10 +85,25 @@ export async function apiRequest<T>(
         headers,
       }
     );
-  } catch {
+  } catch (error) {
+    console.error(
+      "RUKHNAV API fetch error:",
+      {
+        endpoint,
+        url: `${API_BASE_URL}${endpoint}`,
+        error,
+      }
+    );
+
+    const detail =
+      error instanceof Error
+        ? error.message
+        : String(error);
+
     throw new ApiError(
-      "Unable to connect to RUKHNAV. Please check your internet connection.",
-      0
+      `Unable to connect to RUKHNAV: ${detail}`,
+      0,
+      error
     );
   }
 
@@ -106,6 +121,15 @@ export async function apiRequest<T>(
   }
 
   if (!response.ok) {
+    console.error(
+      "RUKHNAV API HTTP error:",
+      {
+        endpoint,
+        status: response.status,
+        data,
+      }
+    );
+
     if (
       response.status === 401 &&
       authenticated

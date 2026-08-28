@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -18,6 +19,7 @@ import {
 
 import {
   router,
+  useFocusEffect,
 } from "expo-router";
 
 import {
@@ -25,13 +27,20 @@ import {
 } from "react-native-safe-area-context";
 
 import {
+  useWebsiteTheme,
+} from "../theme/website-theme";
+
+import {
   ApiError,
 } from "../api/client";
 
 import {
-  getProfile,
   login,
 } from "../api/auth";
+
+import {
+  getCustomerProfile,
+} from "../api/profile";
 
 import {
   clearSession,
@@ -64,6 +73,12 @@ function customerName(
 }
 
 export default function AccountScreen() {
+  const theme =
+    useWebsiteTheme();
+
+  const styles =
+    createStyles(theme);
+
   const [identifier, setIdentifier] =
     useState("");
 
@@ -113,10 +128,9 @@ export default function AccountScreen() {
         }
 
         const result =
-          await getProfile();
+          await getCustomerProfile();
 
         const freshCustomer =
-          result.customer ||
           result.profile ||
           stored ||
           null;
@@ -146,6 +160,12 @@ export default function AccountScreen() {
   useEffect(() => {
     restoreSession();
   }, [restoreSession]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void restoreSession();
+    }, [restoreSession])
+  );
 
   async function handleLogin() {
     const cleanIdentifier =
@@ -246,7 +266,7 @@ export default function AccountScreen() {
       >
         <ActivityIndicator
           size="large"
-          color="#173f2b"
+          color={theme.primary}
         />
 
         <Text style={styles.loadingText}>
@@ -302,13 +322,24 @@ export default function AccountScreen() {
             <View
               style={styles.avatar}
             >
-              <Text
-                style={styles.avatarText}
-              >
-                {customerName(customer)
-                  .charAt(0)
-                  .toUpperCase()}
-              </Text>
+              {customer?.profile_picture_url ? (
+                <Image
+                  source={{
+                    uri:
+                      customer.profile_picture_url,
+                  }}
+                  style={styles.avatarImage}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Text
+                  style={styles.avatarText}
+                >
+                  {customerName(customer)
+                    .charAt(0)
+                    .toUpperCase()}
+                </Text>
+              )}
             </View>
 
             <Text
@@ -458,7 +489,7 @@ export default function AccountScreen() {
           >
             {loading ? (
               <ActivityIndicator
-                color="#173f2b"
+                color={theme.primary}
               />
             ) : (
               <Text
@@ -673,7 +704,7 @@ export default function AccountScreen() {
             >
               {loading ? (
                 <ActivityIndicator
-                  color="#ffffff"
+                  color={theme.surface}
                 />
               ) : (
                 <Text
@@ -735,27 +766,32 @@ export default function AccountScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(
+  theme: ReturnType<
+    typeof useWebsiteTheme
+  >
+) {
+  return StyleSheet.create({
   flex: {
     flex: 1,
   },
 
   page: {
     flex: 1,
-    backgroundColor: "#f8f5ed",
+    backgroundColor: theme.background,
   },
 
   loadingPage: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f8f5ed",
+    backgroundColor: theme.background,
     padding: 24,
   },
 
   loadingText: {
     marginTop: 14,
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 15,
     fontWeight: "600",
   },
@@ -785,20 +821,20 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.surface,
     borderWidth: 1,
-    borderColor: "#e2ddcf",
+    borderColor: theme.shade4,
   },
 
   backButtonText: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 32,
     lineHeight: 34,
     marginTop: -3,
   },
 
   brand: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 21,
     fontWeight: "900",
     letterSpacing: 3,
@@ -814,7 +850,7 @@ const styles = StyleSheet.create({
   },
 
   eyebrow: {
-    color: "#b18a36",
+    color: theme.secondary,
     fontSize: 12,
     fontWeight: "800",
     letterSpacing: 2,
@@ -822,13 +858,13 @@ const styles = StyleSheet.create({
   },
 
   authTitle: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 36,
     fontWeight: "900",
   },
 
   authSubtitle: {
-    color: "#5e665f",
+    color: theme.muted,
     fontSize: 15,
     lineHeight: 23,
     marginTop: 10,
@@ -836,15 +872,15 @@ const styles = StyleSheet.create({
   },
 
   formCard: {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.surface,
     borderRadius: 24,
     padding: 20,
     borderWidth: 1,
-    borderColor: "#e7e0d0",
+    borderColor: theme.shade4,
   },
 
   inputLabel: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 13,
     fontWeight: "800",
     marginBottom: 8,
@@ -858,11 +894,11 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#d9d3c4",
+    borderColor: theme.shade4,
     paddingHorizontal: 15,
-    color: "#1e2b23",
+    color: theme.text,
     fontSize: 16,
-    backgroundColor: "#fcfbf7",
+    backgroundColor: theme.surface,
   },
 
   passwordContainer: {
@@ -871,15 +907,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#d9d3c4",
-    backgroundColor: "#fcfbf7",
+    borderColor: theme.shade4,
+    backgroundColor: theme.surface,
   },
 
   passwordInput: {
     flex: 1,
     height: "100%",
     paddingHorizontal: 15,
-    color: "#1e2b23",
+    color: theme.text,
     fontSize: 16,
   },
 
@@ -891,7 +927,7 @@ const styles = StyleSheet.create({
   },
 
   showButtonText: {
-    color: "#b18a36",
+    color: theme.secondary,
     fontSize: 11,
     fontWeight: "900",
     letterSpacing: 1,
@@ -918,7 +954,7 @@ const styles = StyleSheet.create({
   },
 
   forgotPasswordText: {
-    color: "#b18a36",
+    color: theme.secondary,
     fontSize: 13,
     fontWeight: "900",
   },
@@ -926,7 +962,7 @@ const styles = StyleSheet.create({
   signInButton: {
     height: 56,
     borderRadius: 16,
-    backgroundColor: "#173f2b",
+    backgroundColor: theme.primary,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 22,
@@ -937,14 +973,14 @@ const styles = StyleSheet.create({
   },
 
   signInButtonText: {
-    color: "#ffffff",
+    color: theme.surface,
     fontSize: 16,
     fontWeight: "900",
     letterSpacing: 0.4,
   },
 
   securityText: {
-    color: "#7a7f78",
+    color: theme.muted,
     textAlign: "center",
     fontSize: 11,
     lineHeight: 17,
@@ -958,13 +994,13 @@ const styles = StyleSheet.create({
   },
 
   registerTitle: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 18,
     fontWeight: "900",
   },
 
   registerText: {
-    color: "#697069",
+    color: theme.muted,
     fontSize: 13,
     lineHeight: 20,
     textAlign: "center",
@@ -977,13 +1013,13 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#b18a36",
+    borderColor: theme.secondary,
     alignItems: "center",
     justifyContent: "center",
   },
 
   comingSoonText: {
-    color: "#9b752c",
+    color: theme.secondary,
     fontSize: 14,
     fontWeight: "800",
   },
@@ -1000,27 +1036,33 @@ const styles = StyleSheet.create({
     borderRadius: 42,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#173f2b",
+    backgroundColor: theme.primary,
     borderWidth: 4,
-    borderColor: "#d5b15d",
+    borderColor: theme.secondary,
     marginBottom: 18,
   },
 
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 999,
+  },
+
   avatarText: {
-    color: "#ffffff",
+    color: theme.surface,
     fontSize: 34,
     fontWeight: "900",
   },
 
   welcomeLabel: {
-    color: "#b18a36",
+    color: theme.secondary,
     fontSize: 11,
     fontWeight: "900",
     letterSpacing: 2,
   },
 
   customerName: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 29,
     fontWeight: "900",
     textAlign: "center",
@@ -1028,21 +1070,21 @@ const styles = StyleSheet.create({
   },
 
   memberText: {
-    color: "#6a716b",
+    color: theme.muted,
     fontSize: 14,
     marginTop: 6,
   },
 
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.surface,
     borderRadius: 22,
     padding: 20,
     borderWidth: 1,
-    borderColor: "#e7e0d0",
+    borderColor: theme.shade4,
   },
 
   cardTitle: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 18,
     fontWeight: "900",
     marginBottom: 8,
@@ -1051,11 +1093,11 @@ const styles = StyleSheet.create({
   detailRow: {
     paddingVertical: 13,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee9df",
+    borderBottomColor: theme.shade4,
   },
 
   detailLabel: {
-    color: "#8a8f89",
+    color: theme.muted,
     fontSize: 11,
     fontWeight: "800",
     textTransform: "uppercase",
@@ -1063,7 +1105,7 @@ const styles = StyleSheet.create({
   },
 
   detailValue: {
-    color: "#243129",
+    color: theme.text,
     fontSize: 15,
     fontWeight: "600",
     marginTop: 4,
@@ -1072,14 +1114,14 @@ const styles = StyleSheet.create({
   shopButton: {
     height: 55,
     borderRadius: 16,
-    backgroundColor: "#173f2b",
+    backgroundColor: theme.primary,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
   },
 
   shopButtonText: {
-    color: "#ffffff",
+    color: theme.surface,
     fontSize: 15,
     fontWeight: "900",
   },
@@ -1088,15 +1130,15 @@ const styles = StyleSheet.create({
     height: 53,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: "#b18a36",
-    backgroundColor: "#ffffff",
+    borderColor: theme.secondary,
+    backgroundColor: theme.surface,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 18,
   },
 
   editProfileButtonText: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 15,
     fontWeight: "900",
   },
@@ -1104,14 +1146,14 @@ const styles = StyleSheet.create({
   changePasswordButton: {
     height: 53,
     borderRadius: 16,
-    backgroundColor: "#173f2b",
+    backgroundColor: theme.primary,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 12,
   },
 
   changePasswordButtonText: {
-    color: "#ffffff",
+    color: theme.surface,
     fontSize: 15,
     fontWeight: "900",
   },
@@ -1120,15 +1162,16 @@ const styles = StyleSheet.create({
     height: 53,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: "#b18a36",
+    borderColor: theme.secondary,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 12,
   },
 
   logoutButtonText: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 15,
     fontWeight: "900",
   },
-});
+  });
+}

@@ -26,7 +26,7 @@ import {
 } from "expo-router";
 
 import DateTimePicker, {
-  type DateTimePickerEvent,
+  type DateTimePickerChangeEvent,
 } from "@react-native-community/datetimepicker";
 
 import * as ImagePicker from "expo-image-picker";
@@ -343,25 +343,14 @@ export default function EditProfileScreen() {
     );
   }
 
-  function handleDateChange(
-    event: DateTimePickerEvent,
-    selectedDate?: Date
+  function handleDateValueChange(
+    _event: DateTimePickerChangeEvent,
+    selectedDate: Date
   ) {
     if (
       Platform.OS === "android"
     ) {
       setShowDatePicker(false);
-    }
-
-    if (
-      event.type ===
-      "dismissed"
-    ) {
-      return;
-    }
-
-    if (!selectedDate) {
-      return;
     }
 
     const today =
@@ -386,6 +375,14 @@ export default function EditProfileScreen() {
         selectedDate
       )
     );
+  }
+
+  function handleDateDismiss() {
+    if (
+      Platform.OS === "android"
+    ) {
+      setShowDatePicker(false);
+    }
   }
 
   async function prepareSelectedPhoto(
@@ -641,22 +638,9 @@ export default function EditProfileScreen() {
     setMessage("");
 
     try {
-      const formData =
-        new FormData();
-
-      formData.append(
-        "profile_picture",
-        {
-          uri: pendingPhotoUri,
-          name:
-            "rukhnav-profile.jpg",
-          type: "image/jpeg",
-        } as any
-      );
-
       const result =
         await uploadProfilePicture(
-          formData
+          pendingPhotoUri
         );
 
       if (result.profile) {
@@ -1232,8 +1216,11 @@ export default function EditProfileScreen() {
                     maximumDate={
                       new Date()
                     }
-                    onChange={
-                      handleDateChange
+                    onValueChange={
+                      handleDateValueChange
+                    }
+                    onDismiss={
+                      handleDateDismiss
                     }
                   />
 

@@ -2,6 +2,22 @@ import {
   apiRequest,
 } from "./client";
 
+import {
+  API_BASE_URL,
+} from "../config/api";
+
+import {
+  getToken,
+} from "../auth/session";
+
+import {
+  File,
+} from "expo-file-system";
+
+import {
+  fetch as expoFetch,
+} from "expo/fetch";
+
 export type CustomerProfile = {
   id?: number;
   full_name?: string | null;
@@ -91,16 +107,55 @@ export async function updateCustomerProfile(
 }
 
 export async function uploadProfilePicture(
-  formData: FormData
+  imageUri: string
 ) {
-  return apiRequest<UploadProfilePictureResponse>(
-    "/profile/upload-picture",
-    {
-      method: "POST",
-      authenticated: true,
-      body: formData,
-    }
+  const token =
+    await getToken();
+
+  if (!token) {
+    throw new Error(
+      "Please log in to continue."
+    );
+  }
+
+  const file =
+    new File(imageUri);
+
+  const formData =
+    new FormData();
+
+  formData.append(
+    "profile_picture",
+    file,
+    "rukhnav-profile.jpg"
   );
+
+  const response =
+    await expoFetch(
+      `${API_BASE_URL}/profile/upload-picture`,
+      {
+        method: "POST",
+        headers: {
+          Accept:
+            "application/json",
+          Authorization:
+            `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+        "Unable to upload profile picture."
+    );
+  }
+
+  return data as UploadProfilePictureResponse;
 }
 
 export async function deleteProfilePicture() {

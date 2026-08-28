@@ -23,8 +23,22 @@ import {
 import { router } from "expo-router";
 
 import { getProducts } from "../api/products";
+import {
+  getCustomerProfile,
+} from "../api/profile";
+import {
+  getToken,
+} from "../auth/session";
 import { productImageUrl } from "../config/images";
 import type { Product } from "../types/product";
+
+import {
+  colors,
+} from "../theme/rukhnav";
+
+import {
+  useWebsiteTheme,
+} from "../theme/website-theme";
 
 function money(value: string | number) {
   const amount = Number(value || 0);
@@ -37,6 +51,12 @@ function ProductCard({
 }: {
   product: Product;
 }) {
+  const theme =
+    useWebsiteTheme();
+
+  const styles =
+    createStyles(theme);
+
   const image = productImageUrl(product.image);
 
   const sellingPrice =
@@ -138,7 +158,130 @@ function ProductCard({
   );
 }
 
+
+function StoreBenefits() {
+  const theme =
+    useWebsiteTheme();
+
+  const styles =
+    createStyles(theme);
+
+  return (
+    <View style={[
+        styles.storeBenefits,
+        {
+          backgroundColor:
+            theme.primary,
+        },
+      ]}>
+      <Text style={styles.benefitsTitle}>
+        RUKHNAV Benefits
+      </Text>
+
+      <View style={styles.benefitCard}>
+        <Text style={styles.benefitIcon}>
+          🚚
+        </Text>
+
+        <View style={styles.benefitCopy}>
+          <Text style={styles.benefitName}>
+            Free Delivery
+          </Text>
+
+          <Text style={styles.benefitText}>
+            Qualifying orders over Rs. 3,000
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.benefitCard}>
+        <Text style={styles.benefitIcon}>
+          🎟
+        </Text>
+
+        <View style={styles.benefitCopy}>
+          <Text style={styles.benefitName}>
+            Coupons & Offers
+          </Text>
+
+          <Text style={styles.benefitText}>
+            Use active RUKHNAV coupons at checkout
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.benefitCard}>
+        <Text style={styles.benefitIcon}>
+          👑
+        </Text>
+
+        <View style={styles.benefitCopy}>
+          <Text style={styles.benefitName}>
+            Gold Membership
+          </Text>
+
+          <Text style={styles.benefitPoints}>
+            5,000+ lifetime points
+          </Text>
+
+          <Text style={styles.benefitText}>
+            5% discount • Events & Reminders unlocked
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.benefitCard}>
+        <Text style={styles.benefitIcon}>
+          💎
+        </Text>
+
+        <View style={styles.benefitCopy}>
+          <Text style={styles.benefitName}>
+            Platinum Membership
+          </Text>
+
+          <Text style={styles.benefitPoints}>
+            15,000+ lifetime points
+          </Text>
+
+          <Text style={styles.benefitText}>
+            10% discount • Events • Priority support • Free delivery benefit
+          </Text>
+        </View>
+      </View>
+
+      <Pressable
+        style={[
+          styles.rewardsButton,
+          {
+            backgroundColor:
+              theme.secondary,
+          },
+        ]}
+        onPress={() =>
+          router.push("/rewards")
+        }
+      >
+        <Text style={styles.rewardsButtonText}>
+          View My Rewards
+        </Text>
+
+        <Text style={styles.rewardsArrow}>
+          ›
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
+
+
 export default function HomeScreen() {
+  const theme =
+    useWebsiteTheme();
+
+  const styles =
+    createStyles(theme);
+
   const [products, setProducts] =
     useState<Product[]>([]);
 
@@ -150,6 +293,13 @@ export default function HomeScreen() {
 
   const [error, setError] =
     useState("");
+
+  const [
+    profilePictureUrl,
+    setProfilePictureUrl,
+  ] = useState<string | null>(
+    null
+  );
 
   const loadProducts =
     useCallback(async () => {
@@ -169,16 +319,52 @@ export default function HomeScreen() {
       }
     }, []);
 
+  const loadAccountPhoto =
+    useCallback(async () => {
+      try {
+        const token =
+          await getToken();
+
+        if (!token) {
+          setProfilePictureUrl(null);
+          return;
+        }
+
+        const result =
+          await getCustomerProfile();
+
+        setProfilePictureUrl(
+          result.profile
+            ?.profile_picture_url ||
+            null
+        );
+      } catch {
+        setProfilePictureUrl(null);
+      }
+    }, []);
+
   useEffect(() => {
     (async () => {
-      await loadProducts();
+      await Promise.all([
+        loadProducts(),
+        loadAccountPhoto(),
+      ]);
+
       setLoading(false);
     })();
-  }, [loadProducts]);
+  }, [
+    loadProducts,
+    loadAccountPhoto,
+  ]);
 
   async function refresh() {
     setRefreshing(true);
-    await loadProducts();
+
+    await Promise.all([
+      loadProducts(),
+      loadAccountPhoto(),
+    ]);
+
     setRefreshing(false);
   }
 
@@ -205,30 +391,97 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.page}>
+    <SafeAreaView
+      style={[
+        styles.page,
+        {
+          backgroundColor:
+            theme.background,
+        },
+      ]}
+    >
       <StatusBar
         barStyle="light-content"
       />
 
-      <View style={styles.header}>
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor:
+              theme.primary,
+          },
+        ]}
+      >
         <View>
-          <Text style={styles.logo}>
+          <Text
+            style={[
+              styles.logo,
+              {
+                color:
+                  theme.secondary,
+              },
+            ]}
+          >
             RUKHNAV
           </Text>
 
-          <Text style={styles.tagline}>
+          <Text
+            style={[
+              styles.tagline,
+              {
+                color:
+                  theme.surface,
+              },
+            ]}
+          >
             Natural Beauty • Thoughtfully Made
           </Text>
         </View>
 
         <Pressable
-          style={styles.accountButton}
+          style={styles.accountArea}
           onPress={() =>
             router.push("/account")
           }
         >
-          <Text style={styles.accountIcon}>
-            ♙
+          <View
+            style={[
+            styles.accountButton,
+            {
+              borderColor:
+                theme.secondary,
+            },
+          ]}
+          >
+            {profilePictureUrl ? (
+              <Image
+                source={{
+                  uri:
+                    profilePictureUrl,
+                }}
+                style={
+                  styles.accountImage
+                }
+                resizeMode="cover"
+              />
+            ) : (
+              <Text
+                style={
+                  styles.accountIcon
+                }
+              >
+                ♙
+              </Text>
+            )}
+          </View>
+
+          <Text
+            style={
+              styles.accountLabel
+            }
+          >
+            Account
           </Text>
         </Pressable>
       </View>
@@ -241,7 +494,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <ProductCard product={item} />
         )}
-        numColumns={2}
+        numColumns={3}
         columnWrapperStyle={
           styles.productRow
         }
@@ -256,36 +509,6 @@ export default function HomeScreen() {
         }
         ListHeaderComponent={
           <>
-            <View style={styles.hero}>
-              <Text style={styles.heroEyebrow}>
-                RUKHNAV COLLECTION
-              </Text>
-
-              <Text style={styles.heroTitle}>
-                Beauty inspired by nature.
-              </Text>
-
-              <Text style={styles.heroText}>
-                Discover herbal beauty,
-                skincare and hair care
-                selected for everyday
-                confidence.
-              </Text>
-
-              <Pressable
-                style={styles.shopButton}
-                onPress={() => router.push("/shop")}
-              >
-                <Text
-                  style={
-                    styles.shopButtonText
-                  }
-                >
-                  SHOP COLLECTION
-                </Text>
-              </Pressable>
-            </View>
-
             <View
               style={
                 styles.sectionHeading
@@ -351,6 +574,9 @@ export default function HomeScreen() {
             ) : null}
           </>
         }
+        ListFooterComponent={
+          <StoreBenefits />
+        }
         ListEmptyComponent={
           <View style={styles.empty}>
             <Text style={styles.emptyTitle}>
@@ -360,81 +586,23 @@ export default function HomeScreen() {
         }
       />
 
-      <View style={styles.bottomBar}>
-        <Pressable style={styles.tab}>
-          <Text style={styles.tabIcon}>
-            ⌂
-          </Text>
-          <Text style={styles.activeTab}>
-            Home
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.tab}
-          onPress={() =>
-            router.push("/shop")
-          }
-        >
-          <Text style={styles.tabIcon}>
-            ◫
-          </Text>
-          <Text style={styles.tabText}>
-            Shop
-          </Text>
-        </Pressable>
-
-        <Pressable style={styles.tab}>
-          <View style={styles.cartCircle}>
-            <Text
-              style={
-                styles.cartCircleText
-              }
-            >
-              🛒
-            </Text>
-          </View>
-          <Text style={styles.tabText}>
-            Cart
-          </Text>
-        </Pressable>
-
-        <Pressable style={styles.tab}>
-          <Text style={styles.tabIcon}>
-            ♡
-          </Text>
-          <Text style={styles.tabText}>
-            Wishlist
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.tab}
-          onPress={() =>
-            router.push("/account")
-          }
-        >
-          <Text style={styles.tabIcon}>
-            ♙
-          </Text>
-          <Text style={styles.tabText}>
-            Account
-          </Text>
-        </Pressable>
-      </View>
+      
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(
+  theme: ReturnType<typeof useWebsiteTheme>
+) {
+  return StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: "#f8f5ed",
+    backgroundColor: theme.background,
   },
 
   loadingPage: {
     flex: 1,
-    backgroundColor: "#173f2b",
+    backgroundColor: theme.primary,
     alignItems: "center",
     justifyContent: "center",
     gap: 18,
@@ -453,7 +621,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    backgroundColor: "#173f2b",
+    backgroundColor: theme.primary,
     paddingHorizontal: 20,
     paddingTop: 14,
     paddingBottom: 18,
@@ -476,19 +644,41 @@ const styles = StyleSheet.create({
     letterSpacing: 0.7,
   },
 
+  accountArea: {
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: 58,
+  },
+
   accountButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    borderWidth: 1,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    borderWidth: 1.5,
     borderColor: "#d9b95b",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
+    backgroundColor: theme.primary,
+  },
+
+  accountImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 23,
   },
 
   accountIcon: {
     color: "#ffffff",
     fontSize: 22,
+  },
+
+  accountLabel: {
+    marginTop: 4,
+    color: "#f2ead3",
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 0.4,
   },
 
   content: {
@@ -512,7 +702,7 @@ const styles = StyleSheet.create({
   },
 
   heroTitle: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 31,
     lineHeight: 37,
     fontWeight: "800",
@@ -521,7 +711,7 @@ const styles = StyleSheet.create({
   },
 
   heroText: {
-    color: "#526058",
+    color: theme.text,
     fontSize: 14,
     lineHeight: 21,
     marginTop: 10,
@@ -530,7 +720,7 @@ const styles = StyleSheet.create({
 
   shopButton: {
     marginTop: 20,
-    backgroundColor: "#173f2b",
+    backgroundColor: theme.primary,
     paddingVertical: 13,
     paddingHorizontal: 18,
     borderRadius: 30,
@@ -554,43 +744,43 @@ const styles = StyleSheet.create({
   },
 
   sectionEyebrow: {
-    color: "#a18031",
+    color: theme.secondary,
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 1.5,
   },
 
   sectionTitle: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 25,
     fontWeight: "800",
     marginTop: 3,
   },
 
   productTotal: {
-    color: "#758078",
+    color: theme.muted,
     fontSize: 12,
   },
 
   productRow: {
-    paddingHorizontal: 12,
-    gap: 10,
+    paddingHorizontal: 8,
+    gap: 6,
   },
 
   productCard: {
     flex: 1,
-    marginBottom: 12,
-    backgroundColor: "#ffffff",
-    borderRadius: 18,
+    marginBottom: 8,
+    backgroundColor: theme.surface,
+    borderRadius: 13,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#ebe6d9",
+    borderColor: theme.shade4,
   },
 
   imageBox: {
     width: "100%",
     aspectRatio: 1,
-    backgroundColor: "#f1eee5",
+    backgroundColor: theme.shade4,
   },
 
   productImage: {
@@ -605,84 +795,83 @@ const styles = StyleSheet.create({
   },
 
   placeholderBrand: {
-    color: "#173f2b",
-    fontSize: 15,
+    color: theme.primary,
+    fontSize: 10,
     fontWeight: "800",
-    letterSpacing: 2,
+    letterSpacing: 1,
   },
 
   featuredBadge: {
     position: "absolute",
-    top: 9,
-    left: 9,
-    backgroundColor: "#173f2b",
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 10,
+    top: 5,
+    left: 5,
+    backgroundColor: theme.primary,
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+    borderRadius: 7,
   },
 
   featuredText: {
     color: "#ffffff",
-    fontSize: 8,
+    fontSize: 6,
     fontWeight: "800",
   },
 
   productContent: {
-    padding: 12,
+    padding: 7,
   },
 
   category: {
-    color: "#a18031",
-    fontSize: 9,
+    color: theme.secondary,
+    fontSize: 7,
     fontWeight: "700",
     textTransform: "uppercase",
-    letterSpacing: 0.7,
+    letterSpacing: 0.35,
   },
 
   productName: {
-    color: "#1b3024",
-    fontSize: 15,
-    fontWeight: "700",
-    lineHeight: 20,
-    marginTop: 4,
-    minHeight: 40,
+    color: theme.primary,
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: "800",
+    marginTop: 3,
   },
 
   ratingRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 6,
+    marginTop: 5,
   },
 
   stars: {
-    color: "#b28a2e",
-    fontSize: 13,
+    color: theme.secondary,
+    fontSize: 9,
   },
 
   rating: {
-    color: "#536159",
-    fontSize: 11,
-    marginLeft: 4,
+    color: theme.text,
+    marginLeft: 3,
+    fontSize: 8,
   },
 
   reviewCount: {
-    color: "#909790",
-    fontSize: 10,
-    marginLeft: 3,
+    color: theme.muted,
+    marginLeft: 2,
+    fontSize: 7,
   },
 
   price: {
-    color: "#173f2b",
-    fontSize: 16,
+    color: theme.primary,
+    fontSize: 13,
     fontWeight: "800",
-    marginTop: 7,
+    marginTop: 6,
   },
 
   stock: {
-    color: "#36744d",
-    fontSize: 10,
+    color: "#2e6b45",
+    fontSize: 8,
     fontWeight: "700",
-    marginTop: 4,
+    marginTop: 3,
   },
 
   outOfStock: {
@@ -708,7 +897,7 @@ const styles = StyleSheet.create({
   },
 
   retryText: {
-    color: "#173f2b",
+    color: theme.primary,
     fontWeight: "800",
     marginTop: 8,
   },
@@ -719,7 +908,7 @@ const styles = StyleSheet.create({
   },
 
   emptyTitle: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 18,
     fontWeight: "700",
   },
@@ -731,9 +920,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     minHeight: 76,
     paddingBottom: 8,
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.surface,
     borderTopWidth: 1,
-    borderTopColor: "#e9e4d7",
+    borderTopColor: theme.shade4,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
@@ -746,19 +935,19 @@ const styles = StyleSheet.create({
   },
 
   tabIcon: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 21,
     height: 27,
   },
 
   activeTab: {
-    color: "#173f2b",
+    color: theme.primary,
     fontSize: 10,
     fontWeight: "800",
   },
 
   tabText: {
-    color: "#7b837d",
+    color: theme.muted,
     fontSize: 10,
   },
 
@@ -766,7 +955,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#173f2b",
+    backgroundColor: theme.primary,
     alignItems: "center",
     justifyContent: "center",
     marginTop: -19,
@@ -776,4 +965,111 @@ const styles = StyleSheet.create({
   cartCircleText: {
     fontSize: 17,
   },
-});
+
+  storeBenefits: {
+    marginHorizontal: 12,
+    marginTop: 18,
+    marginBottom: 22,
+    padding: 16,
+
+    borderRadius: 18,
+
+    backgroundColor:
+      colors.primary,
+  },
+
+  benefitsTitle: {
+    marginBottom: 12,
+
+    color: colors.white,
+
+    fontSize: 18,
+    fontWeight: "800",
+  },
+
+  benefitCard: {
+    minHeight: 68,
+
+    paddingVertical: 11,
+
+    flexDirection: "row",
+    alignItems: "center",
+
+    borderBottomWidth: 1,
+    borderBottomColor:
+      "rgba(255,255,255,0.12)",
+  },
+
+  benefitIcon: {
+    width: 42,
+
+    fontSize: 22,
+
+    textAlign: "center",
+  },
+
+  benefitCopy: {
+    flex: 1,
+
+    paddingLeft: 8,
+  },
+
+  benefitName: {
+    color: colors.white,
+
+    fontSize: 13,
+    fontWeight: "800",
+  },
+
+  benefitPoints: {
+    marginTop: 2,
+
+    color: colors.secondary,
+
+    fontSize: 11,
+    fontWeight: "800",
+  },
+
+  benefitText: {
+    marginTop: 3,
+
+    color: theme.surface,
+
+    fontSize: 10,
+    lineHeight: 15,
+  },
+
+  rewardsButton: {
+    marginTop: 15,
+
+    minHeight: 46,
+
+    paddingHorizontal: 16,
+
+    borderRadius: 23,
+
+    backgroundColor:
+      colors.secondary,
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+
+  rewardsButtonText: {
+    color: colors.primary,
+
+    fontSize: 12,
+    fontWeight: "900",
+  },
+
+  rewardsArrow: {
+    color: colors.primary,
+
+    fontSize: 22,
+    lineHeight: 22,
+  },
+
+  });
+}
