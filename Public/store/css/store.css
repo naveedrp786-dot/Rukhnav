@@ -144,3 +144,7 @@ button{
     padding: 0 !important;
     margin: 0 !important;
 }
+/* Completely remove the home page hero section */
+.rk-home-hero {
+    display: none !important;
+}
