@@ -10,6 +10,21 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <link rel="stylesheet" href="css/theme.css"><link rel="stylesheet" href="css/store.css"><link rel="stylesheet" href="css/responsive.css">
+
+<!-- Inline safety patch to guarantee the hero banner hides -->
+<style>
+  .rk-home-hero, 
+  [class*="hero"], 
+  .story, 
+  .carousel { 
+    display: none !important; 
+    height: 0 !important; 
+    visibility: hidden !important; 
+    opacity: 0 !important; 
+    margin: 0 !important; 
+    padding: 0 !important; 
+  }
+</style>
 </head>
 <body>
 <div id="announcement"></div><div id="header"></div>
