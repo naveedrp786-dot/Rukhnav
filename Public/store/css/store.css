@@ -148,3 +148,12 @@ button{
 .rk-home-hero {
     display: none !important;
 }
+/* Remove all matching structural instances of the storefront banner wrapper */
+.rk-home-hero,
+.hero {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
