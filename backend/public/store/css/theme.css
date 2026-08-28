@@ -99,3 +99,12 @@ a.primary:hover{
     box-shadow:
         0 14px 32px var(--glow);
 }
+
+.rk-home-hero, .hero, .story, .carousel {
+    display: none !important;
+    height: 0 !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
