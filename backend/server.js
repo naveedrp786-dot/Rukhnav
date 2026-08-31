@@ -637,7 +637,6 @@ const server = app.listen(process.env.PORT || 10000, "0.0.0.0", () => { console.
                     error.message
                 }`
             );
-);
 
 // =====================================================
 // Server Error Handler
