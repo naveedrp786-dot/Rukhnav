@@ -618,7 +618,6 @@ const PORT =
     process.env.PORT || 3000;
 
 const server = app.listen(process.env.PORT || 10000, "0.0.0.0", () => { console.log(`RUKHNAV server listening on port ${process.env.PORT || 10000}`); });
-        );
 
         try {
             startEventReminderJob();
