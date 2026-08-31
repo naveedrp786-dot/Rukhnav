@@ -250,6 +250,7 @@ app.use("/api/health", healthRoutes);
 // =====================================================
 // Home Route
 // =====================================================
+// =====================================================n// Guest Order Trace Controln// =====================================================napp.post("/api/orders/guest-track", async (req, res, next) => {n    try {n        const { orderNumber, contactInfo } = req.body;n        if (!orderNumber || !contactInfo) {n            return res.status(400).json({ success: false, message: "Missing order number or contact details." });n        }n        // Check order routes controllers or run a direct database trace queryn        const [order] = await require("./config/db").query(n            "SELECT * FROM orders WHERE id = ? AND (guest_email = ? OR guest_phone = ?)",n            [orderNumber, contactInfo, contactInfo]n        );n        if (!order || order.length === 0) {n            return res.status(404).json({ success: false, message: "No matching order found." });n        }n        return res.status(200).json({ success: true, order: order[0] });n    } catch (error) {n        next(error);n    }n});nn
 app.get("/", (req, res) => {
     res.redirect("/store/index.html");
 });
