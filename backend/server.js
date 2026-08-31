@@ -277,3 +277,33 @@ app.use((err, req, res, next) => {
 
 // =====================================================
 // Start Server
+
+// =====================================================
+// Start Server
+// =====================================================
+const serverPort = process.env.PORT || 10000;
+
+const server = app.listen(serverPort, "0.0.0.0", () => {
+    console.log(`RUKHNAV server listening on port ${serverPort}`);
+    
+    try {
+        startEventReminderJob();
+    } catch (error) {
+        logger.error(`Unable to start event reminder job: ${error.message}`);
+    }
+
+    try {
+        notificationQueueWorker.start();
+    } catch (error) {
+        logger.error(`Unable to start notification queue worker: ${error.message}`);
+    }
+});
+
+// Server Error Handler
+server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+        logger.error(`Port ${serverPort} is already in use.`);
+        process.exit(1);
+    }
+    logger.error(err.stack || err.message || "Unknown server error");
+});
