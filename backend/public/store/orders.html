@@ -1,147 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Orders | RUKHNAV</title>
-<meta name="description" content="View and track your RUKHNAV orders.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/store.css">
-<link rel="stylesheet" href="css/orders.css">
-<link rel="stylesheet" href="css/responsive.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Orders | RUKHNAV</title>
+    <link rel="stylesheet" href="/admin/css/style.css">
+    <style>
+        .track-container { max-width: 500px; margin: 60px auto; padding: 30px; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-family: sans-serif; }
+        .track-title { font-size: 1.75rem; font-weight: bold; color: #333; margin-bottom: 8px; text-align: center; }
+        .track-subtitle { font-size: 0.95rem; color: #666; margin-bottom: 24px; text-align: center; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: #444; font-weight: 500; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        .btn-track { width: 100%; padding: 14px; background: #4A154B; color: #fff; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-track:hover { background: #3a103c; }
+        #trackResult { margin-top: 20px; padding: 15px; border-radius: 4px; font-size: 1rem; text-align: center; display: none; }
+    </style>
 </head>
-<body>
-<div id="announcement"></div>
-<div id="header"></div>
+<body style="background-color: #f8f9fa; margin: 0;">
 
-<main class="orders-page">
-    <section class="orders-page-heading">
-        <div>
-            <span>My RUKHNAV</span>
-            <h1>Your orders</h1>
-            <p>Review purchases, payments, delivery progress and shipment tracking.</p>
-        </div>
-
-        <div class="orders-heading-actions">
-            <a href="account.html" class="account-home-link">
-                <i class="fa-solid fa-user"></i>
-                Back to Account
-            </a>
-
-            <a href="products.html" class="continue-shopping-link">
-                <i class="fa-solid fa-bag-shopping"></i>
-                Continue shopping
-            </a>
-        </div>
-    </section>
-
-    <section id="ordersAuthState" class="orders-state hidden">
-        <div class="orders-state-icon">
-            <i class="fa-regular fa-user"></i>
-        </div>
-        <h2>Sign in to view your orders</h2>
-        <p>Your order history and tracking information are linked to your RUKHNAV account.</p>
-        <a href="account.html?return=orders.html" class="btn primary">Sign in</a>
-    </section>
-
-    <section id="ordersLoading" class="orders-state">
-        <div class="spinner"></div>
-        <h2>Loading your orders</h2>
-    </section>
-
-    <section id="ordersEmptyState" class="orders-state hidden">
-        <div class="orders-state-icon">
-            <i class="fa-solid fa-box-open"></i>
-        </div>
-        <h2>No orders yet</h2>
-        <p>When you place an order, it will appear here with payment and delivery updates.</p>
-        <a href="products.html" class="btn primary">Start shopping</a>
-    </section>
-
-    <section id="ordersWorkspace" class="orders-workspace hidden">
-        <div class="orders-toolbar">
-            <div class="orders-search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input id="ordersSearch" type="search" placeholder="Search by order number, city or tracking number">
+    <div class="track-container">
+        <div class="track-title">Your Orders</div>
+        <div class="track-subtitle">Review purchases, payments, delivery progress, and shipment tracking.</div>
+        
+        <form id="orderTrackForm">
+            <div class="form-group">
+                <label for="orderNumber">Order Number</label>
+                <input type="text" id="orderNumber" class="form-control" placeholder="e.g. 10024" required>
             </div>
-
-            <div class="orders-filters">
-                <select id="ordersStatusFilter">
-                    <option value="">All statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-
-                <select id="ordersDateFilter">
-                    <option value="">All dates</option>
-                    <option value="30">Last 30 days</option>
-                    <option value="90">Last 90 days</option>
-                    <option value="365">Last year</option>
-                </select>
-
-                <button id="refreshOrdersButton" type="button" class="btn secondary">
-                    <i class="fa-solid fa-rotate"></i>
-                    Refresh
-                </button>
+            <div class="form-group">
+                <label for="contactInfo">Mobile Number or Email Address</label>
+                <input type="text" id="contactInfo" class="form-control" placeholder="e.g. customer@email.com or phone" required>
             </div>
-        </div>
+            <button type="submit" class="btn-track">Track Order Status</button>
+        </form>
 
-        <div class="orders-summary-strip">
-            <article><span>Total orders</span><strong id="ordersTotalCount">0</strong></article>
-            <article><span>Active</span><strong id="ordersActiveCount">0</strong></article>
-            <article><span>Delivered</span><strong id="ordersDeliveredCount">0</strong></article>
-            <article><span>Cancelled</span><strong id="ordersCancelledCount">0</strong></article>
-        </div>
+        <div id="trackResult"></div>
+    </div>
 
-        <div id="ordersResultsText" class="orders-results-text"></div>
-        <div id="ordersList" class="orders-list"></div>
-    </section>
-</main>
+    <script>
+        document.getElementById("orderTrackForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const orderNumber = document.getElementById("orderNumber").value.trim();
+            const contactInfo = document.getElementById("contactInfo").value.trim();
+            const resultDiv = document.getElementById("trackResult");
 
-<div id="footer"></div>
-<div id="toast" class="toast-region"></div>
-<div id="overlay" class="overlay"></div>
+            resultDiv.style.display = "block";
+            resultDiv.style.background = "#f1f1f1";
+            resultDiv.style.color = "#333";
+            resultDiv.innerHTML = "Searching system...";
 
-<script src="js/api.js"></script>
-<script src="js/theme.js"></script>
-<script src="js/components.js"></script>
-<script src="js/store.js"></script>
-<script src="js/orders.js"></script>
-<script>
-document.getElementById("btnGuestTrack")?.addEventListener("click", async () => {
-    const orderNumber = document.getElementById("guestOrderNumber").value.trim();
-    const contactInfo = document.getElementById("guestContactInfo").value.trim();
-    const resultDiv = document.getElementById("guestTrackResult");
-    if (!orderNumber || !contactInfo) {
-        resultDiv.innerHTML = "<span style=x27color: red;x27>Please enter both order number and contact details.</span>";
-        return;
-    }
-    resultDiv.innerHTML = "Searching system...";
-    try {
-        const response = await fetch("/api/orders/guest-track", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orderNumber, contactInfo })
+            try {
+                const response = await fetch("/api/orders/guest-track", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ orderNumber, contactInfo })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.style.background = "#e6f4ea";
+                    resultDiv.style.color = "#137333";
+                    resultDiv.innerHTML = `<strong>Order Found! Status:</strong> ${data.order.status || "Processing"}`;
+                } else {
+                    resultDiv.style.background = "#fce8e6";
+                    resultDiv.style.color = "#c5221f";
+                    resultDiv.innerHTML = data.message || "No matching order found.";
+                }
+            } catch (err) {
+                resultDiv.style.background = "#fce8e6";
+                resultDiv.style.color = "#c5221f";
+                resultDiv.innerHTML = "Error connecting to verification server.";
+            }
         });
-        const data = await response.json();
-        if (data.success) {
-            resultDiv.innerHTML = `<span style="color: green; font-weight: bold;">Order Found! Status: ${data.order.status || "Processing"}</span>`;
-        } else {
-            resultDiv.innerHTML = `<span style="color: red;">${data.message || "No order found matches those entries."}</span>...`;
-        }
-    } catch (err) {
-        resultDiv.innerHTML = "<span style=x27color: red;x27>Error connecting to verification server.</span>";
-    }
-});
-</script>
-
+    </script>
 </body>
 </html>
