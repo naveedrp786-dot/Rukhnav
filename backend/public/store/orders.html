@@ -5,110 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Orders | RUKHNAV</title>
     <link rel="stylesheet" href="/admin/css/style.css">
-    <style>
-        .main-wrapper { max-width: 1200px; margin: 0 auto; padding: 20px; font-family: sans-serif; }
-        .promo-banner { background: #4A154B; color: white; text-align: center; padding: 10px; font-size: 0.9rem; }
-        .nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; background: white; }
-        .logo-brand { font-size: 1.8rem; font-weight: bold; color: #4A154B; letter-spacing: 1px; }
-        .search-container { flex: 1; max-width: 500px; margin: 0 40px; display: flex; }
-        .search-container input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px 0 0 4px; }
-        .search-container button { padding: 10px 20px; background: #555; color: white; border: none; border-radius: 0 4px 4px 0; cursor: pointer; }
-        .menu-links { display: flex; gap: 20px; font-size: 0.9rem; font-weight: bold; color: #555; background: #3a103c; padding: 12px 20px; justify-content: center; }
-        .menu-links a { color: white; text-decoration: none; padding: 5px 10px; }
-        .tracking-card { max-width: 500px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
-        .input-group { margin-bottom: 16px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: #444; font-weight: bold; }
-        .form-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
-        .submit-btn { width: 100%; padding: 14px; background: #4A154B; color: #fff; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; }
-        #trackingResultBlock { margin-top: 20px; padding: 15px; border-radius: 4px; font-size: 1rem; text-align: center; display: none; }
-        .footer-wrap { background: #333; color: #ccc; padding: 40px 20px; margin-top: 60px; font-size: 0.9rem; }
-        .footer-grid { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
-        .footer-column h4 { color: white; margin-bottom: 15px; }
-        .footer-column a { color: #ccc; text-decoration: none; display: block; margin-bottom: 8px; }
-    </style>
+    <link rel="stylesheet" href="/admin/css/forms.css">
 </head>
-<body style="background-color: #fcfbfa; margin: 0;">
+<body>
+    <!-- Top Brand Banner Header -->
+    <div style="background: #4A154B; color: white; text-align: center; padding: 10px; font-size: 0.9rem;">
+        Free delivery across Pakistan on qualifying orders
+    </div>
 
-    <div class="promo-banner">Free delivery across Pakistan on qualifying orders</div>
-
-    <div class="nav-bar">
-        <div class="logo-brand">RUKHNAV</div>
-        <div class="search-container">
-            <input type="text" placeholder="Search RUKHNAV beauty products...">
-            <button>🔍</button>
+    <!-- Main Navigation Bar Structure -->
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 20px 10px;">
+        <div style="font-size: 1.8rem; font-weight: bold; color: #4A154B; letter-spacing: 1px;">RUKHNAV</div>
+        <div style="flex: 1; max-width: 500px; margin: 0 40px; display: flex;">
+            <input type="text" placeholder="Search RUKHNAV beauty products" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px 0 0 4px; box-sizing: border-box;">
+            <button style="padding: 10px 20px; background: #7A7A7A; color: white; border: none; border-radius: 0 4px 4px 0; cursor: pointer;">🔍</button>
+        </div>
+        <div style="display: flex; gap: 20px; font-size: 0.9rem; align-items: center;">
+            <a href="#" style="text-decoration: none; color: #333;">Account</a>
+            <a href="#" style="text-decoration: none; color: #333;">Wishlist</a>
+            <a href="#" style="text-decoration: none; color: #333;">Cart (0)</a>
         </div>
     </div>
 
-    <div class="menu-links">
-        <a href="#">All Products</a>
-        <a href="#">Fashion</a>
-        <a href="#">Body Care</a>
-        <a href="#">Face Care</a>
-        <a href="#">Hair Care</a>
-        <a href="#">New Arrivals</a>
-        <a href="#">Rewards</a>
-        <a href="#">Returns</a>
-        <a href="#">Help</a>
+    <!-- Store Navigation Links Links -->
+    <div style="background: #4A154B; display: flex; gap: 15px; justify-content: center; padding: 12px 10px;">
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">All Products</a>
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Fashion</a>
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Body Care</a>
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Face Care</a>
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Hair Care</a>
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">New Arrivals</a>
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Rewards</a>
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Returns</a>
+        <a href="#" style="color: white; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Help</a>
     </div>
 
-    <div class="main-wrapper">
-        <h1 style="font-size: 2.5rem; margin-top: 30px; color: #222;">Your orders</h1>
-        <p style="color: #666; margin-bottom: 30px;">Review purchases, payments, delivery progress and shipment tracking.</p>
+    <!-- Central Interactive Core Dynamic Workspace Container -->
+    <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+        <h1 style="font-size: 2.5rem; font-weight: bold; color: #222; margin-bottom: 5px;">Your orders</h1>
+        <p style="color: #666; margin-bottom: 40px; font-size: 1rem;">Review purchases, payments, delivery progress and shipment tracking.</p>
 
-        <div class="tracking-card">
-            <h3 style="margin-top: 0; margin-bottom: 20px; color: #333; font-size: 1.3rem; text-align: center;">Track Order Status</h3>
-            <form id="universalOrderTrackForm">
-                <div class="input-group">
-                    <label>Order Number</label>
-                    <input type="text" id="orderIdNum" class="form-input" placeholder="e.g. 10024" required>
+        <!-- Main Tracking Engine Form Section Placement Area -->
+        <div id="trackingFormContainer" style="max-width: 550px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; border: 1px solid #eef0f2; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+            <h3 style="margin-top: 0; margin-bottom: 25px; font-size: 1.3rem; color: #333; text-align: center; font-weight: bold;">Order Real-Time Status Lookup</h3>
+            
+            <form id="liveTrackingForm">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: #444; font-weight: bold;">Order Number</label>
+                    <input type="text" id="orderIdField" placeholder="e.g. 10024" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; box-sizing: border-box;" required>
                 </div>
-                <div class="input-group">
-                    <label>Mobile Number or Email Address</label>
-                    <input type="text" id="orderContactDetails" class="form-input" placeholder="e.g. customer@email.com or phone" required>
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: #444; font-weight: bold;">Mobile Number or Email Address</label>
+                    <input type="text" id="contactDetailsField" placeholder="e.g. customer@email.com or phone number" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; box-sizing: border-box;" required>
                 </div>
-                <button type="submit" class="submit-btn">Track Order Status</button>
+                <button type="submit" style="width: 100%; padding: 15px; background: #4A154B; color: white; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer;">Track Order Status</button>
             </form>
-            <div id="trackingResultBlock"></div>
+
+            <div id="liveTrackingResultsBlock" style="margin-top: 25px; padding: 15px; border-radius: 4px; text-align: center; display: none; font-size: 1rem;"></div>
         </div>
     </div>
 
-    <div class="footer-wrap">
-        <div class="footer-grid">
-            <div class="footer-column">
-                <h4>RUKHNAV</h4>
-                <p style="font-size: 0.8rem; max-width: 200px;">Natural cosmetics and hair-care products crafted with care.</p>
+    <!-- Consistent Brand Layout Footer Elements -->
+    <div style="background: #2D2D2D; color: #B5B5B5; padding: 50px 20px; margin-top: 100px; font-size: 0.9rem;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px;">
+            <div>
+                <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">RUKHNAV</h4>
+                <p style="max-width: 250px; line-height: 1.6; color: #aaa;">Natural cosmetics and hair-care products crafted with care.</p>
             </div>
-            <div class="footer-column">
-                <h4>Shop</h4>
-                <a href="#">All Products</a>
-                <a href="#">Hair Care</a>
-                <a href="#">Skin Care</a>
+            <div>
+                <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">Shop</h4>
+                <a href="#" style="color: #aaa; text-decoration: none; display: block; margin-bottom: 10px;">All Products</a>
+                <a href="#" style="color: #aaa; text-decoration: none; display: block; margin-bottom: 10px;">Hair Care</a>
+                <a href="#" style="color: #aaa; text-decoration: none; display: block; margin-bottom: 10px;">Skin Care</a>
             </div>
-            <div class="footer-column">
-                <h4>Customer Care</h4>
-                <a href="#">My Account</a>
-                <a href="/store/orders.html">Track Orders</a>
-                <a href="#">Returns & Refunds</a>
+            <div>
+                <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">Customer Care</h4>
+                <a href="#" style="color: #aaa; text-decoration: none; display: block; margin-bottom: 10px;">My Account</a>
+                <a href="/store/orders.html" style="color: #aaa; text-decoration: none; display: block; margin-bottom: 10px; font-weight: bold;">Track Orders</a>
+                <a href="#" style="color: #aaa; text-decoration: none; display: block; margin-bottom: 10px;">Returns & Refunds</a>
             </div>
-            <div class="footer-column">
-                <h4>Contact</h4>
-                <p style="margin: 0; font-size: 0.85rem;">naveedrp786@gmail.com</p>
-                <p style="margin: 5px 0 0 0; font-size: 0.85rem;">WhatsApp Available</p>
+            <div>
+                <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">Contact</h4>
+                <p style="margin: 0 0 10px 0;">naveedrp786@gmail.com</p>
+                <p style="margin: 0;">WhatsApp Available</p>
             </div>
         </div>
     </div>
 
     <script>
-        document.getElementById("universalOrderTrackForm").addEventListener("submit", async (e) => {
+        document.getElementById("liveTrackingForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            const orderNumber = document.getElementById("orderIdNum").value.trim();
-            const contactInfo = document.getElementById("orderContactDetails").value.trim();
-            const resultDiv = document.getElementById("trackingResultBlock");
+            const orderNumber = document.getElementById("orderIdField").value.trim();
+            const contactInfo = document.getElementById("contactDetailsField").value.trim();
+            const resultDiv = document.getElementById("liveTrackingResultsBlock");
 
             resultDiv.style.display = "block";
-            resultDiv.style.background = "#f5f5f5";
+            resultDiv.style.background = "#f7f8f9";
             resultDiv.style.color = "#333";
-            resultDiv.innerHTML = "Searching active records...";
+            resultDiv.innerHTML = "Processing tracking query...";
 
             try {
                 const response = await fetch("/api/orders/guest-track", {
@@ -121,16 +115,16 @@
                 if (data.success) {
                     resultDiv.style.background = "#e6f4ea";
                     resultDiv.style.color = "#137333";
-                    resultDiv.innerHTML = `<div style="font-weight: bold; margin-bottom: 5px;">Order Found!</div>Status: ${data.order.status || "Processing"}`;
+                    resultDiv.innerHTML = `<div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 5px;">Order Found!</div><span style="font-size: 1.05rem;">Current Status: <strong>${data.order.status || "Processing"}</strong></span>`;
                 } else {
                     resultDiv.style.background = "#fce8e6";
                     resultDiv.style.color = "#c5221f";
-                    resultDiv.innerHTML = data.message || "No matching order found.";
+                    resultDiv.innerHTML = data.message || "No matching order found details.";
                 }
             } catch (err) {
                 resultDiv.style.background = "#fce8e6";
                 resultDiv.style.color = "#c5221f";
-                resultDiv.innerHTML = "Error establishing server connection.";
+                resultDiv.innerHTML = "Error connecting to the live application database infrastructure.";
             }
         });
     </script>
