@@ -118,7 +118,7 @@ app.get("/favicon.ico", (req, res) => {
             "logo.png"
         )
     );
-});
+}
 
 // Primary frontend files.
 // Keep the canonical top-level Public/public folder first
@@ -570,7 +570,7 @@ app.use(
 
 app.get("/", (req, res) => {
     res.redirect("/store/index.html");
-});
+}
 
 // =====================================================
 // 404 Handler
@@ -580,8 +580,8 @@ app.use((req, res) => {
     return res.status(404).json({
         success: false,
         message: "Route not found"
-    });
-});
+    }
+}
 
 // =====================================================
 // Global Error Handler
@@ -607,8 +607,8 @@ app.use((err, req, res, next) => {
                 "production"
                     ? "Internal Server Error"
                     : err.message
-        });
-});
+        }
+}
 
 // =====================================================
 // Start Server
@@ -617,7 +617,7 @@ app.use((err, req, res, next) => {
 const PORT =
     process.env.PORT || 3000;
 
-const server = app.listen(process.env.PORT || 10000, "0.0.0.0", () => { console.log(`RUKHNAV server listening on port ${process.env.PORT || 10000}`); });
+const server = app.listen(process.env.PORT || 10000, "0.0.0.0", () => { console.log(`RUKHNAV server listening on port ${process.env.PORT || 10000}`); }
 
         try {
             startEventReminderJob();
@@ -658,7 +658,7 @@ server.on("error", (err) => {
     );
 
     throw err;
-});
+}
 
 // =====================================================
 // Graceful Shutdown
@@ -688,7 +688,7 @@ function shutdown(signal) {
             "HTTP server closed successfully."
         );
         process.exit(0);
-    });
+    }
 
     setTimeout(() => {
         logger.error(
@@ -701,4 +701,4 @@ function shutdown(signal) {
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
-});
+}
