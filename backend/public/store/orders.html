@@ -10,10 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/store.css?v=20260827-home-hero-1">
+<link rel="stylesheet" href="css/store.css">
 <link rel="stylesheet" href="css/orders.css">
 <link rel="stylesheet" href="css/responsive.css">
-<link rel="stylesheet" href="css/mobile-storefront.css?v=20260827-3">
 </head>
 <body>
 <div id="announcement"></div>
@@ -113,9 +112,36 @@
 
 <script src="js/api.js"></script>
 <script src="js/theme.js"></script>
-<script src="js/components.js?v=20260823-2"></script>
+<script src="js/components.js"></script>
 <script src="js/store.js"></script>
 <script src="js/orders.js"></script>
-<script src="js/demo-visuals.js?v=20260827-2"></script>
+<script>
+document.getElementById("btnGuestTrack")?.addEventListener("click", async () => {
+    const orderNumber = document.getElementById("guestOrderNumber").value.trim();
+    const contactInfo = document.getElementById("guestContactInfo").value.trim();
+    const resultDiv = document.getElementById("guestTrackResult");
+    if (!orderNumber || !contactInfo) {
+        resultDiv.innerHTML = "<span style=x27color: red;x27>Please enter both order number and contact details.</span>";
+        return;
+    }
+    resultDiv.innerHTML = "Searching system...";
+    try {
+        const response = await fetch("/api/orders/guest-track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderNumber, contactInfo })
+        });
+        const data = await response.json();
+        if (data.success) {
+            resultDiv.innerHTML = `<span style="color: green; font-weight: bold;">Order Found! Status: ${data.order.status || "Processing"}</span>`;
+        } else {
+            resultDiv.innerHTML = `<span style="color: red;">${data.message || "No order found matches those entries."}</span>...`;
+        }
+    } catch (err) {
+        resultDiv.innerHTML = "<span style=x27color: red;x27>Error connecting to verification server.</span>";
+    }
+});
+</script>
+
 </body>
 </html>
