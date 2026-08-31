@@ -1,0 +1,1265 @@
+/*======================================================
+    RUKHNAV ERP
+    Utility Classes
+======================================================*/
+
+@import url("variables.css");
+
+
+/*======================================================
+    Display
+======================================================*/
+
+.d-none{
+
+    display:none!important;
+
+}
+
+.d-block{
+
+    display:block!important;
+
+}
+
+.d-inline{
+
+    display:inline!important;
+
+}
+
+.d-inline-block{
+
+    display:inline-block!important;
+
+}
+
+.d-flex{
+
+    display:flex!important;
+
+}
+
+.d-grid{
+
+    display:grid!important;
+
+}
+
+
+
+/*======================================================
+    Width
+======================================================*/
+
+.w-25{
+
+    width:25%!important;
+
+}
+
+.w-50{
+
+    width:50%!important;
+
+}
+
+.w-75{
+
+    width:75%!important;
+
+}
+
+.w-100{
+
+    width:100%!important;
+
+}
+
+.w-auto{
+
+    width:auto!important;
+
+}
+
+
+
+/*======================================================
+    Height
+======================================================*/
+
+.h-25{
+
+    height:25%!important;
+
+}
+
+.h-50{
+
+    height:50%!important;
+
+}
+
+.h-75{
+
+    height:75%!important;
+
+}
+
+.h-100{
+
+    height:100%!important;
+
+}
+
+.h-auto{
+
+    height:auto!important;
+
+}
+
+
+
+/*======================================================
+    Margin
+======================================================*/
+
+.m-0{margin:0!important;}
+.m-5{margin:5px!important;}
+.m-10{margin:10px!important;}
+.m-15{margin:15px!important;}
+.m-20{margin:20px!important;}
+.m-30{margin:30px!important;}
+.m-auto{margin:auto!important;}
+
+.mt-5{margin-top:5px!important;}
+.mt-10{margin-top:10px!important;}
+.mt-15{margin-top:15px!important;}
+.mt-20{margin-top:20px!important;}
+.mt-30{margin-top:30px!important;}
+
+.mb-5{margin-bottom:5px!important;}
+.mb-10{margin-bottom:10px!important;}
+.mb-15{margin-bottom:15px!important;}
+.mb-20{margin-bottom:20px!important;}
+.mb-30{margin-bottom:30px!important;}
+
+.ms-5{margin-left:5px!important;}
+.ms-10{margin-left:10px!important;}
+.ms-15{margin-left:15px!important;}
+.ms-20{margin-left:20px!important;}
+
+.me-5{margin-right:5px!important;}
+.me-10{margin-right:10px!important;}
+.me-15{margin-right:15px!important;}
+.me-20{margin-right:20px!important;}
+
+
+
+/*======================================================
+    Padding
+======================================================*/
+
+.p-0{padding:0!important;}
+.p-5{padding:5px!important;}
+.p-10{padding:10px!important;}
+.p-15{padding:15px!important;}
+.p-20{padding:20px!important;}
+.p-30{padding:30px!important;}
+
+.pt-5{padding-top:5px!important;}
+.pt-10{padding-top:10px!important;}
+.pt-15{padding-top:15px!important;}
+.pt-20{padding-top:20px!important;}
+
+.pb-5{padding-bottom:5px!important;}
+.pb-10{padding-bottom:10px!important;}
+.pb-15{padding-bottom:15px!important;}
+.pb-20{padding-bottom:20px!important;}
+
+.ps-5{padding-left:5px!important;}
+.ps-10{padding-left:10px!important;}
+.ps-15{padding-left:15px!important;}
+.ps-20{padding-left:20px!important;}
+
+.pe-5{padding-right:5px!important;}
+.pe-10{padding-right:10px!important;}
+.pe-15{padding-right:15px!important;}
+.pe-20{padding-right:20px!important;}
+/*======================================================
+    Flex Direction
+======================================================*/
+
+.flex-row{
+
+    flex-direction:row!important;
+
+}
+
+.flex-column{
+
+    flex-direction:column!important;
+
+}
+
+.flex-wrap{
+
+    flex-wrap:wrap!important;
+
+}
+
+.flex-nowrap{
+
+    flex-wrap:nowrap!important;
+
+}
+
+
+
+/*======================================================
+    Justify Content
+======================================================*/
+
+.justify-start{
+
+    justify-content:flex-start!important;
+
+}
+
+.justify-center{
+
+    justify-content:center!important;
+
+}
+
+.justify-end{
+
+    justify-content:flex-end!important;
+
+}
+
+.justify-between{
+
+    justify-content:space-between!important;
+
+}
+
+.justify-around{
+
+    justify-content:space-around!important;
+
+}
+
+.justify-evenly{
+
+    justify-content:space-evenly!important;
+
+}
+
+
+
+/*======================================================
+    Align Items
+======================================================*/
+
+.align-start{
+
+    align-items:flex-start!important;
+
+}
+
+.align-center{
+
+    align-items:center!important;
+
+}
+
+.align-end{
+
+    align-items:flex-end!important;
+
+}
+
+.align-stretch{
+
+    align-items:stretch!important;
+
+}
+
+.align-baseline{
+
+    align-items:baseline!important;
+
+}
+
+
+
+/*======================================================
+    Align Self
+======================================================*/
+
+.self-start{
+
+    align-self:flex-start!important;
+
+}
+
+.self-center{
+
+    align-self:center!important;
+
+}
+
+.self-end{
+
+    align-self:flex-end!important;
+
+}
+
+.self-stretch{
+
+    align-self:stretch!important;
+
+}
+
+
+
+/*======================================================
+    Gap Utilities
+======================================================*/
+
+.gap-5{
+
+    gap:5px!important;
+
+}
+
+.gap-10{
+
+    gap:10px!important;
+
+}
+
+.gap-15{
+
+    gap:15px!important;
+
+}
+
+.gap-20{
+
+    gap:20px!important;
+
+}
+
+.gap-25{
+
+    gap:25px!important;
+
+}
+
+.gap-30{
+
+    gap:30px!important;
+
+}
+
+.gap-40{
+
+    gap:40px!important;
+
+}
+
+
+
+/*======================================================
+    Grid Utilities
+======================================================*/
+
+.grid-2{
+
+    display:grid!important;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+}
+
+.grid-3{
+
+    display:grid!important;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:20px;
+
+}
+
+.grid-4{
+
+    display:grid!important;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+}
+
+
+
+/*======================================================
+    Position
+======================================================*/
+
+.position-relative{
+
+    position:relative!important;
+
+}
+
+.position-absolute{
+
+    position:absolute!important;
+
+}
+
+.position-fixed{
+
+    position:fixed!important;
+
+}
+
+.position-sticky{
+
+    position:sticky!important;
+
+}
+
+
+
+/*======================================================
+    Position Helpers
+======================================================*/
+
+.top-0{
+
+    top:0!important;
+
+}
+
+.bottom-0{
+
+    bottom:0!important;
+
+}
+
+.left-0{
+
+    left:0!important;
+
+}
+
+.right-0{
+
+    right:0!important;
+
+}
+
+
+
+/*======================================================
+    Z-index Helpers
+======================================================*/
+
+.z-1{
+
+    z-index:1!important;
+
+}
+
+.z-10{
+
+    z-index:10!important;
+
+}
+
+.z-100{
+
+    z-index:100!important;
+
+}
+
+.z-1000{
+
+    z-index:1000!important;
+
+}
+/*======================================================
+    Text Alignment
+======================================================*/
+
+.text-left{
+
+    text-align:left!important;
+
+}
+
+.text-center{
+
+    text-align:center!important;
+
+}
+
+.text-right{
+
+    text-align:right!important;
+
+}
+
+.text-justify{
+
+    text-align:justify!important;
+
+}
+
+
+
+/*======================================================
+    Font Weight
+======================================================*/
+
+.fw-light{
+
+    font-weight:300!important;
+
+}
+
+.fw-normal{
+
+    font-weight:400!important;
+
+}
+
+.fw-medium{
+
+    font-weight:500!important;
+
+}
+
+.fw-semibold{
+
+    font-weight:600!important;
+
+}
+
+.fw-bold{
+
+    font-weight:700!important;
+
+}
+
+.fw-bolder{
+
+    font-weight:800!important;
+
+}
+
+
+
+/*======================================================
+    Font Size
+======================================================*/
+
+.fs-12{
+
+    font-size:12px!important;
+
+}
+
+.fs-14{
+
+    font-size:14px!important;
+
+}
+
+.fs-16{
+
+    font-size:16px!important;
+
+}
+
+.fs-18{
+
+    font-size:18px!important;
+
+}
+
+.fs-20{
+
+    font-size:20px!important;
+
+}
+
+.fs-24{
+
+    font-size:24px!important;
+
+}
+
+.fs-30{
+
+    font-size:30px!important;
+
+}
+
+.fs-36{
+
+    font-size:36px!important;
+
+}
+
+
+
+/*======================================================
+    Text Colors
+======================================================*/
+
+.text-primary{
+
+    color:var(--primary)!important;
+
+}
+
+.text-secondary{
+
+    color:var(--secondary)!important;
+
+}
+
+.text-success{
+
+    color:var(--success)!important;
+
+}
+
+.text-danger{
+
+    color:var(--danger)!important;
+
+}
+
+.text-warning{
+
+    color:var(--warning)!important;
+
+}
+
+.text-info{
+
+    color:var(--info)!important;
+
+}
+
+.text-dark{
+
+    color:var(--text-dark)!important;
+
+}
+
+.text-light{
+
+    color:var(--text-light)!important;
+
+}
+
+.text-white{
+
+    color:#fff!important;
+
+}
+
+
+
+/*======================================================
+    Background Colors
+======================================================*/
+
+.bg-primary{
+
+    background:var(--primary)!important;
+
+}
+
+.bg-secondary{
+
+    background:var(--secondary)!important;
+
+}
+
+.bg-success{
+
+    background:var(--success)!important;
+
+}
+
+.bg-danger{
+
+    background:var(--danger)!important;
+
+}
+
+.bg-warning{
+
+    background:var(--warning)!important;
+
+}
+
+.bg-info{
+
+    background:var(--info)!important;
+
+}
+
+.bg-white{
+
+    background:#fff!important;
+
+}
+
+.bg-light{
+
+    background:#f8f9fa!important;
+
+}
+
+.bg-transparent{
+
+    background:transparent!important;
+
+}
+
+
+
+/*======================================================
+    Borders
+======================================================*/
+
+.border{
+
+    border:1px solid var(--border)!important;
+
+}
+
+.border-top{
+
+    border-top:1px solid var(--border)!important;
+
+}
+
+.border-bottom{
+
+    border-bottom:1px solid var(--border)!important;
+
+}
+
+.border-left{
+
+    border-left:1px solid var(--border)!important;
+
+}
+
+.border-right{
+
+    border-right:1px solid var(--border)!important;
+
+}
+
+.border-0{
+
+    border:none!important;
+
+}
+
+
+
+/*======================================================
+    Border Colors
+======================================================*/
+
+.border-primary{
+
+    border-color:var(--primary)!important;
+
+}
+
+.border-success{
+
+    border-color:var(--success)!important;
+
+}
+
+.border-danger{
+
+    border-color:var(--danger)!important;
+
+}
+
+.border-warning{
+
+    border-color:var(--warning)!important;
+
+}
+
+
+
+/*======================================================
+    Rounded Corners
+======================================================*/
+
+.rounded-sm{
+
+    border-radius:6px!important;
+
+}
+
+.rounded{
+
+    border-radius:10px!important;
+
+}
+
+.rounded-md{
+
+    border-radius:14px!important;
+
+}
+
+.rounded-lg{
+
+    border-radius:18px!important;
+
+}
+
+.rounded-xl{
+
+    border-radius:24px!important;
+
+}
+
+.rounded-circle{
+
+    border-radius:50%!important;
+
+}
+
+
+
+/*======================================================
+    Text Transform
+======================================================*/
+
+.text-uppercase{
+
+    text-transform:uppercase!important;
+
+}
+
+.text-lowercase{
+
+    text-transform:lowercase!important;
+
+}
+
+.text-capitalize{
+
+    text-transform:capitalize!important;
+
+}
+
+
+
+/*======================================================
+    Text Decoration
+======================================================*/
+
+.text-decoration-none{
+
+    text-decoration:none!important;
+
+}
+
+.text-underline{
+
+    text-decoration:underline!important;
+
+}
+/*======================================================
+    Shadow Utilities
+======================================================*/
+
+.shadow-none{
+
+    box-shadow:none!important;
+
+}
+
+.shadow-sm{
+
+    box-shadow:0 2px 8px rgba(0,0,0,.08)!important;
+
+}
+
+.shadow{
+
+    box-shadow:0 8px 20px rgba(0,0,0,.12)!important;
+
+}
+
+.shadow-lg{
+
+    box-shadow:0 16px 40px rgba(0,0,0,.18)!important;
+
+}
+
+
+
+/*======================================================
+    Opacity
+======================================================*/
+
+.opacity-0{
+
+    opacity:0!important;
+
+}
+
+.opacity-25{
+
+    opacity:.25!important;
+
+}
+
+.opacity-50{
+
+    opacity:.5!important;
+
+}
+
+.opacity-75{
+
+    opacity:.75!important;
+
+}
+
+.opacity-100{
+
+    opacity:1!important;
+
+}
+
+
+
+/*======================================================
+    Cursor
+======================================================*/
+
+.cursor-pointer{
+
+    cursor:pointer!important;
+
+}
+
+.cursor-default{
+
+    cursor:default!important;
+
+}
+
+.cursor-not-allowed{
+
+    cursor:not-allowed!important;
+
+}
+
+.cursor-move{
+
+    cursor:move!important;
+
+}
+
+
+
+/*======================================================
+    Overflow
+======================================================*/
+
+.overflow-hidden{
+
+    overflow:hidden!important;
+
+}
+
+.overflow-auto{
+
+    overflow:auto!important;
+
+}
+
+.overflow-scroll{
+
+    overflow:scroll!important;
+
+}
+
+.overflow-x-auto{
+
+    overflow-x:auto!important;
+
+}
+
+.overflow-y-auto{
+
+    overflow-y:auto!important;
+
+}
+
+
+
+/*======================================================
+    Visibility
+======================================================*/
+
+.visible{
+
+    visibility:visible!important;
+
+}
+
+.invisible{
+
+    visibility:hidden!important;
+
+}
+
+
+
+/*======================================================
+    User Select
+======================================================*/
+
+.user-select-none{
+
+    user-select:none!important;
+
+}
+
+.user-select-all{
+
+    user-select:all!important;
+
+}
+
+
+
+/*======================================================
+    Transition Helpers
+======================================================*/
+
+.transition{
+
+    transition:all .3s ease!important;
+
+}
+
+.transition-fast{
+
+    transition:all .15s ease!important;
+
+}
+
+.transition-slow{
+
+    transition:all .5s ease!important;
+
+}
+
+
+
+/*======================================================
+    Hover Effects
+======================================================*/
+
+.hover-scale:hover{
+
+    transform:scale(1.03);
+
+}
+
+.hover-lift:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.hover-shadow:hover{
+
+    box-shadow:0 12px 28px rgba(0,0,0,.15);
+
+}
+
+
+
+/*======================================================
+    Responsive Helpers
+======================================================*/
+
+@media(max-width:992px){
+
+    .hide-lg{
+
+        display:none!important;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .hide-md{
+
+        display:none!important;
+
+    }
+
+    .show-md{
+
+        display:block!important;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .hide-sm{
+
+        display:none!important;
+
+    }
+
+    .show-sm{
+
+        display:block!important;
+
+    }
+
+}
+
+
+
+/*======================================================
+    Responsive Grid
+======================================================*/
+
+@media(max-width:992px){
+
+    .grid-4{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .grid-4,
+
+    .grid-3,
+
+    .grid-2{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+
+
+/*======================================================
+    Print Helpers
+======================================================*/
+
+@media print{
+
+    .no-print{
+
+        display:none!important;
+
+    }
+
+}
+
+
+
+/*======================================================
+    Utility Animations
+======================================================*/
+
+.fade-in{
+
+    animation:fadeIn .35s ease;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+    }
+
+    to{
+
+        opacity:1;
+
+    }
+
+}
+
+
+
+.slide-up{
+
+    animation:slideUp .35s ease;
+
+}
+
+@keyframes slideUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+
+/*======================================================
+    END OF UTILITIES
+======================================================*/

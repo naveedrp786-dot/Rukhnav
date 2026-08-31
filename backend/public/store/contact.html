@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact Us | RUKHNAV</title>
+<meta name="description" content="Contact RUKHNAV customer support.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css?v=20260827-home-hero-1">
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-storefront.css?v=20260827-3">
+<link rel="stylesheet" href="css/info-pages-modern.css">
+</head>
+<body>
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="info-page">
+<section class="info-hero">
+<div>
+<span>Customer Care</span>
+<h1>We are here to help.</h1>
+<p>Contact RUKHNAV for product questions, order support, delivery information or account assistance.</p>
+</div>
+<div class="info-hero-icon"><i class="fa-solid fa-headset"></i></div>
+</section>
+
+<section class="contact-layout">
+<div class="contact-cards">
+<article><i class="fa-solid fa-envelope"></i><div><h2>Email</h2><a id="contactEmail" href="mailto:naveedrp786@gmail.com">naveedrp786@gmail.com</a></div></article>
+<article><i class="fa-brands fa-whatsapp"></i><div><h2>WhatsApp</h2><a id="contactWhatsapp" href="https://wa.me/923081201745" target="_blank" rel="noopener">+92 308 1201745</a></div></article>
+<article><i class="fa-solid fa-truck-fast"></i><div><h2>Delivery</h2><p id="contactServiceArea">Delivery across Pakistan</p></div></article>
+<article><i class="fa-solid fa-clock"></i><div><h2>Business Hours</h2><p id="contactHours">Monday–Saturday, 9:00 AM–6:00 PM</p></div></article>
+</div>
+
+<form id="contactForm" class="contact-form">
+<div><span>Send a message</span><h2>How can we help?</h2></div>
+<label>Full Name<input id="contactName" required></label>
+<label>Email Address<input id="contactReplyEmail" type="email" required></label>
+<label>Subject<input id="contactSubject" required></label>
+<label>Message<textarea id="contactMessage" rows="6" required></textarea></label>
+<button class="btn primary" type="submit">Prepare Email</button>
+<p id="contactStatus"></p>
+</form>
+</section>
+</main>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("contactForm")?.addEventListener("submit", event => {
+        event.preventDefault();
+        const subject = encodeURIComponent(document.getElementById("contactSubject").value);
+        const body = encodeURIComponent(
+            `Name: ${document.getElementById("contactName").value}\n` +
+            `Reply email: ${document.getElementById("contactReplyEmail").value}\n\n` +
+            document.getElementById("contactMessage").value
+        );
+        const form = document.getElementById("contactForm");
+
+        const supportEmail =
+            form?.dataset.supportEmail ||
+            "naveedrp786@gmail.com";
+
+        window.location.href =
+            `mailto:${supportEmail}?subject=${subject}&body=${body}`;
+
+        document.getElementById("contactStatus").textContent =
+            form?.dataset.successText ||
+            "Your email application has been opened.";
+    });
+});
+</script>
+
+<div id="footer"></div>
+<div id="toast" class="toast-region"></div>
+<div id="overlay" class="overlay"></div>
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js?v=20260823-2"></script>
+<script src="js/store.js"></script>
+<script src="js/website-cms-bridge.js"></script>
+<script src="js/demo-visuals.js?v=20260827-2"></script>
+</body>
+</html>

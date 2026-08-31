@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Returns & Refunds | RUKHNAV</title>
+<meta
+    name="description"
+    content="Request a return or refund for an eligible RUKHNAV order."
+>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet"
+>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+>
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css?v=20260827-home-hero-1">
+<link rel="stylesheet" href="css/returns.css">
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-storefront.css?v=20260827-3">
+</head>
+
+<body>
+
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="returns-page">
+
+    <!-- =====================================
+         PAGE HEADING
+    ====================================== -->
+
+    <section class="returns-heading">
+
+        <div>
+            <span>RUKHNAV Customer Care</span>
+
+            <h1>Returns & Refunds</h1>
+
+            <p>
+                Find your order, select the items you want to
+                return and submit supporting photos or videos.
+            </p>
+        </div>
+
+        <div class="returns-heading-actions">
+
+            <a
+                href="account.html"
+                class="returns-account-link"
+            >
+                <i class="fa-solid fa-user"></i>
+                My Account
+            </a>
+
+            <a
+                href="products.html"
+                class="returns-shopping-link"
+            >
+                <i class="fa-solid fa-bag-shopping"></i>
+                Continue shopping
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         INTRO / ORDER LOOKUP
+    ====================================== -->
+
+    <section
+        id="returnLookupSection"
+        class="return-card return-lookup-card"
+    >
+
+        <div class="return-card-heading">
+
+            <div class="return-card-icon">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+
+            <div>
+                <span>Step 1</span>
+                <h2>Find your order</h2>
+
+                <p>
+                    Enter the order number shown on your
+                    confirmation or invoice.
+                </p>
+            </div>
+
+        </div>
+
+
+        <form
+            id="returnLookupForm"
+            class="return-lookup-form"
+        >
+
+            <div class="return-field return-order-field">
+
+                <label for="returnOrderNumber">
+                    Order number
+                </label>
+
+                <div class="return-input-icon">
+
+                    <i class="fa-solid fa-receipt"></i>
+
+                    <input
+                        id="returnOrderNumber"
+                        name="order_number"
+                        type="text"
+                        autocomplete="off"
+                        spellcheck="false"
+                        placeholder="Example: ORD-20260823-000023"
+                        required
+                    >
+
+                </div>
+
+                <small>
+                    You can find this number on your order
+                    confirmation page or invoice.
+                </small>
+
+            </div>
+
+
+            <div class="return-field">
+
+                <label for="returnIdentifier">
+                    Email or mobile number
+                </label>
+
+                <div class="return-input-icon">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <input
+                        id="returnIdentifier"
+                        name="identifier"
+                        type="text"
+                        autocomplete="email"
+                        placeholder="Email or mobile used at checkout"
+                    >
+
+                </div>
+
+                <small>
+                    Guest customers can verify ownership using
+                    the email or mobile number used at checkout.
+                </small>
+
+            </div>
+
+
+            <button
+                id="findReturnOrderButton"
+                type="submit"
+                class="btn primary return-find-button"
+            >
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Find My Order
+            </button>
+
+        </form>
+
+
+        <div
+            id="returnLookupMessage"
+            class="return-message hidden"
+            role="alert"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================
+         LOADING
+    ====================================== -->
+
+    <section
+        id="returnLoading"
+        class="return-state hidden"
+    >
+
+        <div class="spinner"></div>
+
+        <h2>Finding your order</h2>
+
+        <p>
+            Please wait while we securely retrieve
+            your order information.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================
+         ORDER FOUND
+    ====================================== -->
+
+    <section
+        id="returnWorkspace"
+        class="return-workspace hidden"
+    >
+
+        <!-- ORDER SUMMARY -->
+
+        <article class="return-card return-order-card">
+
+            <div class="return-card-heading">
+
+                <div class="return-card-icon success">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+                <div>
+                    <span>Order found</span>
+
+                    <h2 id="returnOrderHeading">
+                        Order
+                    </h2>
+
+                    <p id="returnOrderDate">
+                        —
+                    </p>
+                </div>
+
+                <div class="return-order-badges">
+
+                    <span
+                        id="returnOrderStatus"
+                        class="return-status-badge"
+                    >
+                        —
+                    </span>
+
+                    <span
+                        id="returnPaymentStatus"
+                        class="return-status-badge"
+                    >
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="return-order-summary">
+
+                <div>
+                    <span>Customer</span>
+                    <strong id="returnCustomerName">—</strong>
+                </div>
+
+                <div>
+                    <span>Order total</span>
+                    <strong id="returnOrderTotal">—</strong>
+                </div>
+
+                <div>
+                    <span>Delivery status</span>
+                    <strong id="returnDeliveryStatus">—</strong>
+                </div>
+
+                <div>
+                    <span>Delivered</span>
+                    <strong id="returnDeliveredDate">—</strong>
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- =====================================
+             RETURN FORM
+        ====================================== -->
+
+        <form
+            id="returnRequestForm"
+            enctype="multipart/form-data"
+        >
+
+            <!-- ITEMS -->
+
+            <section class="return-card">
+
+                <div class="return-card-heading">
+
+                    <div class="return-card-icon">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+
+                    <div>
+                        <span>Step 2</span>
+                        <h2>Select items to return</h2>
+
+                        <p>
+                            Choose each product you want to return
+                            and specify the quantity and reason.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="returnItemsList"
+                    class="return-items-list"
+                ></div>
+
+            </section>
+
+
+            <!-- RETURN DETAILS -->
+
+            <section class="return-card">
+
+                <div class="return-card-heading">
+
+                    <div class="return-card-icon">
+                        <i class="fa-regular fa-message"></i>
+                    </div>
+
+                    <div>
+                        <span>Step 3</span>
+                        <h2>Tell us what happened</h2>
+
+                        <p>
+                            The information helps our team review
+                            your return quickly.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="return-form-grid">
+
+                    <div class="return-field">
+
+                        <label for="returnReason">
+                            Main reason for return
+                        </label>
+
+                        <select
+                            id="returnReason"
+                            name="reason"
+                            required
+                        >
+                            <option value="">
+                                Select a reason
+                            </option>
+
+                            <option value="Damaged">
+                                Product arrived damaged
+                            </option>
+
+                            <option value="Defective">
+                                Product is defective
+                            </option>
+
+                            <option value="Wrong Item">
+                                Wrong product received
+                            </option>
+
+                            <option value="Missing Parts">
+                                Missing item / parts
+                            </option>
+
+                            <option value="Not As Described">
+                                Product not as described
+                            </option>
+
+                            <option value="Quality Issue">
+                                Quality issue
+                            </option>
+
+                            <option value="Changed Mind">
+                                Changed my mind
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="return-field return-field-full">
+
+                        <label for="returnNotes">
+                            Additional details
+                        </label>
+
+                        <textarea
+                            id="returnNotes"
+                            name="customer_notes"
+                            rows="5"
+                            maxlength="2000"
+                            placeholder="Describe the problem, condition of the product, packaging or anything our returns team should know."
+                        ></textarea>
+
+                        <small>
+                            Please do not include passwords,
+                            payment PINs or other sensitive information.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- EVIDENCE -->
+
+            <section class="return-card">
+
+                <div class="return-card-heading">
+
+                    <div class="return-card-icon">
+                        <i class="fa-solid fa-camera"></i>
+                    </div>
+
+                    <div>
+                        <span>Step 4</span>
+                        <h2>Add photos or videos</h2>
+
+                        <p>
+                            Evidence can help us verify damaged,
+                            incorrect or defective products faster.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="returnMediaDropzone"
+                    class="return-media-dropzone"
+                >
+
+                    <input
+                        id="returnMedia"
+                        name="return_media"
+                        type="file"
+                        accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.webm,image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm"
+                        multiple
+                    >
+
+                    <div class="return-media-icon">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+
+                    <h3>
+                        Upload product evidence
+                    </h3>
+
+                    <p>
+                        Click to choose photos or videos
+                    </p>
+
+                    <small>
+                        JPG, PNG, WEBP, MP4, MOV or WEBM ·
+                        Maximum 6 files · Maximum 25 MB per file
+                    </small>
+
+                </div>
+
+
+                <div
+                    id="returnMediaPreview"
+                    class="return-media-preview"
+                ></div>
+
+            </section>
+
+
+            <!-- SUBMIT -->
+
+            <section class="return-card return-submit-card">
+
+                <div>
+
+                    <h2>Ready to submit?</h2>
+
+                    <p>
+                        Review your selected items and information.
+                        Your request will be sent to the RUKHNAV
+                        returns team for review.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="submitReturnButton"
+                    type="submit"
+                    class="btn primary return-submit-button"
+                >
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Submit Return Request
+                </button>
+
+            </section>
+
+
+            <div
+                id="returnSubmitMessage"
+                class="return-message hidden"
+                role="alert"
+            ></div>
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================
+         SUCCESS
+    ====================================== -->
+
+    <section
+        id="returnSuccess"
+        class="return-card return-success hidden"
+    >
+
+        <div class="return-success-icon">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+
+        <span>Request received</span>
+
+        <h1>Your return request has been submitted</h1>
+
+        <p>
+            Our returns team will review the request and
+            update its status after verification.
+        </p>
+
+
+        <div class="return-success-number">
+
+            <span>Return number</span>
+
+            <strong id="returnSuccessNumber">
+                —
+            </strong>
+
+        </div>
+
+
+        <div class="return-success-actions">
+
+            <button
+                id="newReturnButton"
+                type="button"
+                class="btn secondary"
+            >
+                <i class="fa-solid fa-plus"></i>
+                Start Another Return
+            </button>
+
+            <a
+                href="products.html"
+                class="btn primary"
+            >
+                <i class="fa-solid fa-bag-shopping"></i>
+                Continue Shopping
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         INFORMATION
+    ====================================== -->
+
+    <section class="returns-help-grid">
+
+        <article>
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <h3>Secure verification</h3>
+
+            <p>
+                Order information is protected and only
+                displayed after ownership verification.
+            </p>
+
+        </article>
+
+
+        <article>
+
+            <i class="fa-solid fa-camera-retro"></i>
+
+            <h3>Evidence supported</h3>
+
+            <p>
+                Upload photos or videos showing damaged,
+                defective or incorrect products.
+            </p>
+
+        </article>
+
+
+        <article>
+
+            <i class="fa-solid fa-clipboard-check"></i>
+
+            <h3>Reviewed by our team</h3>
+
+            <p>
+                Submitting a request does not automatically
+                issue a refund. Each request is reviewed first.
+            </p>
+
+        </article>
+
+    </section>
+
+</main>
+
+
+<div id="footer"></div>
+
+<div
+    id="toast"
+    class="toast-region"
+></div>
+
+<div
+    id="overlay"
+    class="overlay"
+></div>
+
+
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js?v=20260823-2"></script>
+<script src="js/store.js"></script>
+<script src="js/returns.js"></script>
+
+<script src="js/demo-visuals.js?v=20260827-2"></script>
+</body>
+</html>

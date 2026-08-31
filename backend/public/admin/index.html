@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Dashboard | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content executive-dashboard-page">
+            <header class="executive-header">
+                <div>
+                    <span class="page-label">Executive Overview</span>
+                    <h1><i class="fa-solid fa-gauge-high"></i> Main ERP Dashboard</h1>
+                    <p>Live overview of sales, purchasing, inventory, customers, suppliers and financial activity.</p>
+                </div>
+
+                <div class="header-actions">
+                    <button type="button" id="refreshDashboardBtn" class="secondary-btn">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+
+                    <a href="/admin/sales.html" class="primary-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        New Sale
+                    </a>
+                </div>
+            </header>
+
+            <div id="dashboardMessage" class="dashboard-message" role="alert" aria-live="polite"></div>
+
+            <section id="dashboardLoading" class="dashboard-loading">
+                <div class="dashboard-spinner"></div>
+                <h3>Loading dashboard</h3>
+                <p>Retrieving the latest ERP information.</p>
+            </section>
+
+            <div id="dashboardContent" class="dashboard-content hidden">
+                <section class="executive-kpi-grid">
+                    <article class="executive-kpi-card">
+                        <div class="kpi-icon sales"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div><span>Total Revenue</span><h2 id="totalRevenue">PKR 0</h2><small>Completed sales</small></div>
+                    </article>
+
+                    <article class="executive-kpi-card">
+                        <div class="kpi-icon today"><i class="fa-solid fa-calendar-day"></i></div>
+                        <div><span>Today's Sales</span><h2 id="todaySales">PKR 0</h2><small id="todaySalesCount">0 transactions</small></div>
+                    </article>
+
+                    <article class="executive-kpi-card">
+                        <div class="kpi-icon orders"><i class="fa-solid fa-receipt"></i></div>
+                        <div><span>Total Sales</span><h2 id="totalSales">0</h2><small>Completed sales records</small></div>
+                    </article>
+
+                    <article class="executive-kpi-card">
+                        <div class="kpi-icon customers"><i class="fa-solid fa-users"></i></div>
+                        <div><span>Customers</span><h2 id="totalCustomers">0</h2><small id="activeCustomers">0 active</small></div>
+                    </article>
+
+                    <article class="executive-kpi-card">
+                        <div class="kpi-icon products"><i class="fa-solid fa-boxes-stacked"></i></div>
+                        <div><span>Products</span><h2 id="totalProducts">0</h2><small id="totalStockQuantity">0 units in stock</small></div>
+                    </article>
+
+                    <article class="executive-kpi-card">
+                        <div class="kpi-icon stock"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div><span>Low Stock</span><h2 id="lowStockProducts">0</h2><small id="outOfStockProducts">0 out of stock</small></div>
+                    </article>
+
+                    <article class="executive-kpi-card">
+                        <div class="kpi-icon purchases"><i class="fa-solid fa-cart-flatbed"></i></div>
+                        <div><span>Purchases</span><h2 id="totalPurchases">PKR 0</h2><small id="purchaseOrdersCount">0 purchase orders</small></div>
+                    </article>
+
+                    <article class="executive-kpi-card">
+                        <div class="kpi-icon suppliers"><i class="fa-solid fa-truck-field"></i></div>
+                        <div><span>Suppliers</span><h2 id="totalSuppliers">0</h2><small id="supplierBalance">PKR 0 balance</small></div>
+                    </article>
+                </section>
+
+                <section class="executive-panel quick-actions-panel">
+                    <div class="panel-heading">
+                        <div><span>Shortcuts</span><h2>Quick Actions</h2></div>
+                    </div>
+
+                    <div class="quick-actions-grid">
+                        <a href="/admin/sales.html" class="quick-action"><i class="fa-solid fa-cash-register"></i><span>New Sale</span></a>
+                        <a href="/admin/purchasing/pages/purchasing-dashboard.html" class="quick-action"><i class="fa-solid fa-cart-flatbed"></i><span>Purchase Order</span></a>
+                        <a href="/admin/products.html" class="quick-action"><i class="fa-solid fa-box"></i><span>Add Product</span></a>
+                        <a href="/admin/customers.html" class="quick-action"><i class="fa-solid fa-user-plus"></i><span>Add Customer</span></a>
+                        <a href="/admin/suppliers.html" class="quick-action"><i class="fa-solid fa-truck-field"></i><span>Add Supplier</span></a>
+                        <a href="/admin/stockAdjustments.html" class="quick-action"><i class="fa-solid fa-sliders"></i><span>Stock Adjustment</span></a>
+                        <a href="/admin/invoices.html" class="quick-action"><i class="fa-solid fa-file-invoice-dollar"></i><span>Invoices</span></a>
+                        <a href="/admin/reports.html" class="quick-action"><i class="fa-solid fa-chart-pie"></i><span>Reports</span></a>
+                    </div>
+                </section>
+
+                <section class="executive-chart-grid">
+                    <article class="executive-panel">
+                        <div class="panel-heading"><div><span>Revenue</span><h2>Monthly Revenue</h2></div></div>
+                        <div class="chart-wrap"><canvas id="monthlyRevenueChart"></canvas></div>
+                    </article>
+
+                    <article class="executive-panel">
+                        <div class="panel-heading"><div><span>Sales</span><h2>Daily Sales Trend</h2></div></div>
+                        <div class="chart-wrap"><canvas id="dailySalesChart"></canvas></div>
+                    </article>
+
+                    <article class="executive-panel">
+                        <div class="panel-heading"><div><span>Categories</span><h2>Category Performance</h2></div></div>
+                        <div class="chart-wrap compact"><canvas id="categorySalesChart"></canvas></div>
+                    </article>
+
+                    <article class="executive-panel">
+                        <div class="panel-heading"><div><span>Payments</span><h2>Payment Methods</h2></div></div>
+                        <div class="chart-wrap compact"><canvas id="paymentMethodChart"></canvas></div>
+                    </article>
+                </section>
+
+                <section class="executive-two-column">
+                    <article class="executive-panel">
+                        <div class="panel-heading">
+                            <div><span>Inventory Alert</span><h2>Low Stock Products</h2></div>
+                            <a href="/admin/inventory.html" class="panel-link">View Inventory</a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead><tr><th>Product</th><th>Stock</th><th>Level</th></tr></thead>
+                                <tbody id="lowStockBody"></tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="executive-panel">
+                        <div class="panel-heading">
+                            <div><span>Financial Position</span><h2>Sales Payment Status</h2></div>
+                        </div>
+
+                        <div class="financial-status-grid">
+                            <div><span>Paid</span><strong id="paidSalesValue">PKR 0</strong><small id="paidSalesCount">0 sales</small></div>
+                            <div><span>Partial</span><strong id="partialSalesValue">PKR 0</strong><small id="partialSalesCount">0 sales</small></div>
+                            <div><span>Pending</span><strong id="pendingSalesValue">PKR 0</strong><small id="pendingSalesCount">0 sales</small></div>
+                            <div><span>Purchase Outstanding</span><strong id="purchaseOutstanding">PKR 0</strong><small>Supplier payable</small></div>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="executive-panel full-width-panel">
+                    <div class="panel-heading">
+                        <div><span>Sales Operations</span><h2>Recent Sales</h2></div>
+                        <a href="/admin/sales.html" class="panel-link">View All</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sale</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentSalesBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <footer class="dashboard-updated">
+                    Last updated: <span id="dashboardLastUpdated">—</span>
+                </footer>
+            </div>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/admin/js/dashboard.js"></script>
+</body>
+</html>

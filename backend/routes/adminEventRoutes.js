@@ -1,0 +1,16 @@
+"use strict";
+const express = require("express");
+const router = express.Router();
+const adminAuth = require("../middleware/adminAuth");
+const adminEventController = require("../controllers/adminEventController");
+const eventReminderController = require("../controllers/eventReminderController");
+router.use(adminAuth);
+router.get('/summary', adminEventController.getSummary);
+router.get('/logs', adminEventController.getLogs);
+router.post('/reminders/generate', eventReminderController.generateDueReminders);
+router.post('/reminders/process', eventReminderController.processPendingReminders);
+router.post('/reminders/run', eventReminderController.runCompleteReminderCycle);
+router.get('/', adminEventController.getEvents);
+router.patch('/:id/status', adminEventController.updateStatus);
+router.delete('/:id', adminEventController.deleteEvent);
+module.exports = router;

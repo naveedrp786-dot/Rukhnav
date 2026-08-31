@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Customers | RUKHNAV ERP
+    </title>
+
+    <!-- Shared ERP Theme -->
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp.css"
+    >
+
+    <!-- Customers Page Theme -->
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp-ui-v5.css">
+
+    <link rel="stylesheet" href="/admin/css/customers.css"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Shared Sidebar -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main">
+
+            <!-- Shared Topbar -->
+            <div id="topbar-container"></div>
+
+            <section class="content erp-v5-page customers-page customers-v5-page">
+
+                <!-- =====================================
+                     Page Header
+                ====================================== -->
+
+                <header class="page-header customers-header erp-v5-hero">
+
+                    <div>
+
+                        <span class="page-label erp-v5-eyebrow"><i class="fa-solid fa-users-gear"></i>
+                            Sales & Customers
+                        </span>
+
+                        <h1>
+                            Customer Management
+                        </h1>
+
+                        <p>
+                            Search, review and manage customer accounts,
+                            verification, loyalty status and activity.
+                        </p>
+
+                    </div>
+
+                    <div class="header-actions erp-v5-hero__actions">
+
+                        <button
+                            type="button"
+                            id="clearFiltersButton"
+                            class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                        >
+                            <i class="fa-solid fa-filter-circle-xmark"></i>
+                            Clear Filters
+                        </button>
+
+                        <button
+                            type="button"
+                            id="refreshCustomersButton"
+                            class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                        >
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh
+                        </button>
+
+                    </div>
+
+                </header>
+
+                <!-- =====================================
+                     Alert Message
+                ====================================== -->
+
+                <div
+                    id="customersMessage"
+                    class="customers-message"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
+
+                <!-- =====================================
+                     Customer Summary Cards
+                ====================================== -->
+
+                <section class="customer-summary-grid erp-v5-summary-grid">
+
+                    <article class="customer-summary-card erp-v5-summary-card">
+
+                        <div class="summary-icon total">
+
+                            <i class="fa-solid fa-users"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total Customers
+                            </span>
+
+                            <h2 id="totalCustomers">
+                                0
+                            </h2>
+
+                            <small>
+                                Registered customer accounts
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="customer-summary-card erp-v5-summary-card">
+
+                        <div class="summary-icon active">
+
+                            <i class="fa-solid fa-user-check"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Active Customers
+                            </span>
+
+                            <h2 id="activeCustomers">
+                                0
+                            </h2>
+
+                            <small>
+                                Customers currently active
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="customer-summary-card erp-v5-summary-card">
+
+                        <div class="summary-icon pending">
+
+                            <i class="fa-solid fa-user-clock"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Pending Verification
+                            </span>
+
+                            <h2 id="pendingVerification">
+                                0
+                            </h2>
+
+                            <small>
+                                Awaiting email or phone verification
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="customer-summary-card erp-v5-summary-card">
+
+                        <div class="summary-icon suspended">
+
+                            <i class="fa-solid fa-user-lock"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Suspended
+                            </span>
+
+                            <h2 id="suspendedCustomers">
+                                0
+                            </h2>
+
+                            <small>
+                                Temporarily restricted accounts
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="customer-summary-card erp-v5-summary-card">
+
+                        <div class="summary-icon inactive">
+
+                            <i class="fa-solid fa-user-slash"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Inactive
+                            </span>
+
+                            <h2 id="inactiveCustomers">
+                                0
+                            </h2>
+
+                            <small>
+                                Inactive customer accounts
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="customer-summary-card erp-v5-summary-card">
+
+                        <div class="summary-icon new">
+
+                            <i class="fa-solid fa-user-plus"></i>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                New This Month
+                            </span>
+
+                            <h2 id="newThisMonth">
+                                0
+                            </h2>
+
+                            <small>
+                                Customers registered this month
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+                <!-- =====================================
+                     Filters
+                ====================================== -->
+
+                <section class="customers-panel filters-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                Customer Directory
+                            </span>
+
+                            <h2>
+                                Search and Filters
+                            </h2>
+
+                            <p>
+                                Find customers by account information,
+                                status, membership or verification.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <form
+                        id="customerFiltersForm"
+                        class="customer-filters"
+                        autocomplete="off"
+                    >
+
+                        <div class="filter-field search-field">
+
+                            <label for="customerSearch">
+                                Search Customer
+                            </label>
+
+                            <div class="input-with-icon">
+
+                                <i class="fa-solid fa-magnifying-glass"></i>
+
+                                <input
+                                    type="search"
+                                    id="customerSearch"
+                                    name="search"
+                                    placeholder="Name, email, phone, ID or referral code"
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div class="filter-field">
+
+                            <label for="statusFilter">
+                                Account Status
+                            </label>
+
+                            <select
+                                id="statusFilter"
+                                name="status"
+                            >
+
+                                <option value="">
+                                    All Statuses
+                                </option>
+
+                                <option value="Active">
+                                    Active
+                                </option>
+
+                                <option value="Inactive">
+                                    Inactive
+                                </option>
+
+                                <option value="Suspended">
+                                    Suspended
+                                </option>
+
+                                <option value="Pending Verification">
+                                    Pending Verification
+                                </option>
+
+                                <option value="Deletion Requested">
+                                    Deletion Requested
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="filter-field">
+
+                            <label for="membershipFilter">
+                                Membership
+                            </label>
+
+                            <select
+                                id="membershipFilter"
+                                name="membership"
+                            >
+
+                                <option value="">
+                                    All Memberships
+                                </option>
+
+                                <option value="Bronze">
+                                    Bronze
+                                </option>
+
+                                <option value="Silver">
+                                    Silver
+                                </option>
+
+                                <option value="Gold">
+                                    Gold
+                                </option>
+
+                                <option value="Platinum">
+                                    Platinum
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="filter-field">
+
+                            <label for="verificationFilter">
+                                Verification
+                            </label>
+
+                            <select
+                                id="verificationFilter"
+                                name="verification"
+                            >
+
+                                <option value="">
+                                    All Customers
+                                </option>
+
+                                <option value="verified">
+                                    Fully Verified
+                                </option>
+
+                                <option value="email_verified">
+                                    Email Verified
+                                </option>
+
+                                <option value="phone_verified">
+                                    Phone Verified
+                                </option>
+
+                                <option value="unverified">
+                                    Not Verified
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="filter-field">
+
+                            <label for="limitFilter">
+                                Rows Per Page
+                            </label>
+
+                            <select
+                                id="limitFilter"
+                                name="limit"
+                            >
+
+                                <option value="10">
+                                    10
+                                </option>
+
+                                <option value="20" selected>
+                                    20
+                                </option>
+
+                                <option value="50">
+                                    50
+                                </option>
+
+                                <option value="100">
+                                    100
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="filter-actions">
+
+                            <button
+                                type="submit"
+                                class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                            >
+
+                                <i class="fa-solid fa-filter"></i>
+                                Apply Filters
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+                <!-- =====================================
+                     Customers Table
+                ====================================== -->
+
+                <section class="customers-panel customers-table-panel">
+
+                    <div class="panel-heading table-panel-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                Customer Records
+                            </span>
+
+                            <h2>
+                                All Customers
+                            </h2>
+
+                            <p id="customerResultsText">
+                                Loading customer records.
+                            </p>
+
+                        </div>
+
+                        <div class="table-heading-actions">
+
+                            <button
+                                type="button"
+                                id="exportCustomersButton"
+                                class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                            >
+
+                                <i class="fa-solid fa-file-export"></i>
+                                Export CSV
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="customersLoading"
+                        class="customers-state"
+                    >
+
+                        <div class="customers-spinner"></div>
+
+                        <h3>
+                            Loading customers
+                        </h3>
+
+                        <p>
+                            Please wait while customer data is retrieved.
+                        </p>
+
+                    </div>
+
+                    <div
+                        id="customersEmptyState"
+                        class="customers-state hidden"
+                    >
+
+                        <div class="state-icon">
+
+                            <i class="fa-solid fa-users-slash"></i>
+
+                        </div>
+
+                        <h3>
+                            No customers found
+                        </h3>
+
+                        <p>
+                            No customer records match the selected filters.
+                        </p>
+
+                        <button
+                            type="button"
+                            id="emptyClearFiltersButton"
+                            class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                        >
+
+                            <i class="fa-solid fa-filter-circle-xmark"></i>
+                            Clear Filters
+
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="customersTableWrapper"
+                        class="table-responsive hidden"
+                    >
+
+                        <table class="customers-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Customer
+                                    </th>
+
+                                    <th>
+                                        Contact
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Membership
+                                    </th>
+
+                                    <th>
+                                        Reward Points
+                                    </th>
+
+                                    <th>
+                                        Orders
+                                    </th>
+
+                                    <th>
+                                        Total Spent
+                                    </th>
+
+                                    <th>
+                                        Registered
+                                    </th>
+
+                                    <th class="actions-column">
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="customersTableBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                    <!-- Pagination -->
+
+                    <div
+                        id="customersPagination"
+                        class="customers-pagination hidden"
+                    >
+
+                        <div
+                            id="paginationInformation"
+                            class="pagination-information"
+                        >
+                            Showing 0 to 0 of 0 customers
+                        </div>
+
+                        <div class="pagination-controls">
+
+                            <button
+                                type="button"
+                                id="firstPageButton"
+                                class="pagination-button"
+                                aria-label="First page"
+                            >
+
+                                <i class="fa-solid fa-angles-left"></i>
+
+                            </button>
+
+                            <button
+                                type="button"
+                                id="previousPageButton"
+                                class="pagination-button"
+                                aria-label="Previous page"
+                            >
+
+                                <i class="fa-solid fa-chevron-left"></i>
+
+                            </button>
+
+                            <span id="paginationPages"></span>
+
+                            <button
+                                type="button"
+                                id="nextPageButton"
+                                class="pagination-button"
+                                aria-label="Next page"
+                            >
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </button>
+
+                            <button
+                                type="button"
+                                id="lastPageButton"
+                                class="pagination-button"
+                                aria-label="Last page"
+                            >
+
+                                <i class="fa-solid fa-angles-right"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+            <!-- Shared Footer -->
+            <div id="footer-container"></div>
+
+        </main>
+
+    </div>
+
+    <!-- =====================================
+         Customer Details Modal
+    ====================================== -->
+
+    <div
+        id="customerDetailsModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog customer-details-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customerDetailsTitle"
+        >
+
+            <div class="customer-modal-header">
+
+                <div>
+
+                    <span class="modal-label">
+                        Customer Record
+                    </span>
+
+                    <h2 id="customerDetailsTitle">
+                        Customer Details
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="customerDetailsModal"
+                    aria-label="Close customer details"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <div
+                id="customerDetailsLoading"
+                class="modal-loading-state"
+            >
+
+                <div class="customers-spinner"></div>
+
+                <p>
+                    Loading customer details.
+                </p>
+
+            </div>
+
+            <div
+                id="customerDetailsContent"
+                class="customer-modal-body hidden"
+            >
+
+                <section class="customer-profile-header">
+
+                    <div
+                        id="customerAvatar"
+                        class="customer-profile-avatar"
+                    >
+                        CU
+                    </div>
+
+                    <div class="customer-profile-heading">
+
+                        <h3 id="detailsCustomerName">
+                            Customer Name
+                        </h3>
+
+                        <p id="detailsCustomerReference">
+                            Customer #0
+                        </p>
+
+                        <div class="customer-profile-badges">
+
+                            <span
+                                id="detailsCustomerStatus"
+                                class="status-badge"
+                            >
+                                Status
+                            </span>
+
+                            <span
+                                id="detailsMembership"
+                                class="membership-badge"
+                            >
+                                Bronze
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <div class="customer-detail-grid">
+
+                    <article class="customer-detail-card">
+
+                        <div class="detail-card-heading">
+
+                            <i class="fa-solid fa-address-card"></i>
+
+                            <h3>
+                                Contact Information
+                            </h3>
+
+                        </div>
+
+                        <dl class="customer-detail-list">
+
+                            <div>
+                                <dt>Email</dt>
+                                <dd id="detailsEmail">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>Phone</dt>
+                                <dd id="detailsPhone">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>City</dt>
+                                <dd id="detailsCity">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>Address</dt>
+                                <dd id="detailsAddress">—</dd>
+                            </div>
+
+                        </dl>
+
+                    </article>
+
+                    <article class="customer-detail-card">
+
+                        <div class="detail-card-heading">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                            <h3>
+                                Account Verification
+                            </h3>
+
+                        </div>
+
+                        <dl class="customer-detail-list">
+
+                            <div>
+                                <dt>Email Verification</dt>
+                                <dd id="detailsEmailVerification">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>Phone Verification</dt>
+                                <dd id="detailsPhoneVerification">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>Last Login</dt>
+                                <dd id="detailsLastLogin">—</dd>
+                            </div>
+
+                            <div>
+                                <dt>Failed Login Attempts</dt>
+                                <dd id="detailsFailedAttempts">0</dd>
+                            </div>
+
+                        </dl>
+
+                    </article>
+
+                    <article class="customer-detail-card">
+
+                        <div class="detail-card-heading">
+
+                            <i class="fa-solid fa-medal"></i>
+
+                            <h3>
+                                Loyalty Information
+                            </h3>
+
+                        </div>
+
+                        <dl class="customer-detail-list">
+
+                            <div>
+                                <dt>Membership</dt>
+                                <dd id="detailsMembershipLevel">Bronze</dd>
+                            </div>
+
+                            <div>
+                                <dt>Available Points</dt>
+                                <dd id="detailsRewardPoints">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Lifetime Points</dt>
+                                <dd id="detailsLifetimePoints">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Referral Code</dt>
+                                <dd id="detailsReferralCode">—</dd>
+                            </div>
+
+                        </dl>
+
+                    </article>
+
+                    <article class="customer-detail-card referral-network-card">
+
+                        <div class="detail-card-heading">
+
+                            <i class="fa-solid fa-people-arrows"></i>
+
+                            <h3>
+                                Referral Network
+                            </h3>
+
+                        </div>
+
+                        <dl class="customer-detail-list">
+
+                            <div>
+                                <dt>Referred By</dt>
+                                <dd id="detailsReferredBy">Direct Registration</dd>
+                            </div>
+
+                            <div>
+                                <dt>Total Referrals</dt>
+                                <dd id="detailsTotalReferrals">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Qualified</dt>
+                                <dd id="detailsQualifiedReferrals">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Rewarded</dt>
+                                <dd id="detailsRewardedReferrals">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Referral Points Earned</dt>
+                                <dd id="detailsReferralPoints">0</dd>
+                            </div>
+
+                        </dl>
+
+                        <button
+                            type="button"
+                            id="viewCustomerReferralsButton"
+                            class="secondary-btn erp-v5-btn referral-network-button"
+                        >
+                            <i class="fa-solid fa-users"></i>
+                            View Referred Customers
+                        </button>
+
+                    </article>
+
+                    <article class="customer-detail-card">
+
+                        <div class="detail-card-heading">
+
+                            <i class="fa-solid fa-chart-line"></i>
+
+                            <h3>
+                                Customer Activity
+                            </h3>
+
+                        </div>
+
+                        <dl class="customer-detail-list">
+
+                            <div>
+                                <dt>Total Orders</dt>
+                                <dd id="detailsTotalOrders">0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Total Spent</dt>
+                                <dd id="detailsTotalSpent">Rs. 0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Outstanding Balance</dt>
+                                <dd id="detailsOutstandingBalance">Rs. 0</dd>
+                            </div>
+
+                            <div>
+                                <dt>Registered</dt>
+                                <dd id="detailsCreatedAt">—</dd>
+                            </div>
+
+                        </dl>
+
+                    </article>
+
+                    <article class="customer-detail-card reminders-card">
+
+                        <div class="detail-card-heading">
+
+                            <i class="fa-solid fa-bell"></i>
+
+                            <h3>
+                                Reminder Preferences
+                            </h3>
+
+                        </div>
+
+                        <div class="reminder-preference-list">
+
+                            <div>
+
+                                <span>
+                                    <i class="fa-solid fa-envelope"></i>
+                                    Email
+                                </span>
+
+                                <strong id="detailsEmailReminders">
+                                    Disabled
+                                </strong>
+
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    WhatsApp
+                                </span>
+
+                                <strong id="detailsWhatsappReminders">
+                                    Disabled
+                                </strong>
+
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    <i class="fa-solid fa-comment-sms"></i>
+                                    SMS
+                                </span>
+
+                                <strong id="detailsSmsReminders">
+                                    Disabled
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+            <div class="customer-modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                    data-close-modal="customerDetailsModal"
+                >
+                    Close
+                </button>
+
+
+
+                <button
+                    type="button"
+                    id="customerAnalyticsButton"
+                    class="secondary-btn erp-v5-btn customer-security-button"
+                >
+
+                    <i class="fa-solid fa-chart-column"></i>
+                    Analytics
+
+                </button>
+
+                <button
+                    type="button"
+                    id="customerActivityButton"
+                    class="secondary-btn erp-v5-btn customer-security-button"
+                >
+
+                    <i class="fa-solid fa-chart-line"></i>
+                    360° Activity
+
+                </button>
+
+                <button
+                    type="button"
+                    id="customerVerificationButton"
+                    class="secondary-btn erp-v5-btn customer-security-button"
+                >
+
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Verification
+
+                </button>
+
+                <button
+                    type="button"
+                    id="resetCustomerPasswordButton"
+                    class="secondary-btn erp-v5-btn customer-security-button"
+                >
+
+                    <i class="fa-solid fa-key"></i>
+                    Reset Password
+
+                </button>
+
+                <button
+                    type="button"
+                    id="editCustomerFromDetailsButton"
+                    class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                >
+
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Edit Customer
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================
+         Edit Customer Modal
+    ====================================== -->
+
+    <div
+        id="editCustomerModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="editCustomerTitle"
+        >
+
+            <div class="customer-modal-header">
+
+                <div>
+
+                    <span class="modal-label">
+                        Account Management
+                    </span>
+
+                    <h2 id="editCustomerTitle">
+                        Edit Customer
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="editCustomerModal"
+                    aria-label="Close edit customer form"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <form id="editCustomerForm">
+
+                <div class="customer-modal-body">
+
+                    <input
+                        type="hidden"
+                        id="editCustomerId"
+                    >
+
+                    <div class="edit-customer-grid">
+
+                        <div class="form-group full-width">
+
+                            <label for="editFullName">
+                                Full Name
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="editFullName"
+                                name="full_name"
+                                maxlength="150"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="editEmail">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="editEmail"
+                                name="email"
+                                maxlength="190"
+                            >
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="editPhone">
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="editPhone"
+                                name="phone"
+                                maxlength="30"
+                            >
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="editCity">
+                                City
+                            </label>
+
+                            <input
+                                type="text"
+                                id="editCity"
+                                name="city"
+                                maxlength="100"
+                            >
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="editPostalCode">
+                                Postal Code
+                            </label>
+
+                            <input
+                                type="text"
+                                id="editPostalCode"
+                                name="postal_code"
+                                maxlength="30"
+                            >
+
+                        </div>
+
+                        <div class="form-group full-width">
+
+                            <label for="editAddress">
+                                Address
+                            </label>
+
+                            <textarea
+                                id="editAddress"
+                                name="address"
+                                rows="3"
+                                maxlength="500"
+                            ></textarea>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="editStatus">
+                                Account Status
+                            </label>
+
+                            <select
+                                id="editStatus"
+                                name="status"
+                            >
+
+                                <option value="Active">
+                                    Active
+                                </option>
+
+                                <option value="Inactive">
+                                    Inactive
+                                </option>
+
+                                <option value="Suspended">
+                                    Suspended
+                                </option>
+
+                                <option value="Pending Verification">
+                                    Pending Verification
+                                </option>
+
+                                <option value="Deletion Requested">
+                                    Deletion Requested
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="editMembership">
+                                Membership
+                            </label>
+
+                            <select
+                                id="editMembership"
+                                name="membership_level"
+                            >
+
+                                <option value="Bronze">
+                                    Bronze
+                                </option>
+
+                                <option value="Silver">
+                                    Silver
+                                </option>
+
+                                <option value="Gold">
+                                    Gold
+                                </option>
+
+                                <option value="Platinum">
+                                    Platinum
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="customer-modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                        data-close-modal="editCustomerModal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="saveCustomerButton"
+                        class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================
+         Status Update Modal
+    ====================================== -->
+
+    <div
+        id="customerStatusModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog small-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customerStatusTitle"
+        >
+
+            <div class="customer-modal-header">
+
+                <div>
+
+                    <span class="modal-label">
+                        Account Status
+                    </span>
+
+                    <h2 id="customerStatusTitle">
+                        Update Status
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="customerStatusModal"
+                    aria-label="Close status form"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <form id="customerStatusForm">
+
+                <div class="customer-modal-body">
+
+                    <input
+                        type="hidden"
+                        id="statusCustomerId"
+                    >
+
+                    <div class="form-group">
+
+                        <label for="newCustomerStatus">
+                            New Status
+                        </label>
+
+                        <select
+                            id="newCustomerStatus"
+                            required
+                        >
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Inactive">
+                                Inactive
+                            </option>
+
+                            <option value="Suspended">
+                                Suspended
+                            </option>
+
+                            <option value="Pending Verification">
+                                Pending Verification
+                            </option>
+
+                            <option value="Deletion Requested">
+                                Deletion Requested
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="statusReason">
+                            Reason or Note
+                        </label>
+
+                        <textarea
+                            id="statusReason"
+                            rows="3"
+                            maxlength="300"
+                            placeholder="Optional administrative note"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="customer-modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                        data-close-modal="customerStatusModal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="updateStatusButton"
+                        class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                    >
+
+                        <i class="fa-solid fa-user-gear"></i>
+                        Update Status
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================
+         Delete Confirmation Modal
+    ====================================== -->
+
+    <div
+        id="deleteCustomerModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog small-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="deleteCustomerTitle"
+        >
+
+            <div class="customer-modal-header danger-header">
+
+                <div>
+
+                    <span class="modal-label">
+                        Customer Account
+                    </span>
+
+                    <h2 id="deleteCustomerTitle">
+                        Delete Customer
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="deleteCustomerModal"
+                    aria-label="Close delete confirmation"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <div class="customer-modal-body">
+
+                <input
+                    type="hidden"
+                    id="deleteCustomerId"
+                >
+
+                <div class="delete-warning">
+
+                    <div class="delete-warning-icon">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    </div>
+
+                    <h3>
+                        Confirm customer deletion
+                    </h3>
+
+                    <p>
+                        You are about to delete
+                        <strong id="deleteCustomerName">
+                            this customer
+                        </strong>.
+                        The account will be soft deleted and removed from
+                        the active customer directory.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="customer-modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                    data-close-modal="deleteCustomerModal"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    id="confirmDeleteCustomerButton"
+                    class="danger-btn"
+                >
+
+                    <i class="fa-solid fa-trash"></i>
+                    Delete Customer
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- =====================================
+         Customer Analytics Modal
+    ====================================== -->
+
+    <div
+        id="customerAnalyticsModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog customer-analytics-dialog"
+            role="dialog"
+            aria-modal="true"
+        >
+            <div class="customer-modal-header">
+                <div>
+                    <span class="modal-label">
+                        Customer Intelligence
+                    </span>
+                    <h2 id="customerAnalyticsTitle">
+                        Customer Analytics
+                    </h2>
+                    <p id="customerAnalyticsSubtitle">
+                        Loading analytics...
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="customerAnalyticsModal"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="customer-modal-body analytics-modal-body">
+                <div id="customerAnalyticsLoading" class="activity-loading">
+                    <div class="activity-spinner"></div>
+                    <p>Loading customer analytics...</p>
+                </div>
+
+                <div id="customerAnalyticsContent" class="hidden">
+                    <section
+                        id="customerAnalyticsMetrics"
+                        class="analytics-metric-grid"
+                    ></section>
+
+                    <section class="analytics-section">
+                        <div class="analytics-section-heading">
+                            <div>
+                                <span class="erp-v5-section-label">
+                                    Spending Trend
+                                </span>
+                                <h3>Monthly Customer Spending</h3>
+                            </div>
+                        </div>
+
+                        <div
+                            id="customerSpendingChart"
+                            class="spending-chart"
+                        ></div>
+                    </section>
+
+                    <section class="analytics-two-column">
+                        <article class="analytics-section">
+                            <span class="erp-v5-section-label">
+                                Order Mix
+                            </span>
+                            <h3>Order Status Breakdown</h3>
+                            <div
+                                id="customerStatusBreakdown"
+                                class="status-breakdown-list"
+                            ></div>
+                        </article>
+
+                        <article class="analytics-section">
+                            <span class="erp-v5-section-label">
+                                Engagement
+                            </span>
+                            <h3>Customer Engagement Signals</h3>
+                            <div
+                                id="customerEngagementSignals"
+                                class="engagement-signal-list"
+                            ></div>
+                        </article>
+                    </section>
+                </div>
+            </div>
+
+            <div class="customer-modal-footer">
+                <button
+                    type="button"
+                    class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                    data-close-modal="customerAnalyticsModal"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =====================================
+         Customer 360 Activity Modal
+    ====================================== -->
+
+    <div
+        id="customerActivityModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog customer-activity-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customerActivityTitle"
+        >
+
+            <div class="customer-modal-header">
+
+                <div>
+
+                    <span class="modal-label">
+                        Customer 360°
+                    </span>
+
+                    <h2 id="customerActivityTitle">
+                        Customer Activity
+                    </h2>
+
+                    <p id="customerActivitySubtitle">
+                        Loading customer activity...
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="customerActivityModal"
+                    aria-label="Close customer activity"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <div class="customer-modal-body activity-modal-body">
+
+                <div id="customerActivityLoading" class="activity-loading">
+
+                    <div class="activity-spinner"></div>
+
+                    <p>Loading customer activity...</p>
+
+                </div>
+
+                <div id="customerActivityContent" class="hidden">
+
+                    <section class="activity-profile-card">
+
+                        <div
+                            id="activityProfileAvatar"
+                            class="activity-profile-avatar"
+                        >
+                            CU
+                        </div>
+
+                        <div class="activity-profile-copy">
+
+                            <h3 id="activityCustomerName">
+                                Customer
+                            </h3>
+
+                            <p id="activityCustomerContact">
+                                —
+                            </p>
+
+                            <div class="activity-profile-badges">
+
+                                <span id="activityMembershipBadge">
+                                    Bronze
+                                </span>
+
+                                <span id="activityStatusBadge">
+                                    Active
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="activity-points">
+
+                            <span>Available points</span>
+
+                            <strong id="activityAvailablePoints">
+                                0
+                            </strong>
+
+                            <small id="activityLifetimePoints">
+                                0 lifetime points
+                            </small>
+
+                        </div>
+
+                    </section>
+
+                    <section
+                        id="activitySummaryGrid"
+                        class="activity-summary-grid"
+                    ></section>
+
+                    <nav class="activity-tabs">
+
+                        <button
+                            type="button"
+                            class="active"
+                            data-activity-tab="orders"
+                        >
+                            Orders
+                        </button>
+
+                        <button
+                            type="button"
+                            data-activity-tab="addresses"
+                        >
+                            Addresses
+                        </button>
+
+                        <button
+                            type="button"
+                            data-activity-tab="wishlist"
+                        >
+                            Wishlist
+                        </button>
+
+                        <button
+                            type="button"
+                            data-activity-tab="cart"
+                        >
+                            Cart
+                        </button>
+
+                        <button
+                            type="button"
+                            data-activity-tab="reviews"
+                        >
+                            Reviews
+                        </button>
+
+                        <button
+                            type="button"
+                            data-activity-tab="events"
+                        >
+                            Events
+                        </button>
+
+                        <button
+                            type="button"
+                            data-activity-tab="loyalty"
+                        >
+                            Loyalty
+                        </button>
+
+                    </nav>
+
+                    <div
+                        id="activityTabContent"
+                        class="activity-tab-content"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            <div class="customer-modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                    data-close-modal="customerActivityModal"
+                >
+                    Close
+                </button>
+
+                <a
+                    id="activityOrdersLink"
+                    href="/admin/orders.html"
+                    class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                >
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Open Orders
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         Customer Verification Modal
+    ====================================== -->
+
+    <div
+        id="customerVerificationModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog security-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customerVerificationTitle"
+        >
+
+            <div class="customer-modal-header">
+
+                <div>
+
+                    <span class="modal-label">
+                        Customer Security
+                    </span>
+
+                    <h2 id="customerVerificationTitle">
+                        Verification Controls
+                    </h2>
+
+                    <p id="verificationCustomerName">
+                        Customer
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="customerVerificationModal"
+                    aria-label="Close verification controls"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <form id="customerVerificationForm">
+
+                <div class="customer-modal-body">
+
+                    <input
+                        type="hidden"
+                        id="verificationCustomerId"
+                    >
+
+                    <div class="security-notice">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        <div>
+
+                            <strong>
+                                Administrative verification override
+                            </strong>
+
+                            <p>
+                                These controls update the customer's
+                                verification timestamps directly. Use them
+                                only after confirming ownership of the email
+                                address or phone number.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="verification-control-grid">
+
+                        <label class="verification-control-card">
+
+                            <span class="verification-icon email">
+
+                                <i class="fa-solid fa-envelope-circle-check"></i>
+
+                            </span>
+
+                            <span class="verification-control-copy">
+
+                                <strong>Email Verification</strong>
+
+                                <small id="verificationEmailAddress">
+                                    No email address
+                                </small>
+
+                            </span>
+
+                            <input
+                                type="checkbox"
+                                id="emailVerifiedToggle"
+                            >
+
+                            <span class="security-switch"></span>
+
+                        </label>
+
+                        <label class="verification-control-card">
+
+                            <span class="verification-icon phone">
+
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+
+                            </span>
+
+                            <span class="verification-control-copy">
+
+                                <strong>Phone Verification</strong>
+
+                                <small id="verificationPhoneNumber">
+                                    No phone number
+                                </small>
+
+                            </span>
+
+                            <input
+                                type="checkbox"
+                                id="phoneVerifiedToggle"
+                            >
+
+                            <span class="security-switch"></span>
+
+                        </label>
+
+                    </div>
+
+                    <div class="verification-result-preview">
+
+                        <div>
+
+                            <span>Email status</span>
+
+                            <strong id="verificationEmailPreview">
+                                Unverified
+                            </strong>
+
+                        </div>
+
+                        <div>
+
+                            <span>Phone status</span>
+
+                            <strong id="verificationPhonePreview">
+                                Unverified
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="customer-modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                        data-close-modal="customerVerificationModal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="saveCustomerVerificationButton"
+                        class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                    >
+
+                        <i class="fa-solid fa-shield"></i>
+                        Save Verification
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         Reset Customer Password Modal
+    ====================================== -->
+
+    <div
+        id="resetCustomerPasswordModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog security-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="resetCustomerPasswordTitle"
+        >
+
+            <div class="customer-modal-header">
+
+                <div>
+
+                    <span class="modal-label">
+                        Customer Security
+                    </span>
+
+                    <h2 id="resetCustomerPasswordTitle">
+                        Reset Customer Password
+                    </h2>
+
+                    <p id="resetPasswordCustomerName">
+                        Customer
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="resetCustomerPasswordModal"
+                    aria-label="Close password reset"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <form id="resetCustomerPasswordForm">
+
+                <div class="customer-modal-body">
+
+                    <input
+                        type="hidden"
+                        id="resetPasswordCustomerId"
+                    >
+
+                    <div class="security-warning">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        <div>
+
+                            <strong>
+                                This action signs the customer out everywhere
+                            </strong>
+
+                            <p>
+                                All active customer sessions will be revoked.
+                                The customer must sign in again using the new
+                                password.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="security-password-grid">
+
+                        <div class="erp-v5-field">
+
+                            <label for="newCustomerPassword">
+
+                                New Password
+                                <span class="required">*</span>
+
+                            </label>
+
+                            <div class="security-password-field">
+
+                                <input
+                                    type="password"
+                                    id="newCustomerPassword"
+                                    minlength="8"
+                                    autocomplete="new-password"
+                                    placeholder="Minimum 8 characters"
+                                    required
+                                >
+
+                                <button
+                                    type="button"
+                                    class="password-visibility-button"
+                                    data-password-target="newCustomerPassword"
+                                    aria-label="Show new password"
+                                >
+
+                                    <i class="fa-regular fa-eye"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="erp-v5-field">
+
+                            <label for="confirmCustomerPassword">
+
+                                Confirm Password
+                                <span class="required">*</span>
+
+                            </label>
+
+                            <div class="security-password-field">
+
+                                <input
+                                    type="password"
+                                    id="confirmCustomerPassword"
+                                    minlength="8"
+                                    autocomplete="new-password"
+                                    placeholder="Repeat the new password"
+                                    required
+                                >
+
+                                <button
+                                    type="button"
+                                    class="password-visibility-button"
+                                    data-password-target="confirmCustomerPassword"
+                                    aria-label="Show confirmed password"
+                                >
+
+                                    <i class="fa-regular fa-eye"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="passwordStrength"
+                        class="password-strength"
+                    >
+
+                        <span class="password-strength-bar"></span>
+
+                        <div>
+
+                            <strong>Password strength</strong>
+
+                            <small>
+                                Enter at least 8 characters.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="customer-modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                        data-close-modal="resetCustomerPasswordModal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="confirmResetCustomerPasswordButton"
+                        class="primary-btn erp-v5-btn security-danger-action"
+                    >
+
+                        <i class="fa-solid fa-key"></i>
+                        Reset Password
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Shared Component Loader -->
+    <script src="/admin/js/componentLoader.js"></script>
+
+    <!-- Customers Page Logic -->
+    <!-- =====================================================
+         Customer Referral Network Modal
+    ====================================================== -->
+
+    <div
+        id="customerReferralsModal"
+        class="customer-modal"
+        aria-hidden="true"
+    >
+
+        <div class="customer-modal-overlay"></div>
+
+        <div
+            class="customer-modal-dialog customer-referrals-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customerReferralsTitle"
+        >
+
+            <div class="customer-modal-header">
+
+                <div>
+                    <span class="modal-label">
+                        Referral Network
+                    </span>
+
+                    <h2 id="customerReferralsTitle">
+                        Referred Customers
+                    </h2>
+
+                    <p id="customerReferralsSubtitle">
+                        Loading referral activity...
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close-button"
+                    data-close-modal="customerReferralsModal"
+                    aria-label="Close referral network"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+            <div class="customer-modal-body">
+
+                <div
+                    id="customerReferralsLoading"
+                    class="activity-loading"
+                >
+                    <div class="customers-spinner"></div>
+
+                    <p>
+                        Loading referred customers...
+                    </p>
+                </div>
+
+                <div
+                    id="customerReferralsEmpty"
+                    class="customers-state hidden"
+                >
+                    <i class="fa-solid fa-user-group"></i>
+
+                    <h3>No referrals yet</h3>
+
+                    <p>
+                        This customer has not referred any
+                        registered customers yet.
+                    </p>
+                </div>
+
+                <div
+                    id="customerReferralsContent"
+                    class="hidden"
+                >
+
+                    <div class="customer-referral-summary-strip">
+
+                        <div>
+                            <span>Total</span>
+                            <strong id="referralModalTotal">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Qualified</span>
+                            <strong id="referralModalQualified">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Rewarded</span>
+                            <strong id="referralModalRewarded">0</strong>
+                        </div>
+
+                        <div>
+                            <span>Points</span>
+                            <strong id="referralModalPoints">0</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="customer-referrals-table-wrapper">
+
+                        <table class="customers-table customer-referrals-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Contact</th>
+                                    <th>Referral Status</th>
+                                    <th>Account</th>
+                                    <th>Reward</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="customerReferralsTableBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="customer-modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn erp-v5-btn"
+                    data-close-modal="customerReferralsModal"
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="/admin/js/customers.js"></script>
+
+</body>
+
+</html>

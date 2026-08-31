@@ -1,0 +1,14 @@
+"use strict";
+const express=require("express");
+const router=express.Router();
+const adminAuth=require("../middleware/adminAuth");
+const controller=require("../controllers/adminReturnController");
+router.use(adminAuth);
+router.get("/summary",controller.getSummary);
+router.get("/",controller.getReturns);
+router.get("/:id",controller.getReturnDetails);
+router.put("/:id/review",controller.reviewReturn);
+router.put("/:id/receive",controller.receiveReturn);
+router.put("/:id/inspect",controller.inspectReturn);
+router.put("/:id/complete",controller.completeReturn);
+module.exports=router;

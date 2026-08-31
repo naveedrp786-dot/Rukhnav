@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Notification Center | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/notification-center.css?v=20260824-v2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+    <main class="main">
+        <div id="topbar-container"></div>
+        <section class="content erp-v5-page notification-page">
+            <header class="erp-v5-hero">
+                <div class="erp-v5-hero__copy">
+                    <span class="erp-v5-eyebrow"><i class="fa-solid fa-bell"></i> Communication Operations</span>
+                    <h1>Notification Center</h1>
+                    <p>Configure Email, WhatsApp and SMS, manage customer preferences, edit templates and inspect delivery history.</p>
+                </div>
+                <div class="erp-v5-hero__actions">
+                    <span id="environmentBadge" class="environment-badge">Development</span>
+                    <button id="refreshButton" class="erp-v5-btn erp-v5-btn--gold" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+            </header>
+
+            <div id="message" class="notification-message"></div>
+
+            <section class="erp-v5-summary-grid notification-summary-grid">
+                <article class="erp-v5-summary-card"><div class="erp-v5-summary-card__icon"><i class="fa-solid fa-paper-plane"></i></div><span>Total Deliveries</span><strong id="totalDeliveries">0</strong><small>All recorded attempts</small></article>
+                <article class="erp-v5-summary-card"><div class="erp-v5-summary-card__icon"><i class="fa-solid fa-circle-check"></i></div><span>Sent</span><strong id="sentDeliveries">0</strong><small>Real provider deliveries</small></article>
+                <article class="erp-v5-summary-card"><div class="erp-v5-summary-card__icon"><i class="fa-solid fa-flask"></i></div><span>Simulated</span><strong id="simulatedDeliveries">0</strong><small>Safe development tests</small></article>
+                <article class="erp-v5-summary-card"><div class="erp-v5-summary-card__icon"><i class="fa-solid fa-circle-exclamation"></i></div><span>Failed</span><strong id="failedDeliveries">0</strong><small>Provider or configuration errors</small></article>
+            </section>
+
+            <nav class="notification-tabs">
+                <button class="active" data-tab="channels"><i class="fa-solid fa-tower-broadcast"></i> Channels</button>
+                <button data-tab="preferences"><i class="fa-solid fa-user-gear"></i> Customer Preferences</button>
+                <button data-tab="templates"><i class="fa-solid fa-file-lines"></i> Templates</button>
+                <button data-tab="logs"><i class="fa-solid fa-list-check"></i> Delivery Logs</button>
+                <button data-tab="whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp Messages</button>
+                <button data-tab="campaigns"><i class="fa-solid fa-bullhorn"></i> Campaigns</button>
+            </nav>
+
+            <section id="channelsView" class="tab-view">
+                <div id="channelCards" class="channel-grid"></div>
+            </section>
+
+            <section id="preferencesView" class="tab-view hidden">
+                <article class="erp-v5-panel">
+                    <div class="erp-v5-panel-heading"><div><span class="erp-v5-section-label">Customer Consent</span><h2>Notification Preferences</h2><p>Enable channels only when customer consent and membership permissions allow them.</p></div></div>
+                    <div class="filter-bar"><div class="erp-v5-field"><label for="preferenceSearch">Search customers</label><input id="preferenceSearch" type="search" placeholder="Name, email, phone or ID"></div></div>
+                    <div class="erp-v5-table-wrap"><table class="erp-v5-table preferences-table"><thead><tr><th>Customer</th><th>Email</th><th>WhatsApp</th><th>SMS</th><th>Action</th></tr></thead><tbody id="preferencesBody"></tbody></table></div>
+                </article>
+            </section>
+
+
+            <section id="templatesView" class="tab-view hidden">
+
+                <article class="erp-v5-panel message-library-panel">
+
+                    <div class="erp-v5-panel-heading message-library-heading">
+                        <div>
+                            <span class="erp-v5-section-label">
+                                Communication Center V2
+                            </span>
+
+                            <h2>
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                Message Designer
+                            </h2>
+
+                            <p>
+                                Design reusable RUKHNAV Email, WhatsApp and SMS
+                                messages used by automatic notifications and
+                                customer communication.
+                            </p>
+                        </div>
+
+                        <div class="designer-heading-badge">
+                            <i class="fa-solid fa-palette"></i>
+                            RUKHNAV Brand Studio
+                        </div>
+                    </div>
+
+                    <div class="message-template-toolbar">
+
+                        <div class="erp-v5-field">
+                            <label for="templateSearch">
+                                Search templates
+                            </label>
+                            <input
+                                id="templateSearch"
+                                type="search"
+                                placeholder="Name, key, subject..."
+                            >
+                        </div>
+
+                        <div class="erp-v5-field">
+                            <label for="templateCategoryFilter">
+                                Category
+                            </label>
+                            <select id="templateCategoryFilter">
+                                <option value="">All Categories</option>
+                                <option value="Orders">Orders</option>
+                                <option value="Events">Events</option>
+                                <option value="Customer">Customer</option>
+                                <option value="Loyalty">Loyalty</option>
+                                <option value="Security">Security</option>
+                                <option value="General">General</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+
+                        <div class="erp-v5-field">
+                            <label for="templateChannelFilter">
+                                Channel
+                            </label>
+                            <select id="templateChannelFilter">
+                                <option value="">All Channels</option>
+                                <option value="Email">Email</option>
+                                <option value="WhatsApp">WhatsApp</option>
+                                <option value="SMS">SMS</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="designer-library-summary">
+                        <div>
+                            <strong id="templateVisibleCount">0</strong>
+                            <span>templates shown</span>
+                        </div>
+
+                        <p>
+                            System template keys are protected so automatic
+                            order, loyalty and event rules remain connected.
+                        </p>
+                    </div>
+
+                    <div class="erp-v5-table-wrap">
+                        <table class="erp-v5-table templates-table designer-template-table">
+                            <thead>
+                                <tr>
+                                    <th>Template</th>
+                                    <th>Category</th>
+                                    <th>Channel</th>
+                                    <th>Subject / Purpose</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="templatesBody"></tbody>
+                        </table>
+                    </div>
+
+                </article>
+
+            </section>
+
+<section id="whatsappView" class="tab-view hidden">
+                <div class="whatsapp-console-grid">
+
+                    <article class="erp-v5-panel whatsapp-compose-panel">
+                        <div class="erp-v5-panel-heading">
+                            <div>
+                                <span class="erp-v5-section-label">
+                                    Direct Communication
+                                </span>
+                                <h2>
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    Send WhatsApp Message
+                                </h2>
+                                <p>
+                                    Send a live WhatsApp message through the
+                                    RUKHNAV WasenderAPI connection.
+                                </p>
+                            </div>
+                            <span class="wa-provider-badge">
+                                <i class="fa-solid fa-circle"></i>
+                                WasenderAPI
+                            </span>
+                        </div>
+
+                        <form id="whatsappForm" class="whatsapp-form">
+
+                            <div class="erp-v5-field">
+                                <label for="whatsappCustomerSearch">
+                                    Find registered customer
+                                </label>
+
+                                <input
+                                    id="whatsappCustomerSearch"
+                                    type="search"
+                                    autocomplete="off"
+                                    placeholder="Search by name, phone, email or customer ID"
+                                >
+
+                                <div
+                                    id="whatsappCustomerResults"
+                                    class="wa-customer-results hidden"
+                                ></div>
+                            </div>
+
+                            <div
+                                id="selectedWhatsappCustomer"
+                                class="wa-selected-customer hidden"
+                            >
+                                <div>
+                                    <span>Selected customer</span>
+                                    <strong id="selectedWhatsappCustomerName"></strong>
+                                    <small id="selectedWhatsappCustomerDetails"></small>
+                                </div>
+
+                                <button
+                                    id="clearWhatsappCustomer"
+                                    type="button"
+                                    title="Remove selected customer"
+                                >
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <input
+                                id="whatsappCustomerId"
+                                type="hidden"
+                            >
+
+                            <div class="erp-v5-field">
+                                <label for="whatsappRecipient">
+                                    WhatsApp Number
+                                </label>
+
+                                <input
+                                    id="whatsappRecipient"
+                                    type="tel"
+                                    autocomplete="off"
+                                    placeholder="+923001234567"
+                                    required
+                                >
+
+                                <small class="wa-help">
+                                    Use international format, for example
+                                    +923001234567. You can also send to a
+                                    number that is not registered as a customer.
+                                </small>
+                            </div>
+
+                            <div class="erp-v5-field">
+                                <div class="wa-message-label">
+                                    <label for="whatsappMessage">
+                                        Message
+                                    </label>
+                                    <span id="whatsappCharacterCount">
+                                        0 / 4000
+                                    </span>
+                                </div>
+
+                                <textarea
+                                    id="whatsappMessage"
+                                    rows="10"
+                                    maxlength="4000"
+                                    required
+                                    placeholder="Type your WhatsApp message here..."
+                                ></textarea>
+                            </div>
+
+                            <div class="wa-quick-messages">
+                                <span>Quick message</span>
+
+                                <div>
+                                    <button
+                                        type="button"
+                                        data-wa-message="Dear Customer, thank you for choosing RUKHNAV. If you need any assistance, please reply to this WhatsApp message."
+                                    >
+                                        Thank You
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-wa-message="Dear Customer, your RUKHNAV order has been updated. Please contact us if you require any assistance."
+                                    >
+                                        Order Update
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-wa-message="Dear Customer, your RUKHNAV order is ready for dispatch. Thank you for shopping with us."
+                                    >
+                                        Ready to Dispatch
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-wa-message="Dear Customer, this is a friendly payment reminder from RUKHNAV. Please contact us if you need any assistance."
+                                    >
+                                        Payment Reminder
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="wa-send-footer">
+                                <div class="wa-live-warning">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <div>
+                                        <strong>Live customer communication</strong>
+                                        <span>
+                                            Verify the recipient and message
+                                            before sending.
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    id="sendWhatsappButton"
+                                    class="erp-v5-btn erp-v5-btn--gold wa-send-button"
+                                    type="submit"
+                                >
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    Send WhatsApp
+                                </button>
+                            </div>
+                        </form>
+                    </article>
+
+                    <aside class="erp-v5-panel whatsapp-info-panel">
+                        <span class="erp-v5-section-label">
+                            Message Information
+                        </span>
+
+                        <h3>WhatsApp Console</h3>
+
+                        <div class="wa-info-row">
+                            <i class="fa-solid fa-server"></i>
+                            <div>
+                                <span>Provider</span>
+                                <strong>WasenderAPI</strong>
+                            </div>
+                        </div>
+
+                        <div class="wa-info-row">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <div>
+                                <span>Access</span>
+                                <strong>Admin only</strong>
+                            </div>
+                        </div>
+
+                        <div class="wa-info-row">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div>
+                                <span>Audit</span>
+                                <strong>Delivery Logs</strong>
+                            </div>
+                        </div>
+
+                        <div class="wa-info-note">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <p>
+                                Every attempt is recorded in Delivery Logs
+                                with the recipient, provider, status and
+                                provider message ID or failure reason.
+                            </p>
+                        </div>
+                    </aside>
+
+                </div>
+            </section>
+
+
+            <section id="campaignsView" class="tab-view hidden">
+
+                <div class="campaign-layout">
+
+                    <article class="erp-v5-panel campaign-composer">
+
+                        <div class="erp-v5-panel-heading">
+                            <div>
+                                <span class="erp-v5-section-label">
+                                    Marketing & Invitations
+                                </span>
+
+                                <h2>
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                    Create Communication Campaign
+                                </h2>
+
+                                <p>
+                                    Prepare consent-aware Email and WhatsApp
+                                    campaigns for RUKHNAV customers and approved
+                                    external contacts.
+                                </p>
+                            </div>
+
+                            <span class="campaign-draft-badge">
+                                Draft Builder
+                            </span>
+                        </div>
+
+                        <form id="campaignForm">
+
+                            <div class="campaign-form-grid">
+
+                                <div class="erp-v5-field">
+                                    <label for="campaignName">
+                                        Campaign Name
+                                    </label>
+
+                                    <input
+                                        id="campaignName"
+                                        required
+                                        placeholder="Summer Herbal Beauty Offer"
+                                    >
+                                </div>
+
+                                <div class="erp-v5-field">
+                                    <label for="campaignType">
+                                        Campaign Type
+                                    </label>
+
+                                    <select id="campaignType">
+                                        <option>Promotion</option>
+                                        <option>Invitation</option>
+                                        <option>New Product</option>
+                                        <option>Sale</option>
+                                        <option>Birthday Offer</option>
+                                        <option>Event</option>
+                                        <option>Announcement</option>
+                                        <option>Custom</option>
+                                    </select>
+                                </div>
+
+                                <div class="erp-v5-field campaign-full">
+                                    <label for="campaignAudience">
+                                        Audience
+                                    </label>
+
+                                    <select id="campaignAudience">
+                                        <option>All Marketing Customers</option>
+                                        <option>Selected Customers</option>
+                                        <option>Gold Members</option>
+                                        <option>Platinum Members</option>
+                                        <option>Gold & Platinum</option>
+                                        <option>Manual Recipients</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+
+                            <section class="campaign-channel-box">
+
+                                <span>Delivery Channels</span>
+
+                                <label>
+                                    <input
+                                        id="campaignSendWhatsapp"
+                                        type="checkbox"
+                                        checked
+                                    >
+
+                                    <i class="fa-brands fa-whatsapp"></i>
+
+                                    WhatsApp
+                                </label>
+
+                                <label>
+                                    <input
+                                        id="campaignSendEmail"
+                                        type="checkbox"
+                                    >
+
+                                    <i class="fa-solid fa-envelope"></i>
+
+                                    Email
+                                </label>
+
+                            </section>
+
+
+                            <section
+                                id="campaignSelectedCustomers"
+                                class="campaign-audience-panel hidden"
+                            >
+
+                                <div class="campaign-panel-head">
+                                    <div>
+                                        <strong>
+                                            Select Customers
+                                        </strong>
+
+                                        <span>
+                                            Only customers with marketing
+                                            permission will ultimately be
+                                            eligible.
+                                        </span>
+                                    </div>
+
+                                    <span id="selectedCampaignCustomerCount">
+                                        0 selected
+                                    </span>
+                                </div>
+
+                                <input
+                                    id="campaignCustomerSearch"
+                                    type="search"
+                                    placeholder="Search customer name, phone, email or ID"
+                                >
+
+                                <div
+                                    id="campaignCustomerPicker"
+                                    class="campaign-customer-picker"
+                                ></div>
+
+                            </section>
+
+
+                            <section
+                                id="campaignManualRecipients"
+                                class="campaign-audience-panel hidden"
+                            >
+
+                                <div class="campaign-panel-head">
+                                    <div>
+                                        <strong>
+                                            Manual Recipients
+                                        </strong>
+
+                                        <span>
+                                            One recipient per line:
+                                            Name | email | WhatsApp
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <textarea
+                                    id="campaignManualRecipientsText"
+                                    rows="6"
+                                    placeholder="Ahmed Ali | ahmed@example.com | +923001234567&#10;Sara Khan | sara@example.com | +923111234567"
+                                ></textarea>
+
+                                <label class="campaign-consent-confirm">
+                                    <input
+                                        id="campaignManualConsent"
+                                        type="checkbox"
+                                    >
+
+                                    <span>
+                                        I confirm these external recipients
+                                        have explicitly agreed to receive
+                                        RUKHNAV marketing communications.
+                                    </span>
+                                </label>
+
+                            </section>
+
+
+                            <section class="campaign-message-section">
+
+                                <div class="campaign-message-heading">
+                                    <div>
+                                        <strong>
+                                            Message Design
+                                        </strong>
+
+                                        <span>
+                                            Use one of the RUKHNAV branded
+                                            presets or write your own.
+                                        </span>
+                                    </div>
+
+                                    <div class="campaign-preset-buttons">
+                                        <button
+                                            type="button"
+                                            data-campaign-preset="promotion"
+                                        >
+                                            Promotion
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            data-campaign-preset="invitation"
+                                        >
+                                            Invitation
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            data-campaign-preset="launch"
+                                        >
+                                            Product Launch
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            data-campaign-preset="sale"
+                                        >
+                                            Sale
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                                <div
+                                    id="campaignWhatsappComposer"
+                                    class="campaign-channel-composer"
+                                >
+
+                                    <div class="campaign-composer-title">
+                                        <i class="fa-brands fa-whatsapp"></i>
+
+                                        <div>
+                                            <strong>
+                                                WhatsApp Message
+                                            </strong>
+
+                                            <span>
+                                                Supports variables such as
+                                                {{customer_name}}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <textarea
+                                        id="campaignWhatsappMessage"
+                                        rows="12"
+                                        maxlength="4000"
+                                    ></textarea>
+
+                                    <div class="campaign-char-count">
+                                        <span id="campaignWhatsappCount">
+                                            0 / 4000
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    id="campaignEmailComposer"
+                                    class="campaign-channel-composer hidden"
+                                >
+
+                                    <div class="campaign-composer-title">
+                                        <i class="fa-solid fa-envelope"></i>
+
+                                        <div>
+                                            <strong>
+                                                Email Message
+                                            </strong>
+
+                                            <span>
+                                                Branded email content
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="erp-v5-field">
+                                        <label for="campaignEmailSubject">
+                                            Subject
+                                        </label>
+
+                                        <input
+                                            id="campaignEmailSubject"
+                                            placeholder="A special offer from RUKHNAV"
+                                        >
+                                    </div>
+
+                                    <div class="erp-v5-field">
+                                        <label for="campaignEmailBody">
+                                            Email Body
+                                        </label>
+
+                                        <textarea
+                                            id="campaignEmailBody"
+                                            rows="12"
+                                        ></textarea>
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+
+                            <section class="campaign-preview-panel">
+
+                                <div>
+                                    <span>Audience Preview</span>
+                                    <strong id="campaignPreviewTotal">—</strong>
+                                    <small>Total contacts</small>
+                                </div>
+
+                                <div>
+                                    <span>Email Eligible</span>
+                                    <strong id="campaignPreviewEmail">—</strong>
+                                    <small>Marketing permission</small>
+                                </div>
+
+                                <div>
+                                    <span>WhatsApp Eligible</span>
+                                    <strong id="campaignPreviewWhatsapp">—</strong>
+                                    <small>Marketing permission</small>
+                                </div>
+
+                            </section>
+
+
+                            <div class="campaign-schedule-field">
+                                <label for="campaignScheduledAt">
+                                    Schedule Date & Time
+                                </label>
+
+                                <input
+                                    id="campaignScheduledAt"
+                                    type="datetime-local"
+                                >
+
+                                <small>
+                                    Uses the RUKHNAV server schedule.
+                                    Leave empty for Draft or Send Now.
+                                </small>
+                            </div>
+
+                            <div class="campaign-actions">
+
+                                <button
+                                    id="previewCampaignAudience"
+                                    type="button"
+                                    class="erp-v5-btn erp-v5-btn--soft"
+                                >
+                                    <i class="fa-solid fa-users-viewfinder"></i>
+                                    Preview Audience
+                                </button>
+
+                                <button
+                                    id="saveCampaignButton"
+                                    type="submit"
+                                    class="erp-v5-btn erp-v5-btn--soft"
+                                >
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    Save Draft
+                                </button>
+
+                                <button
+                                    id="scheduleCampaignButton"
+                                    type="button"
+                                    class="erp-v5-btn erp-v5-btn--gold"
+                                >
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                    Schedule
+                                </button>
+
+                                <button
+                                    id="sendCampaignNowButton"
+                                    type="button"
+                                    class="erp-v5-btn erp-v5-btn--gold"
+                                >
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    Send Now
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </article>
+
+
+                    <aside class="erp-v5-panel campaign-history-panel">
+
+                        <div class="erp-v5-panel-heading">
+                            <div>
+                                <span class="erp-v5-section-label">
+                                    Campaign History
+                                </span>
+
+                                <h3>
+                                    Recent Campaigns
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div
+                            id="campaignList"
+                            class="campaign-list"
+                        ></div>
+
+                    </aside>
+
+                </div>
+
+            </section>
+
+            <section id="logsView" class="tab-view hidden">
+                <article class="erp-v5-panel">
+                    <div class="erp-v5-panel-heading"><div><span class="erp-v5-section-label">Audit Trail</span><h2>Delivery Logs</h2><p>Review simulated, sent and failed notification attempts.</p></div></div>
+                    <div class="erp-v5-table-wrap"><table class="erp-v5-table logs-table"><thead><tr><th>Date</th><th>Channel</th><th>Recipient</th><th>Status</th><th>Provider</th><th>Details</th></tr></thead><tbody id="logsBody"></tbody></table></div>
+                </article>
+            </section>
+        </section>
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+
+<div
+    id="templateModal"
+    class="nc-modal designer-modal hidden"
+>
+    <div
+        class="nc-backdrop"
+        data-close-template
+    ></div>
+
+    <div class="nc-dialog designer-dialog">
+
+        <header class="designer-modal-header">
+
+            <div>
+                <span class="erp-v5-section-label">
+                    RUKHNAV Communication Center
+                </span>
+
+                <h2 id="templateTitle">
+                    Message Designer
+                </h2>
+
+                <p>
+                    Build the content once and let RUKHNAV automation
+                    deliver it at the right moment.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="designer-close-button"
+                data-close-template
+                aria-label="Close message designer"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </header>
+
+        <form id="templateForm">
+
+            <input
+                id="templateId"
+                type="hidden"
+            >
+
+            <div class="designer-workspace">
+
+                <!-- ====================================== -->
+                <!-- LEFT: EDITOR                           -->
+                <!-- ====================================== -->
+
+                <section class="designer-editor">
+
+                    <div class="designer-section-heading">
+                        <div>
+                            <span>Content & Design</span>
+                            <h3>Message Settings</h3>
+                        </div>
+
+                        <span
+                            id="templateSystemBadge"
+                            class="designer-system-badge hidden"
+                        >
+                            <i class="fa-solid fa-lock"></i>
+                            System Template
+                        </span>
+                    </div>
+
+
+                    <div class="designer-form-grid designer-form-grid--3">
+
+                        <div class="erp-v5-field">
+                            <label for="templateName">
+                                Template Name
+                            </label>
+                            <input
+                                id="templateName"
+                                required
+                                maxlength="150"
+                            >
+                        </div>
+
+                        <div class="erp-v5-field">
+                            <label for="templateCategory">
+                                Category
+                            </label>
+
+                            <select id="templateCategory">
+                                <option value="Orders">Orders</option>
+                                <option value="Events">Events</option>
+                                <option value="Customer">Customer</option>
+                                <option value="Loyalty">Loyalty</option>
+                                <option value="Security">Security</option>
+                                <option value="General">General</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+
+                        <div class="erp-v5-field">
+                            <label for="templateChannel">
+                                Channel
+                            </label>
+
+                            <select id="templateChannel">
+                                <option>Email</option>
+                                <option>WhatsApp</option>
+                                <option>SMS</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+
+                    <div class="designer-key-row">
+
+                        <div>
+                            <span>Template Key</span>
+                            <code id="templateKeyDisplay">—</code>
+                        </div>
+
+                        <small>
+                            Protected because automatic notification
+                            rules may depend on this key.
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        id="designerEmailFields"
+                        class="designer-email-fields"
+                    >
+
+                        <div class="erp-v5-field">
+                            <label for="templateSubject">
+                                Email Subject
+                            </label>
+
+                            <input
+                                id="templateSubject"
+                                maxlength="255"
+                                placeholder="Example: Your RUKHNAV order {{order_number}} is confirmed"
+                            >
+                        </div>
+
+
+                        <div class="designer-form-grid">
+
+                            <div class="erp-v5-field">
+                                <label for="templatePreheader">
+                                    Preheader
+                                </label>
+
+                                <input
+                                    id="templatePreheader"
+                                    maxlength="255"
+                                    placeholder="Short inbox preview text"
+                                >
+                            </div>
+
+                            <div class="erp-v5-field">
+                                <label for="templateHeading">
+                                    Main Heading
+                                </label>
+
+                                <input
+                                    id="templateHeading"
+                                    maxlength="255"
+                                    placeholder="Example: Order Confirmed ✓"
+                                >
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="erp-v5-field designer-message-field">
+
+                        <div class="designer-label-row">
+                            <label for="templateBody">
+                                Message Body
+                            </label>
+
+                            <span id="designerCharacterCount">
+                                0 characters
+                            </span>
+                        </div>
+
+                        <textarea
+                            id="templateBody"
+                            rows="11"
+                            required
+                            placeholder="Write your customer message here..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="designer-variable-box">
+
+                        <div class="designer-variable-heading">
+                            <div>
+                                <strong>
+                                    <i class="fa-solid fa-code"></i>
+                                    Insert Variable
+                                </strong>
+
+                                <span>
+                                    Click a variable to insert it into
+                                    the active text field.
+                                </span>
+                            </div>
+                        </div>
+
+                        <div
+                            id="designerVariables"
+                            class="designer-variable-list"
+                        >
+                            <button type="button" data-template-variable="{{customer_name}}">
+                                Customer Name
+                            </button>
+
+                            <button type="button" data-template-variable="{{customer_email}}">
+                                Customer Email
+                            </button>
+
+                            <button type="button" data-template-variable="{{customer_phone}}">
+                                Customer Phone
+                            </button>
+
+                            <button type="button" data-template-variable="{{order_number}}">
+                                Order Number
+                            </button>
+
+                            <button type="button" data-template-variable="{{order_status}}">
+                                Order Status
+                            </button>
+
+                            <button type="button" data-template-variable="{{grand_total}}">
+                                Order Total
+                            </button>
+
+                            <button type="button" data-template-variable="{{payment_method}}">
+                                Payment Method
+                            </button>
+
+                            <button type="button" data-template-variable="{{payment_status}}">
+                                Payment Status
+                            </button>
+
+                            <button type="button" data-template-variable="{{tracking_number}}">
+                                Tracking Number
+                            </button>
+
+                            <button type="button" data-template-variable="{{tracking_url}}">
+                                Tracking Link
+                            </button>
+
+                            <button type="button" data-template-variable="{{order_url}}">
+                                View Order Link
+                            </button>
+
+                            <button type="button" data-template-variable="{{event_name}}">
+                                Event Name
+                            </button>
+
+                            <button type="button" data-template-variable="{{event_date}}">
+                                Event Date
+                            </button>
+
+                            <button type="button" data-template-variable="{{membership_level}}">
+                                Membership
+                            </button>
+
+                            <button type="button" data-template-variable="{{points}}">
+                                Points Earned
+                            </button>
+
+                            <button type="button" data-template-variable="{{available_points}}">
+                                Points Balance
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="designerEmailExtras"
+                        class="designer-email-extras"
+                    >
+
+                        <div class="designer-section-heading designer-section-heading--small">
+                            <div>
+                                <span>Email Presentation</span>
+                                <h3>Call to Action & Banner</h3>
+                            </div>
+                        </div>
+
+                        <div class="designer-form-grid">
+
+                            <div class="erp-v5-field">
+                                <label for="templateButtonText">
+                                    Button Text
+                                </label>
+
+                                <input
+                                    id="templateButtonText"
+                                    maxlength="100"
+                                    placeholder="Example: View My Order"
+                                >
+                            </div>
+
+                            <div class="erp-v5-field">
+                                <label for="templateButtonUrl">
+                                    Button URL
+                                </label>
+
+                                <input
+                                    id="templateButtonUrl"
+                                    maxlength="1000"
+                                    placeholder="https://www.rukhnav.store/..."
+                                >
+                            </div>
+
+                        </div>
+
+                        <div class="erp-v5-field">
+                            <label for="templateBannerUrl">
+                                Banner Image URL
+                            </label>
+
+                            <input
+                                id="templateBannerUrl"
+                                maxlength="1000"
+                                placeholder="Optional https:// image URL"
+                            >
+
+                            <small>
+                                Optional. Leave empty for the clean
+                                green-and-gold RUKHNAV design.
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="designer-form-grid designer-bottom-fields">
+
+                        <div class="erp-v5-field">
+                            <label for="templateStatus">
+                                Status
+                            </label>
+
+                            <select id="templateStatus">
+                                <option>Active</option>
+                                <option>Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="designer-automation-note">
+                            <i class="fa-solid fa-robot"></i>
+
+                            <div>
+                                <strong>Automation Ready</strong>
+                                <span>
+                                    Saving this template updates future
+                                    automatic messages that use its key.
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ====================================== -->
+                <!-- RIGHT: LIVE PREVIEW                    -->
+                <!-- ====================================== -->
+
+                <aside class="designer-preview-panel">
+
+                    <div class="designer-preview-header">
+
+                        <div>
+                            <span>Live Preview</span>
+                            <strong id="designerPreviewLabel">
+                                Email Preview
+                            </strong>
+                        </div>
+
+                        <span class="designer-live-badge">
+                            <i class="fa-solid fa-circle"></i>
+                            LIVE
+                        </span>
+
+                    </div>
+
+
+                    <!-- EMAIL PREVIEW -->
+
+                    <div
+                        id="designerEmailPreview"
+                        class="designer-email-preview"
+                    >
+
+                        <div class="designer-inbox-preview">
+                            <small>Inbox preview</small>
+                            <strong id="previewEmailSubject">
+                                RUKHNAV Notification
+                            </strong>
+                            <span id="previewEmailPreheader">
+                                Beauty inspired by nature
+                            </span>
+                        </div>
+
+
+                        <div class="designer-email-card">
+
+                            <div class="designer-email-brand">
+                                <div>RUKHNAV</div>
+                                <span>
+                                    Beauty Inspired by Nature
+                                </span>
+                            </div>
+
+                            <img
+                                id="previewEmailBanner"
+                                class="designer-preview-banner hidden"
+                                alt="Email banner preview"
+                            >
+
+                            <div class="designer-email-content">
+
+                                <div class="designer-gold-line"></div>
+
+                                <h2 id="previewEmailHeading">
+                                    A Message from RUKHNAV
+                                </h2>
+
+                                <div
+                                    id="previewEmailBody"
+                                    class="designer-preview-body"
+                                >
+                                    Your message preview will appear here.
+                                </div>
+
+                                <a
+                                    id="previewEmailButton"
+                                    class="designer-preview-button hidden"
+                                    href="#"
+                                    onclick="return false;"
+                                >
+                                    View Details
+                                </a>
+
+                            </div>
+
+                            <div class="designer-email-footer">
+                                <strong>RUKHNAV</strong>
+                                <span>
+                                    Herbal Beauty • Naturally Inspired •
+                                    Made With Care
+                                </span>
+                                <b>www.rukhnav.store</b>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- WHATSAPP PREVIEW -->
+
+                    <div
+                        id="designerWhatsappPreview"
+                        class="designer-whatsapp-preview hidden"
+                    >
+
+                        <div class="designer-phone">
+
+                            <div class="designer-phone-top">
+                                <span>9:41</span>
+                                <div>
+                                    <i class="fa-solid fa-signal"></i>
+                                    <i class="fa-solid fa-wifi"></i>
+                                    <i class="fa-solid fa-battery-full"></i>
+                                </div>
+                            </div>
+
+                            <div class="designer-wa-header">
+                                <div class="designer-wa-avatar">
+                                    R
+                                </div>
+
+                                <div>
+                                    <strong>RUKHNAV</strong>
+                                    <span>Business Account</span>
+                                </div>
+                            </div>
+
+                            <div class="designer-wa-chat">
+
+                                <div class="designer-wa-bubble">
+                                    <div id="previewWhatsappBody">
+                                        Your WhatsApp message preview
+                                        will appear here.
+                                    </div>
+
+                                    <small>
+                                        2:35 PM
+                                        <i class="fa-solid fa-check-double"></i>
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SMS PREVIEW -->
+
+                    <div
+                        id="designerSmsPreview"
+                        class="designer-sms-preview hidden"
+                    >
+
+                        <div class="designer-phone designer-sms-phone">
+
+                            <div class="designer-sms-contact">
+                                <div>R</div>
+                                <strong>RUKHNAV</strong>
+                                <span>Text Message</span>
+                            </div>
+
+                            <div class="designer-sms-chat">
+                                <div id="previewSmsBody">
+                                    Your SMS preview will appear here.
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="designer-preview-tip">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>
+                            Preview variables use sample customer/order
+                            information. Actual values are inserted by
+                            the notification engine.
+                        </span>
+                    </div>
+
+                </aside>
+
+            </div>
+
+
+            <footer class="designer-modal-footer">
+
+                <div class="designer-save-note">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>
+                        Template keys and automation links remain protected.
+                    </span>
+                </div>
+
+                <div class="designer-footer-actions">
+
+                    <button
+                        type="button"
+                        class="erp-v5-btn erp-v5-btn--soft"
+                        data-close-template
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        id="saveTemplateButton"
+                        class="erp-v5-btn erp-v5-btn--gold"
+                        type="submit"
+                    >
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Save Template
+                    </button>
+
+                </div>
+
+            </footer>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/notification-center.js?v=20260824-v2"></script>
+</body>
+</html>

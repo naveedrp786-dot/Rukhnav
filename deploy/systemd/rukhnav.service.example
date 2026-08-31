@@ -1,0 +1,42 @@
+[Unit]
+Description=RUKHNAV Node.js Application
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# Replace these paths for your server.
+User=rukhnav
+Group=rukhnav
+WorkingDirectory=/opt/rukhnav/backend
+
+# Prefer a protected environment file outside the Git repository.
+EnvironmentFile=/etc/rukhnav/rukhnav.env
+
+ExecStart=/usr/bin/node /opt/rukhnav/backend/scripts/start-production-safe.js
+
+Restart=on-failure
+RestartSec=5
+
+# Graceful Node shutdown
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# Basic hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+# RUKHNAV needs write access only to persistent uploads/logs.
+ReadWritePaths=/data/rukhnav /var/log/rukhnav
+
+# File descriptor headroom for web traffic
+LimitNOFILE=65535
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

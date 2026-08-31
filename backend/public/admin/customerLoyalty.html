@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Customer Loyalty | RUKHNAV ERP
+    </title>
+
+    <!-- Shared ERP Theme -->
+    <link
+        rel="stylesheet"
+        href="css/erp.css"
+    >
+
+    <!-- Loyalty Page Theme -->
+    <link
+        rel="stylesheet"
+        href="css/customerLoyalty.css"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Shared Sidebar -->
+
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+
+        <main class="main">
+
+            <!-- Shared Topbar -->
+
+            <div id="topbar-container"></div>
+
+            <section class="content loyalty-page">
+
+                <!-- =====================================
+                     Page Header
+                ====================================== -->
+
+                <div class="page-header loyalty-header">
+
+                    <div>
+
+                        <span class="page-label">
+                            Sales & Customers
+                        </span>
+
+                        <h1>
+                            Customer Loyalty
+                        </h1>
+
+                        <p>
+                            Manage customer points, membership
+                            categories, rewards and premium benefits.
+                        </p>
+
+                    </div>
+
+                    <div class="header-actions">
+
+                        <button
+                            type="button"
+                            id="runRemindersButton"
+                            class="secondary-btn"
+                        >
+                            <i class="fa-solid fa-bell"></i>
+                            Run Reminders
+                        </button>
+
+                        <button
+                            type="button"
+                            id="refreshButton"
+                            class="primary-btn"
+                        >
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- =====================================
+                     Summary Cards
+                ====================================== -->
+
+                <section class="loyalty-summary-grid">
+
+                    <article class="loyalty-summary-card">
+
+                        <div class="summary-icon customers">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Loyalty Customers
+                            </span>
+
+                            <h2 id="totalCustomers">
+                                0
+                            </h2>
+
+                            <small>
+                                Customers enrolled in rewards
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="loyalty-summary-card">
+
+                        <div class="summary-icon points">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Available Points
+                            </span>
+
+                            <h2 id="totalAvailablePoints">
+                                0
+                            </h2>
+
+                            <small>
+                                Redeemable customer points
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="loyalty-summary-card">
+
+                        <div class="summary-icon gold">
+                            <i class="fa-solid fa-medal"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Gold Members
+                            </span>
+
+                            <h2 id="goldMembers">
+                                0
+                            </h2>
+
+                            <small>
+                                Event menu and WhatsApp access
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                    <article class="loyalty-summary-card">
+
+                        <div class="summary-icon platinum">
+                            <i class="fa-solid fa-gem"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Platinum Members
+                            </span>
+
+                            <h2 id="platinumMembers">
+                                0
+                            </h2>
+
+                            <small>
+                                Highest premium membership
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+                <!-- =====================================
+                     Loyalty Categories
+                ====================================== -->
+
+                <section class="loyalty-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                Membership Program
+                            </span>
+
+                            <h2>
+                                Loyalty Categories
+                            </h2>
+
+                            <p>
+                                Point requirements, multipliers,
+                                discounts and customer facilities.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="categoryCards"
+                        class="category-grid"
+                    ></div>
+
+                    <div
+                        id="categoryLoading"
+                        class="loyalty-state"
+                    >
+
+                        <div class="loyalty-spinner"></div>
+
+                        <h3>
+                            Loading categories
+                        </h3>
+
+                    </div>
+
+                </section>
+
+                <!-- =====================================
+                     Customer Loyalty Table
+                ====================================== -->
+
+                <section class="loyalty-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                Customer Rewards
+                            </span>
+
+                            <h2>
+                                Customer Memberships
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Toolbar -->
+
+                    <div class="loyalty-toolbar">
+
+                        <div class="loyalty-search">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="search"
+                                id="searchInput"
+                                placeholder="Search name, email, phone or referral code..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                        <div class="loyalty-filters">
+
+                            <select
+                                id="categoryFilter"
+                                class="filter-select"
+                            >
+
+                                <option value="">
+                                    All Categories
+                                </option>
+
+                                <option value="Bronze">
+                                    Bronze
+                                </option>
+
+                                <option value="Silver">
+                                    Silver
+                                </option>
+
+                                <option value="Gold">
+                                    Gold
+                                </option>
+
+                                <option value="Platinum">
+                                    Platinum
+                                </option>
+
+                            </select>
+
+                            <select
+                                id="pageSizeSelect"
+                                class="rows-select"
+                            >
+
+                                <option value="10">
+                                    10 rows
+                                </option>
+
+                                <option value="20" selected>
+                                    20 rows
+                                </option>
+
+                                <option value="50">
+                                    50 rows
+                                </option>
+
+                                <option value="100">
+                                    100 rows
+                                </option>
+
+                            </select>
+
+                            <button
+                                type="button"
+                                id="clearFiltersButton"
+                                class="secondary-btn small-btn"
+                            >
+                                <i class="fa-solid fa-filter-circle-xmark"></i>
+                                Clear
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Loading State -->
+
+                    <div
+                        id="customerLoading"
+                        class="loyalty-state"
+                    >
+
+                        <div class="loyalty-spinner"></div>
+
+                        <h3>
+                            Loading loyalty customers
+                        </h3>
+
+                        <p>
+                            Please wait while customer rewards
+                            are being loaded.
+                        </p>
+
+                    </div>
+
+                    <!-- Empty State -->
+
+                    <div
+                        id="customerEmpty"
+                        class="loyalty-state hidden"
+                    >
+
+                        <div class="empty-icon">
+                            <i class="fa-solid fa-users-slash"></i>
+                        </div>
+
+                        <h3>
+                            No loyalty customers found
+                        </h3>
+
+                        <p>
+                            Change the filters or register
+                            a customer first.
+                        </p>
+
+                    </div>
+
+                    <!-- Customer Table -->
+
+                    <div
+                        id="customerTableWrap"
+                        class="loyalty-table-wrap hidden"
+                    >
+
+                        <table class="loyalty-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Customer ID
+                                    </th>
+
+                                    <th>
+                                        Customer
+                                    </th>
+
+                                    <th>
+                                        Category
+                                    </th>
+
+                                    <th>
+                                        Available Points
+                                    </th>
+
+                                    <th>
+                                        Lifetime Points
+                                    </th>
+
+                                    <th>
+                                        Total Spent
+                                    </th>
+
+                                    <th>
+                                        Orders
+                                    </th>
+
+                                    <th>
+                                        Event Menu
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="customerTableBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                    <!-- Pagination -->
+
+                    <div
+                        id="pagination"
+                        class="loyalty-pagination hidden"
+                    >
+
+                        <div id="paginationInfo">
+                            Showing 0 to 0 of 0 customers
+                        </div>
+
+                        <div class="pagination-actions">
+
+                            <button
+                                type="button"
+                                id="previousPageButton"
+                                class="secondary-btn small-btn"
+                            >
+                                <i class="fa-solid fa-chevron-left"></i>
+                                Previous
+                            </button>
+
+                            <span
+                                id="currentPageNumber"
+                                class="current-page"
+                            >
+                                1
+                            </span>
+
+                            <button
+                                type="button"
+                                id="nextPageButton"
+                                class="secondary-btn small-btn"
+                            >
+                                Next
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+            <!-- Shared Footer -->
+
+            <div id="footer-container"></div>
+
+        </main>
+
+    </div>
+
+    <!-- =====================================
+         Adjust Points Modal
+    ====================================== -->
+
+    <div
+        id="adjustPointsModal"
+        class="loyalty-modal hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="loyalty-modal-backdrop"
+            data-close-adjust-modal
+        ></div>
+
+        <div
+            class="loyalty-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="adjustModalTitle"
+        >
+
+            <div class="loyalty-modal-header">
+
+                <div class="modal-title-group">
+
+                    <div class="modal-title-icon gold-icon">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+
+                    <div>
+
+                        <h2 id="adjustModalTitle">
+                            Adjust Customer Points
+                        </h2>
+
+                        <p id="adjustCustomerName">
+                            Selected customer
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="closeAdjustModalButton"
+                    class="modal-close-button"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+            <form id="adjustPointsForm">
+
+                <div class="loyalty-modal-body">
+
+                    <input
+                        type="hidden"
+                        id="adjustCustomerId"
+                    >
+
+                    <div class="current-points-box">
+
+                        <div>
+
+                            <span>
+                                Available Points
+                            </span>
+
+                            <strong id="adjustAvailablePoints">
+                                0
+                            </strong>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Lifetime Points
+                            </span>
+
+                            <strong id="adjustLifetimePoints">
+                                0
+                            </strong>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Current Category
+                            </span>
+
+                            <strong id="adjustCurrentCategory">
+                                Bronze
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="loyalty-form-group">
+
+                        <label for="adjustmentPoints">
+                            Points Adjustment
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            id="adjustmentPoints"
+                            required
+                            step="1"
+                            placeholder="Example: 100 or -100"
+                        >
+
+                        <small>
+                            Use a positive number to add points
+                            or a negative number to deduct them.
+                        </small>
+
+                    </div>
+
+                    <label class="checkbox-option">
+
+                        <input
+                            type="checkbox"
+                            id="affectLifetimePoints"
+                            checked
+                        >
+
+                        <span>
+
+                            <strong>
+                                Affect lifetime points
+                            </strong>
+
+                            <small>
+                                Keep this selected when the adjustment
+                                should affect membership category.
+                            </small>
+
+                        </span>
+
+                    </label>
+
+                    <div class="loyalty-form-group">
+
+                        <label for="adjustmentReason">
+                            Adjustment Reason
+                            <span class="required">*</span>
+                        </label>
+
+                        <textarea
+                            id="adjustmentReason"
+                            required
+                            maxlength="255"
+                            placeholder="Enter a clear reason for this adjustment..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="loyalty-modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        data-close-adjust-modal
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="saveAdjustmentButton"
+                        class="primary-btn"
+                    >
+                        <i class="fa-solid fa-check"></i>
+                        Save Adjustment
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================
+         Points History Modal
+    ====================================== -->
+
+    <div
+        id="historyModal"
+        class="loyalty-modal hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="loyalty-modal-backdrop"
+            data-close-history-modal
+        ></div>
+
+        <div
+            class="loyalty-modal-card wide-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="historyModalTitle"
+        >
+
+            <div class="loyalty-modal-header">
+
+                <div class="modal-title-group">
+
+                    <div class="modal-title-icon history-icon">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+
+                    <div>
+
+                        <h2 id="historyModalTitle">
+                            Points History
+                        </h2>
+
+                        <p id="historyCustomerName">
+                            Customer transaction record
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="closeHistoryModalButton"
+                    class="modal-close-button"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+            <div class="loyalty-modal-body">
+
+                <div
+                    id="historySummary"
+                    class="history-summary"
+                ></div>
+
+                <div
+                    id="historyLoading"
+                    class="loyalty-state compact-state hidden"
+                >
+
+                    <div class="loyalty-spinner"></div>
+
+                    <h3>
+                        Loading points history
+                    </h3>
+
+                </div>
+
+                <div
+                    id="historyEmpty"
+                    class="loyalty-state compact-state hidden"
+                >
+
+                    <h3>
+                        No points transactions found
+                    </h3>
+
+                </div>
+
+                <div
+                    id="historyTableWrap"
+                    class="history-table-wrap hidden"
+                >
+
+                    <table class="history-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Type
+                                </th>
+
+                                <th>
+                                    Points
+                                </th>
+
+                                <th>
+                                    Available After
+                                </th>
+
+                                <th>
+                                    Lifetime After
+                                </th>
+
+                                <th>
+                                    Description
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="historyTableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <div class="loyalty-modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    data-close-history-modal
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================
+         Edit Category Modal
+    ====================================== -->
+
+    <div
+        id="categoryModal"
+        class="loyalty-modal hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="loyalty-modal-backdrop"
+            data-close-category-modal
+        ></div>
+
+        <div
+            class="loyalty-modal-card wide-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="categoryModalTitle"
+        >
+
+            <div class="loyalty-modal-header">
+
+                <div class="modal-title-group">
+
+                    <div class="modal-title-icon category-icon">
+                        <i class="fa-solid fa-medal"></i>
+                    </div>
+
+                    <div>
+
+                        <h2 id="categoryModalTitle">
+                            Edit Loyalty Category
+                        </h2>
+
+                        <p id="categoryModalSubtitle">
+                            Update category requirements and benefits.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="closeCategoryModalButton"
+                    class="modal-close-button"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+            <form id="categoryForm">
+
+                <div class="loyalty-modal-body">
+
+                    <input
+                        type="hidden"
+                        id="categoryId"
+                    >
+
+                    <div class="category-form-grid">
+
+                        <div class="loyalty-form-group">
+
+                            <label for="categoryName">
+                                Category
+                            </label>
+
+                            <input
+                                type="text"
+                                id="categoryName"
+                                readonly
+                            >
+
+                        </div>
+
+                        <div class="loyalty-form-group">
+
+                            <label for="minimumLifetimePoints">
+                                Minimum Lifetime Points
+                            </label>
+
+                            <input
+                                type="number"
+                                id="minimumLifetimePoints"
+                                min="0"
+                                step="1"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="loyalty-form-group">
+
+                            <label for="pointsMultiplier">
+                                Points Multiplier
+                            </label>
+
+                            <input
+                                type="number"
+                                id="pointsMultiplier"
+                                min="1"
+                                max="10"
+                                step="0.01"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="loyalty-form-group">
+
+                            <label for="discountPercentage">
+                                Discount Percentage
+                            </label>
+
+                            <input
+                                type="number"
+                                id="discountPercentage"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="loyalty-form-group">
+
+                            <label for="birthdayBonusPoints">
+                                Birthday Bonus Points
+                            </label>
+
+                            <input
+                                type="number"
+                                id="birthdayBonusPoints"
+                                min="0"
+                                step="1"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="loyalty-form-group">
+
+                            <label for="referralBonusPoints">
+                                Referral Bonus Points
+                            </label>
+
+                            <input
+                                type="number"
+                                id="referralBonusPoints"
+                                min="0"
+                                step="1"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="loyalty-form-group full-width">
+
+                            <label for="categoryDescription">
+                                Description
+                            </label>
+
+                            <textarea
+                                id="categoryDescription"
+                                maxlength="255"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                    <div class="benefit-options">
+
+                        <h3>
+                            Category Benefits
+                        </h3>
+
+                        <div class="benefit-option-grid">
+
+                            <label class="benefit-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="eventMenuEnabled"
+                                >
+                                <span>
+                                    Event Menu
+                                </span>
+                            </label>
+
+                            <label class="benefit-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="emailRemindersEnabled"
+                                >
+                                <span>
+                                    Email Reminders
+                                </span>
+                            </label>
+
+                            <label class="benefit-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="whatsappRemindersEnabled"
+                                >
+                                <span>
+                                    WhatsApp Reminders
+                                </span>
+                            </label>
+
+                            <label class="benefit-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="smsRemindersEnabled"
+                                >
+                                <span>
+                                    SMS Reminders
+                                </span>
+                            </label>
+
+                            <label class="benefit-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="prioritySupportEnabled"
+                                >
+                                <span>
+                                    Priority Support
+                                </span>
+                            </label>
+
+                            <label class="benefit-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="freeDeliveryEnabled"
+                                >
+                                <span>
+                                    Free Delivery
+                                </span>
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="loyalty-modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        data-close-category-modal
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="saveCategoryButton"
+                        class="primary-btn"
+                    >
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Save Category
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Toasts -->
+
+    <div
+        id="toastContainer"
+        class="toast-container"
+        aria-live="polite"
+    ></div>
+
+    <!-- Shared and Page Scripts -->
+    <script src="js/profile.js"></script>
+    <script src="js/customerLoyalty.js"></script>
+
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+
+</html>

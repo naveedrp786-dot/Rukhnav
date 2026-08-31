@@ -1,0 +1,11 @@
+"use strict";
+const service=require("../services/customerReturnService");
+const adminIdFrom=req=>Number(req.admin?.id||req.admin?.adminId);
+const handle=(res,error,label)=>{console.error(`${label}:`,error);return res.status(error.statusCode||500).json({success:false,message:error.message||"Unexpected server error."});};
+exports.getSummary=async(req,res)=>{try{return res.json({success:true,summary:await service.getAdminReturnSummary()});}catch(e){return handle(res,e,"Get return summary error");}};
+exports.getReturns=async(req,res)=>{try{return res.json({success:true,...await service.getAdminReturns(req.query||{})});}catch(e){return handle(res,e,"Get admin returns error");}};
+exports.getReturnDetails=async(req,res)=>{try{return res.json({success:true,...await service.getReturnDetails({returnId:req.params.id,admin:true})});}catch(e){return handle(res,e,"Get admin return details error");}};
+exports.reviewReturn=async(req,res)=>{try{const result=await service.reviewReturnRequest({returnId:req.params.id,adminId:adminIdFrom(req),decision:req.body?.decision,adminNotes:req.body?.admin_notes});return res.json({success:true,message:`Return request moved to ${result.status}.`,return_request:result});}catch(e){return handle(res,e,"Review return request error");}};
+exports.receiveReturn=async(req,res)=>{try{const result=await service.receiveReturn({returnId:req.params.id,adminId:adminIdFrom(req),notes:req.body?.notes});return res.json({success:true,message:"Returned goods marked as received.",return_request:result});}catch(e){return handle(res,e,"Receive return error");}};
+exports.inspectReturn=async(req,res)=>{try{const result=await service.inspectReturn({returnId:req.params.id,adminId:adminIdFrom(req),payload:req.body||{}});return res.json({success:true,message:"Return inspection saved.",return_request:result});}catch(e){return handle(res,e,"Inspect return error");}};
+exports.completeReturn=async(req,res)=>{try{const result=await service.completeReturn({returnId:req.params.id,adminId:adminIdFrom(req),payload:req.body||{}});return res.json({success:true,message:"Return completed successfully.",return_request:result});}catch(e){return handle(res,e,"Complete return error");}};

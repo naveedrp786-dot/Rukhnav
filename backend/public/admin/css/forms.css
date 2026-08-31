@@ -1,0 +1,970 @@
+/*======================================================
+    RUKHNAV ERP
+    Forms
+======================================================*/
+
+@import url("variables.css");
+
+
+/*======================================================
+    Form Container
+======================================================*/
+
+.form-container{
+
+    background:var(--card-bg);
+
+    border-radius:var(--card-radius);
+
+    padding:30px;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+
+
+/*======================================================
+    Form Group
+======================================================*/
+
+.form-group{
+
+    margin-bottom:22px;
+
+}
+
+
+
+/*======================================================
+    Labels
+======================================================*/
+
+.form-label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:var(--text-dark);
+
+}
+
+
+
+/*======================================================
+    Inputs
+======================================================*/
+
+.form-control-rukhnav{
+
+    width:100%;
+
+    height:48px;
+
+    padding:0 16px;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    background:#fff;
+
+    color:var(--text-dark);
+
+    font-size:15px;
+
+    transition:var(--transition);
+
+}
+
+.form-control-rukhnav:focus{
+
+    outline:none;
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(25,135,84,.12);
+
+}
+
+
+
+/*======================================================
+    Textarea
+======================================================*/
+
+.textarea-rukhnav{
+
+    width:100%;
+
+    min-height:140px;
+
+    padding:15px;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    resize:vertical;
+
+    transition:var(--transition);
+
+}
+
+.textarea-rukhnav:focus{
+
+    outline:none;
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(25,135,84,.12);
+
+}
+
+
+
+/*======================================================
+    Placeholder
+======================================================*/
+
+.form-control-rukhnav::placeholder,
+
+.textarea-rukhnav::placeholder{
+
+    color:#9ca3af;
+
+}
+
+
+
+/*======================================================
+    Disabled Fields
+======================================================*/
+
+.form-control-rukhnav:disabled,
+
+.textarea-rukhnav:disabled{
+
+    background:#f5f5f5;
+
+    cursor:not-allowed;
+
+}
+/*======================================================
+    Select Box
+======================================================*/
+
+.select-rukhnav{
+
+    width:100%;
+
+    height:48px;
+
+    padding:0 16px;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    background:#fff;
+
+    color:var(--text-dark);
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.select-rukhnav:focus{
+
+    outline:none;
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(25,135,84,.12);
+
+}
+
+
+
+/*======================================================
+    Date Input
+======================================================*/
+
+input[type="date"].form-control-rukhnav,
+
+input[type="datetime-local"].form-control-rukhnav{
+
+    cursor:pointer;
+
+}
+
+
+
+/*======================================================
+    Input Group
+======================================================*/
+
+.input-group-rukhnav{
+
+    display:flex;
+
+    align-items:center;
+
+    position:relative;
+
+}
+
+
+
+/*======================================================
+    Left Icon
+======================================================*/
+
+.input-group-rukhnav i{
+
+    position:absolute;
+
+    left:16px;
+
+    color:var(--text-light);
+
+    font-size:16px;
+
+    z-index:2;
+
+}
+
+.input-group-rukhnav .form-control-rukhnav{
+
+    padding-left:45px;
+
+}
+
+
+
+/*======================================================
+    Password Toggle
+======================================================*/
+
+.password-group{
+
+    position:relative;
+
+}
+
+.password-group .toggle-password{
+
+    position:absolute;
+
+    top:50%;
+
+    right:16px;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:var(--text-light);
+
+    font-size:18px;
+
+    transition:var(--transition);
+
+}
+
+.password-group .toggle-password:hover{
+
+    color:var(--primary);
+
+}
+
+
+
+/*======================================================
+    Search Box
+======================================================*/
+
+.search-input{
+
+    position:relative;
+
+}
+
+.search-input i{
+
+    position:absolute;
+
+    top:50%;
+
+    left:16px;
+
+    transform:translateY(-50%);
+
+    color:var(--text-light);
+
+}
+
+.search-input input{
+
+    padding-left:45px;
+
+}
+
+
+
+/*======================================================
+    File Upload
+======================================================*/
+
+.file-upload{
+
+    position:relative;
+
+}
+
+.file-upload input[type=file]{
+
+    width:100%;
+
+    padding:12px;
+
+    border:2px dashed var(--border);
+
+    border-radius:var(--radius);
+
+    background:#fafafa;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.file-upload input[type=file]:hover{
+
+    border-color:var(--primary);
+
+    background:#f5fff8;
+
+}
+
+
+
+/*======================================================
+    File Upload Label
+======================================================*/
+
+.file-upload-label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-weight:600;
+
+    color:var(--text-dark);
+
+}
+
+
+
+/*======================================================
+    Form Row
+======================================================*/
+
+.form-row{
+
+    display:flex;
+
+    gap:20px;
+
+}
+
+.form-row .form-group{
+
+    flex:1;
+
+}
+/*======================================================
+    Required Field Indicator
+======================================================*/
+
+.required{
+
+    color:var(--danger);
+
+    margin-left:4px;
+
+    font-weight:700;
+
+}
+
+
+
+/*======================================================
+    Helper Text
+======================================================*/
+
+.form-help{
+
+    margin-top:6px;
+
+    font-size:13px;
+
+    color:var(--text-light);
+
+}
+
+
+
+/*======================================================
+    Error Text
+======================================================*/
+
+.form-error{
+
+    margin-top:6px;
+
+    font-size:13px;
+
+    color:var(--danger);
+
+    display:none;
+
+}
+
+
+
+/*======================================================
+    Success Text
+======================================================*/
+
+.form-success{
+
+    margin-top:6px;
+
+    font-size:13px;
+
+    color:var(--success);
+
+    display:none;
+
+}
+
+
+
+/*======================================================
+    Validation States
+======================================================*/
+
+.is-invalid{
+
+    border-color:var(--danger)!important;
+
+    box-shadow:0 0 0 4px rgba(220,53,69,.12);
+
+}
+
+.is-valid{
+
+    border-color:var(--success)!important;
+
+    box-shadow:0 0 0 4px rgba(25,135,84,.12);
+
+}
+
+
+
+/*======================================================
+    Checkbox
+======================================================*/
+
+.checkbox-rukhnav{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    user-select:none;
+
+}
+
+.checkbox-rukhnav input{
+
+    width:18px;
+
+    height:18px;
+
+    accent-color:var(--primary);
+
+}
+
+
+
+/*======================================================
+    Radio Button
+======================================================*/
+
+.radio-rukhnav{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    user-select:none;
+
+}
+
+.radio-rukhnav input{
+
+    accent-color:var(--primary);
+
+}
+
+
+
+/*======================================================
+    Toggle Switch
+======================================================*/
+
+.switch{
+
+    position:relative;
+
+    display:inline-block;
+
+    width:56px;
+
+    height:30px;
+
+}
+
+.switch input{
+
+    opacity:0;
+
+    width:0;
+
+    height:0;
+
+}
+
+.slider{
+
+    position:absolute;
+
+    inset:0;
+
+    cursor:pointer;
+
+    background:#cfd4da;
+
+    border-radius:30px;
+
+    transition:.3s;
+
+}
+
+.slider:before{
+
+    content:"";
+
+    position:absolute;
+
+    width:24px;
+
+    height:24px;
+
+    left:3px;
+
+    bottom:3px;
+
+    background:#fff;
+
+    border-radius:50%;
+
+    transition:.3s;
+
+}
+
+.switch input:checked + .slider{
+
+    background:var(--primary);
+
+}
+
+.switch input:checked + .slider:before{
+
+    transform:translateX(26px);
+
+}
+
+
+
+/*======================================================
+    Character Counter
+======================================================*/
+
+.character-count{
+
+    text-align:right;
+
+    margin-top:6px;
+
+    font-size:12px;
+
+    color:var(--text-light);
+
+}
+
+
+
+/*======================================================
+    Form Divider
+======================================================*/
+
+.form-divider{
+
+    margin:30px 0;
+
+    border-top:1px solid var(--border);
+
+}
+
+
+
+/*======================================================
+    Form Actions
+======================================================*/
+
+.form-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:15px;
+
+    margin-top:30px;
+
+}
+/*======================================================
+    Form Section
+======================================================*/
+
+.form-section{
+
+    margin-bottom:40px;
+
+}
+
+.form-section-title{
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:var(--text-dark);
+
+    margin-bottom:8px;
+
+}
+
+.form-section-subtitle{
+
+    color:var(--text-light);
+
+    margin-bottom:25px;
+
+}
+
+
+
+/*======================================================
+    Floating Label
+======================================================*/
+
+.floating-group{
+
+    position:relative;
+
+}
+
+.floating-group input,
+
+.floating-group textarea{
+
+    padding-top:20px;
+
+}
+
+.floating-group label{
+
+    position:absolute;
+
+    left:16px;
+
+    top:14px;
+
+    color:var(--text-light);
+
+    transition:.25s;
+
+    pointer-events:none;
+
+    background:#fff;
+
+    padding:0 4px;
+
+}
+
+.floating-group input:focus + label,
+
+.floating-group input:not(:placeholder-shown) + label,
+
+.floating-group textarea:focus + label,
+
+.floating-group textarea:not(:placeholder-shown) + label{
+
+    top:-10px;
+
+    left:12px;
+
+    font-size:12px;
+
+    color:var(--primary);
+
+}
+
+
+
+/*======================================================
+    Image Preview
+======================================================*/
+
+.image-preview{
+
+    width:140px;
+
+    height:140px;
+
+    border:2px dashed var(--border);
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#fafafa;
+
+}
+
+.image-preview img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+
+
+/*======================================================
+    Form Loading
+======================================================*/
+
+.form-loading{
+
+    opacity:.65;
+
+    pointer-events:none;
+
+}
+
+
+
+/*======================================================
+    Multi Step Navigation
+======================================================*/
+
+.form-steps{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:35px;
+
+}
+
+.form-step{
+
+    flex:1;
+
+    text-align:center;
+
+    position:relative;
+
+}
+
+.form-step::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:18px;
+
+    right:-50%;
+
+    width:100%;
+
+    height:2px;
+
+    background:var(--border);
+
+    z-index:0;
+
+}
+
+.form-step:last-child::after{
+
+    display:none;
+
+}
+
+.form-step-circle{
+
+    width:38px;
+
+    height:38px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    background:#e9ecef;
+
+    color:var(--text-light);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:600;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+.form-step.active .form-step-circle{
+
+    background:var(--primary);
+
+    color:#fff;
+
+}
+
+.form-step-title{
+
+    margin-top:10px;
+
+    font-size:14px;
+
+}
+
+
+
+/*======================================================
+    Responsive Forms
+======================================================*/
+
+@media(max-width:768px){
+
+    .form-row{
+
+        flex-direction:column;
+
+        gap:0;
+
+    }
+
+    .form-actions{
+
+        flex-direction:column;
+
+    }
+
+    .form-actions .btn-rukhnav{
+
+        width:100%;
+
+    }
+
+}
+
+
+
+/*======================================================
+    Form Animation
+======================================================*/
+
+.form-container{
+
+    animation:formFade .35s ease;
+
+}
+
+@keyframes formFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+
+/*======================================================
+    END OF FORMS
+======================================================*/

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/orders.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page orders-page orders-v5-page">
+            <header class="page-header orders-header erp-v5-hero">
+                <div>
+                    <span class="page-label erp-v5-eyebrow">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        Sales Operations
+                    </span>
+                    <h1>Order Management</h1>
+                    <p>Manage customer orders, delivery progress, shipments, payments and invoices.</p>
+                </div>
+
+                <div class="header-actions">
+                    <button type="button" id="clearOrderFiltersButton" class="secondary-btn erp-v5-btn erp-v5-btn--light">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+
+                    <button type="button" id="refreshOrdersButton" class="primary-btn erp-v5-btn erp-v5-btn--gold">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <div id="ordersMessage" class="orders-message" role="alert" aria-live="polite"></div>
+
+            <section class="orders-summary-grid erp-v5-summary-grid">
+                <article class="summary-card">
+                    <div class="summary-icon total"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <div><span>Total Orders</span><h2 id="totalOrders">0</h2><small>All customer orders</small></div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-icon pending"><i class="fa-solid fa-clock"></i></div>
+                    <div><span>Pending</span><h2 id="pendingOrders">0</h2><small>Awaiting confirmation</small></div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-icon delivered"><i class="fa-solid fa-circle-check"></i></div>
+                    <div><span>Delivered</span><h2 id="deliveredOrders">0</h2><small>Successfully delivered</small></div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-icon cancelled"><i class="fa-solid fa-circle-xmark"></i></div>
+                    <div><span>Cancelled</span><h2 id="cancelledOrders">0</h2><small>Cancelled orders</small></div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-icon today"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div><span>Today</span><h2 id="todayOrders">0</h2><small>Orders placed today</small></div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-icon revenue"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <div><span>Paid Revenue</span><h2 id="paidRevenue">PKR 0</h2><small>Revenue from paid orders</small></div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-icon balance"><i class="fa-solid fa-wallet"></i></div>
+                    <div><span>Pending Payments</span><h2 id="pendingPaymentValue">PKR 0</h2><small>Outstanding balances</small></div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-icon average"><i class="fa-solid fa-chart-line"></i></div>
+                    <div><span>Average Order</span><h2 id="averageOrderValue">PKR 0</h2><small>Average order value</small></div>
+                </article>
+            </section>
+
+            <section class="orders-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-label">Order Directory</span>
+                        <h2>Search and Filters</h2>
+                        <p>Find orders by number, customer, status, payment status or date.</p>
+                    </div>
+                </div>
+
+                <form id="orderFiltersForm" class="order-filters" autocomplete="off">
+                    <div class="filter-field search-field">
+                        <label for="orderSearch">Search Orders</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="search" id="orderSearch" placeholder="Order number, customer, phone or email">
+                        </div>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="orderStatusFilter">Order Status</label>
+                        <select id="orderStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Packed">Packed</option>
+                            <option value="Ready For Pickup">Ready For Pickup</option>
+                            <option value="Handed To Courier">Handed To Courier</option>
+                            <option value="In Transit">In Transit</option>
+                            <option value="Out For Delivery">Out For Delivery</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Returned">Returned</option>
+                            <option value="Refunded">Refunded</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="paymentStatusFilter">Payment Status</label>
+                        <select id="paymentStatusFilter">
+                            <option value="">All Payment Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Partially Paid">Partially Paid</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Partially Refunded">Partially Refunded</option>
+                            <option value="Refunded">Refunded</option>
+                            <option value="Failed">Failed</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="orderDateFrom">Date From</label>
+                        <input type="date" id="orderDateFrom">
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="orderDateTo">Date To</label>
+                        <input type="date" id="orderDateTo">
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="orderLimitFilter">Rows Per Page</label>
+                        <select id="orderLimitFilter">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button type="submit" class="primary-btn erp-v5-btn erp-v5-btn--gold">
+                            <i class="fa-solid fa-filter"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="orders-panel">
+                <div class="panel-heading table-panel-heading">
+                    <div>
+                        <span class="section-label">Sales Orders</span>
+                        <h2>All Orders</h2>
+                        <p id="ordersResultText">Loading order records.</p>
+                    </div>
+
+                    <button type="button" id="exportOrdersButton" class="secondary-btn erp-v5-btn erp-v5-btn--light">
+                        <i class="fa-solid fa-file-export"></i>
+                        Export CSV
+                    </button>
+                </div>
+
+                <div id="ordersLoading" class="orders-state">
+                    <div class="orders-spinner"></div>
+                    <h3>Loading orders</h3>
+                    <p>Please wait while order records are retrieved.</p>
+                </div>
+
+                <div id="ordersEmptyState" class="orders-state hidden">
+                    <div class="state-icon"><i class="fa-solid fa-cart-arrow-down"></i></div>
+                    <h3>No orders found</h3>
+                    <p>No orders match the selected filters.</p>
+                    <button type="button" id="emptyClearOrderFiltersButton" class="secondary-btn erp-v5-btn erp-v5-btn--light">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+                </div>
+
+                <div id="ordersTableWrapper" class="table-responsive hidden">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Grand Total</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Tracking</th>
+                                <th>Created</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="ordersPagination" class="orders-pagination hidden">
+                    <div id="orderPaginationInformation" class="pagination-information">Showing 0 to 0 of 0 orders</div>
+                    <div class="pagination-controls">
+                        <button type="button" id="orderFirstPageButton" class="pagination-button"><i class="fa-solid fa-angles-left"></i></button>
+                        <button type="button" id="orderPreviousPageButton" class="pagination-button"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="orderPaginationPages"></span>
+                        <button type="button" id="orderNextPageButton" class="pagination-button"><i class="fa-solid fa-chevron-right"></i></button>
+                        <button type="button" id="orderLastPageButton" class="pagination-button"><i class="fa-solid fa-angles-right"></i></button>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div id="orderDetailsModal" class="order-modal" aria-hidden="true">
+    <div class="order-modal-overlay"></div>
+    <div class="order-modal-dialog order-details-dialog" role="dialog" aria-modal="true">
+        <div class="order-modal-header">
+            <div>
+                <span class="modal-label">Sales Order</span>
+                <h2 id="orderDetailsTitle">Order Details</h2>
+            </div>
+            <button type="button" class="modal-close-button" data-close-modal="orderDetailsModal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div id="orderDetailsLoading" class="modal-loading-state">
+            <div class="orders-spinner"></div>
+            <p>Loading order details.</p>
+        </div>
+
+        <div id="orderDetailsContent" class="order-modal-body hidden">
+            <section class="order-detail-hero">
+                <div>
+                    <span class="order-reference" id="detailsOrderNumber">Order</span>
+                    <h3 id="detailsCustomerName">Customer</h3>
+                    <p id="detailsCustomerContact">—</p>
+                </div>
+                <div class="hero-badges">
+                    <span id="detailsOrderStatus" class="order-status-badge">Pending</span>
+                    <span id="detailsPaymentStatus" class="payment-status-badge">Pending</span>
+                </div>
+            </section>
+
+            <div class="order-detail-grid">
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-address-card"></i><h3>Customer</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Email</dt><dd id="detailsEmail">—</dd></div>
+                        <div><dt>Phone</dt><dd id="detailsPhone">—</dd></div>
+                        <div><dt>City</dt><dd id="detailsCity">—</dd></div>
+                        <div><dt>Address</dt><dd id="detailsAddress">—</dd></div>
+                    </dl>
+                </article>
+
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-credit-card"></i><h3>Payment</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Method</dt><dd id="detailsPaymentMethod">—</dd></div>
+                        <div><dt>Status</dt><dd id="detailsPaymentStatusValue">—</dd></div>
+                        <div><dt>Paid Amount</dt><dd id="detailsPaidAmount">PKR 0</dd></div>
+                        <div><dt>Balance</dt><dd id="detailsBalanceAmount">PKR 0</dd></div>
+                    </dl>
+                </article>
+
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-truck"></i><h3>Shipment</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Tracking No.</dt><dd id="detailsTrackingNumber">—</dd></div>
+                        <div><dt>Tracking URL</dt><dd id="detailsTrackingUrl">—</dd></div>
+                        <div><dt>Estimated Delivery</dt><dd id="detailsEstimatedDelivery">—</dd></div>
+                        <div><dt>Created</dt><dd id="detailsCreatedAt">—</dd></div>
+                    </dl>
+                </article>
+            </div>
+
+            <section class="detail-section">
+                <div class="detail-section-heading">
+                    <div><span class="section-label">Products</span><h3>Order Items</h3></div>
+                </div>
+                <div class="table-responsive">
+                    <table class="order-items-table">
+                        <thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th></tr></thead>
+                        <tbody id="orderItemsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="order-totals-card">
+                <div>
+                    <span>Coupon Discount</span>
+                    <strong id="detailsDiscount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span id="detailsMemberDiscountLabel">Member Discount</span>
+                    <strong id="detailsMemberDiscount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Reward Points Redeemed</span>
+                    <strong id="detailsRewardPoints">0 points</strong>
+                </div>
+
+                <div>
+                    <span>Reward Discount</span>
+                    <strong id="detailsRewardDiscount">PKR 0</strong>
+                </div>
+
+                <div>
+                    <span>Delivery Charges</span>
+                    <strong id="detailsDeliveryCharges">PKR 0</strong>
+                </div>
+
+                <div class="grand-total">
+                    <span>Grand Total</span>
+                    <strong id="detailsGrandTotal">PKR 0</strong>
+                </div>
+            </section>
+
+            <section class="detail-section">
+                <div class="detail-section-heading"><div><span class="section-label">Workflow</span><h3>Status History</h3></div></div>
+                <div id="orderHistoryTimeline" class="order-history-timeline"></div>
+            </section>
+
+
+            <section class="detail-section order-workflow-section">
+                <div class="detail-section-heading">
+                    <div>
+                        <span class="section-label">Order Workflow</span>
+                        <h3>Fulfilment Progress</h3>
+                    </div>
+                </div>
+
+                <div
+                    id="orderWorkflowTimeline"
+                    class="order-workflow-timeline"
+                ></div>
+            </section>
+
+            <section class="detail-section">
+                <div class="detail-section-heading"><div><span class="section-label">Payments</span><h3>Payment History</h3></div></div>
+                <div id="orderPaymentsContent" class="embedded-state">Load payment history from the action button below.</div>
+            </section>
+
+            <section class="detail-section">
+                <div class="detail-section-heading"><div><span class="section-label">Shipment</span><h3>Shipment Details</h3></div></div>
+                <div id="orderShipmentContent" class="embedded-state">Load shipment details from the action button below.</div>
+            </section>
+        </div>
+
+        <div class="order-modal-footer">
+            <button type="button" class="secondary-btn erp-v5-btn erp-v5-btn--light" data-close-modal="orderDetailsModal">Close</button>
+            <button type="button" id="receiveCodPaymentButton" class="secondary-btn erp-v5-btn cod-payment-button hidden"><i class="fa-solid fa-money-bill-wave"></i> Receive COD Payment</button>
+            <button type="button" id="loadOrderPaymentsButton" class="secondary-btn erp-v5-btn erp-v5-btn--light"><i class="fa-solid fa-credit-card"></i> Payments</button>
+            <button type="button" id="loadOrderShipmentButton" class="secondary-btn erp-v5-btn erp-v5-btn--light"><i class="fa-solid fa-truck"></i> Shipment</button>
+            <button type="button" id="openStatusFromDetailsButton" class="primary-btn erp-v5-btn erp-v5-btn--gold"><i class="fa-solid fa-pen-to-square"></i> Update Status</button>
+        </div>
+    </div>
+</div>
+
+
+<div id="receiveCodPaymentModal" class="order-modal" aria-hidden="true">
+    <div class="order-modal-overlay"></div>
+
+    <div class="order-modal-dialog small-dialog" role="dialog" aria-modal="true">
+        <div class="order-modal-header">
+            <div>
+                <span class="modal-label">Cash Collection</span>
+                <h2>Receive COD Payment</h2>
+                <p id="codPaymentOrderLabel">Delivered order</p>
+            </div>
+
+            <button
+                type="button"
+                class="modal-close-button"
+                data-close-modal="receiveCodPaymentModal"
+                aria-label="Close COD payment"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="receiveCodPaymentForm">
+            <div class="order-modal-body">
+                <input type="hidden" id="codPaymentOrderId">
+
+                <div class="cod-payment-summary">
+                    <div>
+                        <span>Order total</span>
+                        <strong id="codOrderTotal">PKR 0</strong>
+                    </div>
+
+                    <div>
+                        <span>Already paid</span>
+                        <strong id="codAlreadyPaid">PKR 0</strong>
+                    </div>
+
+                    <div class="outstanding">
+                        <span>Outstanding COD</span>
+                        <strong id="codOutstandingAmount">PKR 0</strong>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="codReceivedAmount">Amount Received</label>
+                    <input
+                        id="codReceivedAmount"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        required
+                    >
+                    <small class="form-help">
+                        Enter the cash amount received from the courier or delivery agent.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="codTransactionReference">Collection Reference</label>
+                    <input
+                        id="codTransactionReference"
+                        type="text"
+                        maxlength="150"
+                        placeholder="Example: COD-RUK-000011-TCS"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="codReceivedDate">Received Date</label>
+                    <input
+                        id="codReceivedDate"
+                        type="date"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="codPaymentNotes">Notes</label>
+                    <textarea
+                        id="codPaymentNotes"
+                        rows="4"
+                        maxlength="2000"
+                        placeholder="Cash received from courier after successful delivery."
+                    ></textarea>
+                </div>
+
+                <div class="cod-payment-notice">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <div>
+                        <strong>Financial record will be created</strong>
+                        <p>
+                            This action records a Paid Cash on Delivery transaction and
+                            recalculates the order's paid amount, balance, and payment status.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-modal-footer">
+                <button
+                    type="button"
+                    class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                    data-close-modal="receiveCodPaymentModal"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    id="saveCodPaymentButton"
+                    class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                >
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    Confirm Cash Received
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="orderStatusModal" class="order-modal" aria-hidden="true">
+    <div class="order-modal-overlay"></div>
+    <div class="order-modal-dialog small-dialog" role="dialog" aria-modal="true">
+        <div class="order-modal-header">
+            <div><span class="modal-label">Order Workflow</span><h2>Update Order Status</h2></div>
+            <button type="button" class="modal-close-button" data-close-modal="orderStatusModal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form id="orderStatusForm">
+            <div class="order-modal-body">
+                <input type="hidden" id="statusOrderId">
+                <div class="workflow-current-card">
+                    <span>Current Status</span>
+                    <strong id="currentOrderStatusLabel">—</strong>
+                    <small id="workflowGuidance">
+                        Select one of the valid next steps.
+                    </small>
+                </div>
+
+                <div
+                    id="statusTransitionPreview"
+                    class="status-transition-preview"
+                ></div>
+
+                <div class="form-group">
+                    <label for="newOrderStatus">Allowed Next Status</label>
+                    <select id="newOrderStatus" required>
+                        <option value="">Select next status</option>
+                    </select>
+                    <small id="allowedStatusHelp" class="form-help"></small>
+                </div>
+
+                <div
+                    id="shipmentRequirementNotice"
+                    class="shipment-requirement-notice hidden"
+                >
+                    <i class="fa-solid fa-truck-fast"></i>
+                    <div>
+                        <strong>Shipment information required</strong>
+                        <p>
+                            Add the courier and tracking number before moving
+                            this order to Handed To Courier.
+                        </p>
+                    </div>
+                </div>
+<div class="form-group">
+                    <label for="orderStatusNotes">Notes</label>
+                    <textarea id="orderStatusNotes" rows="4" maxlength="1000" placeholder="Optional administrative notes"></textarea>
+                </div>
+            </div>
+
+            <div class="order-modal-footer">
+                <button type="button" class="secondary-btn erp-v5-btn erp-v5-btn--light" data-close-modal="orderStatusModal">Cancel</button>
+                <button type="submit" id="saveOrderStatusButton" class="primary-btn erp-v5-btn erp-v5-btn--gold"><i class="fa-solid fa-floppy-disk"></i> Save Status</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/orders.js"></script>
+</body>
+</html>

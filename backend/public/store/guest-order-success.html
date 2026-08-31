@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Order Confirmed | RUKHNAV</title>
+<meta name="description" content="Your RUKHNAV guest order has been confirmed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css?v=20260827-home-hero-1">
+<link rel="stylesheet" href="css/guest-checkout.css">
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-storefront.css?v=20260827-3">
+</head>
+<body>
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="guest-success-page">
+    <section id="guestSuccessLoading" class="guest-checkout-state">
+        <div class="spinner"></div>
+        <h2>Loading your order confirmation</h2>
+    </section>
+
+    <section id="guestSuccessError" class="guest-checkout-state hidden">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <h2>Order details are unavailable</h2>
+        <p id="guestSuccessErrorText">Use the confirmation link saved after checkout.</p>
+        <a href="products.html" class="btn primary">Continue shopping</a>
+    </section>
+
+    <section id="guestSuccessContent" class="guest-success-card hidden">
+        <div class="guest-success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <span>Order received</span>
+        <h1>Thank you for your order</h1>
+        <p>RUKHNAV has received your guest order. Keep this page or save your order number for support.</p>
+
+        <div class="guest-success-order-number">
+            <small>Order number</small>
+            <strong id="guestSuccessOrderNumber">—</strong>
+            <button id="copyGuestOrderNumber" type="button">
+                <i class="fa-regular fa-copy"></i>
+                Copy
+            </button>
+        </div>
+
+        <div class="guest-success-grid">
+            <div>
+                <span>Status</span>
+                <strong id="guestSuccessStatus">Pending</strong>
+            </div>
+            <div>
+                <span>Payment</span>
+                <strong id="guestSuccessPayment">Pending</strong>
+            </div>
+            <div>
+                <span>Total</span>
+                <strong id="guestSuccessTotal">Rs. 0</strong>
+            </div>
+            <div>
+                <span>Delivery city</span>
+                <strong id="guestSuccessCity">—</strong>
+            </div>
+        </div>
+
+        <div id="guestSuccessItems" class="guest-success-items"></div>
+
+        <div class="guest-success-actions">
+            <button id="guestRequestReturnButton" type="button" class="btn secondary hidden">
+                <i class="fa-solid fa-rotate-left"></i>
+                Request Return
+            </button>
+
+            <a href="products.html" class="btn primary">
+                Continue shopping
+            </a>
+
+            <a href="account.html" class="btn secondary">
+                Create or sign in to an account
+            </a>
+        </div>
+
+        <section id="guestReturnPanel" class="guest-return-panel hidden">
+            <div class="guest-return-heading">
+                <div>
+                    <span>Return request</span>
+                    <h2>Request a product return</h2>
+                    <p>Select the item and quantity you want to return.</p>
+                </div>
+
+                <button id="closeGuestReturnButton" type="button" class="guest-return-close" aria-label="Close return form">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="guestReturnForm">
+                <div id="guestReturnItems" class="guest-return-items"></div>
+
+                <label class="guest-field">
+                    <span>Reason</span>
+                    <select id="guestReturnReason" required>
+                        <option value="">Select a reason</option>
+                        <option value="Damaged Product">Damaged product</option>
+                        <option value="Wrong Product">Wrong product</option>
+                        <option value="Product Quality">Product quality issue</option>
+                        <option value="Changed Mind">Changed my mind</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </label>
+
+                <label class="guest-field">
+                    <span>Additional notes</span>
+                    <textarea id="guestReturnNotes" rows="4" placeholder="Optional details about your return"></textarea>
+                </label>
+
+                <div id="guestReturnMessage" class="guest-checkout-message" role="alert"></div>
+
+                <button id="submitGuestReturnButton" type="submit" class="guest-place-order-button">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Submit Return Request
+                </button>
+            </form>
+        </section>
+
+        <p class="guest-success-note">
+            Guest orders do not automatically earn loyalty points. Contact support if you need help with this order.
+        </p>
+    </section>
+</main>
+
+<div id="footer"></div>
+<div id="toast" class="toast-region"></div>
+<div id="overlay" class="overlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js?v=20260823-2"></script>
+<script src="js/store.js"></script>
+<script src="js/guest-order-success.js"></script>
+<script src="js/demo-visuals.js?v=20260827-2"></script>
+</body>
+</html>

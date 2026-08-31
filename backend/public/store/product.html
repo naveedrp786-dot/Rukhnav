@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1"
+    >
+
+    <title>Product Details | RUKHNAV</title>
+
+    <meta
+        name="description"
+        content="View RUKHNAV product information, customer reviews and verified customer photos."
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/theme.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/store.css?v=20260827-home-hero-1"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/product-gallery.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/responsive.css"
+    >
+    <link rel="stylesheet" href="css/mobile-storefront.css?v=20260827-3">
+</head>
+
+<body>
+    <div id="announcement"></div>
+    <div id="header"></div>
+
+    <main class="pd-page">
+        <section
+            id="pdLoading"
+            class="pd-state"
+        >
+            <div class="spinner"></div>
+            <h2>Loading product details</h2>
+            <p>
+                Loading product, gallery and customer reviews.
+            </p>
+        </section>
+
+        <section
+            id="pdError"
+            class="pd-state hidden"
+        >
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            <h2>Product unavailable</h2>
+
+            <p id="pdErrorText">
+                Unable to load this product.
+            </p>
+
+            <a
+                class="btn primary"
+                href="products.html"
+            >
+                Browse Products
+            </a>
+        </section>
+
+        <div
+            id="pdContent"
+            class="hidden"
+        >
+            <nav
+                class="pd-breadcrumb"
+                aria-label="Breadcrumb"
+            >
+                <a href="index.html">Home</a>
+
+                <i class="fa-solid fa-angle-right"></i>
+
+                <a href="products.html">
+                    Products
+                </a>
+
+                <i class="fa-solid fa-angle-right"></i>
+
+                <span id="pdBreadcrumbName">
+                    Product
+                </span>
+            </nav>
+
+            <section class="pd-main">
+                <article class="pd-gallery">
+                    <div class="pd-main-image-wrap">
+                        <div
+                            id="pdBadges"
+                            class="pd-badges"
+                        ></div>
+
+                        <img
+                            id="pdMainImage"
+                            alt="RUKHNAV product"
+                        >
+
+                        <button
+                            type="button"
+                            id="pdImagePrev"
+                            class="pd-image-nav prev"
+                            aria-label="Previous product image"
+                        >
+                            <i class="fa-solid fa-angle-left"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            id="pdImageNext"
+                            class="pd-image-nav next"
+                            aria-label="Next product image"
+                        >
+                            <i class="fa-solid fa-angle-right"></i>
+                        </button>
+
+                        <span
+                            id="pdImageCounter"
+                            class="pd-image-counter"
+                        >
+                            1 / 1
+                        </span>
+
+                        <button
+                            type="button"
+                            id="pdZoomButton"
+                            class="pd-zoom"
+                        >
+                            <i class="fa-solid fa-magnifying-glass-plus"></i>
+                            Full screen
+                        </button>
+                    </div>
+
+                    <div class="pd-thumb-row">
+                        <button
+                            type="button"
+                            id="pdThumbPrev"
+                            class="pd-thumb-arrow"
+                            aria-label="Previous thumbnails"
+                        >
+                            <i class="fa-solid fa-angle-left"></i>
+                        </button>
+
+                        <div
+                            id="pdThumbs"
+                            class="pd-thumbs"
+                        ></div>
+
+                        <button
+                            type="button"
+                            id="pdThumbNext"
+                            class="pd-thumb-arrow"
+                            aria-label="Next thumbnails"
+                        >
+                            <i class="fa-solid fa-angle-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="pd-gallery-note">
+                        <i class="fa-solid fa-camera"></i>
+
+                        Product images are managed through
+                        ERP Product Media.
+                    </div>
+                </article>
+
+                <article class="pd-info">
+                    <div class="pd-top-line">
+                        <span
+                            id="pdCategory"
+                            class="pd-eyebrow"
+                        >
+                            RUKHNAV
+                        </span>
+
+                        <span
+                            id="pdBrand"
+                            class="pd-brand"
+                        >
+                            RUKHNAV
+                        </span>
+                    </div>
+
+                    <h1 id="pdName">
+                        Product
+                    </h1>
+
+                    <div class="pd-rating-row">
+                        <span
+                            id="pdStars"
+                            class="pd-rating-stars"
+                        >
+                            ☆☆☆☆☆
+                        </span>
+
+                        <button
+                            type="button"
+                            id="pdReviewLink"
+                            class="pd-review-link"
+                        >
+                            <span id="pdReviewSummary">
+                                No reviews yet
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="pd-price-wrap">
+                        <strong
+                            id="pdPrice"
+                            class="pd-price"
+                        >
+                            Rs. 0
+                        </strong>
+
+                        <s
+                            id="pdOldPrice"
+                            class="pd-old-price hidden"
+                        ></s>
+
+                        <span
+                            id="pdDiscountBadge"
+                            class="pd-discount-badge hidden"
+                        ></span>
+                    </div>
+
+                    <p
+                        id="pdShortDescription"
+                        class="pd-short"
+                    ></p>
+
+                    <div class="pd-meta-grid">
+                        <div>
+                            <span>SKU</span>
+                            <strong id="pdSku">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Unit</span>
+                            <strong id="pdUnit">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Weight</span>
+                            <strong id="pdWeight">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Batch</span>
+                            <strong id="pdBatch">—</strong>
+                        </div>
+                    </div>
+
+                    <div
+                        id="pdStockBox"
+                        class="pd-stock"
+                    >
+                        <i class="fa-solid fa-boxes-stacked"></i>
+
+                        <div>
+                            <strong id="pdStock">
+                                Checking stock
+                            </strong>
+
+                            <span id="pdStockNote">
+                                Live ERP availability
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="pd-buy">
+                        <div class="pd-qty">
+                            <button
+                                type="button"
+                                id="pdMinus"
+                            >
+                                −
+                            </button>
+
+                            <input
+                                id="pdQuantity"
+                                type="number"
+                                min="1"
+                                value="1"
+                                aria-label="Quantity"
+                            >
+
+                            <button
+                                type="button"
+                                id="pdPlus"
+                            >
+                                +
+                            </button>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="pdAddCart"
+                            class="btn primary"
+                        >
+                            <i class="fa-solid fa-cart-plus"></i>
+                            Add to Cart
+                        </button>
+
+                        <button
+                            type="button"
+                            id="pdCheckout"
+                            class="btn pd-checkout-button"
+                        >
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            Checkout
+                        </button>
+
+                        <button
+                            type="button"
+                            id="pdBuyNow"
+                            class="btn buy-now"
+                        >
+                            <i class="fa-solid fa-bolt"></i>
+                            Buy Now
+                        </button>
+
+                        <button
+                            type="button"
+                            id="pdWishlist"
+                            class="pd-wishlist"
+                            aria-label="Add to wishlist"
+                        >
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </div>
+
+                    <div class="pd-delivery-card">
+                        <div>
+                            <i class="fa-solid fa-truck-fast"></i>
+
+                            <div>
+                                <strong>
+                                    Delivery across Pakistan
+                                </strong>
+
+                                <small>
+                                    Delivery timing depends on the
+                                    destination and courier.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-shield-heart"></i>
+
+                            <div>
+                                <strong>
+                                    Quality checked
+                                </strong>
+
+                                <small>
+                                    Product information and stock are
+                                    maintained through RUKHNAV ERP.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-rotate-left"></i>
+
+                            <div>
+                                <strong>
+                                    Return policy applies
+                                </strong>
+
+                                <small>
+                                    Review hygiene and eligibility
+                                    conditions before opening.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pd-share">
+                        <span>Share</span>
+
+                        <button
+                            type="button"
+                            data-share="whatsapp"
+                            aria-label="Share on WhatsApp"
+                        >
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            data-share="facebook"
+                            aria-label="Share on Facebook"
+                        >
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            data-share="x"
+                            aria-label="Share on X"
+                        >
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            data-share="copy"
+                            aria-label="Copy product link"
+                        >
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+            </section>
+
+            <section class="pd-tabs">
+                <div
+                    class="pd-tab-buttons"
+                    role="tablist"
+                >
+                    <button
+                        type="button"
+                        data-tab="description"
+                        class="active"
+                    >
+                        Description
+                    </button>
+
+                    <button
+                        type="button"
+                        data-tab="ingredients"
+                    >
+                        Ingredients
+                    </button>
+
+                    <button
+                        type="button"
+                        data-tab="directions"
+                    >
+                        Directions
+                    </button>
+
+                    <button
+                        type="button"
+                        data-tab="warnings"
+                    >
+                        Warnings
+                    </button>
+
+                    <button
+                        type="button"
+                        data-tab="shipping"
+                    >
+                        Shipping & Returns
+                    </button>
+
+                    <button
+                        type="button"
+                        data-tab="reviews"
+                    >
+                        Reviews & Photos
+                    </button>
+                </div>
+
+                <div
+                    id="pdTabContent"
+                    class="pd-tab-content"
+                ></div>
+            </section>
+
+            <!-- ==========================================
+                 REVIEWS DIRECTLY BELOW PRODUCT DESCRIPTION
+                 AND ABOVE RELATED PRODUCTS
+            =========================================== -->
+            <section
+                id="productReviewsInlineSection"
+                class="pd-inline-reviews-section"
+            >
+                <div id="productReviewsInlineMount">
+                    <div class="review-list-state">
+                        <div class="spinner"></div>
+
+                        <strong>
+                            Loading customer reviews
+                        </strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="pd-carousel-section">
+                <div class="pd-section-heading">
+                    <div>
+                        <span>Complete your routine</span>
+                        <h2>Related Products</h2>
+                    </div>
+
+                    <div class="pd-carousel-controls">
+                        <button
+                            type="button"
+                            id="relatedPrev"
+                            aria-label="Previous related products"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            id="relatedNext"
+                            aria-label="Next related products"
+                        >
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    id="relatedProducts"
+                    class="pd-product-strip"
+                ></div>
+            </section>
+
+            <section class="pd-carousel-section">
+                <div class="pd-section-heading">
+                    <div>
+                        <span>Popular at RUKHNAV</span>
+                        <h2>Popular Products</h2>
+                    </div>
+
+                    <div class="pd-carousel-controls">
+                        <button
+                            type="button"
+                            id="popularPrev"
+                            aria-label="Previous popular products"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            id="popularNext"
+                            aria-label="Next popular products"
+                        >
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    id="popularProducts"
+                    class="pd-product-strip"
+                ></div>
+            </section>
+
+            <section class="pd-carousel-section">
+                <div class="pd-section-heading">
+                    <div>
+                        <span>Recently explored</span>
+                        <h2>Recently Viewed</h2>
+                    </div>
+
+                    <div class="pd-carousel-controls">
+                        <button
+                            type="button"
+                            id="recentPrev"
+                            aria-label="Previous recently viewed products"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            id="recentNext"
+                            aria-label="Next recently viewed products"
+                        >
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    id="recentProducts"
+                    class="pd-product-strip"
+                ></div>
+            </section>
+
+            <section class="pd-carousel-section">
+                <div class="pd-section-heading">
+                    <div>
+                        <span>Latest additions</span>
+                        <h2>New Arrivals</h2>
+                    </div>
+
+                    <div class="pd-carousel-controls">
+                        <button
+                            type="button"
+                            id="newPrev"
+                            aria-label="Previous new products"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            id="newNext"
+                            aria-label="Next new products"
+                        >
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    id="newProducts"
+                    class="pd-product-strip"
+                ></div>
+            </section>
+        </div>
+    </main>
+
+    <div
+        id="pdLightbox"
+        class="pd-lightbox hidden"
+        role="dialog"
+        aria-modal="true"
+    >
+        <button
+            type="button"
+            id="pdLightboxClose"
+            class="pd-lightbox-close"
+            aria-label="Close image"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <button
+            type="button"
+            id="pdLightboxPrev"
+            class="pd-lightbox-nav prev"
+            aria-label="Previous image"
+        >
+            <i class="fa-solid fa-angle-left"></i>
+        </button>
+
+        <img
+            id="pdLightboxImage"
+            alt="Product image"
+        >
+
+        <button
+            type="button"
+            id="pdLightboxNext"
+            class="pd-lightbox-nav next"
+            aria-label="Next image"
+        >
+            <i class="fa-solid fa-angle-right"></i>
+        </button>
+
+        <span
+            id="pdLightboxCaption"
+            class="pd-lightbox-caption"
+        ></span>
+    </div>
+
+    <div
+        id="reviewImageLightbox"
+        class="review-image-lightbox hidden"
+        role="dialog"
+        aria-modal="true"
+    >
+        <button
+            type="button"
+            id="reviewImageLightboxClose"
+            aria-label="Close review image"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <img
+            id="reviewImageLightboxImage"
+            alt="Customer review photograph"
+        >
+    </div>
+
+    <div id="footer"></div>
+    <div id="toast" class="toast-region"></div>
+    <div id="overlay" class="overlay"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/components.js?v=20260823-2"></script>
+    <script src="js/store.js"></script>
+    <script src="js/product-gallery.js"></script>
+    <script src="js/website-cms-bridge.js"></script>
+<script src="js/demo-visuals.js?v=20260827-2"></script>
+</body>
+</html>

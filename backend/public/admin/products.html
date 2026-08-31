@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Product Management | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/products.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page products-v5-page">
+            <header class="erp-v5-hero">
+                <div class="erp-v5-hero__copy">
+                    <span class="erp-v5-eyebrow">
+                        <i class="fa-solid fa-box-open"></i>
+                        Catalog Management
+                    </span>
+                    <h1>Product Management</h1>
+                    <p>
+                        Manage product information, prices, stock, categories and image galleries
+                        from one consistent ERP workspace.
+                    </p>
+                </div>
+
+                <div class="erp-v5-hero__actions">
+                    <a href="/admin/productMedia.html" class="erp-v5-btn erp-v5-btn--light">
+                        <i class="fa-solid fa-images"></i>
+                        Product Media
+                    </a>
+
+                    <button id="addProductBtn" type="button" class="erp-v5-btn erp-v5-btn--gold">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Product
+                    </button>
+                </div>
+            </header>
+
+            <div id="productPageMessage" class="erp-v5-message" aria-live="polite"></div>
+
+            <section class="erp-v5-summary-grid products-summary-cards">
+                <article class="erp-v5-summary-card">
+                    <div class="erp-v5-summary-card__icon">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <span>Total Products</span>
+                    <strong id="totalProducts">0</strong>
+                    <small>All catalog records</small>
+                </article>
+
+                <article class="erp-v5-summary-card">
+                    <div class="erp-v5-summary-card__icon">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <span>Active Products</span>
+                    <strong id="activeProducts">0</strong>
+                    <small>Visible and available</small>
+                </article>
+
+                <article class="erp-v5-summary-card">
+                    <div class="erp-v5-summary-card__icon">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <span>Low Stock</span>
+                    <strong id="lowStockProducts">0</strong>
+                    <small>Ten units or fewer</small>
+                </article>
+
+                <article class="erp-v5-summary-card">
+                    <div class="erp-v5-summary-card__icon">
+                        <i class="fa-solid fa-filter-circle-dollar"></i>
+                    </div>
+                    <span>Visible Results</span>
+                    <strong id="visibleProducts">0</strong>
+                    <small>Current filtered view</small>
+                </article>
+            </section>
+
+            <section class="erp-v5-panel products-panel">
+                <div class="erp-v5-panel-heading">
+                    <div>
+                        <span class="erp-v5-section-label">Catalog Records</span>
+                        <h2>All Products</h2>
+                        <p>Search, filter and maintain your complete product catalog.</p>
+                    </div>
+
+                    <button id="refreshProductsBtn" type="button" class="erp-v5-btn erp-v5-btn--soft">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="erp-v5-filter-bar products-toolbar">
+                    <div class="erp-v5-field products-search-field">
+                        <label for="searchInput">Search products</label>
+                        <div class="erp-v5-input-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input id="searchInput" type="search" placeholder="Name, SKU or category">
+                        </div>
+                    </div>
+
+                    <div class="erp-v5-field">
+                        <label for="categoryFilter">Category</label>
+                        <select id="categoryFilter">
+                            <option value="">All categories</option>
+                        </select>
+                    </div>
+
+                    <div class="erp-v5-field">
+                        <label for="statusFilter">Status</label>
+                        <select id="statusFilter">
+                            <option value="">All statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="low-stock">Low stock</option>
+                            <option value="out-of-stock">Out of stock</option>
+                        </select>
+                    </div>
+
+                    <button id="clearProductFilters" type="button" class="erp-v5-btn erp-v5-btn--soft products-clear-filter">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear
+                    </button>
+                </div>
+
+                <div class="erp-v5-table-wrap">
+                    <table class="erp-v5-table product-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody">
+                            <tr>
+                                <td colspan="8">
+                                    <div class="erp-v5-loading-state">
+                                        <i class="fa-solid fa-spinner fa-spin"></i>
+                                        Loading products...
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div id="productModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content product-modal-card">
+        <button id="closeModal" class="close" type="button" aria-label="Close product form">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="product-modal-heading">
+            <span class="erp-v5-section-label">Catalog Record</span>
+            <h2 id="modalTitle">Add Product</h2>
+            <p>Enter product details and manage its storefront image gallery.</p>
+        </div>
+
+        <form id="productForm" enctype="multipart/form-data">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" placeholder="Enter product name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="sku">SKU</label>
+                    <input type="text" id="sku" placeholder="Product SKU">
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" required>
+                        <option value="">Loading categories...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Selling Price</label>
+                    <input type="number" id="price" step="0.01" min="0" placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="stock">Stock Quantity</label>
+                    <input type="number" id="stock" min="0" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea
+                    id="description"
+                    placeholder="Write the product description..."
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="ingredients">
+                    Ingredients
+                </label>
+                <textarea
+                    id="ingredients"
+                    placeholder="Enter ingredients, composition or key active ingredients..."
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="directions">
+                    Directions / How to Use
+                </label>
+                <textarea
+                    id="directions"
+                    placeholder="Explain how the customer should use this product..."
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="warnings">
+                    Warnings / Precautions
+                </label>
+                <textarea
+                    id="warnings"
+                    placeholder="Enter warnings, precautions or important usage information..."
+                ></textarea>
+            </div>
+
+            <div class="form-group product-images-field">
+                <label for="productImages">Product Images</label>
+                <input type="file" id="productImages" multiple accept="image/jpeg,image/png,image/webp">
+                <small>Upload up to 20 JPG, PNG or WEBP images, maximum 5 MB each.</small>
+                <div id="imagePreview" class="preview-grid"></div>
+                <div id="existingImages" class="preview-grid"></div>
+            </div>
+
+            <div class="product-modal-actions">
+                <button id="cancelProductButton" type="button" class="erp-v5-btn erp-v5-btn--soft">
+                    Cancel
+                </button>
+                <button type="submit" class="erp-v5-btn erp-v5-btn--gold">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/products.js"></script>
+</body>
+</html>

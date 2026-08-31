@@ -1,0 +1,619 @@
+/* =========================================================
+   Purchase Returns Page
+========================================================= */
+
+:root {
+    --primary: #145c43;
+    --primary-dark: #0d4633;
+    --success: #198754;
+    --danger: #dc3545;
+    --page-secondary: #6c757d;
+    --border: #dfe4e8;
+    --light-bg: #f5f7f8;
+    --white: #ffffff;
+    --text: #263238;
+    --muted: #6b747b;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--light-bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+.page-container {
+    width: min(1400px, calc(100% - 40px));
+    margin: 30px auto;
+}
+
+/* =========================================================
+   Header
+========================================================= */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: var(--primary-dark);
+    font-size: 30px;
+}
+
+.page-header p {
+    margin: 7px 0 0;
+    color: var(--muted);
+}
+
+/* =========================================================
+   Cards
+========================================================= */
+
+.card {
+    margin-bottom: 22px;
+    padding: 22px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+/* =========================================================
+   Forms
+========================================================= */
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #3d474d;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid #cfd6da;
+    border-radius: 7px;
+    padding: 11px 12px;
+    color: var(--text);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(20, 92, 67, 0.12);
+}
+
+input[readonly] {
+    background: #f0f2f3;
+    cursor: not-allowed;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+/* =========================================================
+   Buttons
+========================================================= */
+
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 7px;
+    padding: 11px 17px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary {
+    color: var(--white);
+    background: var(--primary);
+}
+
+.btn-success {
+    color: var(--white);
+    background: var(--success);
+}
+
+.btn-secondary {
+    color: var(--white);
+    background: var(--page-secondary);
+}
+
+.btn-danger {
+    color: var(--white);
+    background: var(--danger);
+}
+
+.btn-sm {
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* =========================================================
+   Tables
+========================================================= */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+}
+
+th,
+td {
+    border-bottom: 1px solid var(--border);
+    padding: 13px 12px;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+th {
+    color: var(--white);
+    background: var(--primary);
+    font-size: 13px;
+    letter-spacing: 0.2px;
+}
+
+tbody tr:hover {
+    background: #f8fbfa;
+}
+
+.empty {
+    padding: 26px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* =========================================================
+   Status Badges
+========================================================= */
+
+.status-badge {
+    display: inline-block;
+    min-width: 88px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-completed {
+    color: #0f5132;
+    background: #d1e7dd;
+}
+
+.status-cancelled {
+    color: #842029;
+    background: #f8d7da;
+}
+
+.status-draft {
+    color: #664d03;
+    background: #fff3cd;
+}
+
+/* =========================================================
+   Modal
+========================================================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    padding: 25px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.58);
+}
+
+.modal.show {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.modal-content {
+    width: 100%;
+    margin: 20px auto;
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.25);
+    animation: modalOpen 0.2s ease;
+}
+
+.large-modal {
+    max-width: 1180px;
+}
+
+@keyframes modalOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header,
+.modal-footer {
+    display: flex;
+    align-items: center;
+    padding: 18px 22px;
+}
+
+.modal-header {
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--primary-dark);
+}
+
+.modal-footer {
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.modal-body {
+    padding: 22px;
+}
+
+.close {
+    color: #687177;
+    cursor: pointer;
+    font-size: 31px;
+    line-height: 1;
+}
+
+.close:hover {
+    color: var(--danger);
+}
+
+/* =========================================================
+   Return Items
+========================================================= */
+
+.modal-body h3 {
+    margin: 8px 0 14px;
+    color: var(--primary-dark);
+}
+
+.return-qty {
+    min-width: 100px;
+    padding: 8px 9px;
+}
+
+.summary-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin: 22px 0;
+    padding: 18px 20px;
+    border: 1px solid #bcd6cc;
+    border-radius: 10px;
+    background: #eff8f4;
+}
+
+.summary-box h2,
+.summary-box h1 {
+    margin: 0;
+}
+
+.summary-box h2 {
+    color: var(--primary-dark);
+    font-size: 19px;
+}
+
+.summary-box h1 {
+    color: var(--primary);
+    font-size: 29px;
+}
+
+/* =========================================================
+   Mobile
+========================================================= */
+
+@media (max-width: 950px) {
+    .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .page-container {
+        width: min(100% - 20px, 1400px);
+        margin: 15px auto;
+    }
+
+    .page-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .page-header .btn {
+        width: 100%;
+    }
+
+    .filter-grid,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card,
+    .modal-body {
+        padding: 16px;
+    }
+
+    .modal {
+        padding: 8px;
+    }
+
+    .modal-content {
+        margin: 8px auto;
+    }
+
+    .modal-header,
+    .modal-footer {
+        padding: 15px 16px;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+
+    .summary-box {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .summary-box h1 {
+        font-size: 24px;
+    }
+}
+
+.page-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.page-header-actions a {
+    text-decoration: none;
+}
+
+@media (max-width: 700px) {
+    .page-header-actions {
+        width: 100%;
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .page-header-actions .btn {
+        width: 100%;
+    }
+}
+/* ==========================================================
+   Purchase Return Action Buttons
+========================================================== */
+
+.action-buttons{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.btn-action{
+    width:36px;
+    height:36px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .25s ease;
+    font-size:14px;
+}
+
+.btn-action i{
+    color:unset !important;
+}
+
+.btn-view i{
+    color:#2563EB !important;
+}
+
+.btn-edit i{
+    color:#D97706 !important;
+}
+
+.btn-print i{
+    color:#0891B2 !important;
+}
+
+.btn-delete i{
+    color:#DC2626 !important;
+}
+
+.btn-payment i{
+    color:#7C3AED !important;
+}
+
+.btn-receive i{
+    color:#16A34A !important;
+}
+
+/* View */
+.btn-view{
+    background:#E8F1FF !important;
+    color:#2563EB !important;
+}
+
+/* Edit */
+.btn-edit{
+    background:#FFF4D6 !important;
+    color:#D97706 !important;
+}
+
+/* Receive */
+.btn-receive{
+    background:#E8FFF1 !important;
+    color:#16A34A !important;
+}
+
+/* Payment */
+.btn-payment{
+    background:#F3E8FF !important;
+    color:#7C3AED !important;
+}
+
+/* Print */
+.btn-print{
+    background:#E0F7FA !important;
+    color:#0891B2 !important;
+}
+
+/* Delete */
+.btn-delete{
+    background:#FDECEC !important;
+    color:#DC2626 !important;
+}
+
+/* Hover */
+.btn-action:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 15px rgba(0,0,0,.15);
+}
+
+/* =========================================================
+   Purchase Return View State
+========================================================= */
+
+.purchase-return-state-message {
+    display: flex;
+    align-items: center;
+}
+
+.purchase-return-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.purchase-return-state.draft {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.purchase-return-state.completed {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.purchase-return-state.cancelled {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.btn-success {
+    background: #16734f;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: #105d3f;
+}
+
+.btn-danger {
+    background: #b42318;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #8f1c14;
+}

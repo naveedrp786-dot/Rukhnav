@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Purchase Orders | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/purchasing-v5.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page purchasing-v5-page purchase-list-page">
+            <header class="erp-v5-hero">
+                <div class="erp-v5-hero__copy">
+                    <span class="erp-v5-eyebrow">
+                        <i class="fa-solid fa-file-circle-plus"></i>
+                        Procurement
+                    </span>
+                    <h1>Purchase Orders</h1>
+                    <p>Monitor supplier purchase orders and their current fulfilment status.</p>
+                </div>
+                <div class="erp-v5-hero__actions">
+                    <button type="button" class="erp-v5-btn erp-v5-btn--gold" onclick="location.reload()">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <nav class="purchase-subnav">
+                <a href="/admin/purchasing/pages/purchasing-dashboard.html">Dashboard</a>
+<a href="/admin/purchases.html">Purchase Orders</a>
+<a href="/admin/goods-receipts.html">Goods Receipts</a>
+<a href="/admin/supplierPayments.html">Supplier Payments</a>
+<a href="/admin/purchaseReturns.html">Purchase Returns</a>
+<a href="/admin/supplier-debit-notes.html">Debit Notes</a>
+            </nav>
+
+            <div id="notice" class="erp-v5-message" style="display:none"></div>
+
+            <section class="erp-v5-panel">
+                <div class="erp-v5-panel-heading">
+                    <div>
+                        <span class="erp-v5-section-label">Purchasing Records</span>
+                        <h2>Purchase Orders</h2>
+                        <p>Review and manage the current purchasing records.</p>
+                    </div>
+                </div>
+
+                <div class="erp-v5-table-wrap">
+                    <table class="erp-v5-table">
+                        <thead>
+                            <tr><th>ID</th><th>PO Number</th><th>Supplier / PO</th><th>Status</th><th>Amount</th></tr>
+                        </thead>
+                        <tbody id="rows"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/purchasingApi.js"></script>
+<script src="/admin/js/purchaseOrders.js"></script>
+</body>
+</html>
