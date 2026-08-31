@@ -115,5 +115,33 @@
 <script src="js/components.js"></script>
 <script src="js/store.js"></script>
 <script src="js/orders.js"></script>
+<script>
+document.getElementById("btnGuestTrack")?.addEventListener("click", async () => {
+    const orderNumber = document.getElementById("guestOrderNumber").value.trim();
+    const contactInfo = document.getElementById("guestContactInfo").value.trim();
+    const resultDiv = document.getElementById("guestTrackResult");
+    if (!orderNumber || !contactInfo) {
+        resultDiv.innerHTML = "<span style=x27color: red;x27>Please enter both order number and contact details.</span>";
+        return;
+    }
+    resultDiv.innerHTML = "Searching system...";
+    try {
+        const response = await fetch("/api/orders/guest-track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderNumber, contactInfo })
+        });
+        const data = await response.json();
+        if (data.success) {
+            resultDiv.innerHTML = `<span style="color: green; font-weight: bold;">Order Found! Status: ${data.order.status || "Processing"}</span>`;
+        } else {
+            resultDiv.innerHTML = `<span style="color: red;">${data.message || "No order found matches those entries."}</span>...`;
+        }
+    } catch (err) {
+        resultDiv.innerHTML = "<span style=x27color: red;x27>Error connecting to verification server.</span>";
+    }
+});
+</script>
+
 </body>
 </html>
