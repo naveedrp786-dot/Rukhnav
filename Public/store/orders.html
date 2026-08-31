@@ -6,36 +6,96 @@
     <title>Track Your Orders | RUKHNAV</title>
     <link rel="stylesheet" href="/admin/css/style.css">
     <style>
-        .track-container { max-width: 500px; margin: 60px auto; padding: 30px; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-family: sans-serif; }
-        .track-title { font-size: 1.75rem; font-weight: bold; color: #333; margin-bottom: 8px; text-align: center; }
-        .track-subtitle { font-size: 0.95rem; color: #666; margin-bottom: 24px; text-align: center; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: #444; font-weight: 500; }
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 20px; font-family: sans-serif; }
+        .header-banner { background: #4A154B; color: white; text-align: center; padding: 10px; font-size: 0.9rem; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; background: white; }
+        .logo-text { font-size: 1.8rem; font-weight: bold; color: #4A154B; letter-spacing: 1px; }
+        .search-box { flex: 1; max-width: 500px; margin: 0 40px; display: flex; }
+        .search-box input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px 0 0 4px; }
+        .search-box button { padding: 10px 20px; background: #555; color: white; border: none; border-radius: 0 4px 4px 0; cursor: pointer; }
+        .nav-links { display: flex; gap: 20px; font-size: 0.9rem; font-weight: bold; color: #555; background: #3a103c; padding: 12px 20px; justify-content: center; }
+        .nav-links a { color: white; text-decoration: none; padding: 5px 10px; }
+        .track-card { max-width: 500px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: #444; font-weight: bold; }
         .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
-        .btn-track { width: 100%; padding: 14px; background: #4A154B; color: #fff; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .btn-track:hover { background: #3a103c; }
+        .btn-track { width: 100%; padding: 14px; background: #4A154B; color: #fff; border: none; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; }
         #trackResult { margin-top: 20px; padding: 15px; border-radius: 4px; font-size: 1rem; text-align: center; display: none; }
+        .footer-container { background: #333; color: #ccc; padding: 40px 20px; margin-top: 60px; font-size: 0.9rem; }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
+        .footer-col h4 { color: white; margin-bottom: 15px; }
+        .footer-col a { color: #ccc; text-decoration: none; display: block; margin-bottom: 8px; }
     </style>
 </head>
-<body style="background-color: #f8f9fa; margin: 0;">
+<body style="background-color: #fcfbfa; margin: 0;">
 
-    <div class="track-container">
-        <div class="track-title">Your Orders</div>
-        <div class="track-subtitle">Review purchases, payments, delivery progress, and shipment tracking.</div>
-        
-        <form id="orderTrackForm">
-            <div class="form-group">
-                <label for="orderNumber">Order Number</label>
-                <input type="text" id="orderNumber" class="form-control" placeholder="e.g. 10024" required>
-            </div>
-            <div class="form-group">
-                <label for="contactInfo">Mobile Number or Email Address</label>
-                <input type="text" id="contactInfo" class="form-control" placeholder="e.g. customer@email.com or phone" required>
-            </div>
-            <button type="submit" class="btn-track">Track Order Status</button>
-        </form>
+    <div class="header-banner">Free delivery across Pakistan on qualifying orders</div>
 
-        <div id="trackResult"></div>
+    <div class="nav-container">
+        <div class="logo-text">RUKHNAV</div>
+        <div class="search-box">
+            <input type="text" placeholder="Search RUKHNAV beauty products...">
+            <button>🔍</button>
+        </div>
+    </div>
+
+    <div class="nav-links">
+        <a href="#">All Products</a>
+        <a href="#">Fashion</a>
+        <a href="#">Body Care</a>
+        <a href="#">Face Care</a>
+        <a href="#">Hair Care</a>
+        <a href="#">New Arrivals</a>
+        <a href="#">Rewards</a>
+        <a href="#">Returns</a>
+        <a href="#">Help</a>
+    </div>
+
+    <div class="main-content">
+        <h1 style="font-size: 2.5rem; margin-top: 30px; color: #222;">Your orders</h1>
+        <p style="color: #666; margin-bottom: 30px;">Review purchases, payments, delivery progress and shipment tracking.</p>
+
+        <div class="track-card">
+            <h3 style="margin-top: 0; margin-bottom: 20px; color: #333; font-size: 1.3rem; text-align: center;">Track Order Status</h3>
+            <form id="orderTrackForm">
+                <div class="form-group">
+                    <label>Order Number</label>
+                    <input type="text" id="orderNumber" class="form-control" placeholder="e.g. 10024" required>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number or Email Address</label>
+                    <input type="text" id="contactInfo" class="form-control" placeholder="e.g. customer@email.com or phone" required>
+                </div>
+                <button type="submit" class="btn-track">Track Order Status</button>
+            </form>
+            <div id="trackResult"></div>
+        </div>
+    </div>
+
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>RUKHNAV</h4>
+                <p style="font-size: 0.8rem; max-width: 200px;">Natural cosmetics and hair-care products crafted with care.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <a href="#">All Products</a>
+                <a href="#">Hair Care</a>
+                <a href="#">Skin Care</a>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Care</h4>
+                <a href="#">My Account</a>
+                <a href="/store/orders.html">Track Orders</a>
+                <a href="#">Returns & Refunds</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p style="margin: 0; font-size: 0.85rem;">naveedrp786@gmail.com</p>
+                <p style="margin: 5px 0 0 0; font-size: 0.85rem;">WhatsApp Available</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -46,9 +106,9 @@
             const resultDiv = document.getElementById("trackResult");
 
             resultDiv.style.display = "block";
-            resultDiv.style.background = "#f1f1f1";
+            resultDiv.style.background = "#f5f5f5";
             resultDiv.style.color = "#333";
-            resultDiv.innerHTML = "Searching system...";
+            resultDiv.innerHTML = "Searching active records...";
 
             try {
                 const response = await fetch("/api/orders/guest-track", {
@@ -61,7 +121,7 @@
                 if (data.success) {
                     resultDiv.style.background = "#e6f4ea";
                     resultDiv.style.color = "#137333";
-                    resultDiv.innerHTML = `<strong>Order Found! Status:</strong> ${data.order.status || "Processing"}`;
+                    resultDiv.innerHTML = `<div style="font-weight: bold; margin-bottom: 5px;">Order Found!</div>Status: ${data.order.status || "Processing"}`;
                 } else {
                     resultDiv.style.background = "#fce8e6";
                     resultDiv.style.color = "#c5221f";
@@ -70,7 +130,7 @@
             } catch (err) {
                 resultDiv.style.background = "#fce8e6";
                 resultDiv.style.color = "#c5221f";
-                resultDiv.innerHTML = "Error connecting to verification server.";
+                resultDiv.innerHTML = "Error establishing server connection.";
             }
         });
     </script>
