@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>RUKHNAV ERP - Orders</title>
+
+    <!-- Shared ERP Styles -->
+    <link
+        rel="stylesheet"
+        href="css/erp.css">
+
+    <!-- Orders Page Styles -->
+    <link
+        rel="stylesheet"
+        href="css/orders.css">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- =====================================
+         Shared Sidebar
+    ====================================== -->
+
+    <div id="sidebar-container"></div>
+
+    <!-- =====================================
+         Main Content
+    ====================================== -->
+
+    <main class="main">
+
+        <!-- Shared Topbar -->
+
+        <div id="topbar-container"></div>
+
+        <!-- =====================================
+             Page Header
+        ====================================== -->
+
+        <section class="orders-page-header">
+
+            <div class="orders-heading">
+
+                <span class="orders-eyebrow">
+                    Sales Operations
+                </span>
+
+                <h1>
+                    Order Management
+                </h1>
+
+                <p>
+                    Review customer orders, payments, delivery
+                    progress, shipping details and order activity.
+                </p>
+
+            </div>
+
+            <div class="header-actions">
+
+                <button
+                    type="button"
+                    id="refreshOrdersBtn"
+                    class="secondary-btn">
+
+                    <i class="fa-solid fa-rotate"></i>
+
+                    Refresh
+
+                </button>
+
+                <button
+                    type="button"
+                    id="exportOrdersBtn"
+                    class="primary-btn">
+
+                    <i class="fa-solid fa-file-csv"></i>
+
+                    Export CSV
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================
+             Summary Cards
+        ====================================== -->
+
+        <section class="orders-summary-grid">
+
+            <!-- Total Orders -->
+
+            <article
+                class="order-summary-card summary-total">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-bag-shopping"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Total Orders
+                    </span>
+
+                    <strong id="totalOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <!-- Pending Orders -->
+
+            <article
+                class="order-summary-card summary-pending">
+
+                <div class="summary-icon">
+
+                    <i class="fa-regular fa-clock"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Pending
+                    </span>
+
+                    <strong id="pendingOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <!-- Confirmed Orders -->
+
+            <article
+                class="order-summary-card summary-confirmed">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-clipboard-check"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Confirmed
+                    </span>
+
+                    <strong id="confirmedOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <!-- Processing Orders -->
+
+            <article
+                class="order-summary-card summary-processing">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-gears"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Processing
+                    </span>
+
+                    <strong id="processingOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <!-- Shipped Orders -->
+
+            <article
+                class="order-summary-card summary-shipped">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-truck-fast"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Shipped
+                    </span>
+
+                    <strong id="shippedOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <!-- Delivered Orders -->
+
+            <article
+                class="order-summary-card summary-delivered">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Delivered
+                    </span>
+
+                    <strong id="deliveredOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <!-- Cancelled Orders -->
+
+            <article
+                class="order-summary-card summary-cancelled">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-ban"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Cancelled
+                    </span>
+
+                    <strong id="cancelledOrders">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <!-- Paid Revenue -->
+
+            <article
+                class="order-summary-card summary-revenue">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-coins"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Paid Revenue
+                    </span>
+
+                    <strong id="paidRevenue">
+                        Rs. 0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <!-- Pending Payments -->
+
+            <article
+                class="order-summary-card summary-payment">
+
+                <div class="summary-icon">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Pending Payments
+                    </span>
+
+                    <strong id="pendingPaymentValue">
+                        Rs. 0
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- =====================================
+             Search and Filters
+        ====================================== -->
+
+        <section class="orders-panel orders-filter-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2>
+                        Find Orders
+                    </h2>
+
+                    <p>
+                        Search, filter and sort your order records.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="clearFiltersBtn"
+                    class="text-btn">
+
+                    <i class="fa-solid fa-filter-circle-xmark"></i>
+
+                    Clear Filters
+
+                </button>
+
+            </div>
+
+            <form
+                id="ordersFilterForm"
+                class="orders-filter-grid">
+
+                <!-- Search -->
+
+                <div class="filter-field search-field">
+
+                    <label for="orderSearch">
+                        Search
+                    </label>
+
+                    <div class="input-with-icon">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            id="orderSearch"
+                            name="search"
+                            type="search"
+                            autocomplete="off"
+                            placeholder="Order number, customer, phone or email">
+
+                    </div>
+
+                </div>
+
+                <!-- Order Status -->
+
+                <div class="filter-field">
+
+                    <label for="orderStatusFilter">
+                        Order Status
+                    </label>
+
+                    <select
+                        id="orderStatusFilter"
+                        name="status">
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Confirmed">
+                            Confirmed
+                        </option>
+
+                        <option value="Processing">
+                            Processing
+                        </option>
+
+                        <option value="Shipped">
+                            Shipped
+                        </option>
+
+                        <option value="Delivered">
+                            Delivered
+                        </option>
+
+                        <option value="Cancelled">
+                            Cancelled
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Payment Status -->
+
+                <div class="filter-field">
+
+                    <label for="paymentStatusFilter">
+                        Payment Status
+                    </label>
+
+                    <select
+                        id="paymentStatusFilter"
+                        name="payment_status">
+
+                        <option value="">
+                            All Payments
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Paid">
+                            Paid
+                        </option>
+
+                        <option value="Failed">
+                            Failed
+                        </option>
+
+                        <option value="Refunded">
+                            Refunded
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Payment Method -->
+
+                <div class="filter-field">
+
+                    <label for="paymentMethodFilter">
+                        Payment Method
+                    </label>
+
+                    <select
+                        id="paymentMethodFilter"
+                        name="payment_method">
+
+                        <option value="">
+                            All Methods
+                        </option>
+
+                        <option value="cash_on_delivery">
+                            Cash on Delivery
+                        </option>
+
+                        <option value="bank_transfer">
+                            Bank Transfer
+                        </option>
+
+                        <option value="jazzcash">
+                            JazzCash
+                        </option>
+
+                        <option value="easypaisa">
+                            Easypaisa
+                        </option>
+
+                        <option value="card">
+                            Credit / Debit Card
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Date From -->
+
+                <div class="filter-field">
+
+                    <label for="dateFromFilter">
+                        Date From
+                    </label>
+
+                    <input
+                        id="dateFromFilter"
+                        name="date_from"
+                        type="date">
+
+                </div>
+
+                <!-- Date To -->
+
+                <div class="filter-field">
+
+                    <label for="dateToFilter">
+                        Date To
+                    </label>
+
+                    <input
+                        id="dateToFilter"
+                        name="date_to"
+                        type="date">
+
+                </div>
+
+                <!-- Sort -->
+
+                <div class="filter-field">
+
+                    <label for="sortOrders">
+                        Sort By
+                    </label>
+
+                    <select
+                        id="sortOrders"
+                        name="sort">
+
+                        <option value="newest">
+                            Newest First
+                        </option>
+
+                        <option value="oldest">
+                            Oldest First
+                        </option>
+
+                        <option value="total_high">
+                            Highest Total
+                        </option>
+
+                        <option value="total_low">
+                            Lowest Total
+                        </option>
+
+                        <option value="status">
+                            Order Status
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Page Size -->
+
+                <div class="filter-field">
+
+                    <label for="ordersPageSize">
+                        Rows Per Page
+                    </label>
+
+                    <select id="ordersPageSize">
+
+                        <option value="10">
+                            10
+                        </option>
+
+                        <option
+                            value="20"
+                            selected>
+                            20
+                        </option>
+
+                        <option value="50">
+                            50
+                        </option>
+
+                        <option value="100">
+                            100
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Apply Button -->
+
+                <div class="filter-actions">
+
+                    <button
+                        type="submit"
+                        class="primary-btn">
+
+                        <i class="fa-solid fa-filter"></i>
+
+                        Apply Filters
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+         <!-- =====================================
+             Orders Table
+        ====================================== -->
+
+        <section class="orders-panel orders-table-panel">
+
+            <div class="panel-heading table-panel-heading">
+
+                <div>
+
+                    <h2>
+                        Customer Orders
+                    </h2>
+
+                    <p>
+
+                        <span id="ordersResultCount">
+                            0
+                        </span>
+
+                        order records found.
+
+                    </p>
+
+                </div>
+
+                <span
+                    id="ordersLastUpdated"
+                    class="last-updated">
+
+                    Not updated yet
+
+                </span>
+
+            </div>
+
+            <!-- Loading State -->
+
+            <div
+                id="ordersLoading"
+                class="orders-loading hidden"
+                aria-live="polite">
+
+                <span class="spinner"></span>
+
+                Loading orders...
+
+            </div>
+
+            <!-- Table Wrapper -->
+
+            <div class="orders-table-wrapper">
+
+                <table class="orders-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Order
+                            </th>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Items
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+                            <th>
+                                Payment
+                            </th>
+
+                            <th>
+                                Order Status
+                            </th>
+
+                            <th>
+                                Delivery
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th class="actions-column">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="ordersTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="empty-table-cell">
+
+                                Loading orders...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Pagination -->
+
+            <div class="orders-pagination">
+
+                <p id="paginationSummary">
+                    Showing 0 of 0 orders
+                </p>
+
+                <div class="pagination-controls">
+
+                    <button
+                        type="button"
+                        id="previousPageBtn"
+                        class="pagination-btn"
+                        disabled>
+
+                        <i class="fa-solid fa-chevron-left"></i>
+
+                        Previous
+
+                    </button>
+
+                    <div
+                        id="paginationPages"
+                        class="pagination-pages">
+                    </div>
+
+                    <button
+                        type="button"
+                        id="nextPageBtn"
+                        class="pagination-btn"
+                        disabled>
+
+                        Next
+
+                        <i class="fa-solid fa-chevron-right"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Shared Footer -->
+
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+<!-- =====================================
+     Order Details Drawer
+====================================== -->
+
+<div
+    id="orderDrawerOverlay"
+    class="drawer-overlay hidden">
+</div>
+
+<aside
+    id="orderDetailsDrawer"
+    class="order-drawer"
+    aria-hidden="true">
+
+    <div class="drawer-header">
+
+        <div>
+
+            <span class="drawer-eyebrow">
+                Order Details
+            </span>
+
+            <h2 id="drawerOrderNumber">
+                Order
+            </h2>
+
+        </div>
+
+        <button
+            type="button"
+            id="closeOrderDrawerBtn"
+            class="icon-btn"
+            aria-label="Close order details">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+    <div
+        id="orderDrawerContent"
+        class="drawer-content">
+
+        <div class="drawer-loading">
+
+            <span class="spinner"></span>
+
+            Select an order to view details.
+
+        </div>
+
+    </div>
+
+</aside>
+
+<!-- =====================================
+     Update Order Status Modal
+====================================== -->
+
+<div
+    id="orderStatusModal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="orderStatusModalTitle">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="modal-eyebrow">
+                    Order Workflow
+                </span>
+
+                <h2 id="orderStatusModalTitle">
+                    Update Order Status
+                </h2>
+
+            </div>
+
+            <button
+                type="button"
+                class="icon-btn close-modal-btn"
+                data-close-modal="orderStatusModal"
+                aria-label="Close status modal">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <form id="orderStatusForm">
+
+            <input
+                type="hidden"
+                id="statusOrderId">
+
+            <div class="form-group">
+
+                <label for="newOrderStatus">
+                    New Status
+                </label>
+
+                <select
+                    id="newOrderStatus"
+                    required>
+
+                    <option value="">
+                        Select status
+                    </option>
+
+                    <option value="Confirmed">
+                        Confirmed
+                    </option>
+
+                    <option value="Processing">
+                        Processing
+                    </option>
+
+                    <option value="Shipped">
+                        Shipped
+                    </option>
+
+                    <option value="Delivered">
+                        Delivered
+                    </option>
+
+                    <option value="Cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="orderStatusNotes">
+                    Notes
+                </label>
+
+                <textarea
+                    id="orderStatusNotes"
+                    rows="4"
+                    maxlength="1000"
+                    placeholder="Optional note about this status change"></textarea>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn close-modal-btn"
+                    data-close-modal="orderStatusModal">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    <i class="fa-solid fa-check"></i>
+
+                    Update Status
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- =====================================
+     Update Payment Modal
+====================================== -->
+
+<div
+    id="paymentModal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="paymentModalTitle">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="modal-eyebrow">
+                    Payment
+                </span>
+
+                <h2 id="paymentModalTitle">
+                    Update Payment
+                </h2>
+
+            </div>
+
+            <button
+                type="button"
+                class="icon-btn close-modal-btn"
+                data-close-modal="paymentModal"
+                aria-label="Close payment modal">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <form id="paymentForm">
+
+            <input
+                type="hidden"
+                id="paymentOrderId">
+
+            <div class="form-group">
+
+                <label for="newPaymentStatus">
+                    Payment Status
+                </label>
+
+                <select
+                    id="newPaymentStatus"
+                    required>
+
+                    <option value="">
+                        Select payment status
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                    <option value="Paid">
+                        Paid
+                    </option>
+
+                    <option value="Failed">
+                        Failed
+                    </option>
+
+                    <option value="Refunded">
+                        Refunded
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="paymentTransactionId">
+                    Transaction ID
+                </label>
+
+                <input
+                    id="paymentTransactionId"
+                    type="text"
+                    maxlength="150"
+                    placeholder="Optional transaction reference">
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="paymentNotes">
+                    Notes
+                </label>
+
+                <textarea
+                    id="paymentNotes"
+                    rows="4"
+                    maxlength="1000"
+                    placeholder="Optional payment note"></textarea>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn close-modal-btn"
+                    data-close-modal="paymentModal">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    <i class="fa-solid fa-credit-card"></i>
+
+                    Update Payment
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- =====================================
+     Update Shipping Modal
+====================================== -->
+
+<div
+    id="shippingModal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="shippingModalTitle">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="modal-eyebrow">
+                    Delivery
+                </span>
+
+                <h2 id="shippingModalTitle">
+                    Update Shipping
+                </h2>
+
+            </div>
+
+            <button
+                type="button"
+                class="icon-btn close-modal-btn"
+                data-close-modal="shippingModal"
+                aria-label="Close shipping modal">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <form id="shippingForm">
+
+            <input
+                type="hidden"
+                id="shippingOrderId">
+
+            <div class="form-group">
+
+                <label for="trackingNumber">
+                    Tracking Number
+                </label>
+
+                <input
+                    id="trackingNumber"
+                    type="text"
+                    maxlength="150"
+                    placeholder="Courier tracking number">
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="trackingUrl">
+                    Tracking URL
+                </label>
+
+                <input
+                    id="trackingUrl"
+                    type="url"
+                    maxlength="1000"
+                    placeholder="https://courier.example/track/...">
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="estimatedDeliveryDate">
+                    Estimated Delivery Date
+                </label>
+
+                <input
+                    id="estimatedDeliveryDate"
+                    type="date">
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="shippingNotes">
+                    Notes
+                </label>
+
+                <textarea
+                    id="shippingNotes"
+                    rows="4"
+                    maxlength="1000"
+                    placeholder="Optional shipping note"></textarea>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn close-modal-btn"
+                    data-close-modal="shippingModal">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    <i class="fa-solid fa-truck"></i>
+
+                    Save Shipping
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- =====================================
+     Confirmation Modal
+====================================== -->
+
+<div
+    id="confirmModal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirmModalTitle">
+
+    <div class="modal-card modal-card-small">
+
+        <div class="confirm-icon">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+        </div>
+
+        <h2 id="confirmModalTitle">
+            Confirm Action
+        </h2>
+
+        <p id="confirmModalMessage">
+            Are you sure you want to continue?
+        </p>
+
+        <div class="modal-actions centred-actions">
+
+            <button
+                type="button"
+                id="cancelConfirmBtn"
+                class="secondary-btn">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                id="approveConfirmBtn"
+                class="danger-btn">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================
+     Toast Notifications
+====================================== -->
+
+<div
+    id="toastContainer"
+    class="toast-container"
+    aria-live="polite"
+    aria-atomic="true">
+</div>
+
+<!-- =====================================
+     Scripts
+====================================== -->
+
+<script src="js/componentLoader.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/orders.js"></script>
+
+</body>
+
+</html>       

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Purchasing Dashboard | RUKHNAV ERP</title>
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/purchasing/css/purchasing-dashboard-erp.css"
+    >
+
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/purchasing-v5.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+
+        <div id="topbar-container"></div>
+
+        <section class="content purchasing-dashboard-page purchasing-v5-page">
+
+            <div class="purchasing-page-header">
+
+                <div>
+                    <span class="page-label">
+                        Purchasing
+                    </span>
+
+                    <h1>
+                        <i class="fa-solid fa-chart-line"></i>
+                        Purchasing Dashboard
+                    </h1>
+
+                    <p>
+                        Complete live overview of suppliers, purchase orders,
+                        receipts, payments, returns, debit notes and accounts payable.
+                    </p>
+                </div>
+
+                <div class="page-actions">
+                    <button
+                        type="button"
+                        id="refreshDashboardBtn"
+                        class="secondary-btn"
+                    >
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+
+                    <a
+                        href="/admin/purchases.html"
+                        class="primary-btn"
+                    >
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Purchase Orders
+                    </a>
+                </div>
+
+            </div>
+
+            <div
+                id="dashboardMessage"
+                class="dashboard-message"
+                role="alert"
+            ></div>
+
+            <section
+                id="summaryCards"
+                class="purchasing-summary-grid"
+            >
+                <article class="purchasing-summary-card loading-card">
+                    Loading dashboard...
+                </article>
+            </section>
+
+            <section class="analytics-grid">
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Purchase Analytics</span>
+                            <h2>Monthly Purchases</h2>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="monthlyPurchasesChart"></canvas>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Payment Analytics</span>
+                            <h2>Monthly Supplier Payments</h2>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="monthlyPaymentsChart"></canvas>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Workflow</span>
+                            <h2>Purchase Order Status</h2>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrap compact">
+                        <canvas id="poStatusChart"></canvas>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Accounts Payable</span>
+                            <h2>Payment Status</h2>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrap compact">
+                        <canvas id="paymentStatusChart"></canvas>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="two-column-grid">
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Supplier Performance</span>
+                            <h2>Top Suppliers</h2>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Supplier</th>
+                                    <th>POs</th>
+                                    <th>Purchases</th>
+                                    <th>Paid</th>
+                                    <th>Outstanding</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topSuppliersBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Product Procurement</span>
+                            <h2>Top Purchased Products</h2>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Ordered</th>
+                                    <th>Received</th>
+                                    <th>Purchase Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topProductsBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="dashboard-panel full-width-panel">
+                <div class="panel-header">
+                    <div>
+                        <span>Purchase Orders</span>
+                        <h2>Recent Purchase Orders</h2>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PO Number</th>
+                                <th>Supplier</th>
+                                <th>Order Date</th>
+                                <th>Expected</th>
+                                <th>Total</th>
+                                <th>Paid</th>
+                                <th>Balance</th>
+                                <th>PO Status</th>
+                                <th>Payment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentPOsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="two-column-grid">
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Goods Receipt</span>
+                            <h2>Recent GRNs</h2>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>GRN</th>
+                                    <th>PO</th>
+                                    <th>Supplier</th>
+                                    <th>Accepted</th>
+                                    <th>Rejected</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentGRNsBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Supplier Payments</span>
+                            <h2>Recent Payments</h2>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Payment</th>
+                                    <th>Supplier</th>
+                                    <th>PO</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentPaymentsBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="two-column-grid">
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Purchase Returns</span>
+                            <h2>Recent Returns</h2>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Return</th>
+                                    <th>Supplier</th>
+                                    <th>PO</th>
+                                    <th>Date</th>
+                                    <th>Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentReturnsBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span>Supplier Debit Notes</span>
+                            <h2>Recent Debit Notes</h2>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Debit Note</th>
+                                    <th>Supplier</th>
+                                    <th>PO</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentDebitNotesBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="dashboard-panel full-width-panel">
+                <div class="panel-header">
+                    <div>
+                        <span>Audit Trail</span>
+                        <h2>Recent Purchasing Activity</h2>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PO Number</th>
+                                <th>Activity</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </section>
+
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="/admin/js/componentLoader.js"></script>
+
+<script src="/admin/purchasing/js/dashboard.js"></script>
+
+</body>
+</html>

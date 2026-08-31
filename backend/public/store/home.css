@@ -1,0 +1,242 @@
+/* RUKHNAV CLEAN HOMEPAGE — intentionally isolated from old site CSS */
+
+:root{
+    --rk-green:#123f34;
+    --rk-green-dark:#082a23;
+    --rk-gold:#c7a45b;
+    --rk-cream:#fbf8f0;
+    --rk-soft:#edf3ef;
+    --rk-ink:#1e2c28;
+    --rk-muted:#68736e;
+    --rk-border:rgba(18,63,52,.14);
+    --rk-shadow:0 18px 50px rgba(8,42,35,.12);
+}
+
+body.rk-home{
+    margin:0;
+    background:var(--rk-cream);
+    color:var(--rk-ink);
+    font-family:"Poppins",sans-serif;
+    overflow-x:hidden;
+}
+
+body.rk-home *,
+body.rk-home *::before,
+body.rk-home *::after{box-sizing:border-box}
+
+body.rk-home img{display:block;max-width:100%;padding:0}
+body.rk-home a{text-decoration:none}
+body.rk-home p{margin:0;color:var(--rk-muted)}
+body.rk-home h1,
+body.rk-home h2,
+body.rk-home h3{margin:0;color:var(--rk-ink)}
+
+body.rk-home .rk-shell,
+body.rk-home #shared-store-header .container,
+body.rk-home #shared-store-footer .container{
+    width:min(1160px,calc(100% - 40px));
+    max-width:1160px;
+    margin-inline:auto;
+    padding-inline:0;
+}
+
+/* Keep the injected header compact */
+body.rk-home .store-announcement-bar{background:var(--rk-green-dark)}
+body.rk-home .store-announcement-bar .container{padding-block:7px}
+body.rk-home .store-header{background:#fff;border-bottom:1px solid var(--rk-border)}
+body.rk-home .store-header .navbar{
+    min-height:72px;
+    padding:8px 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+}
+body.rk-home .premium-store-logo{display:flex;align-items:center;gap:10px}
+body.rk-home .premium-store-logo img{width:52px;height:52px;object-fit:contain}
+body.rk-home .store-logo-text strong{display:block;font-size:18px;letter-spacing:.12em;color:var(--rk-green)}
+body.rk-home .store-logo-text small{display:block;font-size:9px;color:var(--rk-muted)}
+body.rk-home .store-header .nav{flex:1;text-align:center}
+body.rk-home .store-header .nav ul{display:flex;justify-content:center;align-items:center;gap:28px;margin:0;padding:0;list-style:none}
+body.rk-home .store-header .nav ul li{margin:0;display:block}
+body.rk-home .store-header .nav a{font-size:13px;color:var(--rk-ink);padding:10px 0}
+body.rk-home .store-header-actions{display:flex;align-items:center;gap:8px}
+body.rk-home .header-action,
+body.rk-home .store-menu-button{
+    width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--rk-border);
+    border-radius:50%;background:#fff;color:var(--rk-green)
+}
+
+/* Hero */
+.rk-hero{background:linear-gradient(135deg,#fbf8f0 0%,#f5ecdc 56%,#e7f0eb 100%)}
+.rk-hero-grid{min-height:560px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:54px;padding-block:56px}
+.rk-kicker{display:inline-flex;align-items:center;gap:8px;color:#a67c2f;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.rk-hero-copy h1{max-width:650px;margin:14px 0 18px;font:600 clamp(46px,5.3vw,72px)/.98 "Cormorant Garamond",serif;letter-spacing:-.035em}
+.rk-hero-copy>p{max-width:590px;font-size:15px;line-height:1.8}
+.rk-actions{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 22px}
+.rk-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:600;transition:.25s}
+.rk-btn-primary{background:var(--rk-green);color:#fff}
+.rk-btn-secondary{border:1px solid var(--rk-border);color:var(--rk-green);background:rgba(255,255,255,.65)}
+.rk-btn-gold{background:var(--rk-gold);color:var(--rk-green-dark)}
+.rk-trust{display:flex;flex-wrap:wrap;gap:18px;color:var(--rk-green);font-size:12px}
+.rk-trust i{color:var(--rk-gold);margin-right:5px}
+.rk-hero-art{display:grid;place-items:center}
+.rk-hero-card{position:relative;width:min(100%,390px);height:420px;padding:24px;border-radius:190px 190px 26px 26px;background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.8);box-shadow:var(--rk-shadow)}
+.rk-hero-card img{width:100%;height:100%;object-fit:contain}
+.rk-badge{position:absolute;z-index:2;right:8px;top:34px;width:82px;height:82px;border-radius:50%;display:grid;place-content:center;text-align:center;background:var(--rk-green);color:#fff;font:600 13px "Cormorant Garamond",serif}
+.rk-badge small{font:500 7px "Poppins",sans-serif;text-transform:uppercase;letter-spacing:.08em}
+
+/* Benefits */
+.rk-benefits{background:var(--rk-green-dark)}
+.rk-benefit-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.rk-benefit-grid article{display:flex;align-items:center;gap:12px;padding:18px;border-right:1px solid rgba(255,255,255,.09)}
+.rk-benefit-grid article:last-child{border-right:0}
+.rk-benefit-grid i{font-size:20px;color:var(--rk-gold)}
+.rk-benefit-grid strong{display:block;color:#fff;font-size:12px}
+.rk-benefit-grid span{display:block;color:rgba(255,255,255,.6);font-size:10px;margin-top:2px}
+
+/* Sections */
+.rk-section{padding:76px 0}
+.rk-section-head{max-width:650px}
+.rk-section-head.rk-center{text-align:center;margin:0 auto 36px}
+.rk-section-head h2,
+.rk-story-copy h2,
+.rk-newsletter-card h2{margin:8px 0 12px;font:600 clamp(34px,4vw,50px)/1.02 "Cormorant Garamond",serif;letter-spacing:-.025em}
+.rk-section-head p{font-size:13px;line-height:1.75}
+.rk-heading-row{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:34px}
+.rk-text-link{font-size:12px;color:var(--rk-green);font-weight:600;border-bottom:1px solid var(--rk-gold);padding-bottom:4px}
+
+/* Categories */
+.rk-categories{background:#fff}
+.rk-category-grid{display:grid;grid-template-columns:1.15fr .85fr;grid-template-rows:repeat(2,220px);gap:18px}
+.rk-category-card{position:relative;overflow:hidden;border-radius:20px;color:#fff}
+.rk-category-large{grid-row:1/3}
+.rk-category-card img{width:100%;height:100%;object-fit:cover;transition:.5s}
+.rk-category-card:hover img{transform:scale(1.04)}
+.rk-category-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,28,23,.84),rgba(5,28,23,.06) 65%)}
+.rk-category-copy{position:absolute;left:22px;right:22px;bottom:20px;display:flex;flex-direction:column;align-items:flex-start}
+.rk-category-copy small{font-size:9px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.rk-category-copy strong{margin:3px 0 5px;font:600 27px "Cormorant Garamond",serif}
+.rk-category-copy em{font-size:10px;font-style:normal;opacity:.8}
+
+/* Products */
+.rk-products{background:var(--rk-cream)}
+.rk-product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.rk-product-card{padding:12px;border:1px solid var(--rk-border);border-radius:18px;background:#fff;box-shadow:0 8px 25px rgba(8,42,35,.05)}
+.rk-product-image{position:relative;overflow:hidden;border-radius:13px;background:var(--rk-soft);aspect-ratio:1/1}
+.rk-product-image img{width:100%;height:100%;object-fit:cover}
+.rk-product-card h3{margin:12px 0 5px;font-size:14px;font-weight:600}
+.rk-product-card .rk-price{color:var(--rk-green);font-size:14px;font-weight:700}
+.rk-product-card .rk-card-actions{display:flex;gap:8px;margin-top:12px}
+.rk-product-card .rk-card-actions a,
+.rk-product-card .rk-card-actions button{flex:1;min-height:38px;border-radius:999px;border:1px solid var(--rk-border);font:600 11px "Poppins",sans-serif;cursor:pointer}
+.rk-product-card .rk-card-actions a{display:grid;place-items:center;color:var(--rk-green);background:#fff}
+.rk-product-card .rk-card-actions button{background:var(--rk-green);color:#fff}
+.rk-skeleton{min-height:330px;border-radius:18px;background:linear-gradient(90deg,#ece9e1 25%,#f8f6f0 50%,#ece9e1 75%);background-size:200% 100%;animation:rkShimmer 1.3s infinite}
+@keyframes rkShimmer{to{background-position:-200% 0}}
+.rk-product-state{grid-column:1/-1;padding:28px;text-align:center;border:1px solid var(--rk-border);border-radius:16px;background:#fff;color:var(--rk-muted)}
+
+/* Story */
+.rk-story{padding:78px 0;background:var(--rk-green-dark)}
+.rk-story-grid{display:grid;grid-template-columns:.85fr 1.15fr;align-items:center;gap:60px}
+.rk-story-art{min-height:390px;display:grid;place-items:center;border-radius:190px 190px 22px 22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.rk-story-art img{width:80%;max-height:360px;object-fit:contain}
+.rk-story-copy .rk-kicker{color:var(--rk-gold)}
+.rk-story-copy h2{color:#fff}
+.rk-story-copy>p{color:rgba(255,255,255,.7);font-size:13px;line-height:1.8}
+.rk-values{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:24px 0}
+.rk-values div{padding:14px 10px;border:1px solid rgba(255,255,255,.11);border-radius:12px}
+.rk-values strong{display:block;color:var(--rk-gold);font:600 22px "Cormorant Garamond",serif}
+.rk-values span{font-size:10px;color:rgba(255,255,255,.7)}
+
+/* Testimonials */
+.rk-testimonials{background:#fff}
+.rk-testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.rk-testimonial-grid article{padding:24px;border:1px solid var(--rk-border);border-radius:18px;background:var(--rk-cream)}
+.rk-testimonial-grid article:nth-child(2){background:var(--rk-green);transform:translateY(-8px)}
+.rk-testimonial-grid article:nth-child(2) p,
+.rk-testimonial-grid article:nth-child(2) strong{color:#fff}
+.rk-stars{margin-bottom:12px;color:var(--rk-gold);letter-spacing:2px;font-size:12px}
+.rk-testimonial-grid p{min-height:92px;font-size:12px;line-height:1.75}
+.rk-testimonial-grid strong{font-size:11px;color:var(--rk-ink)}
+
+/* Newsletter */
+.rk-newsletter{padding:0 0 76px;background:#fff}
+.rk-newsletter-card{display:grid;grid-template-columns:1fr .9fr;align-items:center;gap:36px;padding:40px;border-radius:24px;background:linear-gradient(135deg,#efe4cf,#f9f5ed)}
+.rk-newsletter-card h2{font-size:clamp(32px,4vw,44px)}
+.rk-newsletter-card p{font-size:12px;line-height:1.7}
+.rk-newsletter-form{display:grid;grid-template-columns:1fr auto;padding:7px;border:1px solid var(--rk-border);border-radius:999px;background:#fff}
+.rk-newsletter-form input{min-width:0;border:0;outline:0;padding:12px 14px;background:transparent;font:inherit}
+.rk-newsletter-form button{border:0;border-radius:999px;padding:12px 18px;background:var(--rk-green);color:#fff;font-weight:600;cursor:pointer}
+.rk-newsletter-form small{grid-column:1/-1;padding:7px 12px 1px;color:var(--rk-muted);font-size:9px}
+
+/* Footer normalization */
+body.rk-home .store-footer{margin:0}
+body.rk-home .store-footer img{padding:0}
+
+/* Responsive */
+@media (max-width:1024px){
+    .rk-hero-grid,.rk-story-grid{grid-template-columns:1fr}
+    .rk-hero-copy{text-align:center}
+    .rk-hero-copy>p{margin-inline:auto}
+    .rk-actions,.rk-trust{justify-content:center}
+    .rk-hero-card{height:360px}
+    .rk-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .rk-story-copy{text-align:center}
+}
+
+@media (max-width:820px){
+    body.rk-home .store-header .nav{display:none}
+    body.rk-home .store-header .nav.open{display:block;position:absolute;top:72px;left:0;right:0;z-index:99;background:#fff;border-top:1px solid var(--rk-border);box-shadow:var(--rk-shadow)}
+    body.rk-home .store-header .nav.open ul{flex-direction:column;gap:0;padding:12px 20px}
+    body.rk-home .store-menu-button{display:grid}
+    .rk-benefit-grid{grid-template-columns:repeat(2,1fr)}
+    .rk-benefit-grid article:nth-child(2){border-right:0}
+    .rk-category-grid{grid-template-columns:1fr;grid-template-rows:repeat(3,240px)}
+    .rk-category-large{grid-row:auto}
+    .rk-testimonial-grid{grid-template-columns:1fr}
+    .rk-testimonial-grid article:nth-child(2){transform:none}
+    .rk-newsletter-card{grid-template-columns:1fr}
+}
+
+@media (max-width:600px){
+    body.rk-home .rk-shell,
+    body.rk-home #shared-store-header .container,
+    body.rk-home #shared-store-footer .container{width:min(100% - 28px,1160px)}
+    .rk-hero-grid{min-height:auto;padding-block:42px;gap:28px}
+    .rk-hero-copy h1{font-size:42px}
+    .rk-hero-card{height:315px;width:min(100%,310px)}
+    .rk-badge{width:70px;height:70px;font-size:11px}
+    .rk-benefit-grid{grid-template-columns:1fr}
+    .rk-benefit-grid article{border-right:0;border-bottom:1px solid rgba(255,255,255,.08)}
+    .rk-section,.rk-story{padding:58px 0}
+    .rk-heading-row{align-items:flex-start;flex-direction:column}
+    .rk-product-grid{grid-template-columns:1fr}
+    .rk-values{grid-template-columns:1fr}
+    .rk-newsletter-card{padding:26px 20px}
+    .rk-newsletter-form{grid-template-columns:1fr;border-radius:16px}
+    .rk-newsletter-form button{border-radius:12px}
+}
+
+
+/* =========================================================
+   WEBSITE MANAGEMENT PRO — NON-DESTRUCTIVE CMS SUPPORT
+   The original approved design remains unchanged.
+========================================================= */
+
+[hidden] {
+    display: none !important;
+}
+
+body.rk-home .store-logo img,
+body.rk-home .rk-footer-logo img {
+    object-fit: contain;
+}
+
+body.rk-home .rk-hero-card img {
+    object-fit: contain;
+}
+
+body.rk-home .rk-category-card img {
+    object-fit: cover;
+}

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Order Confirmed | RUKHNAV</title>
+<meta name="description" content="Your RUKHNAV guest order has been confirmed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css">
+<link rel="stylesheet" href="css/guest-checkout.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="guest-success-page">
+    <section id="guestSuccessLoading" class="guest-checkout-state">
+        <div class="spinner"></div>
+        <h2>Loading your order confirmation</h2>
+    </section>
+
+    <section id="guestSuccessError" class="guest-checkout-state hidden">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <h2>Order details are unavailable</h2>
+        <p id="guestSuccessErrorText">Use the confirmation link saved after checkout.</p>
+        <a href="products.html" class="btn primary">Continue shopping</a>
+    </section>
+
+    <section id="guestSuccessContent" class="guest-success-card hidden">
+        <div class="guest-success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <span>Order received</span>
+        <h1>Thank you for your order</h1>
+        <p>RUKHNAV has received your guest order. Keep this page or save your order number for support.</p>
+
+        <div class="guest-success-order-number">
+            <small>Order number</small>
+            <strong id="guestSuccessOrderNumber">—</strong>
+            <button id="copyGuestOrderNumber" type="button">
+                <i class="fa-regular fa-copy"></i>
+                Copy
+            </button>
+        </div>
+
+        <div class="guest-success-grid">
+            <div>
+                <span>Status</span>
+                <strong id="guestSuccessStatus">Pending</strong>
+            </div>
+            <div>
+                <span>Payment</span>
+                <strong id="guestSuccessPayment">Pending</strong>
+            </div>
+            <div>
+                <span>Total</span>
+                <strong id="guestSuccessTotal">Rs. 0</strong>
+            </div>
+            <div>
+                <span>Delivery city</span>
+                <strong id="guestSuccessCity">—</strong>
+            </div>
+        </div>
+
+        <div id="guestSuccessItems" class="guest-success-items"></div>
+
+        <div class="guest-success-actions">
+            <a href="products.html" class="btn primary">
+                Continue shopping
+            </a>
+
+            <a href="account.html" class="btn secondary">
+                Create or sign in to an account
+            </a>
+        </div>
+
+        <p class="guest-success-note">
+            Guest orders do not automatically earn loyalty points. Contact support if you need help with this order.
+        </p>
+    </section>
+</main>
+
+<div id="footer"></div>
+<div id="toast" class="toast-region"></div>
+<div id="overlay" class="overlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js"></script>
+<script src="js/store.js"></script>
+<script src="js/guest-order-success.js"></script>
+</body>
+</html>

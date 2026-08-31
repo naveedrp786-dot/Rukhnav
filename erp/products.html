@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>RUKHNAV ERP - Products</title>
+
+    <link rel="stylesheet"
+          href="css/dashboard.css">
+
+    <link rel="stylesheet"
+          href="css/products.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>🌿 RUKHNAV ERP</h2>
+
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="dashboard.html">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="products.html">
+                    <i class="fa-solid fa-box"></i>
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a href="admins.html">
+                    <i class="fa-solid fa-user-shield"></i>
+                    Admins
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main class="content">
+
+        <div class="page-header">
+
+            <h1>
+
+                <i class="fa-solid fa-box"></i>
+
+                Product Management
+
+            </h1>
+
+            <button
+                id="addProductBtn"
+                class="primary-btn">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Product
+
+            </button>
+
+        </div>
+
+        <div class="toolbar">
+
+            <input
+
+                type="text"
+
+                id="searchInput"
+
+                placeholder="Search Products...">
+
+        </div>
+<div class="summary-cards">
+
+    <div class="card">
+
+        <h3 id="totalProducts">
+
+            0
+
+        </h3>
+
+        <p>Total Products</p>
+
+    </div>
+
+    <div class="card">
+
+        <h3 id="activeProducts">
+
+            0
+
+        </h3>
+
+        <p>Active</p>
+
+    </div>
+
+    <div class="card">
+
+        <h3 id="lowStockProducts">
+
+            0
+
+        </h3>
+
+        <p>Low Stock</p>
+
+    </div>
+
+</div>
+
+
+        <table class="product-table">
+
+            <thead>
+
+<tr>
+
+    <th width="60">ID</th>
+
+    <th width="90">Image</th>
+
+    <th>Product</th>
+
+    <th>Category</th>
+
+    <th width="120">Price</th>
+
+    <th width="100">Stock</th>
+
+    <th width="100">Status</th>
+
+    <th width="130">Actions</th>
+
+</tr>
+
+</thead>
+
+            <tbody id="productTableBody">
+
+                <tr>
+
+                    <td colspan="8">
+
+                        Loading...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </main>
+
+</div>
+<!-- Product Modal -->
+
+<div
+
+id="productModal"
+
+class="modal hidden">
+
+<div class="modal-content">
+
+<span
+
+id="closeModal"
+
+class="close">
+
+&times;
+
+</span>
+
+<h2 id="modalTitle">
+
+Add Product
+
+</h2>
+
+<form id="productForm" enctype="multipart/form-data">
+
+    <input
+        type="text"
+        id="productName"
+        placeholder="Product Name"
+        required>
+
+    <input
+        type="text"
+        id="sku"
+        placeholder="SKU (Optional)">
+
+    <input
+        type="text"
+        id="category"
+        placeholder="Category">
+
+    <textarea
+        id="description"
+        placeholder="Product Description"></textarea>
+
+    <input
+        type="number"
+        id="price"
+        placeholder="Selling Price"
+        step="0.01"
+        required>
+
+    <input
+        type="number"
+        id="stock"
+        placeholder="Stock Quantity"
+        value="0">
+
+    <select id="status">
+
+        <option value="Active">
+            Active
+        </option>
+
+        <option value="Inactive">
+            Inactive
+        </option>
+
+    </select>
+
+    <label>
+
+        Product Image
+
+    </label>
+
+    <input
+        type="file"
+        id="productImage"
+        accept="image/*">
+
+    <div id="imagePreview"></div>
+
+    <button
+        type="submit"
+        class="primary-btn">
+
+        Save Product
+
+    </button>
+
+</form>
+
+</div>
+
+</div>
+
+<script src="js/products.js"></script>
+
+
+</body>
+
+</html>

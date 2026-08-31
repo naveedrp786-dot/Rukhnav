@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RUKHNAV Customer Centre</title>
+<meta name="description" content="Manage your RUKHNAV account, orders, rewards, wishlist and profile.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css">
+<link rel="stylesheet" href="css/customer-centre.css">
+<link rel="stylesheet" href="css/legal.css">
+<link rel="stylesheet" href="css/profile-preferences.css">
+<link rel="stylesheet" href="css/account-modules.css">
+<link rel="stylesheet" href="css/account.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="customer-centre-page">
+    <section id="accountLoading" class="centre-state">
+        <div class="spinner"></div>
+        <h2>Loading your Customer Centre</h2>
+    </section>
+
+    <section id="guestAccountView" class="customer-auth-layout hidden">
+        <div class="customer-auth-brand">
+            <span>RUKHNAV Customer Centre</span>
+            <h1>Your shopping, rewards and reminders in one place</h1>
+            <p>
+                Sign in to manage orders, loyalty points, saved products,
+                delivery addresses and Gold or Platinum event reminders.
+            </p>
+
+            <div class="auth-feature-grid">
+                <article>
+                    <i class="fa-solid fa-box"></i>
+                    <div><strong>Orders & tracking</strong><span>View deliveries and invoices.</span></div>
+                </article>
+                <article>
+                    <i class="fa-solid fa-medal"></i>
+                    <div><strong>Loyalty rewards</strong><span>Track points and membership benefits.</span></div>
+                </article>
+                <article>
+                    <i class="fa-solid fa-calendar-heart"></i>
+                    <div><strong>Events & reminders</strong><span>Premium access for eligible members.</span></div>
+                </article>
+            </div>
+        </div>
+
+        <div class="customer-auth-card">
+            <div class="auth-tabs">
+                <button id="loginTab" class="auth-tab active" type="button" data-auth-tab="login">Sign In</button>
+                <button id="registerTab" class="auth-tab" type="button" data-auth-tab="register">Create Account</button>
+            </div>
+
+            <div id="accountMessage" class="account-message" role="alert" aria-live="polite"></div>
+
+            <form id="loginForm" class="centre-form">
+                <div class="form-heading">
+                    <span>Welcome back</span>
+                    <h2>Sign in to RUKHNAV</h2>
+                    <p>Use your email address or mobile number.</p>
+                </div>
+
+                <label for="loginIdentifier">Email or mobile number</label>
+                <div class="centre-input">
+                    <i class="fa-regular fa-user"></i>
+                    <input id="loginIdentifier" type="text" autocomplete="username" required>
+                </div>
+
+                <label for="loginPassword">Password</label>
+                <div class="centre-input password-input">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="loginPassword" type="password" autocomplete="current-password" required>
+                    <button type="button" data-password-toggle="loginPassword"><i class="fa-regular fa-eye"></i></button>
+                </div>
+
+                <div class="form-inline-row">
+                    <label class="checkbox-field">
+                        <input id="rememberLogin" type="checkbox">
+                        <span>Keep me signed in</span>
+                    </label>
+
+                    <button id="showForgotPassword" type="button" class="link-button">Forgot password?</button>
+                </div>
+
+                <button id="loginButton" class="btn primary centre-submit" type="submit">
+                    Sign In
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <button
+                    id="showVerification"
+                    type="button"
+                    class="back-link"
+                >
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Verify an existing account
+                </button>
+            </form>
+
+            <form id="registerForm" class="centre-form hidden">
+                <div class="form-heading">
+                    <span>Join RUKHNAV</span>
+                    <h2>Create your account</h2>
+                    <p>Register with an email address, mobile number, or both.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div>
+                        <label for="registerFirstName">First name</label>
+                        <div class="centre-input">
+                            <i class="fa-regular fa-user"></i>
+                            <input id="registerFirstName" type="text" autocomplete="given-name">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="registerLastName">Last name</label>
+                        <div class="centre-input">
+                            <i class="fa-regular fa-user"></i>
+                            <input id="registerLastName" type="text" autocomplete="family-name">
+                        </div>
+                    </div>
+                </div>
+
+                <label for="registerFullName">Full name</label>
+                <div class="centre-input">
+                    <i class="fa-solid fa-signature"></i>
+                    <input id="registerFullName" type="text" autocomplete="name" required>
+                </div>
+
+                <label>Create account using</label>
+                <div class="registration-method-switch" role="radiogroup" aria-label="Registration method">
+                    <label>
+                        <input type="radio" name="registration_method" value="email" checked>
+                        <span><i class="fa-regular fa-envelope"></i> Email Address</span>
+                    </label>
+
+                    <label>
+                        <input type="radio" name="registration_method" value="phone">
+                        <span><i class="fa-solid fa-mobile-screen"></i> Mobile Number</span>
+                    </label>
+                </div>
+
+                <div id="registerEmailField">
+                    <label for="registerEmail">Email address</label>
+                    <div class="centre-input">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input id="registerEmail" type="email" autocomplete="email" required>
+                    </div>
+                </div>
+
+                <div id="registerPhoneField" class="hidden">
+                    <label for="registerPhone">Mobile number</label>
+                    <div class="centre-input">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                        <input id="registerPhone" type="tel" autocomplete="tel" placeholder="+923001234567">
+                    </div>
+                </div>
+
+                <label for="registerReferral">Referral code <span class="optional">Optional</span></label>
+                <div class="centre-input">
+                    <i class="fa-solid fa-user-group"></i>
+                    <input id="registerReferral" type="text" autocomplete="off" placeholder="e.g. RUKH-000007-E24D">
+                </div>
+                <div id="referralRegistrationHint" class="referral-registration-hint" aria-live="polite">
+                    Have a referral code? Enter it here. It will be checked when you create your account.
+                </div>
+
+                <label for="registerPassword">Password</label>
+                <div class="centre-input password-input">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="registerPassword" type="password" minlength="8" autocomplete="new-password" required>
+                    <button type="button" data-password-toggle="registerPassword"><i class="fa-regular fa-eye"></i></button>
+                </div>
+
+                <label for="registerConfirmPassword">Confirm password</label>
+                <div class="centre-input password-input">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="registerConfirmPassword" type="password" minlength="8" autocomplete="new-password" required>
+                    <button type="button" data-password-toggle="registerConfirmPassword"><i class="fa-regular fa-eye"></i></button>
+                </div>
+
+                <div class="registration-consent-card">
+
+                    <label class="checkbox-field legal-required">
+                        <input id="acceptTerms" type="checkbox" required>
+                        <span>
+                            I have read and agree to the
+                            <a href="terms.html" target="_blank" rel="noopener">
+                                Terms &amp; Conditions
+                            </a>.
+                            <strong>Required</strong>
+                        </span>
+                    </label>
+
+                    <label class="checkbox-field legal-required">
+                        <input id="acceptPrivacy" type="checkbox" required>
+                        <span>
+                            I have read and agree to the
+                            <a href="privacy-policy.html" target="_blank" rel="noopener">
+                                Privacy Policy
+                            </a>.
+                            <strong>Required</strong>
+                        </span>
+                    </label>
+
+                    <label class="checkbox-field legal-optional">
+                        <input id="acceptMarketing" type="checkbox">
+                        <span>
+                            I would like to receive promotions, product news
+                            and special offers by email, WhatsApp or SMS.
+                            <strong>Optional</strong>
+                        </span>
+                    </label>
+
+                    <p class="policy-links">
+                        Also review our
+                        <a href="shipping-policy.html" target="_blank" rel="noopener">Shipping Policy</a>,
+                        <a href="refund-policy.html" target="_blank" rel="noopener">Return &amp; Refund Policy</a>
+                        and
+                        <a href="cookie-policy.html" target="_blank" rel="noopener">Cookie Policy</a>.
+                    </p>
+
+                </div>
+
+                <button id="registerButton" class="btn primary centre-submit" type="submit">
+                    Create Account
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <form id="verificationForm" class="centre-form hidden">
+                <div class="form-heading">
+                    <span>Account Verification</span>
+                    <h2>Verify your account</h2>
+                    <p>
+                        We will send a six-digit verification code
+                        to your email address or mobile number.
+                    </p>
+                </div>
+
+                <label for="verificationIdentifier">
+                    Email or mobile number
+                </label>
+
+                <div class="centre-input">
+                    <i class="fa-regular fa-user"></i>
+                    <input
+                        id="verificationIdentifier"
+                        type="text"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <button
+                    id="sendVerificationButton"
+                    class="btn secondary centre-submit"
+                    type="button"
+                >
+                    Send / Resend Code
+                </button>
+
+                <label for="guestVerificationCode">
+                    Six-digit verification code
+                </label>
+
+                <div class="centre-input">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <input
+                        id="guestVerificationCode"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        placeholder="000000"
+                        required
+                    >
+                </div>
+
+                <button
+                    id="verifyAccountButton"
+                    class="btn primary centre-submit"
+                    type="submit"
+                >
+                    Verify Account
+                    <i class="fa-solid fa-circle-check"></i>
+                </button>
+
+                <p class="recovery-security-note">
+                    Verification codes expire after 10 minutes.
+                    If you did not receive the message, use
+                    Send / Resend Code.
+                </p>
+
+                <button
+                    id="verificationBackToLogin"
+                    type="button"
+                    class="back-link"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to sign in
+                </button>
+            </form>
+
+            <form id="forgotPasswordForm" class="centre-form hidden">
+                <div class="form-heading">
+                    <span>Account Recovery</span>
+                    <h2>Reset your password</h2>
+                    <p>Enter the email or phone connected to your account.</p>
+                </div>
+
+                <label for="forgotIdentifier">Email or mobile number</label>
+                <div class="centre-input">
+                    <i class="fa-regular fa-user"></i>
+                    <input id="forgotIdentifier" type="text" required>
+                </div>
+
+                <button id="forgotPasswordButton" class="btn primary centre-submit" type="submit">
+                    Send six-digit reset code
+                </button>
+
+                <p class="recovery-security-note">
+                    For privacy, the same confirmation is shown whether or not an account exists.
+                </p>
+
+                <button id="backToLogin" type="button" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to sign in</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="customerCentre" class="customer-centre hidden">
+        <header class="centre-header">
+            <div>
+                <span>RUKHNAV Customer Centre</span>
+                <h1 id="dashboardGreeting">Welcome</h1>
+                <p>Manage your shopping, membership and account from one place.</p>
+            </div>
+
+            <button id="logoutButton" type="button" class="btn secondary">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                Sign Out
+            </button>
+        </header>
+
+        <div class="centre-layout">
+            <aside class="centre-sidebar">
+                <div class="customer-identity">
+                    <div class="customer-avatar">
+                        <img id="customerAvatarImage" class="hidden" src="" alt="Customer profile picture">
+                        <span id="customerInitials">R</span>
+                    </div>
+                    <strong id="customerName">Customer</strong>
+                    <small id="customerContact"></small>
+                    <span id="customerMembershipBadge" class="membership-badge bronze">Bronze Member</span>
+                </div>
+
+                <nav class="centre-nav">
+                    <button class="centre-nav-item active" data-centre-panel="overview">
+                        <i class="fa-solid fa-house"></i><span>Dashboard</span>
+                    </button>
+
+                    <a href="orders.html">
+                        <i class="fa-solid fa-box"></i><span>My Orders</span>
+                    </a>
+
+                    <a href="wishlist.html">
+                        <i class="fa-regular fa-heart"></i><span>Wishlist</span>
+                    </a>
+
+                    <a href="cart.html">
+                        <i class="fa-solid fa-cart-shopping"></i><span>Shopping Cart</span>
+                    </a>
+
+                    <a href="rewards.html">
+                        <i class="fa-solid fa-medal"></i><span>Loyalty & Rewards</span>
+                    </a>
+
+                    <a id="eventsMenuLink" href="events.html" class="locked-link">
+                        <i class="fa-solid fa-calendar-heart"></i>
+                        <span>Events & Reminders</span>
+                        <small id="eventsMenuStatus">Locked</small>
+                    </a>
+
+                    <button class="centre-nav-item" data-centre-panel="profile">
+                        <i class="fa-regular fa-user"></i><span>Profile</span>
+                    </button>
+
+                    <button class="centre-nav-item" data-centre-panel="reviews">
+                        <i class="fa-regular fa-star"></i><span>My Reviews</span>
+                    </button>
+
+                    <button class="centre-nav-item" data-centre-panel="addresses">
+                        <i class="fa-solid fa-location-dot"></i><span>Addresses</span>
+                    </button>
+
+                    <button class="centre-nav-item" data-centre-panel="coupons">
+                        <i class="fa-solid fa-ticket"></i><span>Coupons</span>
+                    </button>
+
+                    <button class="centre-nav-item" data-centre-panel="preferences">
+                        <i class="fa-solid fa-sliders"></i><span>Preferences</span>
+                    </button>
+
+                    <button class="centre-nav-item" data-centre-panel="security">
+                        <i class="fa-solid fa-shield-halved"></i><span>Security</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <section class="centre-content">
+                <section id="overviewPanel" class="centre-panel">
+                    <div class="welcome-card">
+                        <div>
+                            <span>Account Overview</span>
+                            <h2 id="welcomeCardTitle">Welcome back</h2>
+                            <p id="welcomeCardText">Your account is ready.</p>
+                        </div>
+
+                        <div class="welcome-membership">
+                            <i class="fa-solid fa-crown"></i>
+                            <strong id="overviewMembership">Bronze</strong>
+                            <span id="overviewPoints">0 points</span>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-shortcuts">
+                        <a href="orders.html">
+                            <i class="fa-solid fa-box"></i>
+                            <div><strong>My Orders</strong><span>Track and manage purchases</span></div>
+                        </a>
+
+                        <a href="wishlist.html">
+                            <i class="fa-regular fa-heart"></i>
+                            <div><strong>Wishlist</strong><span>Saved RUKHNAV products</span></div>
+                        </a>
+
+                        <a href="rewards.html">
+                            <i class="fa-solid fa-medal"></i>
+                            <div><strong>Loyalty & Rewards</strong><span>Points and membership</span></div>
+                        </a>
+
+                        <a id="overviewEventsLink" href="events.html">
+                            <i class="fa-solid fa-calendar-heart"></i>
+                            <div><strong>Events & Reminders</strong><span id="overviewEventsText">Gold membership feature</span></div>
+                        </a>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <article class="centre-card referral-earn-card">
+
+                            <div class="referral-earn-header">
+
+                                <div class="referral-earn-copy">
+
+                                    <span class="section-kicker">
+                                        Refer & Earn
+                                    </span>
+
+                                    <h2>
+                                        Invite friends. Earn rewards.
+                                    </h2>
+
+                                    <p>
+                                        Share your personal referral code.
+                                        When your referral qualifies,
+                                        you earn loyalty points automatically.
+                                    </p>
+
+                                </div>
+
+                                <div class="referral-code-panel">
+
+                                    <span>Your Referral Code</span>
+
+                                    <strong id="referralCode">—</strong>
+
+                                    <div class="referral-card-actions">
+
+                                        <button
+                                            id="copyReferralButton"
+                                            class="referral-action-button"
+                                            type="button"
+                                            title="Copy referral code"
+                                            aria-label="Copy referral code"
+                                        >
+                                            <i class="fa-regular fa-copy"></i>
+                                            Copy
+                                        </button>
+
+                                        <button
+                                            id="shareReferralButton"
+                                            class="referral-action-button primary"
+                                            type="button"
+                                            title="Share referral code"
+                                            aria-label="Share referral code"
+                                        >
+                                            <i class="fa-solid fa-share-nodes"></i>
+                                            Share
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="referral-link-card">
+
+                                <div>
+                                    <span>Your Referral Link</span>
+                                    <strong id="referralLink">—</strong>
+                                </div>
+
+                                <i class="fa-solid fa-link"></i>
+
+                            </div>
+
+                            <div class="referral-summary-grid">
+
+                                <div class="referral-stat-card">
+                                    <div class="referral-stat-icon">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                    </div>
+
+                                    <div>
+                                        <span>Total Referrals</span>
+                                        <strong id="customerReferralTotal">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="referral-stat-card">
+                                    <div class="referral-stat-icon">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </div>
+
+                                    <div>
+                                        <span>Qualified</span>
+                                        <strong id="customerReferralQualified">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="referral-stat-card">
+                                    <div class="referral-stat-icon">
+                                        <i class="fa-solid fa-award"></i>
+                                    </div>
+
+                                    <div>
+                                        <span>Rewarded</span>
+                                        <strong id="customerReferralRewarded">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="referral-stat-card">
+                                    <div class="referral-stat-icon">
+                                        <i class="fa-solid fa-coins"></i>
+                                    </div>
+
+                                    <div>
+                                        <span>Points Earned</span>
+                                        <strong id="customerReferralPoints">0</strong>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="my-referrals-section">
+
+                                <div class="my-referrals-heading">
+
+                                    <div>
+                                        <span class="section-kicker">
+                                            Referral Activity
+                                        </span>
+
+                                        <h3>
+                                            My Referrals
+                                        </h3>
+
+                                        <p>
+                                            Track the people you referred
+                                            and the rewards you earned.
+                                        </p>
+                                    </div>
+
+                                    <div class="my-referrals-heading-icon">
+                                        <i class="fa-solid fa-user-group"></i>
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    id="myReferralsLoading"
+                                    class="my-referrals-message"
+                                >
+                                    Loading your referrals...
+                                </div>
+
+                                <div
+                                    id="myReferralsEmpty"
+                                    class="my-referrals-message hidden"
+                                >
+                                    You have not referred anyone yet.
+                                </div>
+
+                                <div
+                                    id="myReferralsList"
+                                    class="my-referrals-list hidden"
+                                ></div>
+
+                            </div>
+
+                        </article>
+                    </div>
+                </section>
+
+                <section id="profilePanel" class="centre-panel hidden">
+                    <div class="profile-dashboard-grid">
+                        <article class="centre-card profile-picture-card">
+                            <div class="profile-picture-layout">
+                                <div class="profile-picture-preview">
+                                    <img id="profilePicturePreview" class="hidden" src="" alt="Profile picture preview">
+                                    <span id="profilePictureInitials">R</span>
+                                </div>
+
+                                <div class="profile-picture-copy">
+                                    <span>Profile Picture</span>
+                                    <h2>Your customer photo</h2>
+                                    <p>Upload a JPG, PNG or WEBP image smaller than 5 MB.</p>
+
+                                    <div class="profile-picture-actions">
+                                        <label for="profilePictureInput" class="btn primary">
+                                            <i class="fa-solid fa-camera"></i>
+                                            Choose picture
+                                        </label>
+                                        <input id="profilePictureInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+                                        <button id="uploadProfilePictureButton" type="button" class="btn secondary" disabled>Upload picture</button>
+                                        <button id="removeProfilePictureButton" type="button" class="btn danger">Remove picture</button>
+                                        <button id="cancelProfilePreviewButton" type="button" class="btn secondary hidden">Cancel preview</button>
+                                    </div>
+
+                                    <div id="profilePictureMessage" class="profile-picture-message" aria-live="polite"></div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="centre-card profile-completion-card">
+                            <span>Profile Completion</span>
+                            <div class="completion-ring" id="profileCompletionRing">
+                                <strong id="profileCompletionPercent">0%</strong>
+                            </div>
+                            <p id="profileCompletionText">Complete your profile for faster checkout and personalized care.</p>
+                        </article>
+                    </div>
+
+                    <article class="centre-card profile-edit-card">
+                        <div class="section-title profile-section-heading">
+                            <div>
+                                <span>Personal Information</span>
+                                <h2>Edit your profile</h2>
+                                <p>Changes to email or phone require verification before those identifiers can be used for login or reminders.</p>
+                            </div>
+                            <div id="profileSaveMessage" class="inline-save-message" aria-live="polite"></div>
+                        </div>
+
+                        <form id="customerProfileForm" class="customer-profile-form">
+                            <div class="profile-form-grid">
+                                <div class="profile-form-group profile-form-full">
+                                    <label for="profileEditFullName">Full name</label>
+                                    <input id="profileEditFullName" type="text" autocomplete="name" required>
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditEmail">Email address</label>
+                                    <div class="verified-input-wrap">
+                                        <input id="profileEditEmail" type="email" autocomplete="email">
+                                        <span id="profileEmailVerification" class="verification-pill pending">Not added</span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditPhone">Mobile number</label>
+                                    <div class="verified-input-wrap">
+                                        <input id="profileEditPhone" type="tel" autocomplete="tel" placeholder="+923001234567">
+                                        <span id="profilePhoneVerification" class="verification-pill pending">Not added</span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditGender">Gender</label>
+                                    <select id="profileEditGender">
+                                        <option value="">Prefer not to say</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditDateOfBirth">Date of birth</label>
+                                    <input id="profileEditDateOfBirth" type="date">
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditSkinType">Skin type</label>
+                                    <select id="profileEditSkinType">
+                                        <option value="">Select skin type</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="Dry">Dry</option>
+                                        <option value="Oily">Oily</option>
+                                        <option value="Combination">Combination</option>
+                                        <option value="Sensitive">Sensitive</option>
+                                    </select>
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditHairType">Hair type</label>
+                                    <select id="profileEditHairType">
+                                        <option value="">Select hair type</option>
+                                        <option value="Straight">Straight</option>
+                                        <option value="Wavy">Wavy</option>
+                                        <option value="Curly">Curly</option>
+                                        <option value="Coily">Coily</option>
+                                        <option value="Dry">Dry</option>
+                                        <option value="Oily">Oily</option>
+                                    </select>
+                                </div>
+
+                                <div class="profile-form-group profile-form-full">
+                                    <label for="profileEditAddress">Street address</label>
+                                    <textarea id="profileEditAddress" rows="3" autocomplete="street-address"></textarea>
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditCity">City</label>
+                                    <input id="profileEditCity" type="text" autocomplete="address-level2">
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditCountry">Country</label>
+                                    <input id="profileEditCountry" type="text" value="Pakistan" autocomplete="country-name">
+                                </div>
+
+                                <div class="profile-form-group">
+                                    <label for="profileEditPostalCode">Postal code</label>
+                                    <input id="profileEditPostalCode" type="text" autocomplete="postal-code">
+                                </div>
+                            </div>
+
+                            <div class="profile-form-actions">
+                                <button id="saveCustomerProfileButton" type="submit" class="btn primary">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    Save profile
+                                </button>
+                            </div>
+                        </form>
+                    </article>
+                </section>
+
+                
+                <section id="reviewsPanel" class="centre-panel hidden">
+                    <article class="centre-card customer-reviews-card">
+                        <div class="section-title profile-section-heading">
+                            <div>
+                                <span>Ratings &amp; Photos</span>
+                                <h2>My product reviews</h2>
+                                <p>View your ratings, comments, customer photos and moderation status.</p>
+                            </div>
+                            <a href="products.html" class="btn primary">
+                                <i class="fa-solid fa-pen"></i>
+                                Review a product
+                            </a>
+                        </div>
+
+                        <div id="myReviewsLoading" class="my-reviews-state">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            Loading your reviews...
+                        </div>
+
+                        <div id="myReviewsEmpty" class="my-reviews-state hidden">
+                            <i class="fa-regular fa-star"></i>
+                            <strong>No reviews yet</strong>
+                            <span>Open a product and use its Reviews &amp; Photos tab.</span>
+                        </div>
+
+                        <div id="myReviewsList" class="my-reviews-list"></div>
+                    </article>
+                </section>
+
+                <section id="addressesPanel" class="centre-panel hidden">
+                    <article class="centre-card account-module-card">
+                        <div class="section-title profile-section-heading">
+                            <div>
+                                <span>Address Book</span>
+                                <h2>Delivery addresses</h2>
+                                <p>Add multiple addresses and choose the default address used for future orders.</p>
+                            </div>
+
+                            <button
+                                id="addAddressButton"
+                                type="button"
+                                class="btn primary"
+                            >
+                                <i class="fa-solid fa-plus"></i>
+                                Add Address
+                            </button>
+                        </div>
+
+                        <div id="addressMessage" class="inline-save-message" aria-live="polite"></div>
+
+                        <div id="addressesLoading" class="account-module-state">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            Loading saved addresses...
+                        </div>
+
+                        <div id="addressesEmpty" class="account-module-state hidden">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <strong>No saved addresses</strong>
+                            <span>Add a delivery address to speed up checkout.</span>
+                        </div>
+
+                        <div id="addressesList" class="address-card-grid"></div>
+
+                        <form id="addressForm" class="account-inline-form hidden">
+                            <input id="addressId" type="hidden">
+
+                            <div class="section-title">
+                                <div>
+                                    <span>Delivery Address</span>
+                                    <h3 id="addressFormTitle">Add Address</h3>
+                                </div>
+
+                                <button
+                                    id="cancelAddressButton"
+                                    type="button"
+                                    class="icon-button"
+                                    aria-label="Close address form"
+                                >
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <div class="account-form-grid">
+                                <label>
+                                    <span>Address Label</span>
+                                    <select id="addressType">
+                                        <option value="Home">Home</option>
+                                        <option value="Office">Office</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </label>
+
+                                <label>
+                                    <span>Recipient Name</span>
+                                    <input id="addressFullName" required>
+                                </label>
+
+                                <label>
+                                    <span>Phone Number</span>
+                                    <input id="addressPhone" required>
+                                </label>
+
+                                <label class="full">
+                                    <span>Address Line 1</span>
+                                    <input id="addressLine1" required>
+                                </label>
+
+                                <label class="full">
+                                    <span>Address Line 2</span>
+                                    <input id="addressLine2">
+                                </label>
+
+                                <label>
+                                    <span>City</span>
+                                    <input id="addressCity" required>
+                                </label>
+
+                                <label>
+                                    <span>Province</span>
+                                    <input id="addressProvince">
+                                </label>
+
+                                <label>
+                                    <span>Postal Code</span>
+                                    <input id="addressPostalCode">
+                                </label>
+
+                                <label>
+                                    <span>Country</span>
+                                    <input id="addressCountry" value="Pakistan">
+                                </label>
+
+                                <label class="full">
+                                    <span>Delivery Instructions</span>
+                                    <textarea id="addressInstructions" rows="3"></textarea>
+                                </label>
+
+                                <label class="full account-check-row">
+                                    <input id="addressIsDefault" type="checkbox">
+                                    <span>Use as my default delivery address</span>
+                                </label>
+                            </div>
+
+                            <div class="profile-form-actions">
+                                <button id="saveAddressButton" type="submit" class="btn primary">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    Save Address
+                                </button>
+                            </div>
+                        </form>
+                    </article>
+                </section>
+
+                <section id="couponsPanel" class="centre-panel hidden">
+                    <article class="centre-card account-module-card">
+                        <div class="section-title profile-section-heading">
+                            <div>
+                                <span>My Coupons</span>
+                                <h2>Available discounts</h2>
+                                <p>View active, used and expired coupons available for your account.</p>
+                            </div>
+
+                            <button id="refreshCouponsButton" type="button" class="btn light">
+                                <i class="fa-solid fa-rotate"></i>
+                                Refresh
+                            </button>
+                        </div>
+
+                        <div id="couponMessage" class="inline-save-message" aria-live="polite"></div>
+
+                        <div class="account-filter-tabs">
+                            <button type="button" class="active" data-coupon-filter="available">Available</button>
+                            <button type="button" data-coupon-filter="used">Used</button>
+                            <button type="button" data-coupon-filter="expired">Expired</button>
+                        </div>
+
+                        <div id="couponsLoading" class="account-module-state">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            Loading coupons...
+                        </div>
+
+                        <div id="couponsEmpty" class="account-module-state hidden">
+                            <i class="fa-solid fa-ticket"></i>
+                            <strong>No coupons found</strong>
+                            <span>Eligible coupons will appear here automatically.</span>
+                        </div>
+
+                        <div id="couponsList" class="coupon-card-grid"></div>
+                    </article>
+                </section>
+
+                <section id="preferencesPanel" class="centre-panel hidden">
+                    <article class="centre-card reminder-preferences-card">
+                        <div class="section-title profile-section-heading">
+                            <div>
+                                <span>Communication Preferences</span>
+                                <h2>Reminder channels</h2>
+                                <p>Enable the channels you want to use for birthdays, anniversaries, order updates and account notifications.</p>
+                            </div>
+                            <div id="preferencesSaveMessage" class="inline-save-message" aria-live="polite"></div>
+                        </div>
+
+                        <form id="reminderPreferencesForm">
+                            <div class="preference-list enhanced-preferences">
+                                <label id="emailPreferenceRow">
+                                    <div class="preference-icon"><i class="fa-regular fa-envelope"></i></div>
+                                    <div class="preference-copy">
+                                        <strong>Email reminders</strong>
+                                        <span id="emailPreferenceDescription">Requires a verified email address.</span>
+                                    </div>
+                                    <input id="emailRemindersEnabled" type="checkbox">
+                                </label>
+
+                                <label id="whatsappPreferenceRow">
+                                    <div class="preference-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                                    <div class="preference-copy">
+                                        <strong>WhatsApp reminders</strong>
+                                        <span id="whatsappPreferenceDescription">Requires a verified mobile number and eligible membership.</span>
+                                    </div>
+                                    <input id="whatsappRemindersEnabled" type="checkbox">
+                                </label>
+
+                                <label id="smsPreferenceRow">
+                                    <div class="preference-icon"><i class="fa-solid fa-comment-sms"></i></div>
+                                    <div class="preference-copy">
+                                        <strong>SMS reminders</strong>
+                                        <span id="smsPreferenceDescription">Requires a verified mobile number and eligible membership.</span>
+                                    </div>
+                                    <input id="smsRemindersEnabled" type="checkbox">
+                                </label>
+                            </div>
+
+                            <div class="membership-permission-note" id="membershipPermissionNote"></div>
+
+                            <div class="profile-form-actions">
+                                <button id="saveReminderPreferencesButton" type="submit" class="btn primary">
+                                    <i class="fa-solid fa-bell"></i>
+                                    Save preferences
+                                </button>
+                            </div>
+                        </form>
+                    </article>
+                </section>
+
+                <section id="securityPanel" class="centre-panel hidden">
+                    <div class="security-module-grid">
+                        <article class="centre-card account-module-card">
+                            <div class="section-title profile-section-heading">
+                                <div>
+                                    <span>Account Verification</span>
+                                    <h2>Email & mobile verification</h2>
+                                    <p>Verify your current email address and mobile number for login and notifications.</p>
+                                </div>
+                            </div>
+
+                            <div id="verificationMessage" class="inline-save-message" aria-live="polite"></div>
+
+                            <div class="verification-control-grid">
+                                <article>
+                                    <div class="verification-control-heading">
+                                        <i class="fa-regular fa-envelope"></i>
+                                        <div>
+                                            <strong>Email Verification</strong>
+                                            <span id="securityEmailValue">No email added</span>
+                                        </div>
+                                        <span id="securityEmailStatus" class="verification-pill pending">Pending</span>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="btn light"
+                                        data-request-verification="email"
+                                    >
+                                        Send Email Code
+                                    </button>
+                                </article>
+
+                                <article>
+                                    <div class="verification-control-heading">
+                                        <i class="fa-solid fa-mobile-screen-button"></i>
+                                        <div>
+                                            <strong>Mobile Verification</strong>
+                                            <span id="securityPhoneValue">No mobile number added</span>
+                                        </div>
+                                        <span id="securityPhoneStatus" class="verification-pill pending">Pending</span>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="btn light"
+                                        data-request-verification="phone"
+                                    >
+                                        Send Mobile Code
+                                    </button>
+                                </article>
+                            </div>
+
+                            <form id="verificationCodeForm" class="account-inline-form hidden">
+                                <input id="verificationChannel" type="hidden">
+
+                                <div class="account-form-grid">
+                                    <label>
+                                        <span>Verification Code</span>
+                                        <input
+                                            id="verificationCode"
+                                            inputmode="numeric"
+                                            maxlength="6"
+                                            placeholder="6-digit code"
+                                            required
+                                        >
+                                    </label>
+                                </div>
+
+                                <div class="profile-form-actions">
+                                    <button id="confirmVerificationButton" type="submit" class="btn primary">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        Confirm Code
+                                    </button>
+
+                                    <button id="cancelVerificationButton" type="button" class="btn light">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </article>
+
+                        <article class="centre-card account-module-card">
+                            <div class="section-title profile-section-heading">
+                                <div>
+                                    <span>Password Security</span>
+                                    <h2>Change password</h2>
+                                    <p>Use a strong password that you do not use on another website.</p>
+                                </div>
+                            </div>
+
+                            <div id="passwordMessage" class="inline-save-message" aria-live="polite"></div>
+
+                            <form id="changePasswordForm">
+                                <div class="account-form-grid">
+                                    <label class="full">
+                                        <span>Current Password</span>
+                                        <div class="account-password-field">
+                                            <input id="currentPassword" type="password" required>
+                                            <button type="button" data-account-password-toggle="currentPassword">
+                                                <i class="fa-regular fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </label>
+
+                                    <label>
+                                        <span>New Password</span>
+                                        <div class="account-password-field">
+                                            <input id="newPassword" type="password" minlength="8" required>
+                                            <button type="button" data-account-password-toggle="newPassword">
+                                                <i class="fa-regular fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </label>
+
+                                    <label>
+                                        <span>Confirm New Password</span>
+                                        <div class="account-password-field">
+                                            <input id="confirmNewPassword" type="password" minlength="8" required>
+                                            <button type="button" data-account-password-toggle="confirmNewPassword">
+                                                <i class="fa-regular fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="password-rules">
+                                    Minimum 8 characters. Use a mix of letters, numbers and symbols.
+                                </div>
+
+                                <div class="profile-form-actions">
+                                    <button id="changePasswordButton" type="submit" class="btn primary">
+                                        <i class="fa-solid fa-key"></i>
+                                        Update Password
+                                    </button>
+                                </div>
+                            </form>
+                        </article>
+
+                        <article class="centre-card account-module-card">
+                            <div class="section-title profile-section-heading">
+                                <div>
+                                    <span>Signed-In Devices</span>
+                                    <h2>Active sessions</h2>
+                                    <p>Review recent sign-ins and revoke other active sessions.</p>
+                                </div>
+
+                                <button id="revokeOtherSessionsButton" type="button" class="btn light">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    Sign Out Other Devices
+                                </button>
+                            </div>
+
+                            <div id="sessionMessage" class="inline-save-message" aria-live="polite"></div>
+                            <div id="sessionsList" class="session-list"></div>
+                        </article>
+
+                        <article class="centre-card account-module-card danger-account-card">
+                            <div class="section-title profile-section-heading">
+                                <div>
+                                    <span>Privacy Control</span>
+                                    <h2>Account deletion</h2>
+                                    <p>Request deletion with a 30-day recovery period, or cancel an existing request.</p>
+                                </div>
+                            </div>
+
+                            <div id="deletionMessage" class="inline-save-message" aria-live="polite"></div>
+                            <div id="deletionStatusBox" class="deletion-status-box"></div>
+
+                            <form id="deleteAccountForm">
+                                <div class="account-form-grid">
+                                    <label>
+                                        <span>Reason</span>
+                                        <select id="deletionReason" required>
+                                            <option value="">Select a reason</option>
+                                            <option>No Longer Needed</option>
+                                            <option>Privacy Concerns</option>
+                                            <option>Too Many Messages</option>
+                                            <option>Created Another Account</option>
+                                            <option>Difficult to Use</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </label>
+
+                                    <label>
+                                        <span>Current Password</span>
+                                        <input id="deletionPassword" type="password" required>
+                                    </label>
+
+                                    <label class="full">
+                                        <span>Additional Details</span>
+                                        <textarea id="deletionDetails" rows="3"></textarea>
+                                    </label>
+                                </div>
+
+                                <div class="profile-form-actions">
+                                    <button id="requestDeletionButton" type="submit" class="btn danger">
+                                        <i class="fa-solid fa-user-slash"></i>
+                                        Request Account Deletion
+                                    </button>
+
+                                    <button id="cancelDeletionRequestButton" type="button" class="btn light hidden">
+                                        Cancel Deletion Request
+                                    </button>
+                                </div>
+                            </form>
+                        </article>
+                    </div>
+                </section>
+            </section>
+        </div>
+    </section>
+</main>
+
+<div id="footer"></div>
+<div id="toast" class="toast-region"></div>
+<div id="overlay" class="overlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js"></script>
+<script src="js/store.js"></script>
+<script src="js/customer-centre.js"></script>
+<script src="js/profile-preferences.js"></script>
+<script src="js/account-modules.js"></script>
+</body>
+</html>

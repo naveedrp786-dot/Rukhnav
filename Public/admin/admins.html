@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>RUKHNAV ERP | Admin Management</title>
+
+    <!-- Main ERP stylesheet -->
+    <link
+        rel="stylesheet"
+        href="css/erp.css">
+
+    <!-- Admin page stylesheet -->
+    <link
+        rel="stylesheet"
+        href="css/admins.css">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Shared Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+
+        <!-- Shared Topbar -->
+        <div id="topbar-container"></div>
+
+        <!-- Page Header -->
+        <div class="admins-page-header">
+
+            <div class="admins-title-area">
+
+                <span class="page-label">
+                    Administration
+                </span>
+
+                <h1>Admin Management</h1>
+
+                <p>
+                    Create, update, review and manage RUKHNAV ERP administrators.
+                </p>
+
+            </div>
+
+            <div class="admins-header-actions">
+
+                <a
+                    href="dashboard.html"
+                    class="secondary-btn">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Back to Dashboard
+
+                </a>
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    id="addAdminBtn">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    Add Admin
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Summary Cards -->
+        <section class="admin-summary-grid">
+
+            <div class="admin-summary-card">
+
+                <div class="summary-icon green">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>Total Admins</span>
+
+                    <h2 id="totalAdmins">0</h2>
+
+                    <small>All administrator accounts</small>
+
+                </div>
+
+            </div>
+
+            <div class="admin-summary-card">
+
+                <div class="summary-icon blue">
+
+                    <i class="fa-solid fa-user-check"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>Active Admins</span>
+
+                    <h2 id="activeAdmins">0</h2>
+
+                    <small>Currently active accounts</small>
+
+                </div>
+
+            </div>
+
+            <div class="admin-summary-card">
+
+                <div class="summary-icon gold">
+
+                    <i class="fa-solid fa-crown"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>Super Admins</span>
+
+                    <h2 id="superAdmins">0</h2>
+
+                    <small>Highest access level</small>
+
+                </div>
+
+            </div>
+
+            <div class="admin-summary-card">
+
+                <div class="summary-icon purple">
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                </div>
+
+                <div class="summary-content">
+
+                    <span>Last Refreshed</span>
+
+                    <h2 id="lastUpdated">—</h2>
+
+                    <small>Current page data</small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Main Admin Panel -->
+        <section class="admin-panel">
+
+            <div class="admin-toolbar">
+
+                <div class="admin-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search by name, email, phone or role...">
+
+                </div>
+
+                <div class="admin-toolbar-actions">
+
+                    <select
+                        id="roleFilter"
+                        class="filter-select">
+
+                        <option value="">All Roles</option>
+
+                        <option value="admin">Admin</option>
+
+                        <option value="manager">Manager</option>
+
+                        <option value="superadmin">Super Admin</option>
+
+                    </select>
+
+                    <select
+                        id="statusFilter"
+                        class="filter-select">
+
+                        <option value="">All Statuses</option>
+
+                        <option value="active">Active</option>
+
+                        <option value="inactive">Inactive</option>
+
+                    </select>
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="refreshButton">
+
+                        <i class="fa-solid fa-rotate"></i>
+
+                        Refresh
+
+                    </button>
+
+                    <select
+                        id="pageSizeSelect"
+                        class="filter-select">
+
+                        <option value="10">10 rows</option>
+
+                        <option value="20">20 rows</option>
+
+                        <option value="50">50 rows</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- Loading State -->
+            <div
+                id="loadingState"
+                class="admin-state">
+
+                <div class="admin-spinner"></div>
+
+                <p>Loading administrators...</p>
+
+            </div>
+
+            <!-- Empty State -->
+            <div
+                id="emptyState"
+                class="admin-state hidden">
+
+                <div class="empty-admin-icon">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                </div>
+
+                <h3>No administrators found</h3>
+
+                <p>
+                    Try changing the filters or add a new administrator.
+                </p>
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    id="emptyAddAdminBtn">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Administrator
+
+                </button>
+
+            </div>
+
+            <!-- Table -->
+            <div
+                class="admin-table-wrapper hidden"
+                id="tableWrap">
+
+                <table class="admin-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Administrator</th>
+
+                        <th>Email</th>
+
+                        <th>Phone</th>
+
+                        <th>Role</th>
+
+                        <th>Status</th>
+
+                        <th>Created</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="adminTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Pagination -->
+            <div
+                class="admin-pagination hidden"
+                id="pagination">
+
+                <div id="paginationInfo">
+                    Showing 0 entries
+                </div>
+
+                <div class="pagination-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-btn small-btn"
+                        id="prevButton">
+
+                        Previous
+
+                    </button>
+
+                    <span
+                        id="pageNumber"
+                        class="current-page">
+
+                        1
+
+                    </span>
+
+                    <button
+                        type="button"
+                        class="secondary-btn small-btn"
+                        id="nextButton">
+
+                        Next
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Shared Footer -->
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+<!-- Add/Edit Admin Modal -->
+<div
+    id="adminModal"
+    class="admin-modal hidden"
+    aria-hidden="true">
+
+    <div
+        class="admin-modal-backdrop"
+        data-close-admin-modal>
+    </div>
+
+    <div class="admin-modal-card">
+
+        <div class="admin-modal-header">
+
+            <div>
+
+                <span class="modal-label">
+                    Administrator Account
+                </span>
+
+                <h2 id="modalTitle">
+                    Add New Admin
+                </h2>
+
+                <p id="modalSubtitle">
+                    Enter administrator account information.
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                class="modal-close-button"
+                id="closeModal"
+                aria-label="Close modal">
+
+                &times;
+
+            </button>
+
+        </div>
+
+        <form
+            id="adminForm"
+            enctype="multipart/form-data">
+
+            <div class="admin-form-grid">
+
+                <div class="form-group">
+
+                    <label for="firstName">
+                        First Name
+                        <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="firstName"
+                        maxlength="100"
+                        required
+                        placeholder="Enter first name">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="lastName">
+                        Last Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="lastName"
+                        maxlength="100"
+                        placeholder="Enter last name">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                        <span>*</span>
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        maxlength="150"
+                        required
+                        placeholder="admin@example.com">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="phone">
+                        Phone
+                    </label>
+
+                    <input
+                        type="text"
+                        id="phone"
+                        maxlength="30"
+                        placeholder="+92 300 0000000">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="role">
+                        Role
+                        <span>*</span>
+                    </label>
+
+                    <select
+                        id="role"
+                        required>
+
+                        <option value="admin">
+                            Admin
+                        </option>
+
+                        <option value="manager">
+                            Manager
+                        </option>
+
+                        <option value="superadmin">
+                            Super Admin
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                        <span id="passwordRequiredMark">*</span>
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        minlength="6"
+                        placeholder="Minimum 6 characters">
+
+                    <small id="passwordHelp">
+                        Password is required when creating an administrator.
+                    </small>
+
+                </div>
+
+                <div class="form-group full-width">
+
+                    <label for="profileImage">
+                        Profile Picture
+                    </label>
+
+                    <div class="image-upload-row">
+
+                        <div class="admin-image-preview">
+
+                            <img
+                                id="imagePreview"
+                                src="images/default-user.png"
+                                alt="Admin preview">
+
+                        </div>
+
+                        <div class="image-upload-controls">
+
+                            <input
+                                type="file"
+                                id="profileImage"
+                                name="profile_image"
+                                accept=".jpg,.jpeg,.png,.webp">
+
+                            <small>
+                                JPG, PNG or WEBP. Recommended square image.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="admin-modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    id="cancelAdminButton">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                    id="saveAdminButton">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Admin
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div
+    id="deleteModal"
+    class="admin-modal hidden"
+    aria-hidden="true">
+
+    <div
+        class="admin-modal-backdrop"
+        data-close-delete-modal>
+    </div>
+
+    <div class="delete-modal-card">
+
+        <div class="delete-modal-icon">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+        </div>
+
+        <h2>Delete Administrator</h2>
+
+        <p id="deleteAdminName">
+            Are you sure you want to delete this administrator?
+        </p>
+
+        <div class="delete-warning">
+
+            This action may permanently remove the administrator account.
+
+        </div>
+
+        <div class="delete-modal-actions">
+
+            <button
+                type="button"
+                class="secondary-btn"
+                id="cancelDeleteButton">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                class="danger-btn"
+                id="confirmDeleteButton">
+
+                <i class="fa-solid fa-trash-can"></i>
+
+                Delete Admin
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Toast Container -->
+<div
+    id="toastContainer"
+    class="toast-container">
+</div>
+
+<!-- Shared scripts -->
+<script src="js/profile.js"></script>
+<script src="js/admins.js"></script>
+
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+
+</html>

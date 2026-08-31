@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+    <title>Customer Lifecycle | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/deletedCustomers.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page lifecycle-page">
+
+            <header class="erp-v5-hero">
+                <div class="erp-v5-hero__copy">
+                    <span class="erp-v5-eyebrow">
+                        <i class="fa-solid fa-user-clock"></i>
+                        Customer Lifecycle
+                    </span>
+
+                    <h1>Deleted Customers &amp; Requests</h1>
+
+                    <p>
+                        Restore soft-deleted accounts, permanently remove
+                        eligible customer records and process customer
+                        account-deletion requests.
+                    </p>
+                </div>
+
+                <div class="erp-v5-hero__actions">
+                    <a
+                        href="/admin/customers.html"
+                        class="erp-v5-btn erp-v5-btn--light"
+                    >
+                        <i class="fa-solid fa-users"></i>
+                        Active Customers
+                    </a>
+
+                    <button
+                        id="refreshLifecycleButton"
+                        type="button"
+                        class="erp-v5-btn erp-v5-btn--gold"
+                    >
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <div
+                id="lifecycleMessage"
+                class="lifecycle-message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+            <section class="erp-v5-summary-grid lifecycle-summary-grid">
+                <article class="erp-v5-summary-card">
+                    <div class="erp-v5-summary-card__icon">
+                        <i class="fa-solid fa-user-slash"></i>
+                    </div>
+                    <span>Deleted Customers</span>
+                    <strong id="deletedCustomerCount">0</strong>
+                    <small>Soft-deleted customer accounts</small>
+                </article>
+
+                <article class="erp-v5-summary-card">
+                    <div class="erp-v5-summary-card__icon">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <span>Pending Requests</span>
+                    <strong id="pendingRequestCount">0</strong>
+                    <small>Awaiting administrative decision</small>
+                </article>
+
+                <article class="erp-v5-summary-card">
+                    <div class="erp-v5-summary-card__icon">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <span>Completed Requests</span>
+                    <strong id="completedRequestCount">0</strong>
+                    <small>Deletion requests completed</small>
+                </article>
+
+                <article class="erp-v5-summary-card">
+                    <div class="erp-v5-summary-card__icon">
+                        <i class="fa-solid fa-ban"></i>
+                    </div>
+                    <span>Rejected / Cancelled</span>
+                    <strong id="closedRequestCount">0</strong>
+                    <small>Requests closed without deletion</small>
+                </article>
+            </section>
+
+            <section class="erp-v5-panel lifecycle-panel">
+
+                <div class="lifecycle-tabs">
+                    <button
+                        type="button"
+                        class="active"
+                        data-lifecycle-tab="deleted"
+                    >
+                        <i class="fa-solid fa-user-slash"></i>
+                        Deleted Customers
+                    </button>
+
+                    <button
+                        type="button"
+                        data-lifecycle-tab="requests"
+                    >
+                        <i class="fa-solid fa-file-circle-exclamation"></i>
+                        Deletion Requests
+                    </button>
+                </div>
+
+                <div id="deletedCustomersView">
+                    <div class="erp-v5-panel-heading">
+                        <div>
+                            <span class="erp-v5-section-label">
+                                Deleted Accounts
+                            </span>
+                            <h2>Soft-Deleted Customers</h2>
+                            <p>
+                                Restore a customer or permanently delete the
+                                account after reviewing the warning.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="lifecycle-filter-bar">
+                        <div class="erp-v5-field">
+                            <label for="deletedCustomerSearch">
+                                Search deleted customers
+                            </label>
+                            <div class="erp-v5-input-icon">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input
+                                    id="deletedCustomerSearch"
+                                    type="search"
+                                    placeholder="Name, email, phone or customer ID"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="erp-v5-table-wrap">
+                        <table class="erp-v5-table lifecycle-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Contact</th>
+                                    <th>Original Status</th>
+                                    <th>Created</th>
+                                    <th>Deleted</th>
+                                    <th class="actions-heading">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deletedCustomersBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="deletionRequestsView" class="hidden">
+                    <div class="erp-v5-panel-heading">
+                        <div>
+                            <span class="erp-v5-section-label">
+                                Customer Requests
+                            </span>
+                            <h2>Account-Deletion Requests</h2>
+                            <p>
+                                Review customer reasons and approve, reject
+                                or cancel pending requests.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="lifecycle-filter-bar request-filters">
+                        <div class="erp-v5-field">
+                            <label for="requestSearch">
+                                Search requests
+                            </label>
+                            <div class="erp-v5-input-icon">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input
+                                    id="requestSearch"
+                                    type="search"
+                                    placeholder="Customer, contact or reason"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="erp-v5-field">
+                            <label for="requestStatusFilter">
+                                Request status
+                            </label>
+                            <select id="requestStatusFilter">
+                                <option value="">All statuses</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="erp-v5-table-wrap">
+                        <table class="erp-v5-table lifecycle-table requests-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Reason</th>
+                                    <th>Requested</th>
+                                    <th>Scheduled</th>
+                                    <th>Status</th>
+                                    <th class="actions-heading">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deletionRequestsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div
+    id="lifecycleConfirmModal"
+    class="lifecycle-modal hidden"
+    aria-hidden="true"
+>
+    <div class="lifecycle-modal-backdrop" data-close-lifecycle-modal></div>
+
+    <div class="lifecycle-dialog">
+        <div class="lifecycle-dialog-header">
+            <div>
+                <span class="modal-eyebrow">Customer Lifecycle</span>
+                <h2 id="lifecycleModalTitle">Confirm Action</h2>
+                <p id="lifecycleModalCustomer">Customer</p>
+            </div>
+
+            <button
+                id="closeLifecycleModal"
+                type="button"
+                class="lifecycle-modal-close"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="lifecycle-dialog-body">
+            <div id="lifecycleModalWarning" class="lifecycle-warning"></div>
+
+            <div
+                id="permanentDeleteConfirmationGroup"
+                class="erp-v5-field hidden"
+            >
+                <label for="permanentDeleteConfirmation">
+                    Type PERMANENTLY DELETE CUSTOMER
+                </label>
+                <input
+                    id="permanentDeleteConfirmation"
+                    type="text"
+                    autocomplete="off"
+                >
+            </div>
+        </div>
+
+        <div class="lifecycle-dialog-footer">
+            <button
+                id="cancelLifecycleAction"
+                type="button"
+                class="erp-v5-btn erp-v5-btn--soft"
+            >
+                Cancel
+            </button>
+
+            <button
+                id="confirmLifecycleAction"
+                type="button"
+                class="erp-v5-btn erp-v5-btn--gold"
+            >
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="lifecycleToastContainer" class="lifecycle-toast-container"></div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/deletedCustomers.js"></script>
+
+</body>
+</html>

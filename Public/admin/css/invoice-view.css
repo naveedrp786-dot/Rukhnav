@@ -1,0 +1,93 @@
+/* ==========================================
+   RUKHNAV ERP Invoice View
+========================================== */
+
+body{
+    background:#f5f7fa;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.card{
+    border:none;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.card-body{
+    padding:35px;
+}
+
+h2{
+    color:#0B6E4F;
+    font-weight:700;
+}
+
+h5{
+    color:#0B6E4F;
+    font-weight:600;
+}
+
+.table{
+    margin-top:20px;
+}
+
+.table thead{
+    background:#198754;
+    color:#fff;
+}
+
+.table th{
+    white-space:nowrap;
+}
+
+.table td{
+    vertical-align:middle;
+}
+
+.table tbody tr:hover{
+    background:#f8fff8;
+}
+
+.summary-table td,
+.summary-table th{
+    padding:10px;
+}
+
+#grandTotal,
+#paidAmount,
+#balanceAmount{
+    font-weight:bold;
+    color:#0B6E4F;
+}
+
+.badge{
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:14px;
+}
+
+.btn{
+    border-radius:10px;
+}
+
+.customer-box,
+.invoice-box{
+
+    background:#fafafa;
+    border-radius:12px;
+    padding:20px;
+    border-left:5px solid #198754;
+
+}
+
+@media(max-width:768px){
+
+.card-body{
+    padding:15px;
+}
+
+h2{
+    font-size:22px;
+}
+
+}

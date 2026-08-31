@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales POS | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="css/erp.css">
+    <link rel="stylesheet" href="css/sales.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content sales-page">
+            <header class="sales-header">
+                <div>
+                    <span class="page-label">Sales</span>
+                    <h1><i class="fa-solid fa-cash-register"></i> Sales & POS</h1>
+                    <p>Create customer sales, generate invoices, collect payments and review sale history.</p>
+                </div>
+
+                <div class="header-actions">
+                    <button type="button" id="refreshSalesBtn" class="secondary-btn">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <div id="salesMessage" class="sales-message" role="alert" aria-live="polite"></div>
+
+            <section class="sales-layout">
+                <article class="sales-panel pos-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span>Point of Sale</span>
+                            <h2>Create New Sale</h2>
+                        </div>
+                    </div>
+
+                    <div class="selector-grid">
+                        <div class="form-group">
+                            <label for="customerSearch">Customer</label>
+                            <div class="search-wrap">
+                                <i class="fa-solid fa-user"></i>
+                                <input type="search" id="customerSearch" placeholder="Search customer by name, email or phone">
+                            </div>
+                            <div id="customerResults" class="search-results hidden"></div>
+                            <div id="selectedCustomer" class="selected-card hidden"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productSearch">Product</label>
+                            <div class="search-wrap">
+                                <i class="fa-solid fa-box"></i>
+                                <input type="search" id="productSearch" placeholder="Search product by name or category">
+                            </div>
+                            <div id="productResults" class="search-results hidden"></div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive sale-cart-wrapper">
+                        <table class="sale-cart-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="saleCartBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="saleCartEmpty" class="empty-cart-state">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                        <h3>No products added</h3>
+                        <p>Search and add products to begin the sale.</p>
+                    </div>
+
+                    <div class="totals-and-payment">
+                        <div class="payment-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="saleDiscount">Discount</label>
+                                    <input type="number" id="saleDiscount" min="0" step="0.01" value="0">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="saleTax">Tax</label>
+                                    <input type="number" id="saleTax" min="0" step="0.01" value="0">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="paymentMethod">Payment Method</label>
+                                    <select id="paymentMethod">
+                                        <option value="Cash">Cash</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                        <option value="Online">Online</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="paymentAmount">Payment Amount</label>
+                                    <input type="number" id="paymentAmount" min="0" step="0.01" value="0">
+                                </div>
+
+                                <div class="form-group form-group-full">
+                                    <label for="saleRemarks">Remarks</label>
+                                    <textarea id="saleRemarks" rows="3" placeholder="Optional sale notes"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sale-summary">
+                            <div><span>Subtotal</span><strong id="subtotalValue">PKR 0</strong></div>
+                            <div><span>Discount</span><strong id="discountValue">PKR 0</strong></div>
+                            <div><span>Tax</span><strong id="taxValue">PKR 0</strong></div>
+                            <div class="grand-total"><span>Grand Total</span><strong id="grandTotalValue">PKR 0</strong></div>
+                            <div><span>Paid</span><strong id="paidValue">PKR 0</strong></div>
+                            <div><span>Balance</span><strong id="balanceValue">PKR 0</strong></div>
+
+                            <button type="button" id="completeSaleBtn" class="primary-btn complete-sale-btn">
+                                <i class="fa-solid fa-circle-check"></i>
+                                Complete Sale
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="sales-panel history-panel">
+                    <div class="panel-heading table-panel-heading">
+                        <div>
+                            <span>Sales History</span>
+                            <h2>Recent Sales</h2>
+                            <p id="salesResultText">Loading sales.</p>
+                        </div>
+
+                        <div class="history-actions">
+                            <div class="search-wrap compact-search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="search" id="salesSearch" placeholder="Search sale or customer">
+                            </div>
+
+                            <button type="button" id="exportSalesBtn" class="secondary-btn">
+                                <i class="fa-solid fa-file-export"></i>
+                                Export CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="salesLoading" class="sales-state">
+                        <div class="sales-spinner"></div>
+                        <p>Loading sales history.</p>
+                    </div>
+
+                    <div id="salesEmptyState" class="sales-state hidden">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <h3>No sales found</h3>
+                    </div>
+
+                    <div id="salesTableWrapper" class="table-responsive hidden">
+                        <table class="sales-table">
+                            <thead>
+                                <tr>
+                                    <th>Sale</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th class="actions-column">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div id="saleDetailsModal" class="sale-modal" aria-hidden="true">
+    <div class="sale-modal-overlay"></div>
+
+    <div class="sale-modal-dialog" role="dialog" aria-modal="true">
+        <div class="sale-modal-header">
+            <div>
+                <span class="modal-label">Sale Details</span>
+                <h2 id="saleDetailsTitle">Sale</h2>
+            </div>
+
+            <button type="button" class="modal-close-button" data-close-modal="saleDetailsModal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="saleDetailsLoading" class="modal-loading-state">
+            <div class="sales-spinner"></div>
+            <p>Loading sale details.</p>
+        </div>
+
+        <div id="saleDetailsContent" class="sale-modal-body hidden">
+            <section class="sale-detail-hero">
+                <div>
+                    <span id="detailsSaleNumber" class="sale-number-large">—</span>
+                    <h3 id="detailsCustomerName">—</h3>
+                    <p id="detailsCustomerContact">—</p>
+                </div>
+
+                <span id="detailsSaleStatus" class="status-badge">—</span>
+            </section>
+
+            <div class="detail-grid">
+                <article class="detail-card">
+                    <h3><i class="fa-solid fa-receipt"></i> Sale</h3>
+                    <dl>
+                        <div><dt>Date</dt><dd id="detailsSaleDate">—</dd></div>
+                        <div><dt>Payment Method</dt><dd id="detailsPaymentMethod">—</dd></div>
+                        <div><dt>Payment Status</dt><dd id="detailsPaymentStatus">—</dd></div>
+                        <div><dt>Remarks</dt><dd id="detailsRemarks">—</dd></div>
+                    </dl>
+                </article>
+
+                <article class="detail-card">
+                    <h3><i class="fa-solid fa-file-invoice-dollar"></i> Invoice</h3>
+                    <dl>
+                        <div><dt>Invoice Number</dt><dd id="detailsInvoiceNumber">—</dd></div>
+                        <div><dt>Invoice Status</dt><dd id="detailsInvoiceStatus">—</dd></div>
+                        <div><dt>Paid</dt><dd id="detailsPaidAmount">PKR 0</dd></div>
+                        <div><dt>Balance</dt><dd id="detailsBalanceAmount">PKR 0</dd></div>
+                    </dl>
+                </article>
+            </div>
+
+            <div class="table-responsive">
+                <table class="sale-items-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saleItemsBody"></tbody>
+                </table>
+            </div>
+
+            <div class="detail-totals">
+                <div><span>Subtotal</span><strong id="detailsSubtotal">PKR 0</strong></div>
+                <div><span>Discount</span><strong id="detailsDiscount">PKR 0</strong></div>
+                <div><span>Tax</span><strong id="detailsTax">PKR 0</strong></div>
+                <div class="grand-total"><span>Grand Total</span><strong id="detailsGrandTotal">PKR 0</strong></div>
+            </div>
+        </div>
+
+        <div class="sale-modal-footer">
+            <button type="button" class="secondary-btn" data-close-modal="saleDetailsModal">Close</button>
+            <button type="button" id="cancelSaleBtn" class="danger-btn">
+                <i class="fa-solid fa-ban"></i>
+                Cancel Sale
+            </button>
+        </div>
+    </div>
+</div>
+<script src="/admin/js/sales.js"></script>
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+</html>

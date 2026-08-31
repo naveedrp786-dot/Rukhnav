@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Notification Center | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/notification-center.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+    <main class="main">
+        <div id="topbar-container"></div>
+        <section class="content erp-v5-page notification-page">
+            <header class="erp-v5-hero">
+                <div class="erp-v5-hero__copy">
+                    <span class="erp-v5-eyebrow"><i class="fa-solid fa-bell"></i> Communication Operations</span>
+                    <h1>Notification Center</h1>
+                    <p>Configure Email, WhatsApp and SMS, manage customer preferences, edit templates and inspect delivery history.</p>
+                </div>
+                <div class="erp-v5-hero__actions">
+                    <span id="environmentBadge" class="environment-badge">Development</span>
+                    <button id="refreshButton" class="erp-v5-btn erp-v5-btn--gold" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+            </header>
+
+            <div id="message" class="notification-message"></div>
+
+            <section class="erp-v5-summary-grid notification-summary-grid">
+                <article class="erp-v5-summary-card"><div class="erp-v5-summary-card__icon"><i class="fa-solid fa-paper-plane"></i></div><span>Total Deliveries</span><strong id="totalDeliveries">0</strong><small>All recorded attempts</small></article>
+                <article class="erp-v5-summary-card"><div class="erp-v5-summary-card__icon"><i class="fa-solid fa-circle-check"></i></div><span>Sent</span><strong id="sentDeliveries">0</strong><small>Real provider deliveries</small></article>
+                <article class="erp-v5-summary-card"><div class="erp-v5-summary-card__icon"><i class="fa-solid fa-flask"></i></div><span>Simulated</span><strong id="simulatedDeliveries">0</strong><small>Safe development tests</small></article>
+                <article class="erp-v5-summary-card"><div class="erp-v5-summary-card__icon"><i class="fa-solid fa-circle-exclamation"></i></div><span>Failed</span><strong id="failedDeliveries">0</strong><small>Provider or configuration errors</small></article>
+            </section>
+
+            <nav class="notification-tabs">
+                <button class="active" data-tab="channels"><i class="fa-solid fa-tower-broadcast"></i> Channels</button>
+                <button data-tab="preferences"><i class="fa-solid fa-user-gear"></i> Customer Preferences</button>
+                <button data-tab="templates"><i class="fa-solid fa-file-lines"></i> Templates</button>
+                <button data-tab="logs"><i class="fa-solid fa-list-check"></i> Delivery Logs</button>
+            </nav>
+
+            <section id="channelsView" class="tab-view">
+                <div id="channelCards" class="channel-grid"></div>
+            </section>
+
+            <section id="preferencesView" class="tab-view hidden">
+                <article class="erp-v5-panel">
+                    <div class="erp-v5-panel-heading"><div><span class="erp-v5-section-label">Customer Consent</span><h2>Notification Preferences</h2><p>Enable channels only when customer consent and membership permissions allow them.</p></div></div>
+                    <div class="filter-bar"><div class="erp-v5-field"><label for="preferenceSearch">Search customers</label><input id="preferenceSearch" type="search" placeholder="Name, email, phone or ID"></div></div>
+                    <div class="erp-v5-table-wrap"><table class="erp-v5-table preferences-table"><thead><tr><th>Customer</th><th>Email</th><th>WhatsApp</th><th>SMS</th><th>Action</th></tr></thead><tbody id="preferencesBody"></tbody></table></div>
+                </article>
+            </section>
+
+            <section id="templatesView" class="tab-view hidden">
+                <article class="erp-v5-panel">
+                    <div class="erp-v5-panel-heading"><div><span class="erp-v5-section-label">Message Library</span><h2>Notification Templates</h2><p>Edit reusable messages and variables such as {{customer_name}}, {{order_number}} and {{event_date}}.</p></div></div>
+                    <div class="erp-v5-table-wrap"><table class="erp-v5-table templates-table"><thead><tr><th>Template</th><th>Channel</th><th>Subject</th><th>Status</th><th>Action</th></tr></thead><tbody id="templatesBody"></tbody></table></div>
+                </article>
+            </section>
+
+            <section id="logsView" class="tab-view hidden">
+                <article class="erp-v5-panel">
+                    <div class="erp-v5-panel-heading"><div><span class="erp-v5-section-label">Audit Trail</span><h2>Delivery Logs</h2><p>Review simulated, sent and failed notification attempts.</p></div></div>
+                    <div class="erp-v5-table-wrap"><table class="erp-v5-table logs-table"><thead><tr><th>Date</th><th>Channel</th><th>Recipient</th><th>Status</th><th>Provider</th><th>Details</th></tr></thead><tbody id="logsBody"></tbody></table></div>
+                </article>
+            </section>
+        </section>
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div id="templateModal" class="nc-modal hidden"><div class="nc-backdrop" data-close-template></div><div class="nc-dialog"><header><div><span>Template Editor</span><h2 id="templateTitle">Edit Template</h2></div><button data-close-template><i class="fa-solid fa-xmark"></i></button></header><form id="templateForm"><input id="templateId" type="hidden"><div class="nc-body"><div class="form-grid"><div class="erp-v5-field"><label>Name</label><input id="templateName" required></div><div class="erp-v5-field"><label>Channel</label><select id="templateChannel"><option>Email</option><option>WhatsApp</option><option>SMS</option></select></div></div><div class="erp-v5-field"><label>Subject</label><input id="templateSubject"></div><div class="erp-v5-field"><label>Message Body</label><textarea id="templateBody" rows="8" required></textarea></div><div class="erp-v5-field"><label>Status</label><select id="templateStatus"><option>Active</option><option>Inactive</option></select></div></div><footer><button type="button" class="erp-v5-btn erp-v5-btn--soft" data-close-template>Cancel</button><button class="erp-v5-btn erp-v5-btn--gold" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Template</button></footer></form></div></div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/notification-center.js"></script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Events & Reminders | RUKHNAV</title>
+<meta name="description" content="Manage birthdays, anniversaries and special reminders with RUKHNAV.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/store.css">
+<link rel="stylesheet" href="css/events.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div id="announcement"></div>
+<div id="header"></div>
+
+<main class="events-page">
+    <section id="eventsLoading" class="events-state">
+        <div class="spinner"></div>
+        <h2>Loading Events & Reminders</h2>
+        <p>Checking your membership and upcoming occasions.</p>
+    </section>
+
+    <section id="eventsAuthState" class="events-state hidden">
+        <div class="events-state-icon"><i class="fa-regular fa-user"></i></div>
+        <h2>Sign in to manage events</h2>
+        <p>Events & Reminders are connected to your RUKHNAV membership account.</p>
+        <a href="account.html?return=events.html" class="btn primary">Sign in</a>
+    </section>
+
+    <section id="eventsLockedState" class="events-state locked-state hidden">
+        <div class="locked-crown"><i class="fa-solid fa-lock"></i></div>
+        <span>Gold Membership Feature</span>
+        <h2>Events & Reminders are locked</h2>
+        <p id="eventsLockedMessage">
+            Reach Gold membership to create birthdays, anniversaries and special-occasion reminders.
+        </p>
+        <div class="locked-actions">
+            <a href="rewards.html" class="btn primary">View rewards progress</a>
+            <a href="products.html" class="btn secondary">Continue shopping</a>
+        </div>
+    </section>
+
+    <section id="eventsContent" class="events-content hidden">
+        <header class="events-header">
+            <div>
+                <a href="account.html" class="events-back-link">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Customer Centre
+                </a>
+                <span>Premium Member Feature</span>
+                <h1>Events & Reminders</h1>
+                <p>Never miss a birthday, anniversary or meaningful occasion.</p>
+            </div>
+
+            <div class="events-header-actions">
+                <a href="account.html" class="events-account-button">
+                    <i class="fa-solid fa-user"></i>
+                    Back to Account
+                </a>
+                <a href="products.html" class="events-shopping-button">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    Continue Shopping
+                </a>
+                <button id="addEventButton" type="button" class="events-primary-button">
+                    <i class="fa-solid fa-plus"></i>
+                    Add event
+                </button>
+            </div>
+        </header>
+
+        <section class="events-hero">
+            <div>
+                <span id="eventsMembershipLabel">Gold Member Access</span>
+                <h2>Thoughtful reminders, right on time</h2>
+                <p>
+                    Plan ahead for the people and occasions that matter.
+                    Choose your reminder timing and preferred notification channels.
+                </p>
+            </div>
+
+            <div class="events-hero-icon">
+                <i class="fa-solid fa-calendar-heart"></i>
+            </div>
+        </section>
+
+        <section class="events-statistics">
+            <article>
+                <i class="fa-solid fa-calendar-days"></i>
+                <div><span>Total events</span><strong id="totalEventsCount">0</strong></div>
+            </article>
+
+            <article>
+                <i class="fa-solid fa-clock"></i>
+                <div><span>Upcoming 60 days</span><strong id="upcomingEventsCount">0</strong></div>
+            </article>
+
+            <article>
+                <i class="fa-solid fa-circle-check"></i>
+                <div><span>Active</span><strong id="activeEventsCount">0</strong></div>
+            </article>
+
+            <article>
+                <i class="fa-solid fa-circle-pause"></i>
+                <div><span>Paused</span><strong id="inactiveEventsCount">0</strong></div>
+            </article>
+        </section>
+
+        <section id="nextEventCard" class="next-event-card hidden">
+            <div class="next-event-date">
+                <span id="nextEventMonth">JAN</span>
+                <strong id="nextEventDay">01</strong>
+            </div>
+
+            <div class="next-event-copy">
+                <span>Next Upcoming Event</span>
+                <h2 id="nextEventName">Event</h2>
+                <p id="nextEventDescription"></p>
+            </div>
+
+            <div class="next-event-countdown">
+                <strong id="nextEventDays">0</strong>
+                <span>days away</span>
+            </div>
+        </section>
+
+        <section class="events-workspace">
+            <div class="events-toolbar">
+                <div class="events-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="eventsSearch" type="search" placeholder="Search events">
+                </div>
+
+                <div class="events-filter-actions">
+                    <select id="eventStatusFilter">
+                        <option value="">All statuses</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Paused</option>
+                    </select>
+
+                    <select id="eventTypeFilter">
+                        <option value="">All event types</option>
+                        <option value="Birthday">Birthday</option>
+                        <option value="Anniversary">Anniversary</option>
+                        <option value="Engagement">Engagement</option>
+                        <option value="Family Birthday">Family Birthday</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <button id="refreshEventsButton" type="button" class="btn secondary">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="events-view-tabs">
+                <button class="events-view-tab active" type="button" data-events-view="cards">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    Cards
+                </button>
+
+                <button class="events-view-tab" type="button" data-events-view="timeline">
+                    <i class="fa-solid fa-list"></i>
+                    Timeline
+                </button>
+            </div>
+
+            <section id="eventsEmptyState" class="events-empty hidden">
+                <div><i class="fa-solid fa-calendar-plus"></i></div>
+                <h2>No events yet</h2>
+                <p>Create your first birthday, anniversary or special reminder.</p>
+                <button type="button" class="btn primary" data-open-event-modal>Add first event</button>
+            </section>
+
+            <div id="eventsGrid" class="events-grid"></div>
+            <div id="eventsTimeline" class="events-timeline hidden"></div>
+        </section>
+    </section>
+</main>
+
+<div id="eventModal" class="event-modal" aria-hidden="true">
+    <div class="event-modal-backdrop" data-close-event-modal></div>
+
+    <section class="event-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+        <header>
+            <div>
+                <span>RUKHNAV Reminder</span>
+                <h2 id="eventModalTitle">Add special event</h2>
+            </div>
+
+            <button type="button" class="event-modal-close" data-close-event-modal>
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+
+        <div id="eventFormMessage" class="event-form-message"></div>
+
+        <form id="eventForm">
+            <input id="eventId" type="hidden">
+
+            <div class="event-form-grid">
+                <div>
+                    <label for="eventType">Event type</label>
+                    <select id="eventType" required>
+                        <option value="">Select type</option>
+                        <option value="Birthday">Birthday</option>
+                        <option value="Anniversary">Anniversary</option>
+                        <option value="Engagement">Engagement</option>
+                        <option value="Family Birthday">Family Birthday</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="eventName">Event name</label>
+                    <input id="eventName" type="text" maxlength="150" placeholder="Mother's Birthday" required>
+                </div>
+
+                <div>
+                    <label for="eventDate">Event date</label>
+                    <input id="eventDate" type="date" required>
+                </div>
+
+                <div>
+                    <label for="eventRecurrence">Recurrence</label>
+                    <select id="eventRecurrence" required>
+                        <option value="Yearly">Yearly</option>
+                        <option value="One Time">One Time</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="eventReminderDays">Remind me before</label>
+                    <select id="eventReminderDays" required>
+                        <option value="0">On the same day</option>
+                        <option value="1">1 day before</option>
+                        <option value="3">3 days before</option>
+                        <option value="5" selected>5 days before</option>
+                        <option value="7">7 days before</option>
+                        <option value="14">14 days before</option>
+                        <option value="30">30 days before</option>
+                    </select>
+                </div>
+
+                <div class="event-form-full">
+                    <label>Reminder channels</label>
+
+                    <div class="event-channel-options">
+                        <label>
+                            <input id="remindByEmail" type="checkbox">
+                            <span><i class="fa-regular fa-envelope"></i> Email</span>
+                        </label>
+
+                        <label>
+                            <input id="remindByWhatsapp" type="checkbox">
+                            <span><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
+                        </label>
+
+                        <label>
+                            <input id="remindBySms" type="checkbox">
+                            <span><i class="fa-solid fa-comment-sms"></i> SMS</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="event-form-full">
+                    <label for="eventNotes">Notes <span>Optional</span></label>
+                    <textarea id="eventNotes" maxlength="1000" rows="4" placeholder="Gift ideas, plans or important details"></textarea>
+                </div>
+            </div>
+
+            <footer>
+                <button type="button" class="btn secondary" data-close-event-modal>Cancel</button>
+                <button id="saveEventButton" type="submit" class="btn primary">
+                    Save event
+                </button>
+            </footer>
+        </form>
+    </section>
+</div>
+
+<div id="deleteModal" class="event-modal" aria-hidden="true">
+    <div class="event-modal-backdrop" data-close-delete-modal></div>
+
+    <section class="event-modal-dialog delete-dialog" role="dialog" aria-modal="true">
+        <div class="delete-warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h2>Delete event permanently?</h2>
+        <p>This action cannot be undone. Pausing the event is safer if you may need it later.</p>
+
+        <footer>
+            <button type="button" class="btn secondary" data-close-delete-modal>Keep event</button>
+            <button id="confirmDeleteButton" type="button" class="btn danger-button">Delete permanently</button>
+        </footer>
+    </section>
+</div>
+
+<div id="footer"></div>
+<div id="toast" class="toast-region"></div>
+<div id="overlay" class="overlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/components.js"></script>
+<script src="js/store.js"></script>
+<script src="js/events.js"></script>
+</body>
+</html>

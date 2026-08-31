@@ -1,0 +1,14 @@
+/* Final safety rule: Logout must never display active-page styling. */
+.sidebar .logout-item,
+.sidebar .logout-item.active,
+.sidebar .logout-item > a,
+.sidebar .logout-item > a.active,
+.sidebar #logoutBtn,
+.sidebar #logoutBtn.active{
+    box-shadow:none!important;
+}
+
+.sidebar .logout-item > a.active,
+.sidebar #logoutBtn.active{
+    color:inherit!important;
+}

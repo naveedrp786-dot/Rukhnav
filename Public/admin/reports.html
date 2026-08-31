@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Reports | RUKHNAV ERP</title>
+<link rel="stylesheet" href="css/erp.css"><link rel="stylesheet" href="css/reports.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="dashboard"><div id="sidebar-container"></div><main class="main"><div id="topbar-container"></div>
+<section class="content reports-page">
+<header class="reports-header"><div><span class="eyebrow">Business Intelligence</span><h1>Reports & Analytics</h1><p>Sales, finance, inventory, customers, products and supplier performance in one place.</p></div><div class="header-actions"><select id="reportYear"></select><button id="refreshReports" class="primary-btn"><i class="fa-solid fa-rotate"></i> Refresh</button></div></header>
+<div id="reportMessage" class="message"></div>
+<section class="kpi-grid">
+<article><i class="fa-solid fa-sack-dollar"></i><span>Total Revenue</span><strong id="kpiRevenue">PKR 0</strong></article>
+<article><i class="fa-solid fa-cart-shopping"></i><span>Total Sales</span><strong id="kpiSales">0</strong></article>
+<article><i class="fa-solid fa-boxes-stacked"></i><span>Inventory Cost</span><strong id="kpiInventory">PKR 0</strong></article>
+<article><i class="fa-solid fa-users"></i><span>Customers</span><strong id="kpiCustomers">0</strong></article>
+<article><i class="fa-solid fa-triangle-exclamation"></i><span>Low Stock</span><strong id="kpiLowStock">0</strong></article>
+<article><i class="fa-solid fa-file-invoice-dollar"></i><span>Outstanding</span><strong id="kpiOutstanding">PKR 0</strong></article>
+</section>
+<section class="charts-grid"><article class="panel"><div class="panel-title"><div><span>Revenue</span><h2>Monthly Revenue Trend</h2></div></div><div class="chart-wrap"><canvas id="monthlyRevenueChart"></canvas></div></article><article class="panel"><div class="panel-title"><div><span>Payments</span><h2>Payment Method Breakdown</h2></div></div><div class="chart-wrap"><canvas id="paymentChart"></canvas></div></article></section>
+<section class="charts-grid"><article class="panel"><div class="panel-title"><div><span>Customers</span><h2>Customer Growth</h2></div></div><div class="chart-wrap"><canvas id="customerGrowthChart"></canvas></div></article><article class="panel"><div class="panel-title"><div><span>Categories</span><h2>Category Performance</h2></div></div><div class="chart-wrap"><canvas id="categoryChart"></canvas></div></article></section>
+<section class="panel"><div class="panel-title"><div><span>Report Centre</span><h2>Detailed Reports</h2></div><button id="exportCurrent" class="secondary-btn"><i class="fa-solid fa-file-csv"></i> Export CSV</button></div>
+<div class="report-tabs" id="reportTabs">
+<button class="active" data-report="sales/daily">Daily Sales</button><button data-report="sales/monthly">Monthly Sales</button><button data-report="sales/yearly">Yearly Sales</button><button data-report="inventory/valuation">Inventory Valuation</button><button data-report="inventory/low-stock">Low Stock</button><button data-report="inventory/out-of-stock">Out of Stock</button><button data-report="products/top-selling">Top Products</button><button data-report="products/slow-moving">Slow Products</button><button data-report="customers/top">Top Customers</button><button data-report="customers/inactive">Inactive Customers</button><button data-report="suppliers/performance">Suppliers</button>
+</div><div id="reportLoading" class="state"><div class="spinner"></div><p>Loading report...</p></div><div id="reportTable" class="table-wrap hidden"></div></section>
+</section><div id="footer-container"></div></main></div><script src="js/reports.js"></script>
+
+<script src="/admin/js/adminLayout.js"></script>
+</body></html>

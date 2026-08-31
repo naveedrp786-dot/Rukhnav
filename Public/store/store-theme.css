@@ -1,0 +1,222 @@
+/* RUKHNAV SHARED HEADER + FOOTER FIX
+   Load this AFTER style.css on every storefront page.
+*/
+
+:root{
+    --rk-green:#17483c;
+    --rk-green-dark:#0d332a;
+    --rk-gold:#bd9650;
+    --rk-cream:#faf7ef;
+    --rk-soft:#f2eee5;
+    --rk-white:#ffffff;
+    --rk-text:#23332e;
+    --rk-muted:#6e7975;
+    --rk-border:rgba(23,72,60,.14);
+}
+
+/* Light readable announcement bar */
+.store-announcement-bar{
+    background:#f3ead9 !important;
+    border-bottom:1px solid var(--rk-border) !important;
+}
+
+.store-announcement-bar .container{
+    padding-top:7px !important;
+    padding-bottom:7px !important;
+}
+
+.store-announcement-bar p,
+.store-announcement-bar a{
+    color:#31584e !important;
+    font-size:11px !important;
+}
+
+.store-announcement-bar i{
+    color:#9d772f !important;
+}
+
+.announcement-links > span{
+    background:rgba(23,72,60,.18) !important;
+}
+
+/* Compact light footer */
+.rk-footer{
+    margin:0 !important;
+    padding:0 !important;
+    background:#f7f2e8 !important;
+    color:var(--rk-text) !important;
+    border-top:1px solid var(--rk-border) !important;
+}
+
+.rk-footer .container{
+    max-width:1160px !important;
+}
+
+.rk-footer-main{
+    display:grid;
+    grid-template-columns:1.4fr .75fr .75fr 1.1fr;
+    gap:42px;
+    padding:48px 0 34px;
+}
+
+.rk-footer-brand p{
+    max-width:340px;
+    margin:18px 0;
+    color:var(--rk-muted) !important;
+    font-size:12px;
+    line-height:1.75;
+}
+
+.rk-footer-logo{
+    display:inline-flex;
+    align-items:center;
+    gap:11px;
+}
+
+.rk-footer-logo img{
+    width:54px !important;
+    height:54px !important;
+    object-fit:contain;
+    padding:0 !important;
+    margin:0 !important;
+}
+
+.rk-footer-logo strong{
+    display:block;
+    color:var(--rk-green);
+    font-size:18px;
+    letter-spacing:.12em;
+}
+
+.rk-footer-logo small{
+    display:block;
+    margin-top:2px;
+    color:var(--rk-muted);
+    font-size:9px;
+}
+
+.rk-footer h3{
+    margin:4px 0 17px;
+    color:var(--rk-green) !important;
+    font-size:13px;
+    font-weight:700;
+}
+
+.rk-footer-links{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.rk-footer-links a{
+    margin:0 0 10px;
+    color:var(--rk-muted) !important;
+    font-size:11px !important;
+}
+
+.rk-footer-links a:hover{
+    color:var(--rk-green) !important;
+}
+
+.rk-footer-contact > p{
+    display:flex;
+    gap:10px;
+    margin:0 0 12px;
+    color:var(--rk-muted) !important;
+    font-size:11px;
+    line-height:1.55;
+}
+
+.rk-footer-contact i{
+    width:16px;
+    margin-top:2px;
+    color:var(--rk-gold);
+}
+
+.rk-footer-socials{
+    display:flex;
+    gap:8px;
+}
+
+.rk-footer-socials a{
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    border:1px solid var(--rk-border);
+    border-radius:50%;
+    background:#fff;
+    color:var(--rk-green) !important;
+    font-size:12px !important;
+}
+
+.rk-footer-payments{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:18px;
+}
+
+.rk-footer-payments span{
+    min-width:40px;
+    height:30px;
+    padding:0 9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--rk-border);
+    border-radius:8px;
+    background:#fff;
+    color:var(--rk-green);
+    font-size:10px;
+    font-weight:700;
+}
+
+.rk-footer-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:17px 0;
+    border-top:1px solid var(--rk-border);
+}
+
+.rk-footer-bottom p,
+.rk-footer-bottom span{
+    color:var(--rk-muted) !important;
+    font-size:10px;
+}
+
+.rk-footer-bottom > div{
+    display:flex;
+    gap:18px;
+}
+
+.rk-footer-bottom i{
+    margin-right:5px;
+    color:var(--rk-gold);
+}
+
+@media (max-width:900px){
+    .rk-footer-main{
+        grid-template-columns:repeat(2,1fr);
+        gap:32px;
+    }
+}
+
+@media (max-width:600px){
+    .rk-footer-main{
+        grid-template-columns:1fr;
+        gap:26px;
+        padding:38px 0 28px;
+    }
+
+    .rk-footer-bottom{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .rk-footer-bottom > div{
+        flex-wrap:wrap;
+    }
+}

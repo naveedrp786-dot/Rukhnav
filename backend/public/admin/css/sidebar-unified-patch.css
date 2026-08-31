@@ -1,0 +1,91 @@
+
+/* Unified submenu behavior */
+.sidebar .submenu{
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(-4px);
+    transition:
+        max-height .24s ease,
+        opacity .2s ease,
+        transform .2s ease;
+}
+
+.sidebar .menu-group.open > .submenu{
+    max-height:760px;
+    opacity:1;
+    transform:translateY(0);
+}
+
+.sidebar .menu-group.open > .has-submenu{
+    color:#f2cd79;
+    background:rgba(255,255,255,.08);
+}
+
+.sidebar .menu-group.open .submenu-arrow{
+    transform:rotate(180deg);
+}
+
+.sidebar .submenu-arrow{
+    margin-left:auto;
+    transition:transform .2s ease;
+}
+
+.sidebar a.active,
+.sidebar li.active > a{
+    color:#fff!important;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(201,152,53,.28),
+            rgba(201,152,53,.13)
+        )!important;
+    box-shadow:
+        inset 3px 0 0 #d7aa4b;
+}
+
+.sidebar a.active i{
+    color:#f2cb73!important;
+}
+
+.component-load-error{
+    margin:14px;
+    padding:12px;
+    border-radius:9px;
+    color:#9b2f28;
+    background:#fff0ef;
+}
+
+/*
+ * Events, Product Media and Orders use exactly
+ * the same maximum page width and vertical rhythm.
+ */
+.events-admin,
+.product-media-admin,
+.orders-page{
+    width:min(100%,1600px);
+    margin-inline:auto;
+    gap:20px!important;
+}
+
+.events-admin > .erp-page-header,
+.product-media-admin > .erp-page-header,
+.orders-page > .erp-page-header{
+    min-height:150px;
+    box-sizing:border-box;
+}
+
+.events-admin > .erp-panel,
+.product-media-admin > .erp-panel,
+.orders-page > .orders-panel{
+    border-radius:18px!important;
+    box-shadow:var(--erp-shadow)!important;
+}
+
+@media(max-width:900px){
+    .events-admin > .erp-page-header,
+    .product-media-admin > .erp-page-header,
+    .orders-page > .erp-page-header{
+        min-height:unset;
+    }
+}

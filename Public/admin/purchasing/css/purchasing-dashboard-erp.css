@@ -1,0 +1,408 @@
+
+/* =====================================================
+   RUKHNAV ERP — Purchasing Dashboard Compact Professional
+   Matches purchasing-dashboard.html class names exactly
+===================================================== */
+
+:root {
+    --pd-primary: #0b6e4f;
+    --pd-primary-dark: #07543d;
+    --pd-primary-soft: #eaf7f1;
+    --pd-gold: #d4a84d;
+    --pd-bg: #f4f7f5;
+    --pd-card: #ffffff;
+    --pd-text: #1f2937;
+    --pd-muted: #6b7280;
+    --pd-border: #e4e9e6;
+    --pd-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+body {
+    background: var(--pd-bg);
+}
+
+.purchasing-dashboard-page {
+    padding: 18px;
+    background: var(--pd-bg);
+}
+
+/* Header */
+.purchasing-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+
+    margin-bottom: 14px;
+    padding: 18px 20px;
+
+    background: #ffffff;
+    border: 1px solid var(--pd-border);
+    border-left: 4px solid var(--pd-primary);
+    border-radius: 12px;
+    box-shadow: var(--pd-shadow);
+}
+
+.page-label {
+    display: inline-block;
+    margin-bottom: 5px;
+    color: var(--pd-primary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .75px;
+    text-transform: uppercase;
+}
+
+.purchasing-page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 5px;
+    color: var(--pd-text);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.purchasing-page-header h1 i {
+    color: var(--pd-gold);
+}
+
+.purchasing-page-header p {
+    margin: 0;
+    color: var(--pd-muted);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.page-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.page-actions .primary-btn,
+.page-actions .secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 112px;
+    height: 36px;
+    padding: 0 13px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.page-actions .primary-btn {
+    color: #fff;
+    background: var(--pd-primary);
+    border: 1px solid var(--pd-primary);
+}
+
+.page-actions .secondary-btn {
+    color: #374151;
+    background: #fff;
+    border: 1px solid #d7ddda;
+}
+
+.page-actions .primary-btn:hover {
+    background: var(--pd-primary-dark);
+}
+
+.page-actions .secondary-btn:hover {
+    color: var(--pd-primary);
+    border-color: var(--pd-primary);
+}
+
+/* Message */
+.dashboard-message {
+    display: none;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dashboard-message.show {
+    display: block;
+}
+
+/* KPI cards */
+.purchasing-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.purchasing-summary-card {
+    min-width: 0;
+    min-height: 92px;
+    padding: 12px 13px;
+
+    background: var(--pd-card);
+    border: 1px solid var(--pd-border);
+    border-radius: 10px;
+    box-shadow: var(--pd-shadow);
+}
+
+.purchasing-summary-card .summary-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.purchasing-summary-card .summary-label {
+    color: var(--pd-muted);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.purchasing-summary-card .summary-value {
+    margin-top: 7px;
+    color: var(--pd-text);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.purchasing-summary-card .summary-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    color: var(--pd-primary);
+    background: var(--pd-primary-soft);
+    border-radius: 9px;
+    font-size: 14px;
+}
+
+.loading-card {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--pd-muted);
+}
+
+/* Layout grids */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.two-column-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.dashboard-panel {
+    min-width: 0;
+    overflow: hidden;
+    background: var(--pd-card);
+    border: 1px solid var(--pd-border);
+    border-radius: 10px;
+    box-shadow: var(--pd-shadow);
+}
+
+.full-width-panel {
+    margin-bottom: 14px;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 48px;
+    padding: 10px 12px;
+    background: #fff;
+    border-bottom: 1px solid var(--pd-border);
+}
+
+.panel-header span {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--pd-primary);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .55px;
+    text-transform: uppercase;
+}
+
+.panel-header h2 {
+    margin: 0;
+    color: var(--pd-text);
+    font-size: 14px;
+    font-weight: 650;
+}
+
+/* Charts */
+.chart-wrap {
+    position: relative;
+    width: 100%;
+    min-height: 185px;
+    height: 185px;
+    padding: 10px;
+}
+
+.chart-wrap.compact {
+    min-height: 185px;
+    height: 185px;
+}
+
+/* Tables */
+.table-responsive {
+    width: 100%;
+    max-height: 210px;
+    overflow: auto;
+}
+
+.dashboard-panel table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dashboard-panel thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 8px 10px;
+    color: #667085;
+    background: #f8faf9;
+    border-bottom: 1px solid var(--pd-border);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.dashboard-panel tbody td {
+    padding: 8px 10px;
+    color: #344054;
+    background: #fff;
+    border-bottom: 1px solid #edf1ef;
+    font-size: 11px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.dashboard-panel tbody tr:hover td {
+    background: #fbfdfc;
+}
+
+.status-badge,
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 66px;
+    padding: 4px 7px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.status-paid,
+.status-posted,
+.status-received,
+.status-active,
+.status-completed {
+    color: #1f7a4d;
+    background: #eaf7f0;
+}
+
+.status-partial,
+.status-pending,
+.status-draft,
+.status-unpaid {
+    color: #a86618;
+    background: #fff4df;
+}
+
+.status-cancelled,
+.status-rejected,
+.status-failed,
+.status-inactive {
+    color: #a33636;
+    background: #fdeeee;
+}
+
+.status-approved,
+.status-ordered,
+.status-processing,
+.status-partially-received {
+    color: #2f69a2;
+    background: #edf5fd;
+}
+
+/* Scrollbars */
+.table-responsive::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c9d1cd;
+    border-radius: 999px;
+}
+
+/* Responsive */
+@media (max-width: 1500px) {
+    .purchasing-summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .analytics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1100px) {
+    .purchasing-summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .analytics-grid,
+    .two-column-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .purchasing-dashboard-page {
+        padding: 12px;
+    }
+
+    .purchasing-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .purchasing-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .page-actions {
+        width: 100%;
+    }
+
+    .page-actions .primary-btn,
+    .page-actions .secondary-btn {
+        flex: 1;
+    }
+}

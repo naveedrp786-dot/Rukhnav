@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments | RUKHNAV ERP</title>
+
+    <link rel="stylesheet" href="css/erp.css">
+    <link rel="stylesheet" href="css/payments.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content payments-page">
+            <header class="page-header payments-header">
+                <div>
+                    <span class="page-label">Finance</span>
+                    <h1>Payment Management</h1>
+                    <p>Review customer payments, collections, payment methods, transaction references and order balances.</p>
+                </div>
+
+                <div class="header-actions">
+                    <button type="button" id="clearPaymentFiltersButton" class="secondary-btn">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+
+                    <button type="button" id="refreshPaymentsButton" class="primary-btn">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <div id="paymentsMessage" class="payments-message" role="alert" aria-live="polite"></div>
+
+            <section class="payment-summary-grid">
+                <article class="summary-card">
+                    <div class="summary-icon total"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <div><span>Total Payments</span><h2 id="totalPayments">0</h2><small>All payment records</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon collected"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <div><span>Total Collected</span><h2 id="totalCollected">PKR 0</h2><small>Successfully paid amount</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon today"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div><span>Today</span><h2 id="todayCollections">PKR 0</h2><small>Today's collections</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon month"><i class="fa-solid fa-chart-column"></i></div>
+                    <div><span>This Month</span><h2 id="monthlyCollections">PKR 0</h2><small>Current month collections</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon paid"><i class="fa-solid fa-circle-check"></i></div>
+                    <div><span>Paid</span><h2 id="successfulPayments">0</h2><small>Successful payments</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon pending"><i class="fa-solid fa-clock"></i></div>
+                    <div><span>Pending</span><h2 id="pendingPayments">0</h2><small>Awaiting confirmation</small></div>
+                </article>
+
+                <article class="summary-card outstanding">
+                    <div class="summary-icon outstanding"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    <div>
+                        <span>Remaining Customer Payment</span>
+                        <h2 id="outstandingPaymentAmount">PKR 0</h2>
+                        <small id="outstandingOrderCount">0 unpaid orders</small>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon refunded"><i class="fa-solid fa-rotate-left"></i></div>
+                    <div><span>Refunded</span><h2 id="refundedPayments">0</h2><small>Refunded transactions</small></div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon refund-amount"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    <div><span>Refunded Amount</span><h2 id="refundedAmount">PKR 0</h2><small>Total refunded value</small></div>
+                </article>
+            </section>
+
+            <section class="payments-panel method-breakdown-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-label">Payment Channels</span>
+                        <h2>Method Breakdown</h2>
+                        <p>Transaction count and collected amount by payment method.</p>
+                    </div>
+                </div>
+
+                <div id="paymentMethodBreakdown" class="method-breakdown-grid"></div>
+            </section>
+
+            <section class="payments-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-label">Payment Directory</span>
+                        <h2>Search and Filters</h2>
+                        <p>Find payments by customer, order, transaction reference, method, status or date.</p>
+                    </div>
+                </div>
+
+                <form id="paymentFiltersForm" class="payment-filters" autocomplete="off">
+                    <div class="filter-field search-field">
+                        <label for="paymentSearch">Search Payments</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="search" id="paymentSearch" placeholder="Payment ID, order, customer, phone or reference">
+                        </div>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="paymentStatusFilter">Status</label>
+                        <select id="paymentStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Failed">Failed</option>
+                            <option value="Refunded">Refunded</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="paymentMethodFilter">Method</label>
+                        <select id="paymentMethodFilter">
+                            <option value="">All Methods</option>
+                            <option value="Cash on Delivery">Cash on Delivery</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="EasyPaisa">EasyPaisa</option>
+                            <option value="JazzCash">JazzCash</option>
+                            <option value="Stripe">Stripe</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="paymentDateFrom">Date From</label>
+                        <input type="date" id="paymentDateFrom">
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="paymentDateTo">Date To</label>
+                        <input type="date" id="paymentDateTo">
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="paymentLimitFilter">Rows Per Page</label>
+                        <select id="paymentLimitFilter">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button type="submit" class="primary-btn">
+                            <i class="fa-solid fa-filter"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="payments-panel">
+                <div class="panel-heading table-panel-heading">
+                    <div>
+                        <span class="section-label">Accounts Receivable</span>
+                        <h2>Remaining Customer Payments</h2>
+                        <p>Orders with an unpaid or partially paid balance.</p>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="refreshOutstandingPaymentsButton"
+                        class="secondary-btn"
+                    >
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="payments-table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Customer</th>
+                                <th>Method</th>
+                                <th>Order Total</th>
+                                <th>Paid</th>
+                                <th>Remaining</th>
+                                <th>Payment Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="outstandingPaymentsBody">
+                            <tr>
+                                <td colspan="8">
+                                    Loading remaining customer payments...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="payments-panel">
+                <div class="panel-heading table-panel-heading">
+                    <div>
+                        <span class="section-label">Transactions</span>
+                        <h2>All Payments</h2>
+                        <p id="paymentResultsText">Loading payment records.</p>
+                    </div>
+
+                    <button type="button" id="exportPaymentsButton" class="secondary-btn">
+                        <i class="fa-solid fa-file-export"></i>
+                        Export CSV
+                    </button>
+                </div>
+
+                <div id="paymentsLoading" class="payments-state">
+                    <div class="payments-spinner"></div>
+                    <h3>Loading payments</h3>
+                    <p>Please wait while payment records are retrieved.</p>
+                </div>
+
+                <div id="paymentsEmptyState" class="payments-state hidden">
+                    <div class="state-icon"><i class="fa-solid fa-receipt"></i></div>
+                    <h3>No payments found</h3>
+                    <p>No payment records match the selected filters.</p>
+                    <button type="button" id="emptyClearPaymentFiltersButton" class="secondary-btn">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        Clear Filters
+                    </button>
+                </div>
+
+                <div id="paymentsTableWrapper" class="table-responsive hidden">
+                    <table class="payments-table">
+                        <thead>
+                            <tr>
+                                <th>Payment</th>
+                                <th>Customer</th>
+                                <th>Order</th>
+                                <th>Method</th>
+                                <th>Reference</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="paymentsPagination" class="payments-pagination hidden">
+                    <div id="paymentPaginationInformation" class="pagination-information">Showing 0 to 0 of 0 payments</div>
+
+                    <div class="pagination-controls">
+                        <button type="button" id="paymentFirstPageButton" class="pagination-button">
+                            <i class="fa-solid fa-angles-left"></i>
+                        </button>
+                        <button type="button" id="paymentPreviousPageButton" class="pagination-button">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <span id="paymentPaginationPages"></span>
+                        <button type="button" id="paymentNextPageButton" class="pagination-button">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <button type="button" id="paymentLastPageButton" class="pagination-button">
+                            <i class="fa-solid fa-angles-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <div id="footer-container"></div>
+    </main>
+</div>
+
+<div id="paymentDetailsModal" class="payment-modal" aria-hidden="true">
+    <div class="payment-modal-overlay"></div>
+
+    <div class="payment-modal-dialog" role="dialog" aria-modal="true">
+        <div class="payment-modal-header">
+            <div>
+                <span class="modal-label">Payment Transaction</span>
+                <h2 id="paymentDetailsTitle">Payment Details</h2>
+            </div>
+
+            <button type="button" class="modal-close-button" data-close-modal="paymentDetailsModal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="paymentDetailsLoading" class="modal-loading-state">
+            <div class="payments-spinner"></div>
+            <p>Loading payment details.</p>
+        </div>
+
+        <div id="paymentDetailsContent" class="payment-modal-body hidden">
+            <section class="payment-detail-hero">
+                <div>
+                    <span class="payment-reference" id="detailsPaymentReference">Payment</span>
+                    <h3 id="detailsCustomerName">Customer</h3>
+                    <p id="detailsCustomerContact">—</p>
+                </div>
+
+                <span id="detailsPaymentStatus" class="payment-status-badge">Pending</span>
+            </section>
+
+            <div class="payment-detail-grid">
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-user"></i><h3>Customer</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Name</dt><dd id="detailsCustomerNameValue">—</dd></div>
+                        <div><dt>Email</dt><dd id="detailsCustomerEmail">—</dd></div>
+                        <div><dt>Phone</dt><dd id="detailsCustomerPhone">—</dd></div>
+                        <div><dt>City</dt><dd id="detailsCustomerCity">—</dd></div>
+                        <div><dt>Address</dt><dd id="detailsCustomerAddress">—</dd></div>
+                    </dl>
+                </article>
+
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-cart-shopping"></i><h3>Order</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Order Number</dt><dd id="detailsOrderNumber">—</dd></div>
+                        <div><dt>Order Status</dt><dd id="detailsOrderStatus">—</dd></div>
+                        <div><dt>Order Payment</dt><dd id="detailsOrderPaymentStatus">—</dd></div>
+                        <div><dt>Order Total</dt><dd id="detailsOrderTotal">PKR 0</dd></div>
+                    </dl>
+                </article>
+
+                <article class="detail-card">
+                    <div class="detail-card-heading"><i class="fa-solid fa-credit-card"></i><h3>Transaction</h3></div>
+                    <dl class="detail-list">
+                        <div><dt>Payment ID</dt><dd id="detailsPaymentId">—</dd></div>
+                        <div><dt>Method</dt><dd id="detailsPaymentMethod">—</dd></div>
+                        <div><dt>Reference</dt><dd id="detailsTransactionReference">—</dd></div>
+                        <div><dt>Amount</dt><dd id="detailsPaymentAmount">PKR 0</dd></div>
+                        <div><dt>Paid At</dt><dd id="detailsPaidAt">—</dd></div>
+                        <div><dt>Created At</dt><dd id="detailsCreatedAt">—</dd></div>
+                    </dl>
+                </article>
+            </div>
+        </div>
+
+        <div class="payment-modal-footer">
+            <button type="button" class="secondary-btn" data-close-modal="paymentDetailsModal">Close</button>
+            <button type="button" id="openOrderButton" class="primary-btn">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Open Order
+            </button>
+        </div>
+    </div>
+</div>
+<script src="js/payments.js"></script>
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+</html>

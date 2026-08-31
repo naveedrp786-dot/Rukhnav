@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Referrals | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/premium-admin-pages.css">
+    <link rel="stylesheet" href="/admin/css/sidebar-unified-patch.css">
+    <link rel="stylesheet" href="/admin/css/referrals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+    <main class="main">
+        <div id="topbar-container"></div>
+        <section class="content erp-page referrals-page">
+            <header class="erp-page-header referral-header">
+                <div class="erp-page-header__copy">
+                    <span class="erp-eyebrow"><i class="fa-solid fa-user-group"></i> Sales</span>
+                    <h1>Customer Referrals</h1>
+                    <p>Monitor referral registrations, first qualifying purchases, reward status and loyalty points awarded.</p>
+                </div>
+                <div class="erp-header-actions">
+                    <button id="exportReferrals" class="erp-btn erp-btn--light" type="button"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+                    <button id="refreshReferrals" class="erp-btn erp-btn--gold" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+            </header>
+
+            <div id="referralMessage" class="referral-message" aria-live="polite"></div>
+
+            <section id="referralSummary" class="referral-kpi-grid">
+                <article><span>Total Referrals</span><strong id="kpiTotal">0</strong><small>All referral relationships</small></article>
+                <article><span>Registered</span><strong id="kpiRegistered">0</strong><small>Waiting for qualifying purchase</small></article>
+                <article><span>Qualified</span><strong id="kpiQualified">0</strong><small>Qualified but not yet rewarded</small></article>
+                <article><span>Rewarded</span><strong id="kpiRewarded">0</strong><small>Referral bonus completed</small></article>
+                <article><span>Points Awarded</span><strong id="kpiPoints">0</strong><small>Total referral loyalty points</small></article>
+            </section>
+
+            <section class="referral-panel">
+                <div class="referral-toolbar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="referralSearch" type="search" placeholder="Search name, email, phone or referral code">
+                    </div>
+                    <select id="referralStatus">
+                        <option value="">All statuses</option>
+                        <option value="Registered">Registered</option>
+                        <option value="Qualified">Qualified</option>
+                        <option value="Rewarded">Rewarded</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    <select id="referralLimit">
+                        <option value="10">10 rows</option>
+                        <option value="20" selected>20 rows</option>
+                        <option value="50">50 rows</option>
+                        <option value="100">100 rows</option>
+                    </select>
+                    <button id="applyReferralFilters" type="button" class="filter-btn"><i class="fa-solid fa-filter"></i> Apply Filters</button>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="referrals-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Referral Code</th>
+                                <th>Referrer</th>
+                                <th>Referred Customer</th>
+                                <th>First Paid Sale</th>
+                                <th>Status</th>
+                                <th>Points</th>
+                                <th>Registered</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="referralsBody">
+                            <tr><td colspan="9" class="empty-cell">Loading referrals...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-bar">
+                    <span id="referralPageInfo">Showing 0 referrals</span>
+                    <div>
+                        <button id="referralPrev" type="button"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+                        <button id="referralNext" type="button">Next <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+</div>
+
+<div id="referralModal" class="referral-modal hidden" role="dialog" aria-modal="true" aria-labelledby="referralModalTitle">
+    <div class="referral-modal-card">
+        <div class="modal-head">
+            <div><span>Referral Details</span><h2 id="referralModalTitle">Referral</h2></div>
+            <button id="closeReferralModal" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="referralModalBody" class="modal-body"></div>
+    </div>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/referrals.js"></script>
+</body>
+</html>

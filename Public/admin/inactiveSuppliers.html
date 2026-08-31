@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Inactive Suppliers | RUKHNAV ERP</title>
+
+    <!-- Main ERP stylesheet -->
+    <link
+        rel="stylesheet"
+        href="css/erp.css"
+    >
+    <link rel="stylesheet" href="/admin/css/erp-ui-v5.css">
+    <link rel="stylesheet" href="/admin/css/purchasing-v5.css">
+
+    <!-- Inactive suppliers page stylesheet -->
+    <link
+        rel="stylesheet"
+        href="css/inactiveSuppliers.css"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Shared Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Shared Topbar -->
+        <div id="topbar-container"></div>
+
+        <section class="inactive-supplier-page purchasing-v5-page">
+
+            <!-- Page Header -->
+            <div class="page-header inactive-supplier-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Purchasing
+                    </span>
+
+                    <h1>Inactive Suppliers</h1>
+
+                    <p>
+                        Restore inactive suppliers or permanently remove
+                        supplier records without transaction history.
+                    </p>
+
+                </div>
+
+                <div class="header-actions">
+
+                    <a
+                        href="/admin/suppliers.html"
+                        class="secondary-btn"
+                    >
+                        <i class="fa-solid fa-arrow-left"></i>
+                        All Suppliers
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="inactive-summary-cards">
+
+                <div class="inactive-summary-card">
+
+                    <div class="summary-icon green">
+
+                        <i class="fa-solid fa-box-archive"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Inactive Suppliers</span>
+
+                        <h2 id="inactiveCount">
+                            0
+                        </h2>
+
+                        <small>
+                            Total inactive supplier accounts
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="inactive-summary-card">
+
+                    <div class="summary-icon gold">
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Total Balance</span>
+
+                        <h2 id="inactiveBalance">
+                            Rs. 0
+                        </h2>
+
+                        <small>
+                            Current balance of inactive suppliers
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="inactive-summary-card">
+
+                    <div class="summary-icon blue">
+
+                        <i class="fa-solid fa-coins"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Suppliers With Balance</span>
+
+                        <h2 id="balanceCount">
+                            0
+                        </h2>
+
+                        <small>
+                            Outstanding balance accounts
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="inactive-summary-card">
+
+                    <div class="summary-icon purple">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Email Available</span>
+
+                        <h2 id="emailCount">
+                            —
+                        </h2>
+
+                        <small>
+                            Suppliers having email addresses
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Main Panel -->
+            <section class="inactive-supplier-panel">
+
+                <!-- Toolbar -->
+                <div class="inactive-supplier-toolbar">
+
+                    <div class="inactive-supplier-search">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="search"
+                            id="searchInput"
+                            placeholder="Search by supplier, contact, phone, email, city or tax number..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                    <div class="inactive-toolbar-actions">
+
+                        <select
+                            id="pageSizeSelect"
+                            class="rows-select"
+                            aria-label="Rows per page"
+                        >
+                            <option value="10">
+                                10 rows
+                            </option>
+
+                            <option value="20">
+                                20 rows
+                            </option>
+
+                            <option value="50">
+                                50 rows
+                            </option>
+                        </select>
+
+                        <button
+                            type="button"
+                            id="refreshButton"
+                            class="secondary-btn"
+                        >
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Loading State -->
+                <div
+                    id="loadingState"
+                    class="inactive-supplier-state"
+                >
+
+                    <div class="inactive-supplier-spinner"></div>
+
+                    <h3>
+                        Loading inactive suppliers
+                    </h3>
+
+                    <p>
+                        Please wait while supplier records are loaded.
+                    </p>
+
+                </div>
+
+                <!-- Empty State -->
+                <div
+                    id="emptyState"
+                    class="inactive-supplier-state hidden"
+                >
+
+                    <div class="empty-icon">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+                    <h3>
+                        No inactive suppliers
+                    </h3>
+
+                    <p>
+                        Suppliers you deactivate will appear on this page.
+                    </p>
+
+                    <a
+                        href="/admin/suppliers.html"
+                        class="primary-btn"
+                    >
+                        Go to Suppliers
+                    </a>
+
+                </div>
+
+                <!-- Table -->
+                <div
+                    id="tableWrap"
+                    class="inactive-supplier-table-wrap hidden"
+                >
+
+                    <table class="inactive-supplier-table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Supplier</th>
+
+                            <th>Contact Person</th>
+
+                            <th>Phone</th>
+
+                            <th>Email</th>
+
+                            <th>City</th>
+
+                            <th>Balance</th>
+
+                            <th>Status</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody id="supplierTableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- Pagination -->
+                <div
+                    id="pagination"
+                    class="inactive-supplier-pagination hidden"
+                >
+
+                    <span id="paginationInfo">
+                        Showing 0 to 0 of 0 entries
+                    </span>
+
+                    <div class="pagination-actions">
+
+                        <button
+                            type="button"
+                            id="prevButton"
+                            class="secondary-btn small-btn"
+                        >
+                            <i class="fa-solid fa-chevron-left"></i>
+                            Previous
+                        </button>
+
+                        <span
+                            id="pageNumber"
+                            class="current-page"
+                        >
+                            1
+                        </span>
+
+                        <button
+                            type="button"
+                            id="nextButton"
+                            class="secondary-btn small-btn"
+                        >
+                            Next
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+        <!-- Shared Footer -->
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+<!-- Restore / Permanent Delete Confirmation Modal -->
+<div
+    id="confirmModal"
+    class="confirm-modal hidden"
+    aria-hidden="true"
+>
+
+    <div
+        class="confirm-backdrop"
+        data-close-confirm-modal
+    ></div>
+
+    <div
+        class="confirm-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirmModalTitle"
+    >
+
+        <div class="confirm-header">
+
+            <div class="confirm-heading">
+
+                <div
+                    id="confirmIcon"
+                    class="confirm-icon"
+                >
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+
+                <div>
+
+                    <h3 id="confirmModalTitle">
+                        Confirm Action
+                    </h3>
+
+                    <p id="confirmSupplierName">
+                        Supplier
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="closeConfirmModal"
+                class="modal-close"
+                aria-label="Close confirmation modal"
+            >
+                &times;
+            </button>
+
+        </div>
+
+        <div class="confirm-body">
+
+            <div
+                id="confirmWarning"
+                class="confirm-warning"
+            >
+                Please confirm this action.
+            </div>
+
+            <p id="confirmMessage">
+                Are you sure you want to continue?
+            </p>
+
+        </div>
+
+        <div class="confirm-footer">
+
+            <button
+                type="button"
+                id="cancelConfirmButton"
+                class="secondary-btn"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                id="confirmActionButton"
+                class="primary-btn"
+            >
+                Confirm
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Toast Container -->
+<div
+    id="toastContainer"
+    class="toast-container"
+></div>
+
+<!-- Shared Scripts -->
+<script src="/admin/js/inactiveSuppliers.js"></script>
+
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+
+</html>

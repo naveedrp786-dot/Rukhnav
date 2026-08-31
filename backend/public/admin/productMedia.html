@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Product Media | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/premium-admin-pages.css">
+    <link rel="stylesheet" href="/admin/css/sidebar-unified-patch.css">
+    <link rel="stylesheet" href="css/productMedia.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content erp-page product-media-admin">
+            <header class="erp-page-header">
+                <div class="erp-page-header__copy">
+                    <span class="erp-eyebrow">
+                        <i class="fa-solid fa-images"></i>
+                        Website Management
+                    </span>
+
+                    <h1>Product Media</h1>
+
+                    <p>
+                        Upload, reorder, activate and manage storefront product images
+                        using the same ERP layout as the rest of your administration system.
+                    </p>
+                </div>
+
+                <div class="erp-header-actions">
+                    <a href="products.html" class="erp-btn erp-btn--light">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Back to Products
+                    </a>
+
+                    <button id="pmRefresh" type="button" class="erp-btn erp-btn--gold">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh Gallery
+                    </button>
+                </div>
+            </header>
+
+            <div id="pmMessage" class="erp-message"></div>
+
+            <section class="media-workspace">
+                <article class="erp-panel media-control-panel">
+                    <div class="erp-panel-heading">
+                        <div>
+                            <span class="erp-section-label">Product Selection</span>
+                            <h2>Choose a product</h2>
+                            <p>Select the product whose gallery you want to manage.</p>
+                        </div>
+                        <div class="media-step">01</div>
+                    </div>
+
+                    <div class="erp-field">
+                        <label for="pmProduct">Product</label>
+                        <select id="pmProduct"></select>
+                    </div>
+
+                    <div class="media-help-card">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <div>
+                            <strong>Storefront connection</strong>
+                            <p>Real ERP images replace automatic placeholders on the product page.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="erp-panel media-upload-panel">
+                    <div class="erp-panel-heading">
+                        <div>
+                            <span class="erp-section-label">Image Upload</span>
+                            <h2>Add product images</h2>
+                            <p>Upload up to 10 JPG, PNG or WEBP images at once.</p>
+                        </div>
+                        <div class="media-step">02</div>
+                    </div>
+
+                    <form id="pmUploadForm" class="media-upload-form">
+                        <label class="media-dropzone" for="pmFiles">
+                            <input
+                                id="pmFiles"
+                                name="images"
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                multiple
+                                required
+                            >
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <strong>Select product pictures</strong>
+                            <span>Maximum 8 MB per image</span>
+                        </label>
+
+                        <div class="erp-field">
+                            <label for="pmAlt">Image alt text</label>
+                            <input id="pmAlt" type="text" placeholder="Describe the product image for SEO">
+                        </div>
+
+                        <button type="submit" class="erp-btn erp-btn--gold media-upload-button">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            Upload Images
+                        </button>
+                    </form>
+                </article>
+            </section>
+
+            <section class="erp-panel media-gallery-panel">
+                <div class="erp-panel-heading">
+                    <div>
+                        <span class="erp-section-label">Current Gallery</span>
+                        <h2>Product images</h2>
+                        <p>Set a primary image or permanently remove an image from this product.</p>
+                    </div>
+
+                    <div class="gallery-legend">
+                        <span><i class="fa-solid fa-star"></i> Primary image</span>
+                        <span><i class="fa-regular fa-images"></i> Gallery image</span>
+                    </div>
+                </div>
+
+                <div id="pmGallery" class="pm-grid"></div>
+            </section>
+        </section>
+    </main>
+</div>
+<script src="js/productMedia.js"></script>
+
+<script src="/admin/js/adminLayout.js"></script>
+</body>
+</html>

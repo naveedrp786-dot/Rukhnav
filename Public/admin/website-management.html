@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Website Management | RUKHNAV ERP</title>
+<link rel="stylesheet" href="/admin/css/erp.css">
+<link rel="stylesheet" href="/admin/css/website-management-pro.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+<div id="sidebar-container"></div>
+<main class="main">
+<div id="topbar-container"></div>
+
+<section class="wmp-page">
+<header class="wmp-hero">
+<div>
+<span><i class="fa-solid fa-store"></i> Shopify-style Store Control</span>
+<h1>Website Management</h1>
+<p>Edit storefront content, branding and theme settings without changing customer-facing HTML files.</p>
+</div>
+<div class="wmp-actions">
+<a href="/store/index.html" target="_blank" class="wmp-btn light"><i class="fa-solid fa-arrow-up-right-from-square"></i>Open Store</a>
+<button id="mergeDefaultsButton" class="wmp-btn light">
+<i class="fa-solid fa-wand-magic-sparkles"></i>Load Missing Defaults
+</button>
+<button id="restoreButton" class="wmp-btn light"><i class="fa-solid fa-rotate-left"></i>Restore Published</button>
+<button id="saveButton" class="wmp-btn dark"><i class="fa-solid fa-floppy-disk"></i>Save Draft</button>
+<button id="publishButton" class="wmp-btn gold"><i class="fa-solid fa-rocket"></i>Publish</button>
+</div>
+</header>
+
+<div id="statusBar" class="wmp-status"></div>
+<div id="message" class="wmp-message"></div>
+
+<div class="wmp-layout">
+<aside id="tabs" class="wmp-tabs">
+<button class="active" data-tab="branding"><i class="fa-solid fa-copyright"></i>Branding</button>
+<button data-tab="theme"><i class="fa-solid fa-palette"></i>Theme</button>
+<button data-tab="header"><i class="fa-solid fa-bars"></i>Header</button>
+<button data-tab="navigation"><i class="fa-solid fa-list"></i>Navigation</button>
+<button data-tab="homepage"><i class="fa-solid fa-house"></i>Homepage</button>
+<button data-tab="contact"><i class="fa-solid fa-address-card"></i>Contact</button>
+<button data-tab="footer"><i class="fa-solid fa-shoe-prints"></i>Footer</button>
+<button data-tab="payments"><i class="fa-solid fa-money-check-dollar"></i>Payments & Delivery</button>
+<button data-tab="seo"><i class="fa-solid fa-magnifying-glass"></i>SEO</button>
+
+<button data-tab="products-page"><i class="fa-solid fa-boxes-stacked"></i>All Products</button>
+<button data-tab="product-detail-page"><i class="fa-solid fa-box-open"></i>Product Details</button>
+<button data-tab="cart-page"><i class="fa-solid fa-cart-shopping"></i>Cart</button>
+<button data-tab="checkout-page"><i class="fa-solid fa-credit-card"></i>Checkout</button>
+<button data-tab="account-page"><i class="fa-solid fa-user"></i>Account</button>
+<button data-tab="orders-page"><i class="fa-solid fa-receipt"></i>Orders</button>
+<button data-tab="wishlist-page"><i class="fa-solid fa-heart"></i>Wishlist</button>
+<button data-tab="rewards-page"><i class="fa-solid fa-gift"></i>Rewards</button>
+<button data-tab="events-page"><i class="fa-solid fa-calendar-days"></i>Events</button>
+<button data-tab="reviews-page"><i class="fa-solid fa-star"></i>Reviews</button>
+<button data-tab="about-page"><i class="fa-solid fa-circle-info"></i>About</button>
+<button data-tab="contact-page"><i class="fa-solid fa-headset"></i>Contact Page</button>
+<button data-tab="legal-pages"><i class="fa-solid fa-scale-balanced"></i>Legal Pages</button>
+<button data-tab="media"><i class="fa-solid fa-images"></i>Media Library</button>
+<button data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i>History</button>
+</aside>
+
+<section class="wmp-editor">
+<form id="settingsForm">
+<div class="wmp-panel active" data-panel="branding">
+<h2>Branding</h2>
+<div class="wmp-grid">
+<label><span>Brand Name</span><input data-path="branding.brand_name"></label>
+<label><span>Tagline</span><input data-path="branding.tagline"></label>
+<div class="full upload-row"><span>Logo</span><input data-path="branding.logo_url" placeholder="/uploads/website/logo.png"><label class="wmp-btn light file-label"><i class="fa-solid fa-upload"></i>Upload Logo<input type="file" data-upload-path="branding.logo_url" data-upload-type="Logo" accept="image/*"></label></div>
+<div class="full upload-row"><span>Favicon</span><input data-path="branding.favicon_url" placeholder="/uploads/website/favicon.ico"><label class="wmp-btn light file-label"><i class="fa-solid fa-upload"></i>Upload Favicon<input type="file" data-upload-path="branding.favicon_url" data-upload-type="Favicon" accept=".ico,.png,.svg"></label></div>
+</div>
+</div>
+
+<div class="wmp-panel" data-panel="theme">
+<h2>Theme</h2>
+<div class="wmp-grid">
+<label><span>Primary</span><input type="color" data-path="theme.primary_color"></label>
+<label><span>Secondary</span><input type="color" data-path="theme.secondary_color"></label>
+<label><span>Accent</span><input type="color" data-path="theme.accent_color"></label>
+<label><span>Background</span><input type="color" data-path="theme.background_color"></label>
+<label><span>Surface</span><input type="color" data-path="theme.surface_color"></label>
+<label><span>Text</span><input type="color" data-path="theme.text_color"></label>
+<label><span>Heading Font</span><select data-path="theme.heading_font"><option>Playfair Display</option><option>Poppins</option><option>Montserrat</option><option>Georgia</option></select></label>
+<label><span>Body Font</span><select data-path="theme.body_font"><option>DM Sans</option><option>Poppins</option><option>Montserrat</option><option>Arial</option></select></label>
+
+<label><span>Heading Color</span><input type="color" data-path="theme.heading_color"></label>
+<label><span>Muted Text</span><input type="color" data-path="theme.muted_color"></label>
+<label><span>Link Color</span><input type="color" data-path="theme.link_color"></label>
+
+<label><span>Body Font Size</span><input type="number" min="12" max="22" step="1" data-path="theme.body_font_size"></label>
+<label><span>H1 Size</span><input type="number" min="32" max="90" step="1" data-path="theme.h1_size"></label>
+<label><span>H2 Size</span><input type="number" min="24" max="64" step="1" data-path="theme.h2_size"></label>
+<label><span>H3 Size</span><input type="number" min="18" max="48" step="1" data-path="theme.h3_size"></label>
+
+<label><span>Navigation Size</span><input type="number" min="9" max="20" step="1" data-path="theme.nav_font_size"></label>
+<label><span>Brand Name Size</span><input type="number" min="18" max="48" step="1" data-path="theme.brand_font_size"></label>
+<label><span>Tagline Size</span><input type="number" min="7" max="18" step="1" data-path="theme.tagline_font_size"></label>
+
+<label><span>Product Name Size</span><input type="number" min="11" max="24" step="1" data-path="theme.product_name_size"></label>
+<label><span>Product Price Size</span><input type="number" min="12" max="30" step="1" data-path="theme.product_price_size"></label>
+<label><span>Button Text Size</span><input type="number" min="10" max="22" step="1" data-path="theme.button_font_size"></label>
+<label><span>Footer Text Size</span><input type="number" min="9" max="20" step="1" data-path="theme.footer_font_size"></label>
+
+<label><span>Card Radius</span><input type="number" min="0" max="40" data-path="theme.border_radius"></label>
+<label><span>Button Radius</span><input type="number" min="0" max="40" data-path="theme.button_radius"></label>
+</div>
+</div>
+
+<div class="wmp-panel" data-panel="header">
+<h2>Header</h2>
+<div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="header.announcement_enabled"><span>Show Announcement Bar</span></label>
+<label class="full"><span>Announcement Text</span><input data-path="header.announcement_text"></label>
+<label class="full"><span>Search Placeholder</span><input data-path="header.search_placeholder"></label>
+<label class="switch"><input type="checkbox" data-path="header.show_account"><span>Show Account</span></label>
+<label class="switch"><input type="checkbox" data-path="header.show_wishlist"><span>Show Wishlist</span></label>
+<label class="switch"><input type="checkbox" data-path="header.show_cart"><span>Show Cart</span></label>
+</div>
+</div>
+
+<div class="wmp-panel" data-panel="navigation">
+<div class="panel-heading"><h2>Navigation</h2><button type="button" id="addNav" class="wmp-btn light"><i class="fa-solid fa-plus"></i>Add Link</button></div>
+<div id="navEditor" class="repeat-list"></div>
+</div>
+
+<div class="wmp-panel" data-panel="homepage">
+<h2>Homepage</h2>
+<h3>Hero</h3>
+<div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="home.hero_enabled"><span>Show Hero</span></label>
+<label><span>Small Heading</span><input data-path="home.hero_eyebrow"></label>
+<label class="full"><span>Main Heading</span><input data-path="home.hero_title"></label>
+<label class="full"><span>Paragraph</span><textarea rows="4" data-path="home.hero_text"></textarea></label>
+<label><span>Primary Button</span><input data-path="home.hero_primary_label"></label>
+<label><span>Primary URL</span><input data-path="home.hero_primary_url"></label>
+<label><span>Secondary Button</span><input data-path="home.hero_secondary_label"></label>
+<label><span>Secondary URL</span><input data-path="home.hero_secondary_url"></label>
+<label><span>Trust Point 1</span><input data-path="home.hero_trust_1"></label>
+<label><span>Trust Point 2</span><input data-path="home.hero_trust_2"></label>
+<label><span>Trust Point 3</span><input data-path="home.hero_trust_3"></label>
+<div class="full upload-row"><span>Hero Image</span><input data-path="home.hero_image_url"><label class="wmp-btn light file-label"><i class="fa-solid fa-upload"></i>Upload Image<input type="file" data-upload-path="home.hero_image_url" data-upload-type="Banner" accept="image/*"></label></div>
+</div>
+
+<h3>Benefits</h3>
+<div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="home.benefits_enabled"><span>Show Benefits</span></label>
+<label><span>Benefit 1 Title</span><input data-path="home.benefit_1_title"></label>
+<label><span>Benefit 1 Text</span><input data-path="home.benefit_1_text"></label>
+<label><span>Benefit 2 Title</span><input data-path="home.benefit_2_title"></label>
+<label><span>Benefit 2 Text</span><input data-path="home.benefit_2_text"></label>
+<label><span>Benefit 3 Title</span><input data-path="home.benefit_3_title"></label>
+<label><span>Benefit 3 Text</span><input data-path="home.benefit_3_text"></label>
+<label><span>Benefit 4 Title</span><input data-path="home.benefit_4_title"></label>
+<label><span>Benefit 4 Text</span><input data-path="home.benefit_4_text"></label>
+</div>
+
+<h3>Categories</h3>
+<div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="home.categories_enabled"><span>Show Categories</span></label>
+<label><span>Small Heading</span><input data-path="home.categories_eyebrow"></label>
+<label><span>Section Heading</span><input data-path="home.categories_title"></label>
+<label><span>View All Text</span><input data-path="home.categories_button_label"></label>
+<label><span>View All URL</span><input data-path="home.categories_button_url"></label>
+</div>
+<div class="panel-heading"><h3>Category Cards</h3><button type="button" id="addCategory" class="wmp-btn light"><i class="fa-solid fa-plus"></i>Add Card</button></div>
+<div id="categoryEditor" class="repeat-list"></div>
+
+<h3>Featured Products</h3>
+<div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="home.featured_enabled"><span>Show Featured Products</span></label>
+<label><span>Small Heading</span><input data-path="home.featured_eyebrow"></label>
+<label><span>Section Heading</span><input data-path="home.featured_title"></label>
+<label><span>Button Text</span><input data-path="home.featured_button_label"></label>
+<label><span>Button URL</span><input data-path="home.featured_button_url"></label>
+</div>
+
+<h3>Story</h3>
+<div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="home.story_enabled"><span>Show Story</span></label>
+<label><span>Small Heading</span><input data-path="home.story_eyebrow"></label>
+<label class="full"><span>Main Heading</span><input data-path="home.story_title"></label>
+<label class="full"><span>Paragraph</span><textarea rows="4" data-path="home.story_text"></textarea></label>
+<label><span>Button Text</span><input data-path="home.story_button_label"></label>
+<label><span>Button URL</span><input data-path="home.story_button_url"></label>
+<label><span>Point 1</span><input data-path="home.story_point_1"></label>
+<label><span>Point 2</span><input data-path="home.story_point_2"></label>
+<label><span>Point 3</span><input data-path="home.story_point_3"></label>
+</div>
+
+<h3>Newsletter</h3>
+<div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="home.newsletter_enabled"><span>Show Newsletter</span></label>
+<label><span>Small Heading</span><input data-path="home.newsletter_eyebrow"></label>
+<label class="full"><span>Main Heading</span><input data-path="home.newsletter_title"></label>
+<label class="full"><span>Paragraph</span><textarea rows="3" data-path="home.newsletter_text"></textarea></label>
+<label><span>Email Placeholder</span><input data-path="home.newsletter_placeholder"></label>
+<label><span>Button Text</span><input data-path="home.newsletter_button_label"></label>
+</div>
+</div>
+
+<div class="wmp-panel" data-panel="contact">
+<h2>Contact & Social</h2>
+<div class="wmp-grid">
+<label><span>Email</span><input data-path="contact.support_email"></label>
+<label><span>Phone</span><input data-path="contact.support_phone"></label>
+<label><span>WhatsApp</span><input data-path="contact.whatsapp_number"></label>
+<label><span>Service Area</span><input data-path="contact.service_area"></label>
+<label class="full"><span>Address</span><input data-path="contact.address"></label>
+<label><span>City</span><input data-path="contact.city"></label>
+<label><span>Business Hours</span><input data-path="contact.business_hours"></label>
+<label><span>Facebook</span><input data-path="social.facebook_url"></label>
+<label><span>Instagram</span><input data-path="social.instagram_url"></label>
+<label><span>YouTube</span><input data-path="social.youtube_url"></label>
+<label><span>TikTok</span><input data-path="social.tiktok_url"></label>
+<label><span>X</span><input data-path="social.x_url"></label>
+</div>
+</div>
+
+<div class="wmp-panel" data-panel="footer">
+<h2>Footer</h2>
+<div class="wmp-grid">
+<label class="full"><span>Description</span><textarea rows="4" data-path="footer.short_description"></textarea></label>
+<label class="full"><span>Copyright</span><input data-path="footer.copyright_text"></label>
+<label class="switch"><input type="checkbox" data-path="footer.show_payment_methods"><span>Show Payment Methods</span></label>
+<label class="switch"><input type="checkbox" data-path="footer.show_social_links"><span>Show Social Links</span></label>
+<label class="switch"><input type="checkbox" data-path="footer.show_newsletter"><span>Show Newsletter</span></label>
+</div>
+</div>
+
+<div class="wmp-panel" data-panel="payments">
+<h2>Payments & Delivery</h2>
+<div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="payments.cash_on_delivery_enabled"><span>Cash on Delivery</span></label>
+<label class="switch"><input type="checkbox" data-path="payments.bank_transfer_enabled"><span>Bank Transfer</span></label>
+<label class="switch"><input type="checkbox" data-path="payments.easypaisa_enabled"><span>EasyPaisa</span></label>
+<label class="switch"><input type="checkbox" data-path="payments.jazzcash_enabled"><span>JazzCash</span></label>
+<label class="full"><span>Payment Message</span><input data-path="payments.payment_message"></label>
+<label class="switch"><input type="checkbox" data-path="delivery.free_delivery_enabled"><span>Free Delivery</span></label>
+<label><span>Free Delivery Minimum</span><input type="number" data-path="delivery.free_delivery_minimum"></label>
+<label><span>Delivery Charge</span><input type="number" data-path="delivery.standard_delivery_charge"></label>
+<label class="full"><span>Delivery Message</span><input data-path="delivery.delivery_message"></label>
+<label class="full"><span>Return Message</span><input data-path="delivery.return_message"></label>
+</div>
+</div>
+
+<div class="wmp-panel" data-panel="seo">
+<h2>SEO</h2>
+<div class="wmp-grid">
+<label class="full"><span>Site Title</span><input data-path="seo.site_title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="seo.site_description"></textarea></label>
+<label class="full"><span>Keywords</span><input data-path="seo.keywords"></label>
+<label class="full"><span>Social Image URL</span><input data-path="seo.og_image_url"></label>
+<label class="switch"><input type="checkbox" data-path="advanced.maintenance_mode"><span>Maintenance Mode</span></label>
+<label class="full"><span>Maintenance Message</span><input data-path="advanced.maintenance_message"></label>
+<label class="full"><span>Custom CSS</span><textarea rows="10" data-path="advanced.custom_css"></textarea></label>
+</div>
+</div>
+
+<div class="wmp-panel" data-panel="products-page"><h2>All Products Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.products.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.products.eyebrow"></label>
+<label class="full"><span>Page Title</span><input data-path="pages.products.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.products.description"></textarea></label>
+<label class=""><span>Search Placeholder</span><input data-path="pages.products.search_placeholder"></label>
+<label class="switch"><input type="checkbox" data-path="pages.products.category_filter_enabled"><span>Show Category Filter</span></label>
+<label class="switch"><input type="checkbox" data-path="pages.products.sort_enabled"><span>Show Sort</span></label>
+<label class=""><span>Default Sort</span><input data-path="pages.products.default_sort"></label>
+<label class=""><span>Products Per Page</span><input type="number" data-path="pages.products.products_per_page"></label>
+<label class=""><span>Desktop Grid Columns</span><input type="number" data-path="pages.products.grid_columns_desktop"></label>
+<label class=""><span>Empty-State Heading</span><input data-path="pages.products.empty_title"></label>
+<label class="full"><span>Empty-State Text</span><input data-path="pages.products.empty_text"></label>
+<label class=""><span>View Button Text</span><input data-path="pages.products.view_button_text"></label>
+<label class=""><span>Add to Cart Text</span><input data-path="pages.products.add_to_cart_text"></label>
+<label class=""><span>Out-of-Stock Text</span><input data-path="pages.products.out_of_stock_text"></label>
+<label class=""><span>Sale Badge Text</span><input data-path="pages.products.sale_badge_text"></label>
+<label class=""><span>New Badge Text</span><input data-path="pages.products.new_badge_text"></label>
+</div></div>
+<div class="wmp-panel" data-panel="product-detail-page"><h2>Product Details Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.product_detail.enabled"><span>Enable Page</span></label>
+<label class=""><span>Home Breadcrumb</span><input data-path="pages.product_detail.breadcrumb_home"></label>
+<label class=""><span>Products Breadcrumb</span><input data-path="pages.product_detail.breadcrumb_products"></label>
+<label class=""><span>Add to Cart Text</span><input data-path="pages.product_detail.add_to_cart_text"></label>
+<label class=""><span>Buy Now Text</span><input data-path="pages.product_detail.buy_now_text"></label>
+<label class=""><span>Wishlist Text</span><input data-path="pages.product_detail.wishlist_text"></label>
+<label class=""><span>In-Stock Text</span><input data-path="pages.product_detail.in_stock_text"></label>
+<label class=""><span>Low-Stock Text</span><input data-path="pages.product_detail.low_stock_text"></label>
+<label class=""><span>Out-of-Stock Text</span><input data-path="pages.product_detail.out_of_stock_text"></label>
+<label class=""><span>Description Tab</span><input data-path="pages.product_detail.description_tab"></label>
+<label class=""><span>Ingredients Tab</span><input data-path="pages.product_detail.ingredients_tab"></label>
+<label class=""><span>Directions Tab</span><input data-path="pages.product_detail.directions_tab"></label>
+<label class=""><span>Warnings Tab</span><input data-path="pages.product_detail.warnings_tab"></label>
+<label class=""><span>Shipping Tab</span><input data-path="pages.product_detail.shipping_tab"></label>
+<label class=""><span>Reviews Tab</span><input data-path="pages.product_detail.reviews_tab"></label>
+<label class="switch"><input type="checkbox" data-path="pages.product_detail.reviews_enabled"><span>Show Reviews</span></label>
+<label class=""><span>Reviews Small Heading</span><input data-path="pages.product_detail.reviews_eyebrow"></label>
+<label class="full"><span>Reviews Heading</span><input data-path="pages.product_detail.reviews_title"></label>
+<label class="full"><span>Reviews Description</span><textarea rows="4" data-path="pages.product_detail.reviews_description"></textarea></label>
+<label class=""><span>Write Review Text</span><input data-path="pages.product_detail.write_review_text"></label>
+<label class=""><span>Verified Purchase Text</span><input data-path="pages.product_detail.verified_purchase_text"></label>
+<label class="switch"><input type="checkbox" data-path="pages.product_detail.related_enabled"><span>Show Related Products</span></label>
+<label class=""><span>Related Products Heading</span><input data-path="pages.product_detail.related_title"></label>
+<label class="switch"><input type="checkbox" data-path="pages.product_detail.popular_enabled"><span>Show Popular Products</span></label>
+<label class=""><span>Popular Products Heading</span><input data-path="pages.product_detail.popular_title"></label>
+<label class="switch"><input type="checkbox" data-path="pages.product_detail.recent_enabled"><span>Show Recently Viewed</span></label>
+<label class=""><span>Recently Viewed Heading</span><input data-path="pages.product_detail.recent_title"></label>
+<label class="switch"><input type="checkbox" data-path="pages.product_detail.new_arrivals_enabled"><span>Show New Arrivals</span></label>
+<label class=""><span>New Arrivals Heading</span><input data-path="pages.product_detail.new_arrivals_title"></label>
+</div></div>
+<div class="wmp-panel" data-panel="cart-page"><h2>Cart Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.cart.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.cart.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.cart.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.cart.description"></textarea></label>
+<label class=""><span>Empty-Cart Heading</span><input data-path="pages.cart.empty_title"></label>
+<label class="full"><span>Empty-Cart Text</span><input data-path="pages.cart.empty_text"></label>
+<label class=""><span>Continue Shopping Text</span><input data-path="pages.cart.continue_shopping_text"></label>
+<label class=""><span>Checkout Button Text</span><input data-path="pages.cart.checkout_button_text"></label>
+<label class=""><span>Order Summary Heading</span><input data-path="pages.cart.order_summary_title"></label>
+<label class=""><span>Subtotal Label</span><input data-path="pages.cart.subtotal_label"></label>
+<label class=""><span>Delivery Label</span><input data-path="pages.cart.delivery_label"></label>
+<label class=""><span>Delivery Value Text</span><input data-path="pages.cart.delivery_value_text"></label>
+<label class=""><span>Discount Label</span><input data-path="pages.cart.discount_label"></label>
+<label class=""><span>Discount Value Text</span><input data-path="pages.cart.discount_value_text"></label>
+<label class=""><span>Total Label</span><input data-path="pages.cart.total_label"></label>
+<label class="full"><span>Security Note</span><textarea rows="4" data-path="pages.cart.security_note"></textarea></label>
+<label class=""><span>Payment Note Heading</span><input data-path="pages.cart.payment_note_title"></label>
+</div></div>
+<div class="wmp-panel" data-panel="checkout-page"><h2>Checkout Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.checkout.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.checkout.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.checkout.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.checkout.description"></textarea></label>
+<label class=""><span>Delivery Section Heading</span><input data-path="pages.checkout.delivery_section_title"></label>
+<label class=""><span>Payment Section Heading</span><input data-path="pages.checkout.payment_section_title"></label>
+<label class=""><span>Order Summary Heading</span><input data-path="pages.checkout.summary_title"></label>
+<label class=""><span>Full Name Label</span><input data-path="pages.checkout.full_name_label"></label>
+<label class=""><span>Phone Label</span><input data-path="pages.checkout.phone_label"></label>
+<label class=""><span>Email Label</span><input data-path="pages.checkout.email_label"></label>
+<label class=""><span>Address Label</span><input data-path="pages.checkout.address_label"></label>
+<label class=""><span>City Label</span><input data-path="pages.checkout.city_label"></label>
+<label class=""><span>Postal Code Label</span><input data-path="pages.checkout.postal_code_label"></label>
+<label class=""><span>Order Notes Label</span><input data-path="pages.checkout.notes_label"></label>
+<label class=""><span>Place Order Text</span><input data-path="pages.checkout.place_order_text"></label>
+<label class=""><span>Return to Cart Text</span><input data-path="pages.checkout.return_to_cart_text"></label>
+<label class=""><span>Authentication Heading</span><input data-path="pages.checkout.auth_required_title"></label>
+<label class="full"><span>Authentication Text</span><input data-path="pages.checkout.auth_required_text"></label>
+<label class=""><span>Empty-Cart Heading</span><input data-path="pages.checkout.empty_title"></label>
+<label class="full"><span>Empty-Cart Text</span><input data-path="pages.checkout.empty_text"></label>
+<label class=""><span>COD Title</span><input data-path="pages.checkout.cod_title"></label>
+<label class=""><span>Bank Transfer Title</span><input data-path="pages.checkout.bank_transfer_title"></label>
+<label class=""><span>EasyPaisa Title</span><input data-path="pages.checkout.easypaisa_title"></label>
+<label class=""><span>JazzCash Title</span><input data-path="pages.checkout.jazzcash_title"></label>
+<label class="full"><span>Terms Text</span><textarea rows="4" data-path="pages.checkout.terms_text"></textarea></label>
+</div></div>
+<div class="wmp-panel" data-panel="account-page"><h2>Customer Account Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.account.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.account.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.account.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.account.description"></textarea></label>
+<label class=""><span>Login Heading</span><input data-path="pages.account.login_title"></label>
+<label class="full"><span>Login Text</span><textarea rows="4" data-path="pages.account.login_text"></textarea></label>
+<label class=""><span>Register Heading</span><input data-path="pages.account.register_title"></label>
+<label class="full"><span>Register Text</span><textarea rows="4" data-path="pages.account.register_text"></textarea></label>
+<label class=""><span>Forgot Password Text</span><input data-path="pages.account.forgot_password_text"></label>
+<label class=""><span>Profile Tab</span><input data-path="pages.account.profile_title"></label>
+<label class=""><span>Preferences Tab</span><input data-path="pages.account.preferences_title"></label>
+<label class=""><span>Security Tab</span><input data-path="pages.account.security_title"></label>
+<label class=""><span>Delete Account Tab</span><input data-path="pages.account.delete_account_title"></label>
+<label class=""><span>Verification Heading</span><input data-path="pages.account.verification_title"></label>
+<label class=""><span>Logout Text</span><input data-path="pages.account.logout_text"></label>
+<label class="switch"><input type="checkbox" data-path="pages.account.orders_enabled"><span>Show Orders</span></label>
+<label class="switch"><input type="checkbox" data-path="pages.account.rewards_enabled"><span>Show Rewards</span></label>
+<label class="switch"><input type="checkbox" data-path="pages.account.events_enabled"><span>Show Events</span></label>
+<label class="switch"><input type="checkbox" data-path="pages.account.reviews_enabled"><span>Show Reviews</span></label>
+</div></div>
+<div class="wmp-panel" data-panel="orders-page"><h2>Orders Pages</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.orders.enabled"><span>Enable Pages</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.orders.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.orders.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.orders.description"></textarea></label>
+<label class=""><span>Empty-State Heading</span><input data-path="pages.orders.empty_title"></label>
+<label class="full"><span>Empty-State Text</span><input data-path="pages.orders.empty_text"></label>
+<label class=""><span>View Details Text</span><input data-path="pages.orders.view_details_text"></label>
+<label class=""><span>Cancel Text</span><input data-path="pages.orders.cancel_text"></label>
+<label class=""><span>Reorder Text</span><input data-path="pages.orders.reorder_text"></label>
+<label class=""><span>Review Products Text</span><input data-path="pages.orders.review_text"></label>
+<label class=""><span>Tracking Heading</span><input data-path="pages.orders.tracking_title"></label>
+<label class=""><span>Payment Heading</span><input data-path="pages.orders.payment_title"></label>
+<label class=""><span>Delivery Heading</span><input data-path="pages.orders.delivery_title"></label>
+<label class=""><span>Order Items Heading</span><input data-path="pages.orders.items_title"></label>
+<label class=""><span>Summary Heading</span><input data-path="pages.orders.summary_title"></label>
+<label class=""><span>Invoice Text</span><input data-path="pages.orders.invoice_text"></label>
+<label class=""><span>Pending Label</span><input data-path="pages.orders.status_pending"></label>
+<label class=""><span>Confirmed Label</span><input data-path="pages.orders.status_confirmed"></label>
+<label class=""><span>Processing Label</span><input data-path="pages.orders.status_processing"></label>
+<label class=""><span>Packed Label</span><input data-path="pages.orders.status_packed"></label>
+<label class=""><span>Shipped Label</span><input data-path="pages.orders.status_shipped"></label>
+<label class=""><span>Delivered Label</span><input data-path="pages.orders.status_delivered"></label>
+<label class=""><span>Cancelled Label</span><input data-path="pages.orders.status_cancelled"></label>
+</div></div>
+<div class="wmp-panel" data-panel="wishlist-page"><h2>Wishlist Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.wishlist.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.wishlist.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.wishlist.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.wishlist.description"></textarea></label>
+<label class=""><span>Empty-State Heading</span><input data-path="pages.wishlist.empty_title"></label>
+<label class="full"><span>Empty-State Text</span><textarea rows="4" data-path="pages.wishlist.empty_text"></textarea></label>
+<label class=""><span>Browse Products Text</span><input data-path="pages.wishlist.browse_products_text"></label>
+<label class=""><span>Add to Cart Text</span><input data-path="pages.wishlist.add_to_cart_text"></label>
+<label class=""><span>Remove Text</span><input data-path="pages.wishlist.remove_text"></label>
+</div></div>
+<div class="wmp-panel" data-panel="rewards-page"><h2>Rewards Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.rewards.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.rewards.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.rewards.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.rewards.description"></textarea></label>
+<label class=""><span>Available Points Label</span><input data-path="pages.rewards.available_points_label"></label>
+<label class=""><span>Lifetime Points Label</span><input data-path="pages.rewards.lifetime_points_label"></label>
+<label class=""><span>Membership Label</span><input data-path="pages.rewards.membership_label"></label>
+<label class=""><span>Benefits Heading</span><input data-path="pages.rewards.benefits_title"></label>
+<label class=""><span>History Heading</span><input data-path="pages.rewards.history_title"></label>
+<label class="full"><span>Empty History Text</span><textarea rows="4" data-path="pages.rewards.empty_history_text"></textarea></label>
+</div></div>
+<div class="wmp-panel" data-panel="events-page"><h2>Events Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.events.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.events.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.events.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.events.description"></textarea></label>
+<label class=""><span>Add Event Text</span><input data-path="pages.events.add_event_text"></label>
+<label class=""><span>Empty-State Heading</span><input data-path="pages.events.empty_title"></label>
+<label class="full"><span>Empty-State Text</span><textarea rows="4" data-path="pages.events.empty_text"></textarea></label>
+<label class=""><span>Email Reminder Text</span><input data-path="pages.events.email_reminder_text"></label>
+<label class=""><span>WhatsApp Reminder Text</span><input data-path="pages.events.whatsapp_reminder_text"></label>
+<label class=""><span>SMS Reminder Text</span><input data-path="pages.events.sms_reminder_text"></label>
+</div></div>
+<div class="wmp-panel" data-panel="reviews-page"><h2>Reviews Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.reviews.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.reviews.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.reviews.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.reviews.description"></textarea></label>
+<label class=""><span>Eligible Products Heading</span><input data-path="pages.reviews.eligible_title"></label>
+<label class=""><span>Submitted Reviews Heading</span><input data-path="pages.reviews.submitted_title"></label>
+<label class="full"><span>Empty Eligible Text</span><textarea rows="4" data-path="pages.reviews.empty_eligible_text"></textarea></label>
+<label class="full"><span>Empty Submitted Text</span><textarea rows="4" data-path="pages.reviews.empty_submitted_text"></textarea></label>
+<label class=""><span>Submit Text</span><input data-path="pages.reviews.submit_text"></label>
+<label class=""><span>Edit Text</span><input data-path="pages.reviews.edit_text"></label>
+<label class=""><span>Delete Text</span><input data-path="pages.reviews.delete_text"></label>
+</div></div>
+<div class="wmp-panel" data-panel="about-page"><h2>About Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.about.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.about.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.about.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.about.description"></textarea></label>
+<label class=""><span>Mission Heading</span><input data-path="pages.about.mission_title"></label>
+<label class="full"><span>Mission Text</span><textarea rows="4" data-path="pages.about.mission_text"></textarea></label>
+<label class=""><span>Button Text</span><input data-path="pages.about.button_text"></label>
+<label class=""><span>Button URL</span><input data-path="pages.about.button_url"></label>
+</div></div>
+<div class="wmp-panel" data-panel="contact-page"><h2>Contact Page</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.contact.enabled"><span>Enable Page</span></label>
+<label class=""><span>Small Heading</span><input data-path="pages.contact.eyebrow"></label>
+<label class=""><span>Page Title</span><input data-path="pages.contact.title"></label>
+<label class="full"><span>Description</span><textarea rows="4" data-path="pages.contact.description"></textarea></label>
+<label class=""><span>Form Heading</span><input data-path="pages.contact.form_title"></label>
+<label class=""><span>Name Label</span><input data-path="pages.contact.name_label"></label>
+<label class=""><span>Email Label</span><input data-path="pages.contact.email_label"></label>
+<label class=""><span>Subject Label</span><input data-path="pages.contact.subject_label"></label>
+<label class=""><span>Message Label</span><input data-path="pages.contact.message_label"></label>
+<label class=""><span>Submit Text</span><input data-path="pages.contact.submit_text"></label>
+<label class="full"><span>Success Text</span><textarea rows="4" data-path="pages.contact.success_text"></textarea></label>
+</div></div>
+<div class="wmp-panel" data-panel="legal-pages"><h2>Legal & Information Pages</h2><div class="wmp-grid">
+<label class="switch"><input type="checkbox" data-path="pages.legal.privacy_enabled"><span>Enable Privacy Policy</span></label>
+<label class=""><span>Privacy Policy Title</span><input data-path="pages.legal.privacy_title"></label>
+<label class="full"><span>Privacy Introduction</span><textarea rows="4" data-path="pages.legal.privacy_intro"></textarea></label>
+<label class="switch"><input type="checkbox" data-path="pages.legal.terms_enabled"><span>Enable Terms</span></label>
+<label class=""><span>Terms Title</span><input data-path="pages.legal.terms_title"></label>
+<label class="full"><span>Terms Introduction</span><textarea rows="4" data-path="pages.legal.terms_intro"></textarea></label>
+<label class="switch"><input type="checkbox" data-path="pages.legal.refund_enabled"><span>Enable Refund Policy</span></label>
+<label class=""><span>Refund Policy Title</span><input data-path="pages.legal.refund_title"></label>
+<label class="full"><span>Refund Introduction</span><textarea rows="4" data-path="pages.legal.refund_intro"></textarea></label>
+<label class="switch"><input type="checkbox" data-path="pages.legal.shipping_enabled"><span>Enable Shipping Policy</span></label>
+<label class=""><span>Shipping Policy Title</span><input data-path="pages.legal.shipping_title"></label>
+<label class="full"><span>Shipping Introduction</span><textarea rows="4" data-path="pages.legal.shipping_intro"></textarea></label>
+<label class="switch"><input type="checkbox" data-path="pages.legal.faq_enabled"><span>Enable FAQ</span></label>
+<label class=""><span>FAQ Title</span><input data-path="pages.legal.faq_title"></label>
+<label class="full"><span>FAQ Introduction</span><textarea rows="4" data-path="pages.legal.faq_intro"></textarea></label>
+</div></div>
+<div class="wmp-panel" data-panel="media">
+<div class="panel-heading"><h2>Media Library</h2><label class="wmp-btn gold file-label"><i class="fa-solid fa-upload"></i>Upload Image<input id="libraryUpload" type="file" accept="image/*"></label></div>
+<div id="mediaGrid" class="media-grid"></div>
+</div>
+
+<div class="wmp-panel" data-panel="history">
+<h2>Publishing History</h2>
+<div id="historyList" class="history-list"></div>
+</div>
+</form>
+</section>
+</div>
+</section>
+
+<div id="footer-container"></div>
+</main>
+</div>
+<script src="/admin/js/adminLayout.js"></script>
+<script src="/admin/js/website-management-pro.js"></script>
+</body>
+</html>

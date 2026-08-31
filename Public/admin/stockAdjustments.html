@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Stock Adjustments | RUKHNAV ERP</title>
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/erp-ui-v5.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/stockAdjustments.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+
+        <div id="topbar-container"></div>
+
+        <section class="content erp-v5-page stock-adjustments-page">
+
+            <header class="erp-v5-hero">
+
+                <div class="erp-v5-hero__copy">
+
+                    <span class="erp-v5-eyebrow">
+
+                        <i class="fa-solid fa-sliders"></i>
+
+                        Inventory Control
+
+                    </span>
+
+                    <h1>Stock Adjustments</h1>
+
+                    <p>
+                        Record stock increases, decreases, damage, expiry,
+                        opening balances and manual corrections with complete
+                        audit visibility.
+                    </p>
+
+                </div>
+
+                <div class="erp-v5-hero__actions">
+
+                    <a
+                        href="/admin/inventory.html"
+                        class="erp-v5-btn erp-v5-btn--light"
+                    >
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                        Inventory Overview
+
+                    </a>
+
+                    <button
+                        type="button"
+                        id="btnNewAdjustment"
+                        class="erp-v5-btn erp-v5-btn--gold"
+                    >
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        New Adjustment
+
+                    </button>
+
+                </div>
+
+            </header>
+
+            <section class="erp-v5-summary-grid adjustment-summary-grid">
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-list-check"></i>
+
+                    </div>
+
+                    <span>Total Adjustments</span>
+
+                    <strong id="totalAdjustments">
+                        0
+                    </strong>
+
+                    <small>All recorded adjustments</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+
+                    </div>
+
+                    <span>Stock In</span>
+
+                    <strong id="totalStockIn">
+                        0
+                    </strong>
+
+                    <small>Inventory increases</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-arrow-trend-down"></i>
+
+                    </div>
+
+                    <span>Stock Out</span>
+
+                    <strong id="totalStockOut">
+                        0
+                    </strong>
+
+                    <small>Inventory decreases</small>
+
+                </article>
+
+                <article class="erp-v5-summary-card">
+
+                    <div class="erp-v5-summary-card__icon">
+
+                        <i class="fa-solid fa-calendar-day"></i>
+
+                    </div>
+
+                    <span>Today's Adjustments</span>
+
+                    <strong id="todayAdjustments">
+                        0
+                    </strong>
+
+                    <small>Adjustments recorded today</small>
+
+                </article>
+
+            </section>
+
+            <section class="erp-v5-panel adjustment-records-panel">
+
+                <div class="erp-v5-panel-heading">
+
+                    <div>
+
+                        <span class="erp-v5-section-label">
+
+                            Inventory Records
+
+                        </span>
+
+                        <h2>Stock Movement Adjustments</h2>
+
+                        <p>
+                            Search, filter and inspect manual inventory
+                            changes.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="btnResetFilters"
+                        class="erp-v5-btn erp-v5-btn--soft"
+                    >
+
+                        <i class="fa-solid fa-rotate-left"></i>
+
+                        Reset Filters
+
+                    </button>
+
+                </div>
+
+                <div class="adjustment-filter-bar">
+
+                    <div class="erp-v5-field adjustment-search-field">
+
+                        <label for="searchAdjustment">
+
+                            Search adjustments
+
+                        </label>
+
+                        <div class="erp-v5-input-icon">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="search"
+                                id="searchAdjustment"
+                                placeholder="Adjustment number, product or reason"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="typeFilter">
+
+                            Adjustment type
+
+                        </label>
+
+                        <select id="typeFilter">
+
+                            <option value="">
+                                All Types
+                            </option>
+
+                            <option value="IN">
+                                Stock In
+                            </option>
+
+                            <option value="OUT">
+                                Stock Out
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="dateFilter">
+
+                            Adjustment date
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="dateFilter"
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="erp-v5-table-wrap">
+
+                    <table
+                        id="stockAdjustmentTable"
+                        class="erp-v5-table adjustment-table"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+
+                                <th>Adjustment No.</th>
+
+                                <th>Product</th>
+
+                                <th>Type</th>
+
+                                <th>Quantity</th>
+
+                                <th>Reason</th>
+
+                                <th>Adjusted By</th>
+
+                                <th>Date</th>
+
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="stockAdjustmentTableBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="9"
+                                    class="empty adjustment-empty"
+                                >
+
+                                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                                    Loading stock adjustments...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </section>
+
+        <div id="footer-container"></div>
+
+    </main>
+
+</div>
+
+
+<!-- =====================================================
+     New Stock Adjustment Modal
+===================================================== -->
+
+<div
+    id="stockAdjustmentModal"
+    class="modal adjustment-modal"
+    aria-hidden="true"
+>
+
+    <div class="modal-content modal-lg">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="modal-eyebrow">
+
+                    Inventory Update
+
+                </span>
+
+                <h2>
+
+                    <i class="fa-solid fa-boxes-stacked"></i>
+
+                    New Stock Adjustment
+
+                </h2>
+
+            </div>
+
+            <button
+                type="button"
+                id="closeAdjustmentModal"
+                class="close modal-close-button"
+                aria-label="Close adjustment modal"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <form id="stockAdjustmentForm">
+
+                <input
+                    type="hidden"
+                    id="adjustmentId"
+                >
+
+                <div class="adjustment-form-grid">
+
+                    <div class="erp-v5-field adjustment-product-field">
+
+                        <label for="productId">
+
+                            Product
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <select
+                            id="productId"
+                            required
+                        >
+
+                            <option value="">
+                                Select Product
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="currentStock">
+
+                            Current Stock
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="currentStock"
+                            value="0"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="adjustmentType">
+
+                            Adjustment Type
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <select
+                            id="adjustmentType"
+                            required
+                        >
+
+                            <option value="">
+                                Select Type
+                            </option>
+
+                            <option value="IN">
+                                Stock In
+                            </option>
+
+                            <option value="OUT">
+                                Stock Out
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="quantity">
+
+                            Quantity
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            min="1"
+                            step="1"
+                            placeholder="Enter quantity"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="reason">
+
+                            Reason
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <select
+                            id="reason"
+                            required
+                        >
+
+                            <option value="">
+                                Select Reason
+                            </option>
+
+                            <option value="Opening Stock">
+                                Opening Stock
+                            </option>
+
+                            <option value="Damaged Goods">
+                                Damaged Goods
+                            </option>
+
+                            <option value="Expired Goods">
+                                Expired Goods
+                            </option>
+
+                            <option value="Stock Audit">
+                                Stock Audit
+                            </option>
+
+                            <option value="Lost Goods">
+                                Lost Goods
+                            </option>
+
+                            <option value="Found Stock">
+                                Found Stock
+                            </option>
+
+                            <option value="Manual Correction">
+                                Manual Correction
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="newStockPreview">
+
+                            New Stock Preview
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="newStockPreview"
+                            value="0"
+                            readonly
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="erp-v5-field adjustment-remarks-field">
+
+                    <label for="remarks">
+
+                        Remarks
+
+                    </label>
+
+                    <textarea
+                        id="remarks"
+                        rows="4"
+                        placeholder="Enter additional remarks"
+                    ></textarea>
+
+                </div>
+
+                <div
+                    id="adjustmentWarning"
+                    class="adjustment-warning"
+                    style="display:none"
+                >
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    Stock-out quantity cannot exceed current stock.
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                id="btnCancelAdjustment"
+                class="erp-v5-btn erp-v5-btn--soft"
+            >
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                id="btnSaveAdjustment"
+                class="erp-v5-btn erp-v5-btn--gold"
+            >
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Save Adjustment
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     View Stock Adjustment Modal
+===================================================== -->
+
+<div
+    id="viewAdjustmentModal"
+    class="modal adjustment-modal"
+    aria-hidden="true"
+>
+
+    <div class="modal-content modal-lg">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="modal-eyebrow">
+
+                    Inventory Audit
+
+                </span>
+
+                <h2>
+
+                    <i class="fa-solid fa-eye"></i>
+
+                    Stock Adjustment Details
+
+                </h2>
+
+            </div>
+
+            <button
+                type="button"
+                id="closeViewAdjustmentModal"
+                class="close modal-close-button"
+                aria-label="Close adjustment details"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <section class="adjustment-detail-card">
+
+                <span class="erp-v5-section-label">
+
+                    Adjustment Information
+
+                </span>
+
+                <div class="adjustment-form-grid adjustment-view-grid">
+
+                    <div class="erp-v5-field">
+
+                        <label for="viewAdjustmentNumber">
+
+                            Adjustment Number
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="viewAdjustmentNumber"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="viewProductName">
+
+                            Product
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="viewProductName"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="viewAdjustmentType">
+
+                            Adjustment Type
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="viewAdjustmentType"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="viewQuantity">
+
+                            Quantity
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="viewQuantity"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="viewReason">
+
+                            Reason
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="viewReason"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="viewAdjustedBy">
+
+                            Adjusted By
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="viewAdjustedBy"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="erp-v5-field">
+
+                        <label for="viewCreatedAt">
+
+                            Adjustment Date
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="viewCreatedAt"
+                            readonly
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="adjustment-detail-card">
+
+                <span class="erp-v5-section-label">
+
+                    Remarks
+
+                </span>
+
+                <div class="erp-v5-field">
+
+                    <label for="viewRemarks">
+
+                        Additional Details
+
+                    </label>
+
+                    <textarea
+                        id="viewRemarks"
+                        rows="4"
+                        readonly
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                id="btnCloseViewAdjustment"
+                class="erp-v5-btn erp-v5-btn--soft"
+            >
+
+                Close
+
+            </button>
+
+            <button
+                type="button"
+                id="btnPrintAdjustment"
+                class="erp-v5-btn erp-v5-btn--gold"
+            >
+
+                <i class="fa-solid fa-print"></i>
+
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="/admin/js/stockAdjustments.js"></script>
+
+</body>
+</html>

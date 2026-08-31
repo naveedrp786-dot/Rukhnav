@@ -1,0 +1,762 @@
+/* =========================================
+   RUKHNAV ERP - Supplier Management
+   Page-specific styling
+========================================= */
+
+.hidden {
+    display: none !important;
+}
+
+.supplier-page {
+    padding-bottom: 30px;
+}
+
+.supplier-page-header {
+    align-items: center;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.secondary-btn {
+    min-height: 40px;
+    padding: 9px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.secondary-btn:hover {
+    background: #f8fafc;
+    border-color: #9ca3af;
+}
+
+.secondary-btn:disabled,
+.primary-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   Summary Cards
+========================================= */
+
+.supplier-summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.supplier-summary-card {
+    min-width: 0;
+    padding: 19px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.supplier-summary-card span {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.supplier-summary-card h2 {
+    margin: 5px 0 3px;
+    color: #172033;
+    font-size: 23px;
+    overflow-wrap: anywhere;
+}
+
+.supplier-summary-card small {
+    color: #8b95a7;
+    font-size: 11px;
+}
+
+.summary-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+}
+
+.summary-icon.green {
+    background: #eaf8f1;
+    color: #16835a;
+}
+
+.summary-icon.blue {
+    background: #eaf1ff;
+    color: #2563eb;
+}
+
+.summary-icon.gold {
+    background: #fff4df;
+    color: #c47b08;
+}
+
+.summary-icon.purple {
+    background: #f2ebff;
+    color: #7c3aed;
+}
+
+/* =========================================
+   Supplier Panel
+========================================= */
+
+.supplier-panel {
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.supplier-toolbar {
+    padding: 18px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.supplier-search {
+    width: min(560px, 100%);
+    min-height: 42px;
+    padding: 0 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.supplier-search:focus-within {
+    border-color: #1f6f54;
+    box-shadow: 0 0 0 3px rgba(31, 111, 84, 0.1);
+}
+
+.supplier-search i {
+    color: #8b95a7;
+}
+
+.supplier-search input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #374151;
+    font-size: 13px;
+}
+
+.supplier-toolbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rows-select {
+    min-height: 40px;
+    padding: 0 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #374151;
+    font-weight: 700;
+}
+
+/* =========================================
+   Table
+========================================= */
+
+.supplier-table-wrap {
+    overflow-x: auto;
+}
+
+.supplier-table {
+    width: 100%;
+    min-width: 1180px;
+    border-collapse: collapse;
+}
+
+.supplier-table th,
+.supplier-table td {
+    padding: 14px 15px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.supplier-table th {
+    background: #f7faf8;
+    color: #28644f;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.supplier-table td {
+    color: #374151;
+    font-size: 13px;
+}
+
+.supplier-table tbody tr:hover {
+    background: #fbfdfc;
+}
+
+.supplier-table th:first-child,
+.supplier-table td:first-child {
+    width: 65px;
+}
+
+.supplier-table th:last-child,
+.supplier-table td:last-child {
+    width: 125px;
+    min-width: 125px;
+}
+
+.supplier-name {
+    color: #172033;
+    font-weight: 800;
+}
+
+.supplier-sub {
+    margin-top: 4px;
+    color: #8b95a7;
+    font-size: 11px;
+}
+
+.balance-positive {
+    color: #b54708;
+    font-weight: 800;
+}
+
+.balance-zero {
+    color: #667085;
+    font-weight: 700;
+}
+
+.status-badge {
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #eaf8f1;
+    color: #18794e;
+    font-size: 11px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.row-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: nowrap;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+}
+
+.edit-btn {
+    background: #eaf1ff;
+    color: #2563eb;
+}
+
+.edit-btn:hover {
+    background: #dbe7ff;
+}
+
+.deactivate-btn {
+    background: #fff0ef;
+    color: #b42318;
+}
+
+.deactivate-btn:hover {
+    background: #fee4e2;
+}
+
+/* =========================================
+   States and Pagination
+========================================= */
+
+.supplier-state {
+    min-height: 280px;
+    padding: 40px 20px;
+    color: #6b7280;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.supplier-state h3 {
+    margin: 14px 0 5px;
+    color: #172033;
+}
+
+.supplier-state p {
+    margin: 0;
+}
+
+.empty-icon {
+    color: #1f6f54;
+    font-size: 42px;
+}
+
+.supplier-spinner {
+    width: 38px;
+    height: 38px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #1f6f54;
+    border-radius: 50%;
+    animation: supplierSpin 0.75s linear infinite;
+}
+
+@keyframes supplierSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.supplier-pagination {
+    min-height: 68px;
+    padding: 14px 18px;
+    border-top: 1px solid #e5e7eb;
+    color: #6b7280;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.pagination-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.small-btn {
+    min-height: 35px;
+    padding: 7px 11px;
+    font-size: 12px;
+}
+
+.current-page {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+    background: #1f6f54;
+    color: #ffffff;
+    font-weight: 800;
+    display: grid;
+    place-items: center;
+}
+
+/* =========================================
+   Add/Edit Supplier Modal
+========================================= */
+
+.supplier-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.supplier-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.62);
+}
+
+.supplier-modal-card {
+    position: relative;
+    width: min(850px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+}
+
+.supplier-modal-header {
+    padding: 19px 21px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.modal-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.modal-heading-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #eaf8f1;
+    color: #1f6f54;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+}
+
+.modal-heading h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 20px;
+}
+
+.modal-heading p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.modal-close {
+    margin-left: auto;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 9px;
+    background: #f3f4f6;
+    color: #475467;
+    cursor: pointer;
+    font-size: 21px;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    background: #e5e7eb;
+}
+
+.supplier-modal-body {
+    padding: 21px;
+}
+
+.supplier-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    color: #344054;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.form-group label span {
+    color: #b42318;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d0d5dd;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #344054;
+    font: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+.form-group input {
+    min-height: 42px;
+    padding: 0 12px;
+}
+
+.form-group textarea {
+    min-height: 88px;
+    padding: 11px 12px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #1f6f54;
+    box-shadow: 0 0 0 3px rgba(31, 111, 84, 0.1);
+}
+
+.supplier-modal-footer {
+    padding: 16px 21px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* =========================================
+   Confirmation Modal
+========================================= */
+
+.confirm-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3100;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.58);
+}
+
+.confirm-card {
+    position: relative;
+    width: min(520px, 100%);
+    overflow: hidden;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.24);
+}
+
+.confirm-header,
+.confirm-body,
+.confirm-footer {
+    padding: 19px;
+}
+
+.confirm-header {
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    gap: 14px;
+}
+
+.confirm-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.confirm-heading h3 {
+    margin: 0;
+    color: #172033;
+}
+
+.confirm-heading p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.confirm-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #fff4df;
+    color: #c47b08;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+}
+
+.confirm-body {
+    color: #475467;
+    line-height: 1.6;
+}
+
+.confirm-warning {
+    padding: 11px 13px;
+    margin-bottom: 12px;
+    border-radius: 9px;
+    background: #fff4df;
+    color: #946200;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.confirm-footer {
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.danger-button {
+    background: #b42318 !important;
+}
+
+.danger-button:hover {
+    background: #941c14 !important;
+}
+
+/* =========================================
+   Toast
+========================================= */
+
+.toast-container {
+    position: fixed;
+    top: 85px;
+    right: 20px;
+    z-index: 4000;
+    display: grid;
+    gap: 10px;
+}
+
+.page-toast {
+    width: min(370px, calc(100vw - 30px));
+    padding: 13px 15px;
+    border-radius: 11px;
+    color: #ffffff;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.18);
+}
+
+.page-toast strong {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.page-toast.success {
+    background: #18794e;
+}
+
+.page-toast.error {
+    background: #b42318;
+}
+
+/* =========================================
+   Responsive
+========================================= */
+
+@media (max-width: 1150px) {
+    .supplier-summary-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .supplier-page-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .header-actions {
+        flex-wrap: wrap;
+    }
+
+    .header-actions > * {
+        flex: 1;
+    }
+
+    .supplier-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .supplier-toolbar-actions {
+        margin-left: 0;
+    }
+
+    .supplier-toolbar-actions > * {
+        flex: 1;
+    }
+
+    .supplier-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .supplier-summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .supplier-pagination {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pagination-actions {
+        margin-left: 0;
+        justify-content: space-between;
+    }
+
+    .supplier-modal {
+        padding: 10px;
+    }
+
+    .supplier-modal-card {
+        max-height: calc(100vh - 20px);
+    }
+
+    .supplier-modal-footer,
+    .confirm-footer {
+        flex-direction: column-reverse;
+    }
+
+    .supplier-modal-footer button,
+    .confirm-footer button {
+        width: 100%;
+    }
+}

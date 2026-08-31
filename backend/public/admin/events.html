@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Event Management | RUKHNAV ERP</title>
+    <link rel="stylesheet" href="/admin/css/erp.css">
+    <link rel="stylesheet" href="/admin/css/premium-admin-pages.css">
+    <link rel="stylesheet" href="/admin/css/sidebar-unified-patch.css">
+    <link rel="stylesheet" href="css/events.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="dashboard">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+        <div id="topbar-container"></div>
+
+        <section class="content erp-page events-admin">
+            <header class="erp-page-header">
+                <div class="erp-page-header__copy">
+                    <span class="erp-eyebrow">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Customer Engagement
+                    </span>
+                    <h1>Event Management</h1>
+                    <p>
+                        Manage birthdays, anniversaries, customer occasions and automated
+                        Email, WhatsApp and SMS reminder delivery from one workspace.
+                    </p>
+                </div>
+
+                <div class="erp-header-actions">
+                    <button id="generateReminders" class="erp-btn erp-btn--light" type="button">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        Generate Due
+                    </button>
+
+                    <button id="processReminders" class="erp-btn erp-btn--light" type="button">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Process Pending
+                    </button>
+
+                    <button id="runReminderCycle" class="erp-btn erp-btn--gold" type="button">
+                        <i class="fa-solid fa-bolt"></i>
+                        Run Complete Cycle
+                    </button>
+                </div>
+            </header>
+
+            <div id="eventMode" class="mode-banner"></div>
+            <div id="eventsMessage" class="events-message erp-message"></div>
+
+            <section class="erp-summary-grid events-summary">
+                <article class="erp-summary-card">
+                    <div class="erp-summary-card__icon"><i class="fa-solid fa-calendar-days"></i></div>
+                    <span>Total Events</span>
+                    <strong id="evTotal">0</strong>
+                    <small>All saved occasions</small>
+                </article>
+
+                <article class="erp-summary-card">
+                    <div class="erp-summary-card__icon"><i class="fa-solid fa-circle-play"></i></div>
+                    <span>Active</span>
+                    <strong id="evActive">0</strong>
+                    <small>Reminder-ready events</small>
+                </article>
+
+                <article class="erp-summary-card">
+                    <div class="erp-summary-card__icon"><i class="fa-solid fa-cake-candles"></i></div>
+                    <span>Birthdays</span>
+                    <strong id="evBirthdays">0</strong>
+                    <small>Birthday reminders</small>
+                </article>
+
+                <article class="erp-summary-card">
+                    <div class="erp-summary-card__icon"><i class="fa-solid fa-heart"></i></div>
+                    <span>Anniversaries</span>
+                    <strong id="evAnniversaries">0</strong>
+                    <small>Anniversary reminders</small>
+                </article>
+
+                <article class="erp-summary-card">
+                    <div class="erp-summary-card__icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <span>Pending Reminders</span>
+                    <strong id="evPending">0</strong>
+                    <small>Waiting for delivery</small>
+                </article>
+
+                <article class="erp-summary-card">
+                    <div class="erp-summary-card__icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <span>Sent Reminders</span>
+                    <strong id="evSent">0</strong>
+                    <small>Successfully processed</small>
+                </article>
+            </section>
+
+            <section class="erp-panel events-panel">
+                <div class="erp-panel-heading">
+                    <div>
+                        <span class="erp-section-label">Reminder Operations</span>
+                        <h2>Customer Events &amp; Delivery Logs</h2>
+                        <p>Search events, review reminder channels and inspect delivery history.</p>
+                    </div>
+                </div>
+
+                <div class="erp-tabs event-tabs">
+                    <button class="active" data-view="events" type="button">
+                        <i class="fa-solid fa-calendar"></i>
+                        Customer Events
+                    </button>
+                    <button data-view="logs" type="button">
+                        <i class="fa-solid fa-list-check"></i>
+                        Reminder Logs
+                    </button>
+                </div>
+
+                <div id="eventsView">
+                    <div class="erp-filter-bar events-filters">
+                        <div class="erp-field">
+                            <label for="eventSearch">Search</label>
+                            <input id="eventSearch" type="search" placeholder="Customer, email, phone or event">
+                        </div>
+
+                        <div class="erp-field">
+                            <label for="eventStatus">Status</label>
+                            <select id="eventStatus">
+                                <option value="">All statuses</option>
+                                <option>Active</option>
+                                <option>Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="erp-field">
+                            <label for="eventType">Event type</label>
+                            <select id="eventType">
+                                <option value="">All event types</option>
+                                <option>Birthday</option>
+                                <option>Anniversary</option>
+                                <option>Engagement</option>
+                                <option>Family Birthday</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <button id="refreshEvents" class="erp-btn erp-btn--soft" type="button">
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <div class="erp-table-wrap events-table-wrap">
+                        <table class="erp-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Event</th>
+                                    <th>Date</th>
+                                    <th>Channels</th>
+                                    <th>Membership</th>
+                                    <th>Reminder</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eventsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="logsView" class="hidden">
+                    <div class="erp-filter-bar events-filters logs">
+                        <div class="erp-field">
+                            <label for="logStatus">Delivery status</label>
+                            <select id="logStatus">
+                                <option value="">All reminder statuses</option>
+                                <option>Pending</option>
+                                <option>Sent</option>
+                                <option>Failed</option>
+                                <option>Cancelled</option>
+                            </select>
+                        </div>
+
+                        <button id="refreshLogs" class="erp-btn erp-btn--soft" type="button">
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh Logs
+                        </button>
+                    </div>
+
+                    <div class="erp-table-wrap events-table-wrap">
+                        <table class="erp-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Event</th>
+                                    <th>Channel</th>
+                                    <th>Recipient</th>
+                                    <th>Scheduled</th>
+                                    <th>Status</th>
+                                    <th>Attempts</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+</div>
+
+<script src="/admin/js/componentLoader.js"></script>
+<script src="js/events.js"></script>
+</body>
+</html>
