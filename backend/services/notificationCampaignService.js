@@ -731,12 +731,33 @@ function campaignInboxAction(campaignType) {
     };
 }
 
-function campaignInboxMessage(campaign) {
-    return (
-        clean(campaign.whatsapp_message) ||
+function campaignInboxMessage(
+    campaign,
+    recipient
+) {
+    const variables =
+        campaignVariables(
+            campaign,
+            recipient
+        );
+
+    let message =
         clean(campaign.email_body) ||
-        clean(campaign.campaign_name)
-    );
+        clean(campaign.whatsapp_message) ||
+        clean(campaign.campaign_name);
+
+    for (const [key, value] of
+        Object.entries(variables)) {
+        message = message.replace(
+            new RegExp(
+                `{{\\s*${key}\\s*}}`,
+                "gi"
+            ),
+            String(value || "")
+        );
+    }
+
+    return message;
 }
 
 async function createCampaignInboxNotification(
@@ -781,7 +802,8 @@ async function createCampaignInboxNotification(
 
             message:
                 campaignInboxMessage(
-                    campaign
+                    campaign,
+                    recipient
                 ),
 
             actionLabel:

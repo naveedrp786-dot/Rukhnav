@@ -7255,3 +7255,195 @@ button{
             min(285px, calc(100dvh - 220px));
     }
 }
+
+/* =========================================================
+   RUKHNAV CUSTOMER NOTIFICATION DETAIL READER
+   ========================================================= */
+
+.customer-notification-detail-layer[hidden] {
+    display: none !important;
+}
+
+.customer-notification-detail-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 10050;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+}
+
+.customer-notification-detail-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: rgba(15, 18, 17, .46);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity .22s ease;
+}
+
+.customer-notification-detail-modal {
+    position: relative;
+    z-index: 1;
+    width: min(680px, calc(100vw - 40px));
+    max-height: min(760px, calc(100vh - 70px));
+    overflow: auto;
+    border: 1px solid rgba(218, 177, 67, .26);
+    border-radius: 26px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(38, 43, 40, .97),
+            rgba(21, 25, 23, .97)
+        );
+    box-shadow:
+        0 30px 90px rgba(0, 0, 0, .38),
+        inset 0 1px 0 rgba(255, 255, 255, .08);
+    backdrop-filter: blur(26px);
+    -webkit-backdrop-filter: blur(26px);
+    color: #fff;
+    opacity: 0;
+    transform: translateY(18px) scale(.975);
+    transition:
+        opacity .22s ease,
+        transform .22s ease;
+}
+
+.customer-notification-detail-layer.is-open
+.customer-notification-detail-backdrop {
+    opacity: 1;
+}
+
+.customer-notification-detail-layer.is-open
+.customer-notification-detail-modal {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.customer-notification-detail-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 2;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 50%;
+    background: rgba(255,255,255,.07);
+    color: #fff;
+    cursor: pointer;
+}
+
+.customer-notification-detail-content {
+    padding: 42px 44px 40px;
+}
+
+.customer-notification-detail-icon {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 24px;
+    border: 1px solid rgba(218,177,67,.28);
+    border-radius: 18px;
+    background: rgba(218,177,67,.11);
+    color: #dab143;
+    font-size: 22px;
+}
+
+.customer-notification-detail-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+    color: rgba(255,255,255,.56);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.customer-notification-detail-content h2 {
+    max-width: 560px;
+    margin: 0 48px 22px 0;
+    color: #fff;
+    font-size: clamp(27px, 4vw, 40px);
+    line-height: 1.08;
+}
+
+.customer-notification-detail-message {
+    color: rgba(255,255,255,.82);
+    font-size: 16px;
+    line-height: 1.8;
+    white-space: normal;
+}
+
+.customer-notification-detail-actions {
+    display: flex;
+    margin-top: 32px;
+    padding-top: 26px;
+    border-top: 1px solid rgba(255,255,255,.10);
+}
+
+.customer-notification-detail-action {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 24px;
+    border: 1px solid rgba(218,177,67,.45);
+    border-radius: 14px;
+    background: rgba(218,177,67,.14);
+    color: #f0ce70;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+        transform .18s ease,
+        background .18s ease;
+}
+
+.customer-notification-detail-action:hover {
+    background: rgba(218,177,67,.22);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 650px) {
+    .customer-notification-detail-layer {
+        padding: 12px;
+    }
+
+    .customer-notification-detail-modal {
+        width: calc(100vw - 24px);
+        max-height: calc(100vh - 30px);
+        border-radius: 22px;
+    }
+
+    .customer-notification-detail-content {
+        padding: 34px 24px 28px;
+    }
+
+    .customer-notification-detail-content h2 {
+        margin-right: 35px;
+        font-size: 28px;
+    }
+
+    .customer-notification-detail-action {
+        width: 100%;
+    }
+}
+
+/* Keep compact notification cards as previews only. */
+.customer-notification-message {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}

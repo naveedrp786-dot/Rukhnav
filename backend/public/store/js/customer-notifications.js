@@ -5,7 +5,8 @@
         loaded: false,
         loading: false,
         notifications: [],
-        unreadCount: 0
+        unreadCount: 0,
+        selectedNotification: null
     };
 
     function escapeHtml(value = "") {
@@ -58,6 +59,22 @@
             readAll:
                 document.getElementById(
                     "customerNotificationReadAll"
+                ),
+            detailLayer:
+                document.getElementById(
+                    "customerNotificationDetailLayer"
+                ),
+            detailBackdrop:
+                document.getElementById(
+                    "customerNotificationDetailBackdrop"
+                ),
+            detailClose:
+                document.getElementById(
+                    "customerNotificationDetailClose"
+                ),
+            detailContent:
+                document.getElementById(
+                    "customerNotificationDetailContent"
                 )
         };
     }
@@ -192,6 +209,144 @@
         }
     }
 
+    function previewMessage(value, limit = 135) {
+        const text =
+            String(value || "")
+                .replace(/\s+/g, " ")
+                .trim();
+
+        if (text.length <= limit) {
+            return text;
+        }
+
+        return `${text.slice(0, limit).trim()}…`;
+    }
+
+    function detailMessageHtml(value) {
+        const safe =
+            escapeHtml(value || "");
+
+        return safe
+            .replace(/\r\n/g, "\n")
+            .replace(/\r/g, "\n")
+            .replace(/\n/g, "<br>");
+    }
+
+    function closeDetail() {
+        const { detailLayer } = elements();
+
+        if (!detailLayer) {
+            return;
+        }
+
+        detailLayer.classList.remove("is-open");
+        state.selectedNotification = null;
+
+        window.setTimeout(() => {
+            if (!detailLayer.classList.contains("is-open")) {
+                detailLayer.hidden = true;
+            }
+        }, 220);
+    }
+
+    async function openDetail(id) {
+        const numericId = Number(id);
+
+        const notification =
+            state.notifications.find(
+                item =>
+                    Number(item.id) === numericId
+            );
+
+        if (!notification) {
+            return;
+        }
+
+        state.selectedNotification =
+            notification;
+
+        const {
+            detailLayer,
+            detailContent
+        } = elements();
+
+        if (!detailLayer || !detailContent) {
+            return;
+        }
+
+        const action =
+            notification.action_url
+                ? `
+                    <a
+                        class="customer-notification-detail-action"
+                        href="${escapeHtml(
+                            notification.action_url
+                        )}"
+                        data-detail-action-id="${numericId}"
+                    >
+                        ${escapeHtml(
+                            notification.action_label ||
+                            "View details"
+                        )}
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                `
+                : "";
+
+        detailContent.innerHTML = `
+            <div class="customer-notification-detail-icon">
+                <i class="${iconClass(notification)}"></i>
+            </div>
+
+            <div class="customer-notification-detail-meta">
+                <span>
+                    ${escapeHtml(
+                        notification.notification_type ||
+                        "Update"
+                    )}
+                </span>
+                <time>
+                    ${escapeHtml(
+                        formatDate(
+                            notification.created_at
+                        )
+                    )}
+                </time>
+            </div>
+
+            <h2>
+                ${escapeHtml(
+                    notification.title ||
+                    "RUKHNAV Update"
+                )}
+            </h2>
+
+            <div class="customer-notification-detail-message">
+                ${detailMessageHtml(
+                    notification.message
+                )}
+            </div>
+
+            ${
+                action
+                    ? `
+                        <div class="customer-notification-detail-actions">
+                            ${action}
+                        </div>
+                    `
+                    : ""
+            }
+        `;
+
+        detailLayer.hidden = false;
+
+        requestAnimationFrame(() => {
+            detailLayer.classList.add("is-open");
+        });
+
+        await markRead(numericId);
+    }
+
     function render() {
         const {
             list,
@@ -300,7 +455,9 @@
 
                                 <span class="customer-notification-message">
                                     ${escapeHtml(
-                                        notification.message
+                                        previewMessage(
+                                            notification.message
+                                        )
                                     )}
                                 </span>
                             </span>
@@ -605,6 +762,39 @@
             markAllRead
         );
 
+        const {
+            detailBackdrop,
+            detailClose,
+            detailLayer
+        } = elements();
+
+        detailBackdrop?.addEventListener(
+            "click",
+            closeDetail
+        );
+
+        detailClose?.addEventListener(
+            "click",
+            closeDetail
+        );
+
+        detailLayer?.addEventListener(
+            "click",
+            event => {
+                const action =
+                    event.target.closest(
+                        "[data-detail-action-id]"
+                    );
+
+                if (action) {
+                    markRead(
+                        action.dataset
+                            .detailActionId
+                    );
+                }
+            }
+        );
+
         list?.addEventListener(
             "click",
             event => {
@@ -614,7 +804,7 @@
                     );
 
                 if (readButton) {
-                    markRead(
+                    openDetail(
                         readButton.dataset
                             .notificationRead
                     );
@@ -639,7 +829,17 @@
             "keydown",
             event => {
                 if (event.key === "Escape") {
-                    closeDrawer();
+                    const { detailLayer } =
+                        elements();
+
+                    if (
+                        detailLayer &&
+                        !detailLayer.hidden
+                    ) {
+                        closeDetail();
+                    } else {
+                        closeDrawer();
+                    }
                 }
             }
         );
