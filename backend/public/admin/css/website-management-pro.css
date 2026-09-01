@@ -3194,3 +3194,492 @@
         animation:none !important;
     }
 }
+
+
+/* =========================================================
+   RUKHNAV V7 PHASE 2 PROCEDURAL DEPTH
+   SVG turbulence + displacement + layered glass
+   ========================================================= */
+
+.rukhnav-v7-master-preview{
+    position:relative;
+    isolation:isolate;
+}
+
+
+/* ---------------------------------------------------------
+   REAL SVG ATMOSPHERE
+   --------------------------------------------------------- */
+
+.rukhnav-v7-smoke-svg{
+    position:absolute;
+
+    z-index:2;
+
+    inset:-12% -18% -10% -18%;
+
+    width:136%;
+    height:122%;
+
+    overflow:visible;
+
+    pointer-events:none;
+
+    transform:
+        translateZ(0);
+
+    filter:
+        saturate(1.14)
+        contrast(1.03);
+}
+
+
+.v7-smoke-layer{
+    transform-box:fill-box;
+    transform-origin:center;
+
+    will-change:
+        transform,
+        opacity;
+}
+
+
+.v7-smoke-layer-back{
+    opacity:.66;
+
+    animation:
+        rukhnavV7SmokeBack
+        18s ease-in-out
+        infinite alternate;
+}
+
+
+.v7-smoke-layer-middle{
+    opacity:.76;
+
+    animation:
+        rukhnavV7SmokeMiddle
+        14s ease-in-out
+        infinite alternate;
+}
+
+
+.v7-smoke-layer-front{
+    opacity:.64;
+
+    animation:
+        rukhnavV7SmokeFront
+        11s ease-in-out
+        infinite alternate;
+}
+
+
+/* ---------------------------------------------------------
+   OLD ORBS BECOME SUPPORTING LIGHT ONLY
+   --------------------------------------------------------- */
+
+.rukhnav-v7-master-preview
+.rukhnav-preview-orb{
+    z-index:1 !important;
+
+    opacity:.24 !important;
+
+    filter:
+        blur(36px)
+        saturate(.95) !important;
+}
+
+
+/* ---------------------------------------------------------
+   SMALLER GLASS PANEL
+   Let atmosphere breathe.
+   --------------------------------------------------------- */
+
+.rukhnav-v7-master-preview
+.rukhnav-theme-preview-browser{
+    left:18px !important;
+    right:18px !important;
+    bottom:16px !important;
+
+    min-height:108px !important;
+
+    padding:
+        17px 18px
+        15px !important;
+
+    z-index:10 !important;
+
+    border-radius:20px !important;
+
+    backdrop-filter:
+        blur(20px)
+        saturate(1.22) !important;
+
+    -webkit-backdrop-filter:
+        blur(20px)
+        saturate(1.22) !important;
+}
+
+
+.rukhnav-v7-master-preview
+.preview-copy{
+    max-width:84% !important;
+}
+
+
+.rukhnav-v7-master-preview
+.preview-copy strong{
+    font-size:26px !important;
+}
+
+
+/* ---------------------------------------------------------
+   CINEMATIC DEPTH
+   --------------------------------------------------------- */
+
+.rukhnav-theme-scene-midnight-aurora
+.rukhnav-v7-smoke-svg,
+
+.rukhnav-theme-scene-tropical-prism
+.rukhnav-v7-smoke-svg{
+    mix-blend-mode:screen;
+
+    filter:
+        saturate(1.55)
+        contrast(1.05)
+        brightness(1.03);
+}
+
+
+.rukhnav-theme-scene-midnight-aurora
+.v7-smoke-layer-front{
+    opacity:.82;
+}
+
+
+.rukhnav-theme-scene-midnight-aurora
+.v7-smoke-layer-middle{
+    opacity:.88;
+}
+
+
+.rukhnav-theme-scene-tropical-prism
+.v7-smoke-layer-back{
+    opacity:.80;
+}
+
+
+.rukhnav-theme-scene-tropical-prism
+.v7-smoke-layer-middle{
+    opacity:.90;
+}
+
+
+/* ---------------------------------------------------------
+   SIGNATURE GOLD SMOKE
+   --------------------------------------------------------- */
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.rukhnav-v7-smoke-svg{
+    mix-blend-mode:screen;
+
+    filter:
+        saturate(1.10)
+        sepia(.08)
+        contrast(1.04);
+}
+
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.v7-smoke-layer-back{
+    opacity:.58;
+}
+
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.v7-smoke-layer-middle{
+    opacity:.72;
+}
+
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.v7-smoke-layer-front{
+    opacity:.55;
+}
+
+
+/* ---------------------------------------------------------
+   BLACK CHAMPAGNE
+   restrain colour, emphasize metallic illumination
+   --------------------------------------------------------- */
+
+.rukhnav-theme-scene-black-champagne
+.rukhnav-v7-smoke-svg{
+    mix-blend-mode:screen;
+
+    filter:
+        saturate(.78)
+        contrast(1.10)
+        brightness(.94);
+}
+
+
+.rukhnav-theme-scene-black-champagne
+.v7-smoke-layer-back{
+    opacity:.46;
+}
+
+
+.rukhnav-theme-scene-black-champagne
+.v7-smoke-layer-middle{
+    opacity:.62;
+}
+
+
+.rukhnav-theme-scene-black-champagne
+.v7-smoke-layer-front{
+    opacity:.42;
+}
+
+
+.rukhnav-theme-scene-black-champagne
+.rukhnav-theme-preview-browser{
+    background:
+        linear-gradient(
+            135deg,
+            rgba(4,4,4,.60),
+            rgba(32,23,8,.34)
+        ) !important;
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,231,170,.25),
+        inset 0 -1px 0
+        rgba(192,143,43,.10),
+        0 26px 58px
+        rgba(0,0,0,.58) !important;
+}
+
+
+/* ---------------------------------------------------------
+   PASTEL MIST
+   translucent, soft, milky
+   --------------------------------------------------------- */
+
+.rukhnav-theme-scene-aqua-peach-mist
+.rukhnav-v7-smoke-svg{
+    mix-blend-mode:multiply;
+
+    opacity:.72;
+
+    filter:
+        saturate(.74)
+        brightness(1.09);
+}
+
+
+.rukhnav-theme-scene-aqua-peach-mist
+.v7-smoke-layer-back{
+    opacity:.36;
+}
+
+
+.rukhnav-theme-scene-aqua-peach-mist
+.v7-smoke-layer-middle{
+    opacity:.42;
+}
+
+
+.rukhnav-theme-scene-aqua-peach-mist
+.v7-smoke-layer-front{
+    opacity:.25;
+}
+
+
+.rukhnav-theme-scene-aqua-peach-mist
+.rukhnav-theme-preview-browser{
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.60),
+            rgba(255,250,252,.32)
+        ) !important;
+
+    border-color:
+        rgba(255,255,255,.86) !important;
+}
+
+
+/* ---------------------------------------------------------
+   FROSTED LAVENDER
+   restrained atmospheric frost
+   --------------------------------------------------------- */
+
+.rukhnav-theme-scene-frosted-lavender
+.rukhnav-v7-smoke-svg{
+    mix-blend-mode:multiply;
+
+    opacity:.58;
+
+    filter:
+        saturate(.55)
+        brightness(1.10);
+}
+
+
+.rukhnav-theme-scene-frosted-lavender
+.v7-smoke-layer-back{
+    opacity:.30;
+}
+
+
+.rukhnav-theme-scene-frosted-lavender
+.v7-smoke-layer-middle{
+    opacity:.34;
+}
+
+
+.rukhnav-theme-scene-frosted-lavender
+.v7-smoke-layer-front{
+    opacity:.18;
+}
+
+
+.rukhnav-theme-scene-frosted-lavender
+.rukhnav-theme-preview-browser{
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.56),
+            rgba(238,235,248,.28)
+        ) !important;
+
+    border-color:
+        rgba(255,255,255,.90) !important;
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.98),
+        0 22px 48px
+        rgba(78,74,106,.16) !important;
+}
+
+
+/* ---------------------------------------------------------
+   EXTRA DEPTH HIGHLIGHT
+   --------------------------------------------------------- */
+
+.rukhnav-v7-master-preview
+.rukhnav-theme-preview-browser::before{
+    content:"";
+
+    position:absolute;
+
+    inset:1px 1px auto 1px;
+
+    height:42%;
+
+    border-radius:
+        19px 19px 48% 48%;
+
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.14),
+            transparent
+        );
+}
+
+
+/* ---------------------------------------------------------
+   MOTION
+   --------------------------------------------------------- */
+
+@keyframes rukhnavV7SmokeBack{
+
+    from{
+        transform:
+            translate3d(
+                -18px,
+                -8px,
+                0
+            )
+            rotate(-4deg)
+            scale(1.02);
+    }
+
+    to{
+        transform:
+            translate3d(
+                22px,
+                12px,
+                0
+            )
+            rotate(3deg)
+            scale(1.13);
+    }
+}
+
+
+@keyframes rukhnavV7SmokeMiddle{
+
+    from{
+        transform:
+            translate3d(
+                18px,
+                -6px,
+                0
+            )
+            rotate(4deg)
+            scale(1.04);
+    }
+
+    to{
+        transform:
+            translate3d(
+                -24px,
+                14px,
+                0
+            )
+            rotate(-5deg)
+            scale(1.15);
+    }
+}
+
+
+@keyframes rukhnavV7SmokeFront{
+
+    from{
+        transform:
+            translate3d(
+                -10px,
+                10px,
+                0
+            )
+            rotate(-3deg)
+            scale(1.03);
+    }
+
+    to{
+        transform:
+            translate3d(
+                25px,
+                -8px,
+                0
+            )
+            rotate(4deg)
+            scale(1.12);
+    }
+}
+
+
+@media(prefers-reduced-motion:reduce){
+
+    .v7-smoke-layer-back,
+    .v7-smoke-layer-middle,
+    .v7-smoke-layer-front{
+        animation:none !important;
+    }
+}
