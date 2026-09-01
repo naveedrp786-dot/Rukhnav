@@ -1,5 +1,68 @@
 "use strict";
 
+
+/* RUKHNAV THEME FONT LIBRARY V5 */
+function ensureRukhnavThemeFonts() {
+    const id = "rukhnav-theme-font-library";
+
+    if (document.getElementById(id)) {
+        return;
+    }
+
+    const preconnectGoogle =
+        document.createElement("link");
+
+    preconnectGoogle.rel = "preconnect";
+    preconnectGoogle.href =
+        "https://fonts.googleapis.com";
+
+    document.head.appendChild(
+        preconnectGoogle
+    );
+
+    const preconnectStatic =
+        document.createElement("link");
+
+    preconnectStatic.rel = "preconnect";
+    preconnectStatic.href =
+        "https://fonts.gstatic.com";
+
+    preconnectStatic.crossOrigin =
+        "anonymous";
+
+    document.head.appendChild(
+        preconnectStatic
+    );
+
+    const stylesheet =
+        document.createElement("link");
+
+    stylesheet.id = id;
+    stylesheet.rel = "stylesheet";
+
+    stylesheet.href =
+        "https://fonts.googleapis.com/css2?" +
+        "family=Cormorant+Garamond:" +
+        "wght@400;500;600;700&" +
+        "family=DM+Sans:" +
+        "wght@400;500;600;700;800&" +
+        "family=Montserrat:" +
+        "wght@400;500;600;700;800&" +
+        "family=Playfair+Display:" +
+        "wght@400;500;600;700;800&" +
+        "family=Poppins:" +
+        "wght@400;500;600;700;800&" +
+        "display=swap";
+
+    document.head.appendChild(
+        stylesheet
+    );
+}
+
+ensureRukhnavThemeFonts();
+
+
+
 window.RukhnavModernCMS = {
     settings: {},
 

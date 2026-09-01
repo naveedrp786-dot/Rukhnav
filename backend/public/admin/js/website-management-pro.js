@@ -215,6 +215,240 @@ function applyThemePreset(presetId) {
     );
 }
 
+
+const themeStudioState = {
+    category: "All",
+    mode: "all",
+    search: ""
+};
+
+function normaliseThemeStudioText(value = "") {
+    return String(value || "")
+        .trim()
+        .toLowerCase();
+}
+
+function themeStudioCategories() {
+    const presets =
+        window.RUKHNAV_THEME_PRESETS || [];
+
+    return [
+        "All",
+        ...Array.from(
+            new Set(
+                presets
+                    .map(
+                        preset =>
+                            preset.category ||
+                            "Other"
+                    )
+                    .filter(Boolean)
+            )
+        )
+    ];
+}
+
+function themeStudioFilteredPresets() {
+    const presets =
+        window.RUKHNAV_THEME_PRESETS || [];
+
+    const query =
+        normaliseThemeStudioText(
+            themeStudioState.search
+        );
+
+    return presets.filter(preset => {
+        const theme =
+            preset.theme || {};
+
+        const category =
+            preset.category ||
+            "Other";
+
+        if (
+            themeStudioState.category !== "All" &&
+            category !== themeStudioState.category
+        ) {
+            return false;
+        }
+
+        if (
+            themeStudioState.mode !== "all" &&
+            String(
+                theme.theme_mode || ""
+            ).toLowerCase() !==
+                themeStudioState.mode
+        ) {
+            return false;
+        }
+
+        if (!query) {
+            return true;
+        }
+
+        const haystack = [
+            preset.name,
+            preset.description,
+            category,
+            theme.theme_mode,
+            theme.theme_treatment,
+            theme.heading_font,
+            theme.body_font
+        ]
+            .map(normaliseThemeStudioText)
+            .join(" ");
+
+        return haystack.includes(query);
+    });
+}
+
+function renderThemeStudioControls() {
+    const categories =
+        document.getElementById(
+            "rukhnavThemeCategories"
+        );
+
+    if (categories) {
+        categories.innerHTML =
+            themeStudioCategories()
+                .map(category => `
+                    <button
+                        type="button"
+                        class="rukhnav-theme-filter-chip ${
+                            themeStudioState.category ===
+                            category
+                                ? "active"
+                                : ""
+                        }"
+                        data-theme-category="${
+                            themePresetEscape(category)
+                        }"
+                    >
+                        ${
+                            themePresetEscape(category)
+                        }
+                    </button>
+                `)
+                .join("");
+    }
+
+    const modeButtons =
+        document.querySelectorAll(
+            "[data-theme-mode-filter]"
+        );
+
+    modeButtons.forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.themeModeFilter ===
+                themeStudioState.mode
+        );
+    });
+
+    const search =
+        document.getElementById(
+            "rukhnavThemeSearch"
+        );
+
+    if (
+        search &&
+        search.value !== themeStudioState.search
+    ) {
+        search.value =
+            themeStudioState.search;
+    }
+}
+
+function bindThemeStudioControls() {
+    const categoryContainer =
+        document.getElementById(
+            "rukhnavThemeCategories"
+        );
+
+    if (
+        categoryContainer &&
+        !categoryContainer.dataset.bound
+    ) {
+        categoryContainer.dataset.bound = "1";
+
+        categoryContainer.addEventListener(
+            "click",
+            event => {
+                const button =
+                    event.target.closest(
+                        "[data-theme-category]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                themeStudioState.category =
+                    button.dataset.themeCategory ||
+                    "All";
+
+                renderThemeStudioControls();
+                renderThemePresets();
+            }
+        );
+    }
+
+    const modeContainer =
+        document.getElementById(
+            "rukhnavThemeModeFilters"
+        );
+
+    if (
+        modeContainer &&
+        !modeContainer.dataset.bound
+    ) {
+        modeContainer.dataset.bound = "1";
+
+        modeContainer.addEventListener(
+            "click",
+            event => {
+                const button =
+                    event.target.closest(
+                        "[data-theme-mode-filter]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                themeStudioState.mode =
+                    button.dataset.themeModeFilter ||
+                    "all";
+
+                renderThemeStudioControls();
+                renderThemePresets();
+            }
+        );
+    }
+
+    const search =
+        document.getElementById(
+            "rukhnavThemeSearch"
+        );
+
+    if (
+        search &&
+        !search.dataset.bound
+    ) {
+        search.dataset.bound = "1";
+
+        search.addEventListener(
+            "input",
+            event => {
+                themeStudioState.search =
+                    event.target.value || "";
+
+                renderThemePresets();
+            }
+        );
+    }
+}
+
 function renderThemePresets() {
     const container =
         document.getElementById(
@@ -225,8 +459,14 @@ function renderThemePresets() {
         return;
     }
 
-    const presets =
+    renderThemeStudioControls();
+    bindThemeStudioControls();
+
+    const allPresets =
         window.RUKHNAV_THEME_PRESETS || [];
+
+    const presets =
+        themeStudioFilteredPresets();
 
     const count =
         document.getElementById(
@@ -235,7 +475,24 @@ function renderThemePresets() {
 
     if (count) {
         count.textContent =
-            `${presets.length} Themes`;
+            presets.length ===
+            allPresets.length
+                ? `${allPresets.length} Themes`
+                : `${presets.length} of ${allPresets.length}`;
+    }
+
+    if (!presets.length) {
+        container.innerHTML = `
+            <div class="theme-preset-empty">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <strong>No matching themes</strong>
+                <span>
+                    Try another category, appearance
+                    or search phrase.
+                </span>
+            </div>
+        `;
+        return;
     }
 
     container.innerHTML =
@@ -248,13 +505,41 @@ function renderThemePresets() {
                 theme.primary_color,
                 theme.secondary_color,
                 theme.accent_color,
-                theme.background_color,
-                theme.surface_color
+                theme.highlight_color,
+                theme.glow_color
             ].filter(Boolean);
+
+            const headingFont =
+                theme.heading_font ||
+                "Georgia";
+
+            const bodyFont =
+                theme.body_font ||
+                "Arial";
+
+            const category =
+                preset.category ||
+                "Other";
+
+            const mode =
+                String(
+                    theme.theme_mode ||
+                    "light"
+                ).toLowerCase();
+
+            const treatment =
+                theme.theme_treatment ||
+                theme.atmosphere_mode ||
+                "soft";
 
             return `
                 <article
-                    class="rukhnav-theme-card"
+                    class="
+                        rukhnav-theme-card
+                        rukhnav-theme-card-${themePresetEscape(
+                            mode
+                        )}
+                    "
                     data-theme-preset="${themePresetEscape(
                         preset.id
                     )}"
@@ -270,6 +555,24 @@ function renderThemePresets() {
                             )};
                             --preview-accent:${themePresetEscape(
                                 theme.accent_color
+                            )};
+                            --preview-background:${themePresetEscape(
+                                theme.background_color
+                            )};
+                            --preview-surface:${themePresetEscape(
+                                theme.surface_color
+                            )};
+                            --preview-text:${themePresetEscape(
+                                theme.text_color
+                            )};
+                            --preview-heading:${themePresetEscape(
+                                theme.heading_color
+                            )};
+                            --preview-muted:${themePresetEscape(
+                                theme.muted_color
+                            )};
+                            --preview-link:${themePresetEscape(
+                                theme.link_color
                             )};
                             --preview-shade-1:${themePresetEscape(
                                 theme.shade_1 ||
@@ -295,66 +598,76 @@ function renderThemePresets() {
                                 theme.glow_color ||
                                 theme.secondary_color
                             )};
+                            --preview-heading-font:'${themePresetEscape(
+                                headingFont
+                            )}';
+                            --preview-body-font:'${themePresetEscape(
+                                bodyFont
+                            )}';
+                            --preview-card-radius:${Number(
+                                theme.border_radius || 18
+                            )}px;
+                            --preview-button-radius:${Number(
+                                theme.button_radius || 12
+                            )}px;
                         "
                     >
-                        <div
-                            class="rukhnav-theme-preview-top"
-                            style="
-                                background:${themePresetEscape(
-                                    theme.primary_color
-                                )};
-                            "
-                        >
-                            <span
-                                style="
-                                    background:${themePresetEscape(
-                                        theme.secondary_color
-                                    )};
-                                "
-                            ></span>
-
-                            <span
-                                style="
-                                    background:${themePresetEscape(
-                                        theme.accent_color
-                                    )};
-                                "
-                            ></span>
+                        <div class="rukhnav-theme-preview-atmosphere">
+                            <span class="rukhnav-preview-orb orb-one"></span>
+                            <span class="rukhnav-preview-orb orb-two"></span>
+                            <span class="rukhnav-preview-orb orb-three"></span>
                         </div>
 
-                        <div
-                            class="rukhnav-theme-preview-body"
-                            style="
-                                background:${themePresetEscape(
-                                    theme.background_color
-                                )};
-                                color:${themePresetEscape(
-                                    theme.text_color
-                                )};
-                            "
-                        >
-                            <strong
-                                style="
-                                    color:${themePresetEscape(
-                                        theme.heading_color
-                                    )};
-                                "
-                            >
-                                Aa
-                            </strong>
+                        <div class="rukhnav-theme-preview-browser">
+                            <div class="rukhnav-theme-preview-nav">
+                                <span class="preview-brand">
+                                    RUKHNAV
+                                </span>
 
-                            <span
-                                style="
-                                    background:${themePresetEscape(
-                                        theme.primary_color
-                                    )};
-                                    border-radius:${Number(
-                                        theme.button_radius || 0
-                                    )}px;
-                                "
-                            >
-                                Shop
-                            </span>
+                                <div class="preview-nav-lines">
+                                    <i></i>
+                                    <i></i>
+                                    <i></i>
+                                </div>
+                            </div>
+
+                            <div class="rukhnav-theme-preview-hero">
+                                <div class="preview-copy">
+                                    <small>
+                                        ${
+                                            themePresetEscape(
+                                                category
+                                            )
+                                        }
+                                    </small>
+
+                                    <strong>
+                                        Beautiful Rituals
+                                    </strong>
+
+                                    <p>
+                                        Herbal beauty,
+                                        elevated.
+                                    </p>
+
+                                    <button
+                                        type="button"
+                                        tabindex="-1"
+                                    >
+                                        Shop Now
+                                    </button>
+                                </div>
+
+                                <div class="preview-product">
+                                    <span></span>
+                                </div>
+                            </div>
+
+                            <div class="rukhnav-theme-preview-products">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
                         </div>
                     </div>
 
@@ -362,22 +675,55 @@ function renderThemePresets() {
 
                         <div class="rukhnav-theme-card-heading">
                             <div>
-                                <h4>
-                                    ${themePresetEscape(
-                                        preset.name
-                                    )}
+                                <div class="rukhnav-theme-card-tags">
+                                    <span>
+                                        ${
+                                            themePresetEscape(
+                                                category
+                                            )
+                                        }
+                                    </span>
+
+                                    <span>
+                                        ${
+                                            themePresetEscape(
+                                                mode === "dark"
+                                                    ? "Dark"
+                                                    : "Light"
+                                            )
+                                        }
+                                    </span>
+                                </div>
+
+                                <h4
+                                    style="
+                                        font-family:'${themePresetEscape(
+                                            headingFont
+                                        )}',serif;
+                                    "
+                                >
+                                    ${
+                                        themePresetEscape(
+                                            preset.name
+                                        )
+                                    }
                                 </h4>
 
                                 <p>
-                                    ${themePresetEscape(
-                                        preset.description
-                                    )}
+                                    ${
+                                        themePresetEscape(
+                                            preset.description
+                                        )
+                                    }
                                 </p>
                             </div>
 
                             <i
-                                class="fa-solid fa-circle-check
-                                rukhnav-theme-selected-icon"
+                                class="
+                                    fa-solid
+                                    fa-circle-check
+                                    rukhnav-theme-selected-icon
+                                "
                             ></i>
                         </div>
 
@@ -398,18 +744,51 @@ function renderThemePresets() {
                             ).join("")}
                         </div>
 
+                        <div class="rukhnav-theme-font-preview">
+                            <div>
+                                <small>Heading</small>
+                                <strong
+                                    style="
+                                        font-family:'${themePresetEscape(
+                                            headingFont
+                                        )}',serif;
+                                    "
+                                >
+                                    ${themePresetEscape(
+                                        headingFont
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <small>Body</small>
+                                <strong
+                                    style="
+                                        font-family:'${themePresetEscape(
+                                            bodyFont
+                                        )}',sans-serif;
+                                    "
+                                >
+                                    ${themePresetEscape(
+                                        bodyFont
+                                    )}
+                                </strong>
+                            </div>
+                        </div>
+
                         <div class="rukhnav-theme-meta">
                             <span>
+                                <i class="fa-solid fa-layer-group"></i>
                                 ${themePresetEscape(
-                                    theme.heading_font ||
-                                    "Default"
+                                    treatment
                                 )}
                             </span>
 
                             <span>
-                                ${Number(
-                                    theme.border_radius || 0
-                                )}px radius
+                                <i class="fa-solid fa-circle-half-stroke"></i>
+                                ${themePresetEscape(
+                                    mode
+                                )}
                             </span>
                         </div>
 
@@ -420,7 +799,7 @@ function renderThemePresets() {
                                 preset.id
                             )}"
                         >
-                            <i class="fa-solid fa-palette"></i>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
                             Apply Theme
                         </button>
                     </div>
@@ -428,15 +807,18 @@ function renderThemePresets() {
             `;
         }).join("");
 
+    refreshThemePresetSelection();
+
     container
         .querySelectorAll(
             "[data-apply-theme]"
         )
         .forEach(button => {
-
             button.addEventListener(
                 "click",
-                () => {
+                event => {
+                    event.stopPropagation();
+
                     applyThemePreset(
                         button.dataset.applyTheme
                     );
@@ -444,7 +826,20 @@ function renderThemePresets() {
             );
         });
 
-    refreshThemePresetSelection();
+    container
+        .querySelectorAll(
+            "[data-theme-preset]"
+        )
+        .forEach(card => {
+            card.addEventListener(
+                "dblclick",
+                () => {
+                    applyThemePreset(
+                        card.dataset.themePreset
+                    );
+                }
+            );
+        });
 }
 
 

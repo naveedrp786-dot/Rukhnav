@@ -5,8 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Website Management | RUKHNAV ERP</title>
 <link rel="stylesheet" href="/admin/css/erp.css">
-<link rel="stylesheet" href="/admin/css/website-management-pro.css">
+<link rel="stylesheet" href="/admin/css/website-management-pro.css?v=20260901-theme-v5-fonts-1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<!-- rukhnav-theme-studio-fonts-v5 -->
+<link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+>
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
+<link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
+
 </head>
 <body>
 <div class="dashboard">
@@ -103,7 +119,58 @@
         </span>
     </div>
 
+
     <div
+        class="rukhnav-theme-studio-toolbar"
+        id="rukhnavThemeStudioToolbar"
+    >
+        <div class="rukhnav-theme-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="search"
+                id="rukhnavThemeSearch"
+                placeholder="Search 50 themes, colours, fonts..."
+                autocomplete="off"
+            >
+        </div>
+
+        <div
+            class="rukhnav-theme-mode-filters"
+            id="rukhnavThemeModeFilters"
+        >
+            <button
+                type="button"
+                class="active"
+                data-theme-mode-filter="all"
+            >
+                All
+            </button>
+
+            <button
+                type="button"
+                data-theme-mode-filter="light"
+            >
+                <i class="fa-regular fa-sun"></i>
+                Light
+            </button>
+
+            <button
+                type="button"
+                data-theme-mode-filter="dark"
+            >
+                <i class="fa-regular fa-moon"></i>
+                Dark
+            </button>
+        </div>
+    </div>
+
+    <div
+        class="rukhnav-theme-category-filters"
+        id="rukhnavThemeCategories"
+    ></div>
+
+<div
         id="rukhnavThemePresetLibrary"
         class="rukhnav-theme-preset-grid"
     ></div>
@@ -116,7 +183,7 @@
 <label><span>Background</span><input type="color" data-path="theme.background_color"></label>
 <label><span>Surface</span><input type="color" data-path="theme.surface_color"></label>
 <label><span>Text</span><input type="color" data-path="theme.text_color"></label>
-<label><span>Heading Font</span><select data-path="theme.heading_font"><option>Playfair Display</option><option>Poppins</option><option>Montserrat</option><option>Georgia</option></select></label>
+<label><span>Heading Font</span><select data-path="theme.heading_font"><option>Cormorant Garamond</option><option>Playfair Display</option><option>Poppins</option><option>Montserrat</option><option>Georgia</option></select></label>
 <label><span>Body Font</span><select data-path="theme.body_font"><option>DM Sans</option><option>Poppins</option><option>Montserrat</option><option>Arial</option></select></label>
 
 <label><span>Heading Color</span><input type="color" data-path="theme.heading_color"></label>
@@ -596,7 +663,7 @@
 </main>
 </div>
 <script src="/admin/js/adminLayout.js"></script>
-<script src="/admin/js/website-theme-presets.js"></script>
-<script src="/admin/js/website-management-pro.js"></script>
+<script src="/admin/js/website-theme-presets.js?v=20260901-theme-v5-1"></script>
+<script src="/admin/js/website-management-pro.js?v=20260901-theme-studio-v5-2"></script>
 </body>
 </html>

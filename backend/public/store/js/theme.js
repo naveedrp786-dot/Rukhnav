@@ -242,6 +242,7 @@ window.Theme = {
                 theme.text_color,
 
             "--muted":
+                theme.muted_color ||
                 theme.muted_text_color,
 
             "--radius":
