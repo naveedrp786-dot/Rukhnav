@@ -34,6 +34,13 @@ router.post(
         .lookupGuestOrderForReturn
 );
 
+
+router.post(
+    "/public-track",
+    guestOrderController
+        .trackPublicOrder
+);
+
 router.get(
     "/guest/:orderNumber",
     guestOrderController

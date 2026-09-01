@@ -1348,3 +1348,208 @@ exports.getGuestOrder = async (
         });
     }
 };
+
+
+// =====================================================
+// Public Order Tracking
+// Order number + original email/mobile
+// Works for guest and registered-customer orders.
+// =====================================================
+
+exports.trackPublicOrder = async (req, res) => {
+    try {
+        const orderNumber =
+            cleanText(req.body?.order_number, 50);
+
+        const rawIdentifier =
+            cleanText(req.body?.identifier, 150);
+
+        if (!orderNumber || !rawIdentifier) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Order number and email or mobile number are required."
+            });
+        }
+
+        const identifierLooksLikeEmail =
+            rawIdentifier.includes("@");
+
+        const email =
+            identifierLooksLikeEmail
+                ? normalizeEmail(rawIdentifier)
+                : null;
+
+        const phone =
+            !identifierLooksLikeEmail
+                ? normalizePhone(rawIdentifier)
+                : null;
+
+        const verificationFailed = () =>
+            res.status(404).json({
+                success: false,
+                message:
+                    "We could not verify this order. Check the order number and the email or mobile number used when placing the order."
+            });
+
+        if (
+            identifierLooksLikeEmail
+                ? !isValidEmail(email)
+                : !isValidPhone(phone)
+        ) {
+            return verificationFailed();
+        }
+
+        const [orders] = await db.query(
+            `
+            SELECT
+                id,
+                order_number,
+                checkout_type,
+                full_name,
+                phone,
+                email,
+                grand_total,
+                discount_amount,
+                delivery_charges,
+                order_status,
+                payment_method,
+                payment_status,
+                city,
+                tracking_number,
+                tracking_url,
+                estimated_delivery_date,
+                created_at,
+                confirmed_at,
+                shipped_at,
+                delivered_at,
+                cancelled_at
+            FROM orders
+            WHERE order_number = ?
+            LIMIT 1
+            `,
+            [orderNumber]
+        );
+
+        if (!orders.length) {
+            return verificationFailed();
+        }
+
+        const order = orders[0];
+
+        const storedEmail =
+            normalizeEmail(order.email);
+
+        const storedPhone =
+            normalizePhone(order.phone);
+
+        const ownershipMatches =
+            identifierLooksLikeEmail
+                ? Boolean(
+                    email &&
+                    storedEmail &&
+                    email === storedEmail
+                )
+                : Boolean(
+                    phone &&
+                    storedPhone &&
+                    phone === storedPhone
+                );
+
+        if (!ownershipMatches) {
+            return verificationFailed();
+        }
+
+        const [items] = await db.query(
+            `
+            SELECT
+                oi.product_id,
+                p.product_name,
+                p.image,
+                oi.price,
+                oi.quantity,
+                oi.subtotal
+            FROM order_items oi
+            LEFT JOIN products p
+                ON p.id = oi.product_id
+            WHERE oi.order_id = ?
+            ORDER BY oi.id
+            `,
+            [order.id]
+        );
+
+        return res.json({
+            success: true,
+
+            order: {
+                order_number:
+                    order.order_number,
+
+                full_name:
+                    order.full_name,
+
+                checkout_type:
+                    order.checkout_type,
+
+                grand_total:
+                    order.grand_total,
+
+                discount_amount:
+                    order.discount_amount,
+
+                delivery_charges:
+                    order.delivery_charges,
+
+                order_status:
+                    order.order_status,
+
+                payment_method:
+                    order.payment_method,
+
+                payment_status:
+                    order.payment_status,
+
+                city:
+                    order.city,
+
+                tracking_number:
+                    order.tracking_number,
+
+                tracking_url:
+                    order.tracking_url,
+
+                estimated_delivery_date:
+                    order.estimated_delivery_date,
+
+                created_at:
+                    order.created_at,
+
+                confirmed_at:
+                    order.confirmed_at,
+
+                shipped_at:
+                    order.shipped_at,
+
+                delivered_at:
+                    order.delivered_at,
+
+                cancelled_at:
+                    order.cancelled_at
+            },
+
+            items
+        });
+
+    } catch (error) {
+        console.error(
+            "Public order tracking error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to track your order right now."
+        });
+    }
+};
