@@ -3,6 +3,9 @@
 const queueService =
     require("./notificationQueueService");
 
+const customerNotificationService =
+    require("./customerNotificationService");
+
 function formatPaymentMethod(value) {
     const raw =
         String(value || "")
@@ -162,41 +165,208 @@ function orderStatusChanged({
         statusEventMap[orderStatus] ||
         "ORDER_STATUS_CHANGED";
 
-    return safeQueue(
-        queueService
-            .queueCustomerEvent({
-                eventKey,
+    const displayOrder =
+        orderNumber ||
+        `#${orderId}`;
+
+    const notificationContent = {
+        Confirmed: {
+            title: "Order confirmed",
+            message:
+                `Your RUKHNAV order ${displayOrder} has been confirmed.`,
+            icon: "circle-check",
+            priority: "High"
+        },
+        Processing: {
+            title: "Order is being prepared",
+            message:
+                `We are preparing your RUKHNAV order ${displayOrder}.`,
+            icon: "box-open",
+            priority: "Normal"
+        },
+        Packed: {
+            title: "Order packed",
+            message:
+                `Your order ${displayOrder} has been packed and is getting ready for dispatch.`,
+            icon: "box",
+            priority: "Normal"
+        },
+        "Ready For Pickup": {
+            title: "Order ready for pickup",
+            message:
+                `Your order ${displayOrder} is ready for pickup.`,
+            icon: "store",
+            priority: "High"
+        },
+        "Handed To Courier": {
+            title: "Order handed to courier",
+            message:
+                `Your order ${displayOrder} has been handed to the courier.`,
+            icon: "truck-fast",
+            priority: "High"
+        },
+        "In Transit": {
+            title: "Order in transit",
+            message:
+                `Your order ${displayOrder} is on its way to you.`,
+            icon: "truck",
+            priority: "High"
+        },
+        "Out For Delivery": {
+            title: "Out for delivery",
+            message:
+                `Your order ${displayOrder} is out for delivery today.`,
+            icon: "truck-fast",
+            priority: "Urgent"
+        },
+        Shipped: {
+            title: "Your order has shipped",
+            message:
+                `Your RUKHNAV order ${displayOrder} has been shipped and is on its way.`,
+            icon: "truck",
+            priority: "High"
+        },
+        Delivered: {
+            title: "Order delivered",
+            message:
+                `Your RUKHNAV order ${displayOrder} has been delivered. We hope you enjoy your products.`,
+            icon: "circle-check",
+            priority: "High"
+        },
+        Cancelled: {
+            title: "Order cancelled",
+            message:
+                `Your RUKHNAV order ${displayOrder} has been cancelled.`,
+            icon: "circle-xmark",
+            priority: "High"
+        },
+        Returned: {
+            title: "Order returned",
+            message:
+                `The return status for order ${displayOrder} has been updated.`,
+            icon: "rotate-left",
+            priority: "High"
+        },
+        Refunded: {
+            title: "Order refunded",
+            message:
+                `The refund for order ${displayOrder} has been processed.`,
+            icon: "money-bill-transfer",
+            priority: "High"
+        }
+    };
+
+    const content =
+        notificationContent[orderStatus] || {
+            title: "Order status updated",
+            message:
+                `Order ${displayOrder} is now ${orderStatus}.`,
+            icon: "bell",
+            priority: "Normal"
+        };
+
+    const queuePromise =
+        safeQueue(
+            queueService
+                .queueCustomerEvent({
+                    eventKey,
+                    customerId,
+                    variables: {
+                        order_id:
+                            orderId,
+                        order_number:
+                            orderNumber,
+                        order_status:
+                            orderStatus,
+                        grand_total:
+                            grandTotal === ""
+                                ? ""
+                                : Number(
+                                    grandTotal || 0
+                                ).toFixed(2),
+                        payment_method:
+                            formatPaymentMethod(
+                                paymentMethod
+                            ),
+                        payment_status:
+                            paymentStatus || "",
+                        tracking_number:
+                            trackingNumber || "",
+                        tracking_url:
+                            trackingUrl || "",
+                        order_url:
+                            orderUrl || ""
+                    },
+                    dedupeReference:
+                        `order-${orderId}-${orderStatus}`
+                }),
+            eventKey
+        );
+
+    const inboxPromise =
+        customerNotificationService
+            .createNotification({
                 customerId,
-                variables: {
-                    order_id:
-                        orderId,
-                    order_number:
-                        orderNumber,
-                    order_status:
-                        orderStatus,
-                    grand_total:
-                        grandTotal === ""
-                            ? ""
-                            : Number(
-                                grandTotal || 0
-                            ).toFixed(2),
-                    payment_method:
-                        formatPaymentMethod(
-                            paymentMethod
-                        ),
-                    payment_status:
-                        paymentStatus || "",
-                    tracking_number:
-                        trackingNumber || "",
-                    tracking_url:
-                        trackingUrl || "",
-                    order_url:
-                        orderUrl || ""
-                },
-                dedupeReference:
-                    `order-${orderId}-${orderStatus}`
-            }),
-        eventKey
+                notificationType:
+                    orderStatus === "Returned"
+                        ? "Return"
+                        : orderStatus === "Refunded"
+                            ? "Refund"
+                            : "Order",
+                title:
+                    content.title,
+                message:
+                    content.message,
+                actionLabel:
+                    trackingUrl &&
+                    [
+                        "Handed To Courier",
+                        "In Transit",
+                        "Out For Delivery",
+                        "Shipped"
+                    ].includes(orderStatus)
+                        ? "Track Order"
+                        : "View Order",
+                actionUrl:
+                    trackingUrl &&
+                    [
+                        "Handed To Courier",
+                        "In Transit",
+                        "Out For Delivery",
+                        "Shipped"
+                    ].includes(orderStatus)
+                        ? trackingUrl
+                        : orderUrl,
+                orderId,
+                referenceType:
+                    "order_status",
+                referenceId:
+                    `${orderId}:${orderStatus}`,
+                icon:
+                    content.icon,
+                priority:
+                    content.priority
+            })
+            .catch(error => {
+                console.error(
+                    `[Customer Inbox: ${eventKey}]`,
+                    error.message
+                );
+
+                return {
+                    created: false,
+                    error: error.message
+                };
+            });
+
+    return Promise.all([
+        queuePromise,
+        inboxPromise
+    ]).then(
+        ([queueResult, inboxResult]) => ({
+            queue: queueResult,
+            inbox: inboxResult
+        })
     );
 }
 

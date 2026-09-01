@@ -16,6 +16,9 @@ const customerAccountController =
 const customerSecurityController =
     require("../controllers/customerSecurityController");
 
+const customerNotificationController =
+    require("../controllers/customerNotificationController");
+
 const auth =
     require("../middleware/auth");
 
@@ -131,6 +134,35 @@ router.put(
     auth,
     customerAccountController
         .updateReminderPreferences
+);
+
+
+// =========================================
+// Protected Customer Notifications
+// =========================================
+
+router.get(
+    "/notifications",
+    auth,
+    customerNotificationController.list
+);
+
+router.get(
+    "/notifications/unread-count",
+    auth,
+    customerNotificationController.unreadCount
+);
+
+router.patch(
+    "/notifications/read-all",
+    auth,
+    customerNotificationController.markAllRead
+);
+
+router.patch(
+    "/notifications/:id/read",
+    auth,
+    customerNotificationController.markRead
 );
 
 
