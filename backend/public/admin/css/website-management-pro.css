@@ -6108,3 +6108,948 @@
     animation:
         none !important;
 }
+
+
+/* =========================================================
+   RUKHNAV V10 REFERENCE STYLE SCENES
+
+   Goal:
+   - whole preview becomes the theme artwork
+   - lightweight CSS only
+   - no SVG turbulence
+   - no 3D
+   - no emboss
+   - no bottle-heavy mini website
+   ========================================================= */
+
+
+/* =========================================================
+   COMPACT PREMIUM GRID
+   ========================================================= */
+
+.rukhnav-theme-grid{
+    display:grid !important;
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0,1fr)
+        ) !important;
+    gap:15px !important;
+}
+
+@media(min-width:1450px){
+    .rukhnav-theme-grid{
+        grid-template-columns:
+            repeat(
+                5,
+                minmax(0,1fr)
+            ) !important;
+    }
+}
+
+@media(max-width:1100px){
+    .rukhnav-theme-grid{
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0,1fr)
+            ) !important;
+    }
+}
+
+@media(max-width:760px){
+    .rukhnav-theme-grid{
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0,1fr)
+            ) !important;
+    }
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.rukhnav-theme-card{
+    border-radius:16px !important;
+    overflow:hidden !important;
+
+    border:
+        1px solid
+        rgba(38,50,44,.08)
+        !important;
+
+    background:#fff !important;
+
+    box-shadow:
+        0 8px 24px
+        rgba(25,37,31,.08)
+        !important;
+
+    transform:none !important;
+}
+
+
+/* =========================================================
+   FULL ARTWORK PREVIEW
+   ========================================================= */
+
+.rukhnav-theme-card-preview{
+    position:relative !important;
+
+    height:185px !important;
+    min-height:185px !important;
+
+    padding:0 !important;
+
+    overflow:hidden !important;
+
+    border-radius:
+        15px 15px 0 0
+        !important;
+
+    isolation:isolate;
+
+    transform:none !important;
+
+    box-shadow:none !important;
+}
+
+
+/* =========================================================
+   REMOVE OLD MOCK WEBSITE ELEMENTS
+   ========================================================= */
+
+.rukhnav-theme-card-preview
+.rukhnav-theme-preview-nav,
+
+.rukhnav-theme-card-preview
+.preview-product,
+
+.rukhnav-theme-card-preview
+.rukhnav-theme-preview-products,
+
+.rukhnav-theme-card-preview
+.preview-product-bottle,
+
+.rukhnav-theme-card-preview
+.preview-bottle,
+
+.rukhnav-theme-card-preview
+[class*="bottle"]{
+    display:none !important;
+}
+
+
+/* =========================================================
+   REMOVE INNER GLASS CARD LOOK
+   ========================================================= */
+
+.rukhnav-theme-preview-browser{
+    position:absolute !important;
+
+    inset:0 !important;
+
+    width:100% !important;
+    height:100% !important;
+
+    min-height:0 !important;
+
+    padding:
+        20px 20px
+        18px
+        !important;
+
+    border:0 !important;
+
+    border-radius:0 !important;
+
+    background:
+        transparent
+        !important;
+
+    backdrop-filter:none !important;
+
+    -webkit-backdrop-filter:none !important;
+
+    box-shadow:none !important;
+
+    transform:none !important;
+
+    overflow:visible !important;
+
+    z-index:8 !important;
+}
+
+
+.rukhnav-theme-preview-browser::before,
+.rukhnav-theme-preview-browser::after{
+    display:none !important;
+}
+
+
+/* =========================================================
+   TYPOGRAPHY DIRECTLY ON SCENE
+   ========================================================= */
+
+.rukhnav-theme-card-preview
+.preview-copy{
+    position:relative !important;
+
+    z-index:12 !important;
+
+    max-width:72% !important;
+
+    margin:0 !important;
+
+    transform:none !important;
+}
+
+
+.rukhnav-theme-card-preview
+.preview-copy strong{
+    display:block !important;
+
+    max-width:210px;
+
+    margin:
+        34px 0 7px
+        !important;
+
+    font-family:
+        var(
+            --preview-heading-font,
+            "Playfair Display"
+        )
+        !important;
+
+    font-size:
+        clamp(
+            20px,
+            1.35vw,
+            27px
+        )
+        !important;
+
+    line-height:.98 !important;
+
+    letter-spacing:
+        -.025em
+        !important;
+
+    color:
+        var(--preview-heading)
+        !important;
+
+    transform:none !important;
+
+    text-shadow:
+        0 2px 14px
+        rgba(0,0,0,.10)
+        !important;
+}
+
+
+.rukhnav-theme-card-preview
+.preview-copy small{
+    display:block !important;
+
+    max-width:190px;
+
+    font-size:
+        9px !important;
+
+    line-height:
+        1.35 !important;
+
+    opacity:.82;
+
+    transform:none !important;
+}
+
+
+.rukhnav-theme-card-preview
+.preview-copy button{
+    margin-top:
+        11px !important;
+
+    min-height:
+        24px !important;
+
+    padding:
+        5px 11px
+        !important;
+
+    border-radius:
+        999px
+        !important;
+
+    font-size:
+        8px !important;
+
+    box-shadow:
+        0 5px 12px
+        rgba(0,0,0,.11)
+        !important;
+
+    transform:none !important;
+}
+
+
+/* =========================================================
+   CLOUD ENGINE
+   Three existing orbs become luminous cloud groups.
+   Static. Lightweight.
+   ========================================================= */
+
+.rukhnav-theme-card-preview
+.rukhnav-preview-orb{
+    display:block !important;
+
+    position:absolute !important;
+
+    pointer-events:none !important;
+
+    border-radius:50% !important;
+
+    transform:none !important;
+
+    animation:none !important;
+
+    box-shadow:none !important;
+
+    z-index:2 !important;
+}
+
+
+/* cloud mass one */
+
+.rukhnav-theme-card-preview
+.orb-one{
+    width:135px !important;
+    height:96px !important;
+
+    left:48% !important;
+    top:8% !important;
+
+    opacity:.78 !important;
+
+    filter:
+        blur(17px)
+        saturate(1.12)
+        !important;
+
+    background:
+        radial-gradient(
+            circle at 28% 50%,
+            var(--preview-shade-2) 0 24%,
+            transparent 52%
+        ),
+        radial-gradient(
+            circle at 56% 30%,
+            var(--preview-highlight) 0 22%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 72% 64%,
+            var(--preview-glow) 0 25%,
+            transparent 54%
+        )
+        !important;
+}
+
+
+/* cloud mass two */
+
+.rukhnav-theme-card-preview
+.orb-two{
+    width:165px !important;
+    height:112px !important;
+
+    right:-28px !important;
+    bottom:-12px !important;
+
+    opacity:.70 !important;
+
+    filter:
+        blur(20px)
+        saturate(1.10)
+        !important;
+
+    background:
+        radial-gradient(
+            circle at 25% 55%,
+            var(--preview-shade-3) 0 22%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 54% 38%,
+            var(--preview-glow) 0 24%,
+            transparent 52%
+        ),
+        radial-gradient(
+            circle at 76% 62%,
+            var(--preview-shade-4) 0 24%,
+            transparent 54%
+        )
+        !important;
+}
+
+
+/* cloud mass three */
+
+.rukhnav-theme-card-preview
+.orb-three{
+    width:145px !important;
+    height:90px !important;
+
+    left:-40px !important;
+    bottom:-20px !important;
+
+    opacity:.54 !important;
+
+    filter:
+        blur(19px)
+        saturate(1.04)
+        !important;
+
+    background:
+        radial-gradient(
+            circle at 34% 44%,
+            var(--preview-shade-1) 0 22%,
+            transparent 52%
+        ),
+        radial-gradient(
+            circle at 67% 54%,
+            var(--preview-highlight) 0 24%,
+            transparent 54%
+        )
+        !important;
+}
+
+
+/* =========================================================
+   EXTRA LIGHT CLOUDS FROM PREVIEW PSEUDO ELEMENTS
+   ========================================================= */
+
+.rukhnav-theme-card-preview::before{
+    content:"";
+
+    position:absolute;
+
+    width:170px;
+    height:120px;
+
+    right:-24px;
+    top:-28px;
+
+    z-index:1;
+
+    border-radius:50%;
+
+    opacity:.56 !important;
+
+    background:
+        radial-gradient(
+            circle at 35% 45%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 82%,
+                white
+            ) 0 18%,
+            transparent 48%
+        ),
+        radial-gradient(
+            circle at 62% 36%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 72%,
+                white
+            ) 0 22%,
+            transparent 52%
+        ),
+        radial-gradient(
+            circle at 70% 68%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-3) 58%,
+                white
+            ) 0 20%,
+            transparent 52%
+        )
+        !important;
+
+    filter:
+        blur(18px)
+        saturate(1.12)
+        !important;
+
+    transform:none !important;
+
+    animation:none !important;
+}
+
+
+.rukhnav-theme-card-preview::after{
+    content:"";
+
+    position:absolute;
+
+    width:190px;
+    height:110px;
+
+    left:22%;
+    bottom:-38px;
+
+    z-index:1;
+
+    border-radius:50%;
+
+    opacity:.42 !important;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 72%,
+                white
+            ),
+            transparent 69%
+        )
+        !important;
+
+    filter:
+        blur(21px)
+        saturate(1.06)
+        !important;
+
+    transform:none !important;
+
+    animation:none !important;
+}
+
+
+/* =========================================================
+   DARK THEMES
+   Luminous, not black
+   ========================================================= */
+
+.rukhnav-theme-card-dark
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            ellipse at 86% 12%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 48%,
+                transparent
+            ),
+            transparent 48%
+        ),
+
+        radial-gradient(
+            ellipse at 72% 82%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 38%,
+                transparent
+            ),
+            transparent 54%
+        ),
+
+        linear-gradient(
+            140deg,
+            color-mix(
+                in srgb,
+                var(--preview-primary) 82%,
+                #31465f
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-background) 70%,
+                #667f98
+            )
+        )
+        !important;
+}
+
+
+/* =========================================================
+   LIGHT THEMES
+   Bright cloud atmosphere
+   ========================================================= */
+
+.rukhnav-theme-card-light
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            ellipse at 84% 12%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 55%,
+                white
+            ),
+            transparent 52%
+        ),
+
+        radial-gradient(
+            ellipse at 18% 86%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 30%,
+                white
+            ),
+            transparent 54%
+        ),
+
+        linear-gradient(
+            140deg,
+            color-mix(
+                in srgb,
+                var(--preview-background) 88%,
+                white
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-surface) 76%,
+                var(--preview-accent)
+            )
+        )
+        !important;
+}
+
+
+/* =========================================================
+   CATEGORY PERSONALITIES
+   ========================================================= */
+
+
+/* RUKHNAV Signature */
+
+.rukhnav-theme-profile-signature
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            circle at 82% 18%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 70%,
+                white
+            ),
+            transparent 30%
+        ),
+        radial-gradient(
+            ellipse at 82% 82%,
+            color-mix(
+                in srgb,
+                var(--preview-secondary) 44%,
+                transparent
+            ),
+            transparent 42%
+        ),
+        linear-gradient(
+            138deg,
+            color-mix(
+                in srgb,
+                var(--preview-primary) 82%,
+                #8db7a0
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-background) 72%,
+                #d6e8d9
+            )
+        )
+        !important;
+}
+
+
+/* Smoke & Cinematic */
+
+.rukhnav-theme-profile-smoke
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            circle at 14% 26%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-2) 78%,
+                white
+            ),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 76% 18%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 76%,
+                white
+            ),
+            transparent 33%
+        ),
+        radial-gradient(
+            circle at 78% 86%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-3) 62%,
+                white
+            ),
+            transparent 38%
+        ),
+        linear-gradient(
+            140deg,
+            color-mix(
+                in srgb,
+                var(--preview-primary) 78%,
+                #6a82ba
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-background) 68%,
+                #9387c9
+            )
+        )
+        !important;
+}
+
+
+/* Pastel */
+
+.rukhnav-theme-profile-pastel
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            circle at 20% 22%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-2) 54%,
+                white
+            ),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 78% 22%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-3) 48%,
+                white
+            ),
+            transparent 36%
+        ),
+        radial-gradient(
+            circle at 70% 82%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-4) 42%,
+                white
+            ),
+            transparent 40%
+        ),
+        linear-gradient(
+            140deg,
+            #ffffff,
+            color-mix(
+                in srgb,
+                var(--preview-background) 82%,
+                white
+            )
+        )
+        !important;
+}
+
+
+/* Luxury */
+
+.rukhnav-theme-profile-luxury
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            circle at 80% 16%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 70%,
+                white
+            ),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 18% 78%,
+            color-mix(
+                in srgb,
+                var(--preview-secondary) 42%,
+                transparent
+            ),
+            transparent 40%
+        ),
+        linear-gradient(
+            140deg,
+            color-mix(
+                in srgb,
+                var(--preview-primary) 76%,
+                #8b7c70
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-background) 66%,
+                #a99988
+            )
+        )
+        !important;
+}
+
+
+/* Vibrant */
+
+.rukhnav-theme-profile-vibrant
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            circle at 12% 22%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-1) 72%,
+                white
+            ),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 76% 16%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-3) 68%,
+                white
+            ),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 78% 84%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-4) 66%,
+                white
+            ),
+            transparent 36%
+        ),
+        linear-gradient(
+            140deg,
+            color-mix(
+                in srgb,
+                var(--preview-background) 76%,
+                #b8eff0
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-accent) 44%,
+                white
+            )
+        )
+        !important;
+}
+
+
+/* Minimal Glass */
+
+.rukhnav-theme-profile-glass
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            circle at 80% 18%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 34%,
+                white
+            ),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 18% 82%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-2) 26%,
+                white
+            ),
+            transparent 40%
+        ),
+        linear-gradient(
+            140deg,
+            #ffffff,
+            color-mix(
+                in srgb,
+                var(--preview-background) 78%,
+                #f1f7fa
+            )
+        )
+        !important;
+}
+
+
+/* =========================================================
+   CARD BODY COMPACT LIKE REFERENCE
+   ========================================================= */
+
+.rukhnav-theme-card-body{
+    padding:
+        11px 12px 13px
+        !important;
+}
+
+
+.rukhnav-theme-card h3{
+    font-size:
+        15px !important;
+
+    line-height:
+        1.08 !important;
+
+    margin:
+        3px 0 4px
+        !important;
+}
+
+
+.rukhnav-theme-card-description{
+    min-height:
+        32px !important;
+
+    font-size:
+        11px !important;
+
+    line-height:
+        1.4 !important;
+
+    margin-bottom:
+        8px !important;
+}
+
+
+.rukhnav-theme-font{
+    min-height:
+        42px !important;
+
+    padding:
+        7px 8px
+        !important;
+}
+
+
+.rukhnav-theme-swatch{
+    width:
+        20px !important;
+
+    height:
+        20px !important;
+}
+
+
+/* =========================================================
+   PERFORMANCE
+   ========================================================= */
+
+.rukhnav-theme-card-preview *,
+.rukhnav-theme-card-preview::before,
+.rukhnav-theme-card-preview::after{
+    animation:none !important;
+}
