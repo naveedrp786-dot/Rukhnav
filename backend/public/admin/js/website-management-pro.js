@@ -553,6 +553,9 @@ function renderThemePresets() {
                         rukhnav-theme-profile-${themePresetEscape(
                             visualProfile
                         )}
+                        rukhnav-theme-scene-${themePresetEscape(
+                            preset.id
+                        )}
                     "
                     data-theme-preset="${themePresetEscape(
                         preset.id
