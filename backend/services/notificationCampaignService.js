@@ -5,6 +5,8 @@ const queueService =
     require("./notificationQueueService");
 const templateService =
     require("./notificationTemplateService");
+const customerNotificationService =
+    require("./customerNotificationService");
 
 const VALID_CAMPAIGN_TYPES = new Set([
     "Promotion",
@@ -678,6 +680,138 @@ function campaignVariables(
     };
 }
 
+function campaignInboxType(campaignType) {
+    const supported = new Set([
+        "Promotion",
+        "Sale",
+        "New Product",
+        "Announcement",
+        "Event"
+    ]);
+
+    return supported.has(campaignType)
+        ? campaignType
+        : "General";
+}
+
+function campaignInboxIcon(campaignType) {
+    const icons = {
+        Promotion: "tags",
+        Sale: "tags",
+        "New Product": "sparkles",
+        Announcement: "bell",
+        Event: "calendar-days"
+    };
+
+    return icons[campaignType] || "bell";
+}
+
+function campaignInboxAction(campaignType) {
+    if (
+        campaignType === "Promotion" ||
+        campaignType === "Sale" ||
+        campaignType === "New Product"
+    ) {
+        return {
+            label: "Shop Now",
+            url: "/store/products.html"
+        };
+    }
+
+    if (campaignType === "Event") {
+        return {
+            label: "View Events",
+            url: "/store/events.html"
+        };
+    }
+
+    return {
+        label: "Open RUKHNAV",
+        url: "/store/index.html"
+    };
+}
+
+function campaignInboxMessage(campaign) {
+    return (
+        clean(campaign.whatsapp_message) ||
+        clean(campaign.email_body) ||
+        clean(campaign.campaign_name)
+    );
+}
+
+async function createCampaignInboxNotification(
+    campaign,
+    recipient
+) {
+    const customerId =
+        Number(recipient.customer_id);
+
+    /*
+     * Manual recipients do not have a RUKHNAV
+     * customer account, so they cannot receive
+     * private website inbox notifications.
+     */
+    if (
+        !Number.isInteger(customerId) ||
+        customerId <= 0
+    ) {
+        return {
+            created: false,
+            skipped: true
+        };
+    }
+
+    const action =
+        campaignInboxAction(
+            campaign.campaign_type
+        );
+
+    return customerNotificationService
+        .createNotification({
+            customerId,
+
+            notificationType:
+                campaignInboxType(
+                    campaign.campaign_type
+                ),
+
+            title:
+                clean(campaign.campaign_name) ||
+                "RUKHNAV Update",
+
+            message:
+                campaignInboxMessage(
+                    campaign
+                ),
+
+            actionLabel:
+                action.label,
+
+            actionUrl:
+                action.url,
+
+            campaignId:
+                campaign.id,
+
+            referenceType:
+                "marketing_campaign",
+
+            referenceId:
+                String(campaign.id),
+
+            icon:
+                campaignInboxIcon(
+                    campaign.campaign_type
+                ),
+
+            priority:
+                campaign.campaign_type ===
+                "Sale"
+                    ? "High"
+                    : "Normal"
+        });
+}
+
 async function queueCampaign(
     campaignId
 ) {
@@ -746,6 +880,8 @@ async function queueCampaign(
 
     let queued = 0;
     let skipped = 0;
+    let websiteCreated = 0;
+    let websiteSkipped = 0;
 
     try {
         for (const recipient of recipients) {
@@ -754,6 +890,41 @@ async function queueCampaign(
                     campaign,
                     recipient
                 );
+
+            // ==========================================
+            // WEBSITE CUSTOMER INBOX
+            // ==========================================
+
+            if (recipient.customer_id) {
+                try {
+                    const inboxResult =
+                        await createCampaignInboxNotification(
+                            campaign,
+                            recipient
+                        );
+
+                    if (inboxResult.created) {
+                        websiteCreated += 1;
+                    } else {
+                        websiteSkipped += 1;
+                    }
+
+                } catch (error) {
+                    /*
+                     * Website inbox delivery must never
+                     * prevent Email / WhatsApp campaign
+                     * delivery.
+                     */
+                    websiteSkipped += 1;
+
+                    console.error(
+                        `[NotificationCampaign] Website inbox failed for campaign ${campaign.id}, customer ${recipient.customer_id}:`,
+                        error.message
+                    );
+                }
+            } else {
+                websiteSkipped += 1;
+            }
 
             // ==========================================
             // EMAIL
@@ -942,7 +1113,9 @@ async function queueCampaign(
             campaignId:
                 Number(campaignId),
             queued,
-            skipped
+            skipped,
+            websiteCreated,
+            websiteSkipped
         };
 
     } catch (error) {
