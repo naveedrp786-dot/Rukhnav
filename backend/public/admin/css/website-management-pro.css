@@ -1067,3 +1067,604 @@
 }
 
 /* RUKHNAV THEME STUDIO V5 */
+
+
+/* =========================================================
+   RUKHNAV THEME STUDIO V6 ATMOSPHERE
+   Real depth preview — code only, no images
+   ========================================================= */
+
+.rukhnav-theme-card-preview{
+    min-height:260px;
+    padding:17px;
+    perspective:900px;
+
+    background:
+        radial-gradient(
+            ellipse 58% 66% at 4% 6%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-1) 96%,
+                transparent
+            ),
+            transparent 68%
+        ),
+        radial-gradient(
+            ellipse 54% 58% at 96% 14%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 88%,
+                transparent
+            ),
+            transparent 65%
+        ),
+        radial-gradient(
+            ellipse 52% 64% at 22% 92%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-3) 84%,
+                transparent
+            ),
+            transparent 66%
+        ),
+        radial-gradient(
+            ellipse 54% 66% at 84% 88%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 82%,
+                transparent
+            ),
+            transparent 67%
+        ),
+        linear-gradient(
+            138deg,
+            var(--preview-background),
+            var(--preview-shade-1) 38%,
+            var(--preview-shade-2) 72%,
+            var(--preview-background)
+        );
+}
+
+.rukhnav-theme-card-preview::before{
+    inset:-18%;
+    z-index:-3;
+    opacity:.86;
+
+    background:
+        radial-gradient(
+            ellipse 22% 30% at 10% 22%,
+            var(--preview-highlight),
+            transparent 72%
+        ),
+        radial-gradient(
+            ellipse 28% 34% at 36% 12%,
+            var(--preview-shade-2),
+            transparent 70%
+        ),
+        radial-gradient(
+            ellipse 25% 30% at 67% 28%,
+            var(--preview-glow),
+            transparent 72%
+        ),
+        radial-gradient(
+            ellipse 27% 34% at 90% 72%,
+            var(--preview-shade-3),
+            transparent 72%
+        ),
+        radial-gradient(
+            ellipse 31% 25% at 26% 88%,
+            var(--preview-shade-4),
+            transparent 74%
+        );
+
+    filter:
+        blur(22px)
+        saturate(1.35);
+
+    transform:scale(1.12);
+}
+
+.rukhnav-theme-card-preview::after{
+    content:"";
+    position:absolute;
+    inset:-24%;
+    z-index:-2;
+
+    background:
+        radial-gradient(
+            ellipse 20% 24% at 22% 44%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 72%,
+                transparent
+            ),
+            transparent 68%
+        ),
+        radial-gradient(
+            ellipse 22% 28% at 56% 72%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 64%,
+                transparent
+            ),
+            transparent 70%
+        ),
+        radial-gradient(
+            ellipse 19% 25% at 82% 32%,
+            color-mix(
+                in srgb,
+                var(--preview-accent) 66%,
+                transparent
+            ),
+            transparent 70%
+        );
+
+    filter:
+        blur(28px)
+        saturate(1.4);
+
+    opacity:.78;
+
+    transform:
+        rotate(-6deg)
+        scale(1.12);
+}
+
+.rukhnav-theme-preview-atmosphere{
+    z-index:0;
+    overflow:visible;
+}
+
+.rukhnav-preview-orb{
+    border-radius:
+        48% 52% 62% 38% /
+        42% 58% 42% 58%;
+
+    filter:
+        blur(23px)
+        saturate(1.45);
+
+    opacity:.72;
+
+    mix-blend-mode:screen;
+
+    box-shadow:
+        0 0 35px
+        color-mix(
+            in srgb,
+            currentColor 34%,
+            transparent
+        );
+
+    animation:
+        rukhnavPreviewSmoke 8s
+        ease-in-out
+        infinite alternate;
+}
+
+.rukhnav-preview-orb::before,
+.rukhnav-preview-orb::after{
+    content:"";
+    position:absolute;
+    border-radius:
+        42% 58% 48% 52% /
+        58% 42% 62% 38%;
+    background:inherit;
+}
+
+.rukhnav-preview-orb::before{
+    width:78%;
+    height:86%;
+    left:42%;
+    top:-28%;
+    opacity:.76;
+    transform:rotate(26deg);
+}
+
+.rukhnav-preview-orb::after{
+    width:68%;
+    height:78%;
+    left:-24%;
+    top:42%;
+    opacity:.58;
+    transform:rotate(-31deg);
+}
+
+.rukhnav-preview-orb.orb-one{
+    width:185px;
+    height:116px;
+    left:-55px;
+    top:-28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--preview-highlight),
+            var(--preview-shade-2)
+        );
+
+    transform:rotate(-20deg);
+}
+
+.rukhnav-preview-orb.orb-two{
+    width:160px;
+    height:154px;
+    right:-45px;
+    top:32px;
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--preview-glow),
+            var(--preview-accent)
+        );
+
+    animation-delay:-2.6s;
+}
+
+.rukhnav-preview-orb.orb-three{
+    width:215px;
+    height:105px;
+    left:24%;
+    bottom:-38px;
+
+    background:
+        linear-gradient(
+            120deg,
+            var(--preview-shade-3),
+            var(--preview-shade-4)
+        );
+
+    transform:rotate(17deg);
+    animation-delay:-4.4s;
+}
+
+.rukhnav-theme-preview-browser{
+    position:relative;
+    z-index:3;
+
+    min-height:215px;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--preview-text) 22%,
+            transparent
+        );
+
+    background:
+        color-mix(
+            in srgb,
+            var(--preview-surface) 56%,
+            transparent
+        );
+
+    box-shadow:
+        0 28px 60px rgba(0,0,0,.24),
+        inset 0 1px 0
+        color-mix(
+            in srgb,
+            white 36%,
+            transparent
+        );
+
+    backdrop-filter:
+        blur(24px)
+        saturate(1.25);
+
+    -webkit-backdrop-filter:
+        blur(24px)
+        saturate(1.25);
+
+    transform:
+        rotateX(1.4deg)
+        rotateY(-1deg)
+        translateZ(12px);
+}
+
+.rukhnav-theme-card-dark
+.rukhnav-theme-preview-browser{
+    background:
+        color-mix(
+            in srgb,
+            var(--preview-surface) 48%,
+            transparent
+        );
+
+    box-shadow:
+        0 30px 68px rgba(0,0,0,.42),
+        inset 0 1px 0
+        rgba(255,255,255,.16);
+}
+
+.rukhnav-theme-card-light
+.rukhnav-preview-orb{
+    mix-blend-mode:multiply;
+    opacity:.40;
+}
+
+.rukhnav-theme-card-light
+.rukhnav-theme-preview-browser{
+    background:
+        color-mix(
+            in srgb,
+            var(--preview-surface) 66%,
+            transparent
+        );
+}
+
+.preview-product{
+    position:relative;
+
+    filter:
+        drop-shadow(
+            0 18px 15px
+            rgba(0,0,0,.24)
+        );
+
+    transform:
+        perspective(500px)
+        rotateY(-8deg)
+        translateZ(14px);
+}
+
+.preview-product > span{
+    position:relative;
+
+    background:
+        linear-gradient(
+            100deg,
+            color-mix(
+                in srgb,
+                var(--preview-surface) 34%,
+                transparent
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 72%,
+                var(--preview-surface)
+            ) 28%,
+            color-mix(
+                in srgb,
+                var(--preview-primary) 76%,
+                var(--preview-surface)
+            ) 64%,
+            color-mix(
+                in srgb,
+                var(--preview-shade-1) 88%,
+                black
+            )
+        ) !important;
+
+    box-shadow:
+        inset 6px 0 12px
+        rgba(255,255,255,.22),
+        inset -7px 0 12px
+        rgba(0,0,0,.18),
+        0 12px 20px
+        rgba(0,0,0,.22);
+}
+
+.preview-copy strong{
+    text-shadow:
+        0 3px 18px
+        color-mix(
+            in srgb,
+            var(--preview-background) 32%,
+            transparent
+        );
+}
+
+.rukhnav-theme-preview-products span{
+    background:
+        linear-gradient(
+            145deg,
+            color-mix(
+                in srgb,
+                var(--preview-surface) 72%,
+                transparent
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 12%,
+                transparent
+            )
+        );
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.22),
+        0 8px 16px
+        rgba(0,0,0,.08);
+
+    backdrop-filter:blur(12px);
+}
+
+@keyframes rukhnavPreviewSmoke{
+    from{
+        translate:-3px -2px;
+        scale:1;
+    }
+
+    to{
+        translate:7px 5px;
+        scale:1.12;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    .rukhnav-preview-orb{
+        animation:none !important;
+    }
+}
+
+
+/* =========================================================
+   RUKHNAV THEME STUDIO V6 PROFILE TREATMENTS
+   ========================================================= */
+
+/* Signature */
+.rukhnav-theme-profile-signature
+.rukhnav-preview-orb{
+    opacity:
+        calc(
+            .72 *
+            var(--preview-smoke-strength,.76)
+        );
+}
+
+/* Cinematic */
+.rukhnav-theme-profile-smoke
+.rukhnav-preview-orb{
+    opacity:
+        calc(
+            .94 *
+            var(--preview-smoke-strength,1)
+        );
+
+    filter:
+        blur(20px)
+        saturate(1.65);
+}
+
+.rukhnav-theme-profile-smoke
+.rukhnav-theme-preview-browser{
+    background:
+        color-mix(
+            in srgb,
+            var(--preview-surface) 42%,
+            transparent
+        );
+}
+
+/* Pastel */
+.rukhnav-theme-profile-pastel
+.rukhnav-preview-orb{
+    opacity:
+        calc(
+            .40 *
+            var(--preview-smoke-strength,.48)
+        );
+
+    mix-blend-mode:multiply;
+
+    filter:
+        blur(30px)
+        saturate(.90);
+}
+
+.rukhnav-theme-profile-pastel
+.rukhnav-theme-card-preview::before{
+    opacity:.44;
+    filter:
+        blur(34px)
+        saturate(.92);
+}
+
+.rukhnav-theme-profile-pastel
+.rukhnav-theme-preview-browser{
+    background:
+        color-mix(
+            in srgb,
+            var(--preview-surface) 72%,
+            transparent
+        );
+}
+
+/* Luxury */
+.rukhnav-theme-profile-luxury
+.rukhnav-preview-orb{
+    opacity:
+        calc(
+            .58 *
+            var(--preview-smoke-strength,.72)
+        );
+
+    filter:
+        blur(25px)
+        saturate(.92);
+}
+
+.rukhnav-theme-profile-luxury
+.rukhnav-theme-preview-browser{
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--preview-highlight) 30%,
+            transparent
+        );
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.18),
+        0 32px 72px
+        rgba(0,0,0,.34);
+}
+
+/* Vibrant */
+.rukhnav-theme-profile-vibrant
+.rukhnav-preview-orb{
+    opacity:
+        calc(
+            .90 *
+            var(--preview-smoke-strength,.88)
+        );
+
+    filter:
+        blur(19px)
+        saturate(1.72);
+}
+
+.rukhnav-theme-profile-vibrant
+.rukhnav-theme-card-preview::before{
+    opacity:.98;
+    filter:
+        blur(18px)
+        saturate(1.75);
+}
+
+/* Minimal Glass */
+.rukhnav-theme-profile-glass
+.rukhnav-preview-orb{
+    opacity:
+        calc(
+            .20 *
+            var(--preview-smoke-strength,.28)
+        );
+
+    filter:
+        blur(38px)
+        saturate(.58);
+}
+
+.rukhnav-theme-profile-glass
+.rukhnav-theme-card-preview::before{
+    opacity:.24;
+    filter:
+        blur(42px)
+        saturate(.68);
+}
+
+.rukhnav-theme-profile-glass
+.rukhnav-theme-preview-browser{
+    background:
+        color-mix(
+            in srgb,
+            var(--preview-surface) 44%,
+            transparent
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.52);
+
+    backdrop-filter:
+        blur(30px)
+        saturate(1.08);
+
+    -webkit-backdrop-filter:
+        blur(30px)
+        saturate(1.08);
+}

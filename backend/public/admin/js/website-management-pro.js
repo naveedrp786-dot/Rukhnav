@@ -532,12 +532,26 @@ function renderThemePresets() {
                 theme.atmosphere_mode ||
                 "soft";
 
+            const visualProfile =
+                String(
+                    theme.visual_profile ||
+                    "signature"
+                )
+                    .toLowerCase()
+                    .replace(
+                        /[^a-z0-9-]/g,
+                        "-"
+                    );
+
             return `
                 <article
                     class="
                         rukhnav-theme-card
                         rukhnav-theme-card-${themePresetEscape(
                             mode
+                        )}
+                        rukhnav-theme-profile-${themePresetEscape(
+                            visualProfile
                         )}
                     "
                     data-theme-preset="${themePresetEscape(
@@ -610,6 +624,18 @@ function renderThemePresets() {
                             --preview-button-radius:${Number(
                                 theme.button_radius || 12
                             )}px;
+
+                            --preview-smoke-strength:${Number(
+                                theme.smoke_strength ?? 0.6
+                            )};
+
+                            --preview-glass-strength:${Number(
+                                theme.glass_strength ?? 0.75
+                            )};
+
+                            --preview-glow-strength:${Number(
+                                theme.glow_strength ?? 0.7
+                            )};
                         "
                     >
                         <div class="rukhnav-theme-preview-atmosphere">

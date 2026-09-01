@@ -241,7 +241,7 @@ window.RukhnavModernCMS = {
 
         const heroCopies =
             document.querySelectorAll(
-                ".hero-copy"
+                ".hero-copy, .rk-hero-copy"
             );
 
         heroCopies.forEach(
@@ -647,6 +647,719 @@ window.RukhnavModernCMS = {
     },
 
 
+
+    ensureV6AtmosphereStyles() {
+        if (
+            document.getElementById(
+                "rukhnavThemeV6Atmosphere"
+            )
+        ) {
+            return;
+        }
+
+        const style =
+            document.createElement("style");
+
+        style.id =
+            "rukhnavThemeV6Atmosphere";
+
+        style.textContent = `
+/* =========================================================
+   RUKHNAV THEME ENGINE V6 ATMOSPHERE
+   ========================================================= */
+
+html{
+    background:var(--background,#f7f4ec);
+}
+
+body{
+    background:var(--background,#f7f4ec);
+    color:var(--text,#222);
+    font-family:var(--body,Arial,sans-serif);
+}
+
+/* ---------------------------------------------------------
+   CURRENT + LEGACY HERO TARGETS
+   --------------------------------------------------------- */
+
+.hero-copy,
+.rk-hero-copy{
+    position:relative;
+    isolation:isolate;
+}
+
+.hero-copy > :not(.rukhnav-real-smoke),
+.rk-hero-copy > :not(.rukhnav-real-smoke){
+    position:relative;
+    z-index:3;
+}
+
+/* ---------------------------------------------------------
+   TRUE SVG VOLUMETRIC SMOKE
+   --------------------------------------------------------- */
+
+.rukhnav-real-smoke{
+    position:absolute;
+    z-index:1;
+    top:-52%;
+    right:-64%;
+    bottom:-52%;
+    left:-58%;
+    overflow:visible;
+    pointer-events:none;
+    opacity:.92;
+    transform:
+        translate3d(0,0,0)
+        scale(1.05);
+    transform-origin:center;
+}
+
+.rukhnav-real-smoke .rukhnav-smoke-svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+}
+
+html[data-theme-mode="dark"]
+.rukhnav-real-smoke{
+    mix-blend-mode:screen;
+}
+
+html[data-theme-mode="light"]
+.rukhnav-real-smoke{
+    opacity:.58;
+    mix-blend-mode:multiply;
+}
+
+.rukhnav-real-smoke
+.smoke-svg-back{
+    opacity:.48;
+    animation:
+        rukhnavSmokeBack 18s ease-in-out
+        infinite alternate;
+    transform-origin:center;
+}
+
+.rukhnav-real-smoke
+.smoke-svg-middle{
+    opacity:.64;
+    animation:
+        rukhnavSmokeMiddle 14s ease-in-out
+        infinite alternate;
+    transform-origin:center;
+}
+
+.rukhnav-real-smoke
+.smoke-svg-front{
+    opacity:.56;
+    animation:
+        rukhnavSmokeFront 11s ease-in-out
+        infinite alternate;
+    transform-origin:center;
+}
+
+.rukhnav-smoke-veil{
+    position:absolute;
+    inset:8% 2%;
+    border-radius:50%;
+    background:
+        radial-gradient(
+            ellipse at 32% 48%,
+            color-mix(
+                in srgb,
+                var(--glow-color) 26%,
+                transparent
+            ),
+            transparent 62%
+        ),
+        radial-gradient(
+            ellipse at 68% 42%,
+            color-mix(
+                in srgb,
+                var(--highlight) 22%,
+                transparent
+            ),
+            transparent 66%
+        );
+    filter:blur(32px);
+    opacity:.72;
+}
+
+/* ---------------------------------------------------------
+   CINEMATIC HERO
+   --------------------------------------------------------- */
+
+body.rk-home .rk-hero{
+    position:relative;
+    overflow:hidden;
+    background:
+        var(--mesh-gradient) !important;
+}
+
+body.rk-home .rk-hero::before{
+    content:"";
+    position:absolute;
+    inset:-20%;
+    pointer-events:none;
+    background:
+        var(--mesh-cloud-gradient);
+    filter:
+        blur(36px)
+        saturate(1.28);
+    opacity:.72;
+    transform:scale(1.1);
+}
+
+body.rk-home .rk-hero::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+        radial-gradient(
+            ellipse at 50% -8%,
+            color-mix(
+                in srgb,
+                var(--highlight) 18%,
+                transparent
+            ),
+            transparent 52%
+        ),
+        linear-gradient(
+            180deg,
+            transparent 62%,
+            color-mix(
+                in srgb,
+                var(--background) 38%,
+                transparent
+            )
+        );
+}
+
+/* ---------------------------------------------------------
+   HOMEPAGE GLASS SYSTEM
+   --------------------------------------------------------- */
+
+body.rk-home{
+    background:
+        var(--background) !important;
+    color:
+        var(--text) !important;
+}
+
+body.rk-home .store-header{
+    border-bottom:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--text) 11%,
+            transparent
+        ) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 72%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 12px 38px
+        color-mix(
+            in srgb,
+            var(--shade-1) 13%,
+            transparent
+        );
+
+    backdrop-filter:
+        blur(22px)
+        saturate(1.25);
+
+    -webkit-backdrop-filter:
+        blur(22px)
+        saturate(1.25);
+}
+
+body.rk-home .store-logo-text strong,
+body.rk-home .store-header .nav a{
+    color:
+        var(--heading-color) !important;
+}
+
+body.rk-home .store-logo-text small{
+    color:
+        var(--muted) !important;
+}
+
+body.rk-home .rk-btn-primary,
+body.rk-home
+.rk-product-card
+.rk-card-actions button{
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--highlight) 24%,
+            transparent
+        ) !important;
+
+    background:
+        var(--button-gradient) !important;
+
+    color:
+        color-mix(
+            in srgb,
+            var(--heading-color) 94%,
+            white
+        ) !important;
+
+    box-shadow:
+        0 12px 30px
+        color-mix(
+            in srgb,
+            var(--glow-color) 22%,
+            transparent
+        );
+}
+
+body.rk-home .rk-btn-secondary{
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--text) 14%,
+            transparent
+        ) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 58%,
+            transparent
+        ) !important;
+
+    color:
+        var(--heading-color) !important;
+
+    backdrop-filter:blur(16px);
+}
+
+body.rk-home .rk-product-card,
+body.rk-home .rk-testimonial-grid article,
+body.rk-home .rk-product-state{
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--text) 11%,
+            transparent
+        ) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 76%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 20px 50px
+        color-mix(
+            in srgb,
+            var(--shade-1) 12%,
+            transparent
+        ) !important;
+
+    backdrop-filter:
+        blur(20px)
+        saturate(1.18);
+
+    -webkit-backdrop-filter:
+        blur(20px)
+        saturate(1.18);
+}
+
+body.rk-home .rk-product-image{
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 58%,
+            var(--background)
+        ) !important;
+}
+
+body.rk-home .rk-product-card .rk-price,
+body.rk-home .rk-text-link,
+body.rk-home .rk-trust{
+    color:
+        var(--link-color) !important;
+}
+
+body.rk-home p,
+body.rk-home
+.rk-newsletter-form small{
+    color:
+        var(--muted) !important;
+}
+
+body.rk-home h1,
+body.rk-home h2,
+body.rk-home h3,
+body.rk-home
+.rk-testimonial-grid strong{
+    color:
+        var(--heading-color) !important;
+}
+
+body.rk-home .rk-benefits,
+body.rk-home .rk-story{
+    position:relative;
+    overflow:hidden;
+    background:
+        var(--deep-gradient) !important;
+}
+
+body.rk-home .rk-benefits::before,
+body.rk-home .rk-story::before{
+    content:"";
+    position:absolute;
+    inset:-25%;
+    pointer-events:none;
+    background:
+        var(--mesh-cloud-gradient);
+    filter:blur(46px);
+    opacity:.48;
+}
+
+body.rk-home .rk-newsletter-card{
+    position:relative;
+    overflow:hidden;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--text) 11%,
+            transparent
+        );
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 72%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 24px 65px
+        color-mix(
+            in srgb,
+            var(--shade-1) 13%,
+            transparent
+        );
+
+    backdrop-filter:blur(22px);
+}
+
+body.rk-home .rk-newsletter-card::before{
+    content:"";
+    position:absolute;
+    width:48%;
+    aspect-ratio:1;
+    top:-34%;
+    right:-12%;
+    border-radius:50%;
+    pointer-events:none;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--glow-color) 34%,
+            transparent
+        );
+
+    filter:blur(42px);
+}
+
+/* ---------------------------------------------------------
+   CINEMATIC / SOFT INTENSITY
+   --------------------------------------------------------- */
+
+html[data-theme-atmosphere="cinematic"]
+body.rk-home .rk-hero::before{
+    opacity:.92;
+    filter:
+        blur(30px)
+        saturate(1.42)
+        contrast(1.06);
+}
+
+html[data-theme-atmosphere="soft"]
+body.rk-home .rk-hero::before{
+    opacity:.42;
+    filter:
+        blur(52px)
+        saturate(1.08);
+}
+
+/* ---------------------------------------------------------
+   MOTION
+   --------------------------------------------------------- */
+
+@keyframes rukhnavSmokeBack{
+    from{
+        transform:
+            translate3d(-2%,-1%,0)
+            scale(1.03)
+            rotate(-1deg);
+    }
+    to{
+        transform:
+            translate3d(3%,2%,0)
+            scale(1.10)
+            rotate(2deg);
+    }
+}
+
+@keyframes rukhnavSmokeMiddle{
+    from{
+        transform:
+            translate3d(2%,-2%,0)
+            scale(1.02)
+            rotate(1deg);
+    }
+    to{
+        transform:
+            translate3d(-3%,3%,0)
+            scale(1.08)
+            rotate(-2deg);
+    }
+}
+
+@keyframes rukhnavSmokeFront{
+    from{
+        transform:
+            translate3d(-1%,2%,0)
+            scale(1.01);
+    }
+    to{
+        transform:
+            translate3d(4%,-2%,0)
+            scale(1.06);
+    }
+}
+
+
+/* =========================================================
+   RUKHNAV V6 PROFILE TREATMENTS
+   ========================================================= */
+
+.rukhnav-real-smoke{
+    opacity:
+        calc(
+            .92 *
+            var(--theme-smoke-strength,1)
+        );
+}
+
+/* Signature */
+html[data-theme-profile="signature"]
+.rukhnav-real-smoke{
+    filter:
+        saturate(1.08)
+        contrast(1.03);
+}
+
+html[data-theme-profile="signature"]
+body.rk-home .rk-hero::before{
+    opacity:.72;
+}
+
+/* Smoke & Cinematic */
+html[data-theme-profile="smoke"]
+.rukhnav-real-smoke{
+    opacity:
+        calc(
+            .98 *
+            var(--theme-smoke-strength,1)
+        );
+
+    filter:
+        saturate(1.34)
+        contrast(1.08);
+}
+
+html[data-theme-profile="smoke"]
+.rukhnav-real-smoke
+.smoke-svg-back{
+    opacity:.62;
+}
+
+html[data-theme-profile="smoke"]
+.rukhnav-real-smoke
+.smoke-svg-middle{
+    opacity:.82;
+}
+
+html[data-theme-profile="smoke"]
+.rukhnav-real-smoke
+.smoke-svg-front{
+    opacity:.74;
+}
+
+/* Pastel mist */
+html[data-theme-profile="pastel"]
+.rukhnav-real-smoke{
+    opacity:
+        calc(
+            .52 *
+            var(--theme-smoke-strength,1)
+        );
+
+    mix-blend-mode:multiply;
+
+    filter:
+        saturate(.92)
+        brightness(1.05);
+}
+
+html[data-theme-profile="pastel"]
+.rukhnav-real-smoke
+.smoke-svg-back{
+    opacity:.30;
+}
+
+html[data-theme-profile="pastel"]
+.rukhnav-real-smoke
+.smoke-svg-middle{
+    opacity:.38;
+}
+
+html[data-theme-profile="pastel"]
+.rukhnav-real-smoke
+.smoke-svg-front{
+    opacity:.25;
+}
+
+/* Luxury */
+html[data-theme-profile="luxury"]
+.rukhnav-real-smoke{
+    opacity:
+        calc(
+            .72 *
+            var(--theme-smoke-strength,1)
+        );
+
+    filter:
+        saturate(.92)
+        contrast(1.10);
+}
+
+html[data-theme-profile="luxury"]
+body.rk-home .rk-product-card,
+html[data-theme-profile="luxury"]
+body.rk-home .rk-newsletter-card,
+html[data-theme-profile="luxury"]
+body.rk-home .store-header{
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.15),
+        0 26px 70px
+        color-mix(
+            in srgb,
+            var(--shade-1) 24%,
+            transparent
+        ) !important;
+}
+
+/* Vibrant */
+html[data-theme-profile="vibrant"]
+.rukhnav-real-smoke{
+    opacity:
+        calc(
+            .90 *
+            var(--theme-smoke-strength,1)
+        );
+
+    filter:
+        saturate(1.52)
+        contrast(1.04);
+}
+
+html[data-theme-profile="vibrant"]
+body.rk-home .rk-hero::before{
+    opacity:.96;
+    filter:
+        blur(26px)
+        saturate(1.62);
+}
+
+/* Minimal Glass */
+html[data-theme-profile="glass"]
+.rukhnav-real-smoke{
+    opacity:
+        calc(
+            .30 *
+            var(--theme-smoke-strength,1)
+        );
+
+    filter:
+        saturate(.55)
+        brightness(1.08);
+}
+
+html[data-theme-profile="glass"]
+body.rk-home .rk-hero::before{
+    opacity:.22;
+    filter:
+        blur(64px)
+        saturate(.72);
+}
+
+html[data-theme-profile="glass"]
+body.rk-home .rk-product-card,
+html[data-theme-profile="glass"]
+body.rk-home .rk-newsletter-card,
+html[data-theme-profile="glass"]
+body.rk-home .store-header{
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 48%,
+            transparent
+        ) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.46) !important;
+
+    backdrop-filter:
+        blur(28px)
+        saturate(1.08);
+
+    -webkit-backdrop-filter:
+        blur(28px)
+        saturate(1.08);
+}
+
+@media(prefers-reduced-motion:reduce){
+    .rukhnav-real-smoke
+    .smoke-svg-back,
+    .rukhnav-real-smoke
+    .smoke-svg-middle,
+    .rukhnav-real-smoke
+    .smoke-svg-front{
+        animation:none !important;
+    }
+}
+        `;
+
+        document.head.appendChild(style);
+    },
+
+
     applyTheme(settings) {
         /*
          * V3 storefront does not inject legacy V2 smoke DOM.
@@ -697,6 +1410,19 @@ window.RukhnavModernCMS = {
 
         root.dataset.themeTreatment =
             themeTreatment;
+
+        const themeProfile =
+            String(
+                theme.visual_profile ||
+                (
+                    themeTreatment === "cinematic"
+                        ? "smoke"
+                        : "pastel"
+                )
+            ).toLowerCase();
+
+        root.dataset.themeProfile =
+            themeProfile;
 
         /* =========================================================
            RUKHNAV THEME ENGINE V2
@@ -1061,6 +1787,28 @@ window.RukhnavModernCMS = {
             "--glow-color": glowColor,
             "--glow": glow,
 
+            "--theme-smoke-strength":
+                String(
+                    theme.smoke_strength ??
+                    (
+                        themeProfile === "smoke"
+                            ? 1
+                            : 0.6
+                    )
+                ),
+
+            "--theme-glass-strength":
+                String(
+                    theme.glass_strength ??
+                    0.75
+                ),
+
+            "--theme-glow-strength":
+                String(
+                    theme.glow_strength ??
+                    0.7
+                ),
+
             "--hero-gradient":
                 heroGradient,
 
@@ -1100,6 +1848,32 @@ window.RukhnavModernCMS = {
             "--background": theme.background_color,
             "--surface": theme.surface_color,
             "--text": theme.text_color,
+
+            /*
+             * V6 compatibility layer for the current homepage.
+             * Existing rk-* components now follow the CMS theme.
+             */
+            "--rk-green": theme.primary_color,
+            "--rk-green-dark": shade1,
+            "--rk-gold": theme.secondary_color,
+            "--rk-cream": theme.background_color,
+            "--rk-soft": theme.surface_color,
+            "--rk-ink":
+                theme.heading_color ||
+                theme.text_color,
+            "--rk-muted":
+                theme.muted_color ||
+                theme.muted_text_color,
+            "--rk-border":
+                alpha(
+                    theme.primary_color ||
+                    primary,
+                    0.18
+                ),
+            "--rk-shadow":
+                `0 22px 58px ${
+                    alpha(shade1, 0.16)
+                }`,
             "--heading-color":
                 theme.heading_color ||
                 theme.text_color,
@@ -1184,6 +1958,22 @@ window.RukhnavModernCMS = {
                 }
             }
         );
+
+        /*
+         * V6: activate procedural atmosphere.
+         *
+         * The SVG smoke system existed previously but was not
+         * being invoked by the V3 theme path.
+         */
+        this.ensureProceduralSmokeFilter();
+        this.ensureV6AtmosphereStyles();
+
+        /*
+         * V6 profile renderer:
+         * every theme receives atmospheric depth.
+         * visual_profile controls intensity and treatment.
+         */
+        this.ensureHeroSmokeLayers();
 
         let style =
             document.getElementById(
