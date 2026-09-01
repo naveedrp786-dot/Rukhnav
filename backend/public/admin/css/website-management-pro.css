@@ -7054,1894 +7054,1307 @@
     animation:none !important;
 }
 
-
 /* =========================================================
-   RUKHNAV V11 THREE CLOUD SCENES
-   Reference-driven coded atmosphere.
-   Static + lightweight.
+   RUKHNAV V13 PROCEDURAL ATMOSPHERIC CLOUD ENGINE
+
+   Exactly three prototype previews.
+   Large connected vapor masses instead of isolated bubbles.
    ========================================================= */
 
 
 /* =========================================================
-   PROTOTYPE FOUNDATION
+   CORE SCENE
    ========================================================= */
 
-.rukhnav-v11-prototype
+.rukhnav-v13-prototype
 .rukhnav-theme-card-preview{
     position:relative !important;
-
-    height:205px !important;
-    min-height:205px !important;
-
     overflow:hidden !important;
-
-    isolation:isolate;
-
-    background:none !important;
-
-    box-shadow:none !important;
+    isolation:isolate !important;
 }
 
 
-/* remove V8/V10 generic atmosphere only for prototypes */
-
-.rukhnav-v11-prototype
-.rukhnav-theme-card-preview::before,
-
-.rukhnav-v11-prototype
-.rukhnav-theme-card-preview::after{
-    content:none !important;
-    display:none !important;
-}
-
-
-.rukhnav-v11-prototype
-.rukhnav-preview-orb{
-    display:none !important;
-}
-
-
-/* =========================================================
-   SCENE STAGE
-   ========================================================= */
-
-.rukhnav-v11-scene{
+.rukhnav-v13-scene{
     position:absolute;
-
     inset:0;
-
-    z-index:1;
 
     overflow:hidden;
 
     pointer-events:none;
 
-    isolation:isolate;
-}
-
-
-.rukhnav-v11-scene::before{
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
     z-index:0;
 
-    pointer-events:none;
+    transform:translateZ(0);
 }
 
 
-.rukhnav-v11-scene::after{
-    content:"";
+.rukhnav-v13-prototype
+.rukhnav-theme-preview-hero{
+    position:relative !important;
+    z-index:6 !important;
 
-    position:absolute;
+    background:transparent !important;
+}
 
-    inset:0;
 
-    z-index:8;
+.rukhnav-v13-prototype
+.preview-copy{
+    position:relative !important;
+    z-index:7 !important;
 
-    pointer-events:none;
+    width:54% !important;
+    max-width:54% !important;
+}
 
-    background:
-        linear-gradient(
-            115deg,
-            rgba(255,255,255,.13),
-            transparent 28% 70%,
-            rgba(255,255,255,.06)
-        );
+
+.rukhnav-v13-prototype
+.preview-copy strong{
+    position:relative;
+
+    display:block;
+
+    margin-top:42px !important;
+
+    font-size:28px !important;
+    line-height:.92 !important;
+    letter-spacing:-.025em;
+}
+
+
+.rukhnav-v13-prototype
+.preview-copy small{
+    position:relative;
+
+    display:block;
+
+    margin-top:6px;
+
+    max-width:150px;
+
+    line-height:1.35;
 }
 
 
 /* =========================================================
-   INDIVIDUAL CLOUD PUFF
+   LIGHT FIELD
    ========================================================= */
 
-.rukhnav-v11-cloud{
+.rukhnav-v13-base-glow,
+.rukhnav-v13-secondary-glow{
+    position:absolute;
+
+    border-radius:50%;
+
+    pointer-events:none;
+}
+
+
+.rukhnav-v13-ray{
+    position:absolute;
+
+    pointer-events:none;
+
+    transform-origin:50% 0;
+
+    clip-path:polygon(
+        43% 0,
+        57% 0,
+        100% 100%,
+        0 100%
+    );
+
+    filter:blur(7px);
+}
+
+
+.rukhnav-v13-ray-one{
+    width:190px;
+    height:260px;
+}
+
+
+.rukhnav-v13-ray-two{
+    width:110px;
+    height:220px;
+
+    opacity:.45;
+}
+
+
+/* =========================================================
+   CLOUD BANK ENGINE
+
+   A bank has:
+   - wide body
+   - overlapping lobes
+   - internal shadow
+   - illuminated rim
+
+   Lobes overlap heavily so they read as ONE mass.
+   ========================================================= */
+
+.rukhnav-v13-cloud-bank{
+    position:absolute;
+
+    pointer-events:none;
+
+    transform-origin:center center;
+}
+
+
+.rukhnav-v13-cloud-body{
+    position:absolute;
+
+    left:3%;
+    right:3%;
+    bottom:3%;
+
+    height:56%;
+
+    border-radius:
+        48% 52% 46% 54% /
+        58% 62% 38% 42%;
+
+    filter:blur(3.5px);
+}
+
+
+.rukhnav-v13-lobe{
     position:absolute;
 
     display:block;
 
     border-radius:
-        52% 48% 58% 42% /
-        46% 58% 42% 54%;
+        52% 48% 56% 44% /
+        48% 54% 46% 52%;
 
-    opacity:.82;
-
-    filter:
-        blur(5px);
-
-    transform-origin:center;
-
-    pointer-events:none;
+    filter:blur(3px);
 }
 
 
-.rukhnav-v11-cloud::before,
+/*
+   Lobe geometry is intentionally irregular.
+   No evenly-spaced circles.
+*/
 
-.rukhnav-v11-cloud::after{
-    content:"";
+.rukhnav-v13-lobe-1{
+    width:35%;
+    height:69%;
 
-    position:absolute;
-
-    border-radius:50%;
+    left:0;
+    bottom:7%;
 }
 
 
-.rukhnav-v11-cloud::before{
-    width:72%;
-    height:92%;
+.rukhnav-v13-lobe-2{
+    width:39%;
+    height:91%;
 
-    left:-30%;
-    top:10%;
+    left:15%;
+    bottom:4%;
 }
 
 
-.rukhnav-v11-cloud::after{
-    width:68%;
-    height:84%;
+.rukhnav-v13-lobe-3{
+    width:34%;
+    height:74%;
 
-    right:-27%;
-    top:18%;
+    left:35%;
+    bottom:17%;
 }
 
 
-/* =========================================================
-   LIGHT STRUCTURE
-   ========================================================= */
-
-.rukhnav-v11-backlight{
-    position:absolute;
-
-    z-index:0;
-
-    width:70%;
-    height:72%;
-
-    right:-12%;
-    top:-20%;
-
-    border-radius:50%;
-
-    filter:
-        blur(20px);
-
-    opacity:.78;
-}
-
-
-.rukhnav-v11-light-beam{
-    position:absolute;
-
-    z-index:4;
-
-    width:48%;
-    height:160%;
-
-    top:-32%;
-    right:5%;
-
-    transform:
-        rotate(22deg);
-
-    filter:
-        blur(11px);
-
-    opacity:.34;
-}
-
-
-.rukhnav-v11-veil{
-    position:absolute;
-
-    inset:0;
-
-    z-index:7;
-
-    pointer-events:none;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.04),
-            transparent 40%,
-            rgba(0,0,0,.05)
-        );
-}
-
-
-/* =========================================================
-   COPY DIRECTLY ON ARTWORK
-   ========================================================= */
-
-.rukhnav-v11-prototype
-.rukhnav-theme-preview-browser{
-    position:absolute !important;
-
-    inset:0 !important;
-
-    z-index:20 !important;
-
-    width:100% !important;
-    height:100% !important;
-
-    padding:
-        22px 22px
-        !important;
-
-    border:0 !important;
-
-    border-radius:0 !important;
-
-    background:transparent !important;
-
-    backdrop-filter:none !important;
-
-    -webkit-backdrop-filter:none !important;
-
-    box-shadow:none !important;
-
-    transform:none !important;
-}
-
-
-.rukhnav-v11-prototype
-.rukhnav-theme-preview-browser::before,
-
-.rukhnav-v11-prototype
-.rukhnav-theme-preview-browser::after{
-    display:none !important;
-}
-
-
-.rukhnav-v11-prototype
-.preview-copy{
-    position:relative !important;
-
-    z-index:21 !important;
-
-    max-width:62% !important;
-
-    transform:none !important;
-}
-
-
-.rukhnav-v11-prototype
-.preview-copy strong{
-    margin:
-        45px 0 7px
-        !important;
-
-    font-size:
-        27px !important;
-
-    line-height:
-        .94 !important;
-
-    letter-spacing:
-        -.035em !important;
-
-    transform:none !important;
-}
-
-
-.rukhnav-v11-prototype
-.preview-copy small{
-    font-size:
-        9px !important;
-
-    opacity:.84;
-}
-
-
-.rukhnav-v11-prototype
-.preview-copy button{
-    margin-top:
-        11px !important;
-
-    transform:none !important;
-}
-
-
-/* =========================================================
-   01 MIDNIGHT AURORA
-   ========================================================= */
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-scene{
-    background:
-        linear-gradient(
-            145deg,
-            #071847 0%,
-            #132E78 38%,
-            #43328A 67%,
-            #7B3DB1 100%
-        );
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-backlight{
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(94,245,255,.94),
-            rgba(77,173,255,.58) 34%,
-            rgba(137,88,255,.25) 56%,
-            transparent 74%
-        );
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-light-beam{
-    background:
-        linear-gradient(
-            180deg,
-            transparent,
-            rgba(134,239,255,.66),
-            rgba(186,121,255,.30),
-            transparent
-        );
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud{
-    background:
-        radial-gradient(
-            ellipse at 42% 40%,
-            rgba(173,239,255,.88),
-            rgba(85,176,255,.70) 42%,
-            rgba(90,88,225,.38) 70%,
-            transparent
-        );
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud::before{
-    background:
-        radial-gradient(
-            circle,
-            rgba(104,235,255,.82),
-            rgba(72,132,236,.42) 68%,
-            transparent 74%
-        );
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud::after{
-    background:
-        radial-gradient(
-            circle,
-            rgba(211,116,255,.74),
-            rgba(137,74,218,.36) 68%,
-            transparent 74%
-        );
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-1{
-    width:150px;
-    height:70px;
-
-    left:-30px;
-    top:112px;
-
-    transform:rotate(-14deg);
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-2{
-    width:128px;
-    height:64px;
-
-    left:22px;
-    top:92px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-3{
-    width:142px;
-    height:74px;
-
-    left:90px;
-    top:110px;
-
-    transform:rotate(8deg);
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-4{
-    width:120px;
-    height:60px;
-
-    left:160px;
-    top:77px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-5{
-    width:132px;
-    height:68px;
-
-    right:-32px;
-    top:104px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-6{
-    width:98px;
-    height:54px;
-
-    right:22px;
-    top:48px;
-
-    opacity:.64;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-7{
-    width:102px;
-    height:52px;
-
-    left:125px;
-    top:35px;
-
-    opacity:.56;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-8{
-    width:115px;
-    height:58px;
-
-    left:-18px;
-    bottom:-8px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-9{
-    width:145px;
-    height:66px;
-
-    left:75px;
-    bottom:-18px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-10{
-    width:120px;
-    height:55px;
-
-    right:-8px;
-    bottom:5px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-11{
-    width:74px;
-    height:44px;
-
-    right:74px;
-    top:14px;
-
-    opacity:.48;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-12{
-    width:72px;
-    height:40px;
-
-    left:52px;
-    top:15px;
-
-    opacity:.40;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.preview-copy strong{
-    color:#F5F0FF !important;
-
-    text-shadow:
-        0 0 18px
-        rgba(116,221,255,.34)
-        !important;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.preview-copy small{
-    color:
-        rgba(245,248,255,.88)
-        !important;
-}
-
-
-/* =========================================================
-   02 ROSE CLOUD
-   ========================================================= */
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-scene{
-    background:
-        linear-gradient(
-            145deg,
-            #FFF8FA 0%,
-            #FDE8EF 40%,
-            #F5D4E4 72%,
-            #EFD8F5 100%
-        );
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-backlight{
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(255,255,255,.98),
-            rgba(255,223,232,.82) 38%,
-            rgba(239,199,235,.30) 62%,
-            transparent 76%
-        );
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-light-beam{
-    background:
-        linear-gradient(
-            180deg,
-            transparent,
-            rgba(255,255,255,.82),
-            rgba(255,205,224,.34),
-            transparent
-        );
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud{
-    background:
-        radial-gradient(
-            ellipse at 42% 42%,
-            rgba(255,250,252,.98),
-            rgba(248,193,213,.76) 45%,
-            rgba(229,165,201,.30) 70%,
-            transparent
-        );
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud::before{
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,245,249,.96),
-            rgba(250,187,209,.48) 68%,
-            transparent 74%
-        );
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud::after{
-    background:
-        radial-gradient(
-            circle,
-            rgba(244,211,242,.90),
-            rgba(220,176,225,.40) 68%,
-            transparent 74%
-        );
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-1{
-    width:146px;
-    height:74px;
-
-    right:-20px;
-    bottom:-12px;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-2{
-    width:126px;
-    height:66px;
-
-    right:50px;
-    bottom:14px;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-3{
-    width:118px;
-    height:62px;
-
-    right:120px;
-    bottom:-6px;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-4{
-    width:106px;
-    height:56px;
-
-    right:12px;
-    top:55px;
-
-    opacity:.66;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-5{
-    width:92px;
-    height:50px;
-
-    right:90px;
-    top:30px;
-
-    opacity:.54;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-6{
-    width:84px;
-    height:46px;
-
-    left:-24px;
-    bottom:26px;
-
-    opacity:.60;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-7{
-    width:102px;
-    height:52px;
-
-    left:34px;
-    bottom:-12px;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-8{
-    width:72px;
-    height:42px;
-
-    left:4px;
-    top:22px;
-
-    opacity:.38;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-9{
-    width:74px;
-    height:40px;
-
-    left:95px;
-    top:9px;
-
-    opacity:.34;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-10{
-    width:92px;
-    height:46px;
-
-    right:-20px;
-    top:-8px;
-
-    opacity:.40;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-11{
-    width:78px;
-    height:44px;
-
-    left:155px;
-    bottom:36px;
-
-    opacity:.54;
-}
-
-
-.rukhnav-v11-rose-cloud
-.preview-copy strong{
-    color:#7A4059 !important;
-
-    text-shadow:
-        0 2px 16px
-        rgba(255,255,255,.68)
-        !important;
-}
-
-
-.rukhnav-v11-rose-cloud
-.preview-copy small{
-    color:#765F69 !important;
-}
-
-
-/* =========================================================
-   03 BLACK CHAMPAGNE
-   ========================================================= */
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-scene{
-    background:
-        linear-gradient(
-            145deg,
-            #191915 0%,
-            #2E2B22 38%,
-            #504838 72%,
-            #796A4C 100%
-        );
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-backlight{
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(255,231,161,.92),
-            rgba(224,181,87,.48) 38%,
-            rgba(155,113,40,.18) 62%,
-            transparent 76%
-        );
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-light-beam{
-    background:
-        linear-gradient(
-            180deg,
-            transparent,
-            rgba(255,235,174,.68),
-            rgba(214,171,78,.20),
-            transparent
-        );
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud{
-    background:
-        radial-gradient(
-            ellipse at 42% 42%,
-            rgba(255,237,185,.78),
-            rgba(205,166,82,.50) 44%,
-            rgba(118,91,42,.20) 72%,
-            transparent
-        );
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud::before{
-    background:
-        radial-gradient(
-            circle,
-            rgba(247,218,151,.68),
-            rgba(168,128,53,.34) 68%,
-            transparent 74%
-        );
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud::after{
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,244,207,.58),
-            rgba(184,148,76,.28) 68%,
-            transparent 74%
-        );
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-1{
-    width:145px;
-    height:66px;
-
-    left:-36px;
+.rukhnav-v13-lobe-4{
+    width:41%;
+    height:98%;
+
+    left:49%;
     bottom:0;
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-2{
-    width:132px;
-    height:64px;
+.rukhnav-v13-lobe-5{
+    width:35%;
+    height:71%;
 
-    left:46px;
-    bottom:18px;
+    right:0;
+    bottom:11%;
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-3{
-    width:138px;
-    height:62px;
+.rukhnav-v13-lobe-6{
+    width:29%;
+    height:61%;
 
-    left:128px;
-    bottom:-10px;
+    right:13%;
+    top:1%;
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-4{
-    width:116px;
-    height:58px;
+.rukhnav-v13-lobe-7{
+    width:29%;
+    height:54%;
+
+    left:26%;
+    top:1%;
+}
+
+
+.rukhnav-v13-cloud-shade{
+    position:absolute;
+
+    left:1%;
+    right:1%;
+    bottom:-5%;
+
+    height:52%;
+
+    border-radius:50%;
+
+    filter:blur(8px);
+
+    mix-blend-mode:multiply;
+}
+
+
+.rukhnav-v13-cloud-rim{
+    position:absolute;
+
+    left:7%;
+    right:8%;
+    top:5%;
+
+    height:34%;
+
+    border-radius:50%;
+
+    filter:blur(5px);
+
+    opacity:.72;
+}
+
+
+.rukhnav-v13-mist{
+    position:absolute;
+
+    border-radius:50%;
+
+    pointer-events:none;
+
+    filter:blur(15px);
+}
+
+
+.rukhnav-v13-vignette{
+    position:absolute;
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:5;
+}
+
+
+/* =========================================================
+   MIDNIGHT AURORA
+   ========================================================= */
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-scene{
+    background:
+        radial-gradient(
+            ellipse at 84% 15%,
+            rgba(87,232,255,.18),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            ellipse at 75% 78%,
+            rgba(189,82,255,.20),
+            transparent 37%
+        ),
+
+        linear-gradient(
+            143deg,
+            #061126 0%,
+            #0B1B3D 30%,
+            #16295B 54%,
+            #273269 73%,
+            #502E73 100%
+        );
+}
+
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-base-glow{
+    width:280px;
+    height:210px;
+
+    right:-70px;
+    top:-70px;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(190,251,255,.88) 0%,
+            rgba(78,220,255,.48) 27%,
+            rgba(83,110,255,.17) 51%,
+            transparent 72%
+        );
+
+    filter:blur(18px);
+}
+
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-secondary-glow{
+    width:260px;
+    height:160px;
+
+    right:-30px;
+    bottom:-72px;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(225,95,255,.43),
+            rgba(118,69,223,.18) 43%,
+            transparent 72%
+        );
+
+    filter:blur(23px);
+}
+
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-ray-one{
+    right:23px;
+    top:-34px;
+
+    transform:rotate(19deg);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(195,253,255,.30),
+            rgba(70,210,255,.12) 45%,
+            transparent
+        );
+
+    opacity:.53;
+}
+
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-ray-two{
+    right:120px;
+    top:-23px;
+
+    transform:rotate(28deg);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(164,125,255,.20),
+            transparent
+        );
+}
+
+
+/* distant high cloud */
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-back{
+    width:245px;
+    height:83px;
 
     right:-24px;
-    bottom:28px;
+    top:23px;
+
+    opacity:.42;
+
+    transform:rotate(-5deg) scale(.95);
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-5{
-    width:98px;
-    height:48px;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-back
+.rukhnav-v13-cloud-body,
 
-    right:15px;
-    top:42px;
-
-    opacity:.56;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-back
+.rukhnav-v13-lobe{
+    background:
+        linear-gradient(
+            155deg,
+            rgba(142,229,255,.54),
+            rgba(75,121,214,.43) 48%,
+            rgba(46,53,124,.23) 78%,
+            transparent
+        );
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-6{
-    width:84px;
-    height:44px;
+/* main illuminated rolling cloud */
 
-    right:100px;
-    top:12px;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-middle{
+    width:355px;
+    height:143px;
 
-    opacity:.44;
+    right:-86px;
+    bottom:13px;
+
+    z-index:2;
+
+    transform:rotate(-6deg);
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-7{
-    width:80px;
-    height:42px;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-body,
 
-    left:8px;
-    top:21px;
-
-    opacity:.32;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-middle
+.rukhnav-v13-lobe{
+    background:
+        radial-gradient(
+            ellipse at 44% 24%,
+            rgba(206,252,255,.96) 0%,
+            rgba(109,223,255,.85) 24%,
+            rgba(70,143,229,.71) 48%,
+            rgba(52,73,159,.72) 69%,
+            rgba(34,40,103,.44) 83%,
+            transparent 100%
+        );
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-8{
-    width:76px;
-    height:40px;
-
-    left:82px;
-    top:-7px;
-
-    opacity:.28;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-shade{
+    background:
+        linear-gradient(
+            to bottom,
+            transparent,
+            rgba(28,31,92,.72) 58%,
+            rgba(21,19,68,.84)
+        );
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-9{
-    width:88px;
-    height:42px;
-
-    right:-12px;
-    top:-5px;
-
-    opacity:.34;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-rim{
+    background:
+        linear-gradient(
+            100deg,
+            transparent 4%,
+            rgba(190,250,255,.62) 38%,
+            rgba(93,229,255,.48) 64%,
+            transparent 95%
+        );
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-10{
-    width:72px;
-    height:38px;
+/* foreground violet-blue shadow cloud */
 
-    right:68px;
-    bottom:70px;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-front{
+    width:310px;
+    height:108px;
 
-    opacity:.44;
-}
+    left:-78px;
+    bottom:-41px;
 
-
-.rukhnav-v11-black-champagne
-.preview-copy strong{
-    color:#FFF0BF !important;
-
-    text-shadow:
-        0 0 16px
-        rgba(241,201,108,.22)
-        !important;
-}
-
-
-.rukhnav-v11-black-champagne
-.preview-copy small{
-    color:
-        rgba(255,247,222,.82)
-        !important;
-}
-
-
-/* =========================================================
-   STATIC PERFORMANCE
-   ========================================================= */
-
-.rukhnav-v11-prototype *,
-.rukhnav-v11-prototype::before,
-.rukhnav-v11-prototype::after{
-    animation:none !important;
-}
-
-
-/* =========================================================
-   RUKHNAV V12 DEFINED ILLUMINATED CLOUDS
-
-   Three prototypes only:
-   - Midnight Aurora
-   - Rose Cloud
-   - Black Champagne
-
-   Static CSS / existing V11 HTML cloud layers.
-   No images.
-   No SVG.
-   No 3D.
-   ========================================================= */
-
-
-/* =========================================================
-   SHARED V12 CLOUD PHYSICS
-   ========================================================= */
-
-.rukhnav-v11-prototype
-.rukhnav-v11-cloud{
-    filter:
-        blur(1.8px)
-        saturate(1.08)
-        !important;
-
-    opacity:.94;
-
-    border-radius:
-        48% 52% 54% 46% /
-        58% 44% 56% 42%;
-
-    box-shadow:
-        inset 0 7px 14px
-        rgba(255,255,255,.12),
-
-        inset 0 -11px 18px
-        rgba(15,20,34,.14),
-
-        0 8px 18px
-        rgba(18,24,36,.09);
-}
-
-
-/* each cloud gets visible secondary lobes */
-
-.rukhnav-v11-prototype
-.rukhnav-v11-cloud::before{
-    width:68%;
-    height:88%;
-
-    left:-29%;
-    top:16%;
-
-    filter:
-        blur(.7px);
-}
-
-
-.rukhnav-v11-prototype
-.rukhnav-v11-cloud::after{
-    width:66%;
-    height:80%;
-
-    right:-27%;
-    top:22%;
-
-    filter:
-        blur(.8px);
-}
-
-
-/* backlight becomes defined illumination */
-
-.rukhnav-v11-prototype
-.rukhnav-v11-backlight{
-    filter:
-        blur(26px)
-        saturate(1.10)
-        !important;
+    z-index:3;
 
     opacity:.84;
+
+    transform:rotate(4deg);
 }
 
 
-/* narrow directional light instead of broad wash */
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-front
+.rukhnav-v13-cloud-body,
 
-.rukhnav-v11-prototype
-.rukhnav-v11-light-beam{
-    width:34%;
-
-    right:8%;
-
-    filter:
-        blur(8px)
-        !important;
-
-    opacity:.28;
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-front
+.rukhnav-v13-lobe{
+    background:
+        radial-gradient(
+            ellipse at 55% 13%,
+            rgba(109,159,236,.64),
+            rgba(54,67,145,.77) 43%,
+            rgba(33,30,91,.88) 72%,
+            rgba(24,19,66,.90)
+        );
 }
 
 
-/* V12 foreground optical bloom */
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-front
+.rukhnav-v13-cloud-shade{
+    background:
+        rgba(18,15,55,.75);
+}
 
-.rukhnav-v11-prototype
-.rukhnav-v11-veil{
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-bank-front
+.rukhnav-v13-cloud-rim{
     background:
         linear-gradient(
-            115deg,
-            rgba(255,255,255,.07),
-            transparent 30% 66%,
-            rgba(255,255,255,.08)
+            90deg,
+            transparent,
+            rgba(142,198,255,.30),
+            rgba(208,113,255,.21),
+            transparent
+        );
+}
+
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-mist-one{
+    width:235px;
+    height:35px;
+
+    left:80px;
+    bottom:42px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(95,221,255,.18),
+            rgba(170,105,255,.13),
+            transparent
+        );
+
+    transform:rotate(-7deg);
+}
+
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-mist-two{
+    width:180px;
+    height:25px;
+
+    right:-25px;
+    top:105px;
+
+    background:
+        rgba(179,241,255,.12);
+
+    transform:rotate(-9deg);
+}
+
+
+.rukhnav-v13-midnight-aurora
+.rukhnav-v13-vignette{
+    background:
+        linear-gradient(
+            90deg,
+            rgba(4,10,29,.28),
+            transparent 42%
         ),
 
-        radial-gradient(
-            ellipse at 78% 28%,
-            rgba(255,255,255,.16),
-            transparent 34%
-        )
-        !important;
+        linear-gradient(
+            to top,
+            rgba(11,11,40,.16),
+            transparent 43%
+        );
 }
 
 
-/* typography stays sharp */
-
-.rukhnav-v11-prototype
-.preview-copy{
-    max-width:56% !important;
-}
-
-
-.rukhnav-v11-prototype
+.rukhnav-v13-midnight-aurora
 .preview-copy strong{
-    margin-top:
-        43px !important;
-
-    font-size:
-        28px !important;
-
-    line-height:
-        .93 !important;
-}
-
-
-/* =========================================================
-   MIDNIGHT AURORA V12
-   ========================================================= */
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-scene{
-    background:
-        radial-gradient(
-            ellipse at 86% 12%,
-            rgba(72,231,255,.26),
-            transparent 32%
-        ),
-
-        radial-gradient(
-            ellipse at 72% 74%,
-            rgba(202,92,255,.24),
-            transparent 38%
-        ),
-
-        linear-gradient(
-            145deg,
-            #061435 0%,
-            #10275F 33%,
-            #273579 58%,
-            #56368D 79%,
-            #8647AE 100%
-        )
-        !important;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-backlight{
-    width:72%;
-    height:64%;
-
-    right:-8%;
-    top:-18%;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            rgba(175,252,255,.92) 0%,
-            rgba(69,216,255,.65) 25%,
-            rgba(88,120,255,.34) 48%,
-            transparent 72%
-        )
-        !important;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-light-beam{
-    background:
-        linear-gradient(
-            180deg,
-            transparent 5%,
-            rgba(133,245,255,.10) 22%,
-            rgba(121,232,255,.58) 46%,
-            rgba(165,108,255,.28) 69%,
-            transparent 94%
-        )
-        !important;
-
-    transform:
-        rotate(19deg)
-        !important;
-}
-
-
-/* main blue cloud body */
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud{
-    background:
-        radial-gradient(
-            ellipse at 38% 28%,
-            rgba(199,249,255,.95) 0 12%,
-            rgba(91,208,255,.90) 28%,
-            rgba(69,124,230,.72) 52%,
-            rgba(50,65,149,.48) 72%,
-            transparent 88%
-        )
-        !important;
-
-    box-shadow:
-        inset 0 8px 12px
-        rgba(203,250,255,.18),
-
-        inset 0 -13px 20px
-        rgba(17,30,91,.26),
-
-        0 0 16px
-        rgba(63,190,255,.13);
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud::before{
-    background:
-        radial-gradient(
-            circle at 45% 35%,
-            rgba(182,247,255,.94),
-            rgba(69,199,255,.78) 38%,
-            rgba(54,90,190,.44) 68%,
-            transparent 80%
-        )
-        !important;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud::after{
-    background:
-        radial-gradient(
-            circle at 48% 38%,
-            rgba(232,181,255,.88),
-            rgba(177,94,244,.66) 39%,
-            rgba(93,67,183,.38) 68%,
-            transparent 82%
-        )
-        !important;
-}
-
-
-/* back clouds */
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-6,
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-7,
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-11,
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-12{
-    opacity:.48;
-
-    filter:
-        blur(4px)
-        saturate(.96)
-        !important;
-}
-
-
-/* primary rolling cloud bank */
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-1{
-    width:128px;
-    height:55px;
-
-    left:-22px;
-    top:122px;
-
-    transform:
-        rotate(-5deg)
-        !important;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-2{
-    width:118px;
-    height:60px;
-
-    left:54px;
-    top:106px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-3{
-    width:138px;
-    height:68px;
-
-    left:126px;
-    top:111px;
-
-    transform:
-        rotate(4deg)
-        !important;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-4{
-    width:118px;
-    height:58px;
-
-    left:205px;
-    top:91px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-5{
-    width:126px;
-    height:67px;
-
-    right:-35px;
-    top:112px;
-}
-
-
-/* illuminated upper right formations */
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-6{
-    width:93px;
-    height:44px;
-
-    right:10px;
-    top:36px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-7{
-    width:88px;
-    height:42px;
-
-    right:88px;
-    top:24px;
-}
-
-
-/* lower foreground */
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-8{
-    width:105px;
-    height:52px;
-
-    left:-15px;
-    bottom:-8px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-9{
-    width:142px;
-    height:57px;
-
-    left:82px;
-    bottom:-14px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.rukhnav-v11-cloud-10{
-    width:118px;
-    height:52px;
-
-    right:-6px;
-    bottom:-2px;
-}
-
-
-.rukhnav-v11-midnight-aurora
-.preview-copy strong{
-    color:#F7F5FF !important;
+    color:#F8F8FF !important;
 
     text-shadow:
-        0 0 7px
-        rgba(101,221,255,.28),
-
-        0 3px 12px
-        rgba(5,11,44,.24)
+        0 2px 10px rgba(2,8,31,.52),
+        0 0 12px rgba(106,218,255,.16)
         !important;
 }
 
 
+.rukhnav-v13-midnight-aurora
+.preview-copy small{
+    color:rgba(235,246,255,.78) !important;
+}
+
+
 /* =========================================================
-   ROSE CLOUD V12
+   ROSE CLOUD
    ========================================================= */
 
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-scene{
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-scene{
     background:
         radial-gradient(
-            ellipse at 88% 10%,
+            ellipse at 82% 13%,
             rgba(255,255,255,.96),
-            transparent 32%
+            transparent 31%
         ),
 
         radial-gradient(
-            ellipse at 18% 90%,
-            rgba(237,194,225,.38),
-            transparent 38%
+            ellipse at 11% 92%,
+            rgba(226,183,216,.30),
+            transparent 39%
         ),
 
         linear-gradient(
             145deg,
             #FFFDFB 0%,
-            #FFF5F3 26%,
-            #FBE3E9 54%,
-            #F6D2DF 78%,
-            #EFD7F1 100%
-        )
-        !important;
+            #FFF7F5 28%,
+            #FBE8EB 56%,
+            #F5D9E5 79%,
+            #EEDBF1 100%
+        );
 }
 
 
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-backlight{
-    right:-5%;
-    top:-16%;
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-base-glow{
+    width:270px;
+    height:190px;
 
-    width:66%;
-    height:62%;
+    right:-55px;
+    top:-72px;
 
     background:
         radial-gradient(
             ellipse,
-            rgba(255,255,255,1) 0%,
-            rgba(255,244,238,.95) 28%,
-            rgba(255,210,223,.42) 53%,
-            transparent 76%
-        )
-        !important;
+            rgba(255,255,255,1),
+            rgba(255,245,240,.81) 31%,
+            rgba(255,206,218,.29) 55%,
+            transparent 75%
+        );
+
+    filter:blur(15px);
 }
 
 
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-light-beam{
-    opacity:.20;
-
-    background:
-        linear-gradient(
-            180deg,
-            transparent,
-            rgba(255,255,255,.84),
-            rgba(255,211,222,.28),
-            transparent
-        )
-        !important;
-}
-
-
-/* main pearly cloud */
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud{
-    background:
-        radial-gradient(
-            ellipse at 38% 30%,
-            rgba(255,255,255,.98) 0 15%,
-            rgba(255,239,239,.96) 31%,
-            rgba(245,196,207,.78) 54%,
-            rgba(224,167,196,.40) 73%,
-            transparent 88%
-        )
-        !important;
-
-    box-shadow:
-        inset 0 7px 12px
-        rgba(255,255,255,.70),
-
-        inset 0 -10px 15px
-        rgba(192,115,151,.12),
-
-        0 7px 14px
-        rgba(185,113,145,.08);
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud::before{
-    background:
-        radial-gradient(
-            circle at 42% 32%,
-            #FFFFFF 0 18%,
-            #FFECEF 41%,
-            #F5BAC9 68%,
-            transparent 81%
-        )
-        !important;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud::after{
-    background:
-        radial-gradient(
-            circle at 45% 34%,
-            #FFF9FF 0 15%,
-            #F7D8F3 42%,
-            #DCAFD9 69%,
-            transparent 82%
-        )
-        !important;
-}
-
-
-/* big right-side fluffy bank */
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-1{
-    width:132px;
-    height:66px;
-
-    right:-15px;
-    bottom:-8px;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-2{
-    width:115px;
-    height:60px;
-
-    right:60px;
-    bottom:12px;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-3{
-    width:112px;
-    height:58px;
-
-    right:132px;
-    bottom:-6px;
-}
-
-
-/* mid-height blossoms */
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-4{
-    width:88px;
-    height:47px;
-
-    right:4px;
-    top:75px;
-
-    opacity:.74;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-5{
-    width:78px;
-    height:42px;
-
-    right:74px;
-    top:53px;
-
-    opacity:.62;
-}
-
-
-/* subtle left foreground to frame copy */
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-6{
-    width:74px;
-    height:40px;
-
-    left:-30px;
-    bottom:17px;
-
-    opacity:.44;
-}
-
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-7{
-    width:86px;
-    height:44px;
-
-    left:24px;
-    bottom:-13px;
-
-    opacity:.54;
-}
-
-
-/* high clouds stay distant */
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-8,
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-9,
-
-.rukhnav-v11-rose-cloud
-.rukhnav-v11-cloud-10{
-    filter:
-        blur(4px)
-        !important;
-
-    opacity:.28;
-}
-
-
-.rukhnav-v11-rose-cloud
-.preview-copy strong{
-    color:#793F57 !important;
-
-    text-shadow:
-        0 2px 8px
-        rgba(255,255,255,.80)
-        !important;
-}
-
-
-.rukhnav-v11-rose-cloud
-.preview-copy small{
-    color:#70545F !important;
-}
-
-
-/* =========================================================
-   BLACK CHAMPAGNE V12
-   ========================================================= */
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-scene{
-    background:
-        radial-gradient(
-            ellipse at 86% 10%,
-            rgba(248,212,130,.20),
-            transparent 32%
-        ),
-
-        radial-gradient(
-            ellipse at 67% 74%,
-            rgba(197,151,72,.16),
-            transparent 35%
-        ),
-
-        linear-gradient(
-            145deg,
-            #11120F 0%,
-            #1D1D18 32%,
-            #302D24 58%,
-            #4C4434 79%,
-            #6D5D42 100%
-        )
-        !important;
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-backlight{
-    right:-6%;
-    top:-16%;
-
-    width:68%;
-    height:64%;
-
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(255,240,188,.92) 0%,
-            rgba(231,196,117,.62) 27%,
-            rgba(173,128,54,.28) 50%,
-            transparent 74%
-        )
-        !important;
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-light-beam{
-    opacity:.24;
-
-    background:
-        linear-gradient(
-            180deg,
-            transparent 3%,
-            rgba(255,239,185,.12) 20%,
-            rgba(240,205,126,.56) 45%,
-            rgba(188,139,56,.20) 70%,
-            transparent 95%
-        )
-        !important;
-}
-
-
-/* charcoal cloud body with champagne edge */
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud{
-    background:
-        radial-gradient(
-            ellipse at 40% 28%,
-            rgba(250,221,151,.70) 0 10%,
-            rgba(192,149,73,.58) 26%,
-            rgba(91,76,48,.76) 52%,
-            rgba(38,37,31,.88) 73%,
-            transparent 90%
-        )
-        !important;
-
-    box-shadow:
-        inset 0 6px 11px
-        rgba(255,231,166,.13),
-
-        inset 0 -12px 18px
-        rgba(0,0,0,.25),
-
-        0 9px 18px
-        rgba(0,0,0,.18);
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud::before{
-    background:
-        radial-gradient(
-            circle at 42% 34%,
-            rgba(238,205,133,.58),
-            rgba(133,101,51,.46) 41%,
-            rgba(46,43,34,.78) 70%,
-            transparent 82%
-        )
-        !important;
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud::after{
-    background:
-        radial-gradient(
-            circle at 46% 34%,
-            rgba(255,239,191,.58),
-            rgba(182,142,72,.44) 40%,
-            rgba(55,49,37,.76) 70%,
-            transparent 82%
-        )
-        !important;
-}
-
-
-/* main lower rolling charcoal bank */
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-1{
-    width:130px;
-    height:58px;
-
-    left:-30px;
-    bottom:-3px;
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-2{
-    width:125px;
-    height:61px;
-
-    left:52px;
-    bottom:14px;
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-3{
-    width:136px;
-    height:60px;
-
-    left:128px;
-    bottom:-8px;
-}
-
-
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-4{
-    width:116px;
-    height:55px;
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-secondary-glow{
+    width:220px;
+    height:130px;
 
     right:-20px;
-    bottom:23px;
+    bottom:-56px;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(235,178,222,.39),
+            rgba(243,204,222,.15) 49%,
+            transparent 73%
+        );
+
+    filter:blur(20px);
 }
 
 
-/* gold illuminated upper clouds */
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-ray-one{
+    right:19px;
+    top:-28px;
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-5{
-    width:92px;
-    height:43px;
+    transform:rotate(18deg);
 
-    right:12px;
-    top:58px;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,.56),
+            rgba(255,232,228,.14) 47%,
+            transparent
+        );
 
-    opacity:.64;
+    opacity:.38;
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-6{
-    width:76px;
-    height:39px;
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-ray-two{
+    right:101px;
+    top:-18px;
 
-    right:88px;
-    top:25px;
+    transform:rotate(25deg);
 
-    opacity:.46;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,225,235,.28),
+            transparent
+        );
 }
 
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-7,
+/* very soft high vapor */
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-8,
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-back{
+    width:245px;
+    height:85px;
 
-.rukhnav-v11-black-champagne
-.rukhnav-v11-cloud-9{
-    filter:
-        blur(4px)
-        !important;
+    right:-41px;
+    top:31px;
 
-    opacity:.25;
+    opacity:.33;
+
+    transform:rotate(-8deg);
 }
 
 
-.rukhnav-v11-black-champagne
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-back
+.rukhnav-v13-cloud-body,
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-back
+.rukhnav-v13-lobe{
+    background:
+        radial-gradient(
+            ellipse at 43% 24%,
+            rgba(255,255,255,.96),
+            rgba(253,228,232,.72) 43%,
+            rgba(232,193,217,.34) 70%,
+            transparent 92%
+        );
+}
+
+
+/* principal rose cloud */
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-middle{
+    width:342px;
+    height:142px;
+
+    right:-83px;
+    bottom:0;
+
+    z-index:2;
+
+    transform:rotate(-5deg);
+}
+
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-body,
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-middle
+.rukhnav-v13-lobe{
+    background:
+        radial-gradient(
+            ellipse at 39% 20%,
+            rgba(255,255,255,.99) 0%,
+            rgba(255,245,244,.98) 22%,
+            rgba(250,213,219,.88) 46%,
+            rgba(235,181,201,.68) 66%,
+            rgba(211,159,192,.38) 81%,
+            transparent 100%
+        );
+}
+
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-shade{
+    background:
+        linear-gradient(
+            to bottom,
+            transparent,
+            rgba(205,143,174,.19) 46%,
+            rgba(186,127,164,.30)
+        );
+}
+
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-rim{
+    background:
+        linear-gradient(
+            100deg,
+            transparent,
+            rgba(255,255,255,.94) 38%,
+            rgba(255,241,238,.68) 66%,
+            transparent
+        );
+
+    opacity:.78;
+}
+
+
+/* lavender foreground vapor */
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-front{
+    width:280px;
+    height:99px;
+
+    left:-78px;
+    bottom:-42px;
+
+    z-index:3;
+
+    opacity:.68;
+
+    transform:rotate(5deg);
+}
+
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-front
+.rukhnav-v13-cloud-body,
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-front
+.rukhnav-v13-lobe{
+    background:
+        radial-gradient(
+            ellipse at 51% 18%,
+            rgba(251,235,247,.88),
+            rgba(228,195,229,.69) 43%,
+            rgba(206,168,211,.49) 66%,
+            rgba(188,151,193,.24) 83%,
+            transparent
+        );
+}
+
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-bank-front
+.rukhnav-v13-cloud-shade{
+    background:
+        rgba(179,134,174,.16);
+}
+
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-mist-one{
+    width:210px;
+    height:31px;
+
+    right:16px;
+    bottom:49px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.50),
+            rgba(247,207,220,.30),
+            transparent
+        );
+
+    transform:rotate(-6deg);
+}
+
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-mist-two{
+    width:170px;
+    height:24px;
+
+    left:-20px;
+    top:122px;
+
+    background:
+        rgba(255,255,255,.28);
+
+    transform:rotate(5deg);
+}
+
+
+.rukhnav-v13-rose-cloud
+.rukhnav-v13-vignette{
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,250,247,.38),
+            transparent 47%
+        );
+}
+
+
+.rukhnav-v13-rose-cloud
 .preview-copy strong{
-    color:#FFF0BE !important;
+    color:#783F59 !important;
 
     text-shadow:
-        0 0 8px
-        rgba(238,198,106,.20),
-
-        0 3px 10px
-        rgba(0,0,0,.26)
+        0 2px 7px rgba(255,255,255,.88)
         !important;
 }
 
 
-.rukhnav-v11-black-champagne
+.rukhnav-v13-rose-cloud
 .preview-copy small{
-    color:
-        rgba(255,246,217,.82)
-        !important;
+    color:#765967 !important;
 }
 
 
 /* =========================================================
-   KEEP EVERYTHING STATIC AND LIGHT
+   BLACK CHAMPAGNE
    ========================================================= */
 
-.rukhnav-v11-prototype
-.rukhnav-v11-scene,
+.rukhnav-v13-black-champagne
+.rukhnav-v13-scene{
+    background:
+        radial-gradient(
+            ellipse at 84% 16%,
+            rgba(238,198,111,.15),
+            transparent 29%
+        ),
 
-.rukhnav-v11-prototype
-.rukhnav-v11-cloud,
+        radial-gradient(
+            ellipse at 75% 88%,
+            rgba(183,132,50,.12),
+            transparent 37%
+        ),
 
-.rukhnav-v11-prototype
-.rukhnav-v11-backlight,
+        linear-gradient(
+            143deg,
+            #090A09 0%,
+            #10110F 31%,
+            #1B1B17 54%,
+            #29271F 75%,
+            #3B3427 100%
+        );
+}
 
-.rukhnav-v11-prototype
-.rukhnav-v11-light-beam{
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-base-glow{
+    width:280px;
+    height:210px;
+
+    right:-67px;
+    top:-69px;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(255,240,190,.72),
+            rgba(229,190,107,.43) 29%,
+            rgba(163,113,42,.14) 53%,
+            transparent 75%
+        );
+
+    filter:blur(19px);
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-secondary-glow{
+    width:260px;
+    height:145px;
+
+    right:-40px;
+    bottom:-61px;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(208,158,67,.27),
+            rgba(114,80,30,.12) 48%,
+            transparent 73%
+        );
+
+    filter:blur(24px);
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-ray-one{
+    right:23px;
+    top:-34px;
+
+    transform:rotate(18deg);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,237,180,.28),
+            rgba(224,182,93,.09) 48%,
+            transparent
+        );
+
+    opacity:.42;
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-ray-two{
+    right:115px;
+    top:-22px;
+
+    transform:rotate(26deg);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(218,170,83,.16),
+            transparent
+        );
+}
+
+
+/* distant charcoal-gold vapor */
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-back{
+    width:235px;
+    height:82px;
+
+    right:-31px;
+    top:31px;
+
+    opacity:.31;
+
+    transform:rotate(-7deg);
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-back
+.rukhnav-v13-cloud-body,
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-back
+.rukhnav-v13-lobe{
+    background:
+        radial-gradient(
+            ellipse at 40% 21%,
+            rgba(228,197,128,.48),
+            rgba(126,102,63,.44) 39%,
+            rgba(49,47,39,.50) 68%,
+            rgba(22,23,20,.32) 88%,
+            transparent
+        );
+}
+
+
+/* principal charcoal cloud with gold rim */
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-middle{
+    width:352px;
+    height:143px;
+
+    right:-94px;
+    bottom:3px;
+
+    z-index:2;
+
+    transform:rotate(-5deg);
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-body,
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-middle
+.rukhnav-v13-lobe{
+    background:
+        radial-gradient(
+            ellipse at 39% 18%,
+            rgba(236,207,139,.66) 0%,
+            rgba(167,130,69,.59) 23%,
+            rgba(89,75,51,.72) 47%,
+            rgba(49,47,39,.88) 66%,
+            rgba(28,29,25,.94) 82%,
+            rgba(15,16,14,.94) 100%
+        );
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-shade{
+    background:
+        linear-gradient(
+            to bottom,
+            transparent,
+            rgba(15,16,14,.50) 44%,
+            rgba(4,5,4,.82)
+        );
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-middle
+.rukhnav-v13-cloud-rim{
+    background:
+        linear-gradient(
+            100deg,
+            transparent 6%,
+            rgba(255,232,171,.56) 39%,
+            rgba(213,166,82,.39) 67%,
+            transparent 94%
+        );
+
+    opacity:.77;
+}
+
+
+/* deep black foreground smoke */
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-front{
+    width:305px;
+    height:105px;
+
+    left:-87px;
+    bottom:-44px;
+
+    z-index:3;
+
+    opacity:.91;
+
+    transform:rotate(4deg);
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-front
+.rukhnav-v13-cloud-body,
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-front
+.rukhnav-v13-lobe{
+    background:
+        radial-gradient(
+            ellipse at 52% 16%,
+            rgba(72,67,54,.76),
+            rgba(38,38,33,.87) 43%,
+            rgba(19,20,18,.96) 69%,
+            rgba(8,9,8,.99)
+        );
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-front
+.rukhnav-v13-cloud-shade{
+    background:
+        rgba(0,0,0,.74);
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-bank-front
+.rukhnav-v13-cloud-rim{
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(197,158,85,.16),
+            rgba(239,201,127,.11),
+            transparent
+        );
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-mist-one{
+    width:230px;
+    height:31px;
+
+    right:-8px;
+    bottom:48px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(220,177,92,.17),
+            rgba(90,73,46,.10),
+            transparent
+        );
+
+    transform:rotate(-7deg);
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-mist-two{
+    width:160px;
+    height:23px;
+
+    right:44px;
+    top:105px;
+
+    background:
+        rgba(220,186,113,.09);
+
+    transform:rotate(-10deg);
+}
+
+
+.rukhnav-v13-black-champagne
+.rukhnav-v13-vignette{
+    background:
+        linear-gradient(
+            90deg,
+            rgba(2,3,2,.57),
+            transparent 50%
+        ),
+
+        linear-gradient(
+            to top,
+            rgba(0,0,0,.19),
+            transparent 46%
+        );
+}
+
+
+.rukhnav-v13-black-champagne
+.preview-copy strong{
+    color:#F5DE9C !important;
+
+    text-shadow:
+        0 2px 10px rgba(0,0,0,.70),
+        0 0 11px rgba(220,176,82,.10)
+        !important;
+}
+
+
+.rukhnav-v13-black-champagne
+.preview-copy small{
+    color:rgba(244,230,190,.74) !important;
+}
+
+
+/* =========================================================
+   PERFORMANCE / STATIC PRESENTATION
+   ========================================================= */
+
+.rukhnav-v13-scene,
+.rukhnav-v13-cloud-bank,
+.rukhnav-v13-lobe,
+.rukhnav-v13-cloud-body,
+.rukhnav-v13-cloud-shade,
+.rukhnav-v13-cloud-rim,
+.rukhnav-v13-ray,
+.rukhnav-v13-mist{
     animation:none !important;
-
     transition:none !important;
+}
+
+
+@media (prefers-reduced-motion: reduce){
+
+    .rukhnav-v13-scene *,
+    .rukhnav-v13-scene{
+        animation:none !important;
+        transition:none !important;
+    }
 }

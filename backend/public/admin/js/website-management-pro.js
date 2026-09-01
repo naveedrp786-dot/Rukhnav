@@ -1234,344 +1234,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/[^a-z0-9_-]/gi, "-");
     }
 
-    function createSmokeSvg(sceneId){
 
-        const id = safeId(sceneId);
-
-        const svg = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "svg"
-        );
-
-        svg.setAttribute(
-            "class",
-            "rukhnav-v7-smoke-svg"
-        );
-
-        svg.setAttribute(
-            "viewBox",
-            "0 0 600 420"
-        );
-
-        svg.setAttribute(
-            "preserveAspectRatio",
-            "xMidYMid slice"
-        );
-
-        svg.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-        svg.innerHTML = `
-            <defs>
-
-                <filter
-                    id="v7-smoke-back-${id}"
-                    x="-40%"
-                    y="-40%"
-                    width="180%"
-                    height="180%"
-                >
-                    <feTurbulence
-                        type="fractalNoise"
-                        baseFrequency="0.008 0.018"
-                        numOctaves="4"
-                        seed="7"
-                        result="noise"
-                    />
-
-                    <feGaussianBlur
-                        in="SourceGraphic"
-                        stdDeviation="8"
-                        result="blurred"
-                    />
-
-                    <feDisplacementMap
-                        in="blurred"
-                        in2="noise"
-                        scale="72"
-                        xChannelSelector="R"
-                        yChannelSelector="B"
-                        result="warped"
-                    />
-
-                    <feGaussianBlur
-                        in="warped"
-                        stdDeviation="10"
-                    />
-                </filter>
-
-
-                <filter
-                    id="v7-smoke-mid-${id}"
-                    x="-45%"
-                    y="-45%"
-                    width="190%"
-                    height="190%"
-                >
-                    <feTurbulence
-                        type="fractalNoise"
-                        baseFrequency="0.014 0.027"
-                        numOctaves="5"
-                        seed="13"
-                        result="noise"
-                    />
-
-                    <feDisplacementMap
-                        in="SourceGraphic"
-                        in2="noise"
-                        scale="92"
-                        xChannelSelector="R"
-                        yChannelSelector="G"
-                        result="warped"
-                    />
-
-                    <feGaussianBlur
-                        in="warped"
-                        stdDeviation="7"
-                    />
-                </filter>
-
-
-                <filter
-                    id="v7-smoke-front-${id}"
-                    x="-50%"
-                    y="-50%"
-                    width="200%"
-                    height="200%"
-                >
-                    <feTurbulence
-                        type="turbulence"
-                        baseFrequency="0.019 0.041"
-                        numOctaves="3"
-                        seed="21"
-                        result="noise"
-                    />
-
-                    <feDisplacementMap
-                        in="SourceGraphic"
-                        in2="noise"
-                        scale="118"
-                        xChannelSelector="B"
-                        yChannelSelector="R"
-                        result="warped"
-                    />
-
-                    <feGaussianBlur
-                        in="warped"
-                        stdDeviation="4.5"
-                    />
-                </filter>
-
-
-                <radialGradient
-                    id="v7-cloud-a-${id}"
-                    cx="50%"
-                    cy="50%"
-                    r="50%"
-                >
-                    <stop
-                        offset="0%"
-                        stop-color="var(--preview-highlight)"
-                        stop-opacity=".88"
-                    />
-
-                    <stop
-                        offset="42%"
-                        stop-color="var(--preview-shade-2)"
-                        stop-opacity=".55"
-                    />
-
-                    <stop
-                        offset="100%"
-                        stop-color="var(--preview-shade-1)"
-                        stop-opacity="0"
-                    />
-                </radialGradient>
-
-
-                <radialGradient
-                    id="v7-cloud-b-${id}"
-                    cx="50%"
-                    cy="50%"
-                    r="50%"
-                >
-                    <stop
-                        offset="0%"
-                        stop-color="var(--preview-glow)"
-                        stop-opacity=".86"
-                    />
-
-                    <stop
-                        offset="46%"
-                        stop-color="var(--preview-accent)"
-                        stop-opacity=".48"
-                    />
-
-                    <stop
-                        offset="100%"
-                        stop-color="var(--preview-shade-3)"
-                        stop-opacity="0"
-                    />
-                </radialGradient>
-
-
-                <linearGradient
-                    id="v7-wisp-${id}"
-                    x1="0%"
-                    y1="50%"
-                    x2="100%"
-                    y2="50%"
-                >
-                    <stop
-                        offset="0%"
-                        stop-color="var(--preview-shade-1)"
-                        stop-opacity="0"
-                    />
-
-                    <stop
-                        offset="24%"
-                        stop-color="var(--preview-highlight)"
-                        stop-opacity=".58"
-                    />
-
-                    <stop
-                        offset="58%"
-                        stop-color="var(--preview-glow)"
-                        stop-opacity=".76"
-                    />
-
-                    <stop
-                        offset="100%"
-                        stop-color="var(--preview-shade-4)"
-                        stop-opacity="0"
-                    />
-                </linearGradient>
-
-            </defs>
-
-
-            <g
-                class="v7-smoke-layer
-                       v7-smoke-layer-back"
-                filter="url(#v7-smoke-back-${id})"
-            >
-
-                <ellipse
-                    cx="100"
-                    cy="115"
-                    rx="190"
-                    ry="85"
-                    fill="url(#v7-cloud-a-${id})"
-                />
-
-                <ellipse
-                    cx="465"
-                    cy="85"
-                    rx="175"
-                    ry="92"
-                    fill="url(#v7-cloud-b-${id})"
-                />
-
-                <ellipse
-                    cx="315"
-                    cy="330"
-                    rx="240"
-                    ry="86"
-                    fill="url(#v7-cloud-a-${id})"
-                    opacity=".58"
-                />
-
-            </g>
-
-
-            <g
-                class="v7-smoke-layer
-                       v7-smoke-layer-middle"
-                filter="url(#v7-smoke-mid-${id})"
-            >
-
-                <path
-                    d="
-                        M -90 265
-                        C 60 150,
-                          125 325,
-                          245 205
-                        C 360 95,
-                          425 245,
-                          690 115
-                        L 690 260
-                        C 470 370,
-                          330 240,
-                          190 360
-                        C 80 435,
-                          -10 335,
-                          -90 410
-                        Z
-                    "
-                    fill="url(#v7-wisp-${id})"
-                    opacity=".82"
-                />
-
-                <ellipse
-                    cx="210"
-                    cy="120"
-                    rx="150"
-                    ry="64"
-                    fill="url(#v7-cloud-b-${id})"
-                    opacity=".58"
-                />
-
-            </g>
-
-
-            <g
-                class="v7-smoke-layer
-                       v7-smoke-layer-front"
-                filter="url(#v7-smoke-front-${id})"
-            >
-
-                <path
-                    d="
-                        M -120 345
-                        C 30 210,
-                          115 385,
-                          245 250
-                        C 330 160,
-                          445 300,
-                          720 155
-                    "
-                    fill="none"
-                    stroke="url(#v7-wisp-${id})"
-                    stroke-width="78"
-                    stroke-linecap="round"
-                    opacity=".66"
-                />
-
-                <path
-                    d="
-                        M -70 100
-                        C 85 20,
-                          135 165,
-                          285 92
-                        C 400 30,
-                          500 110,
-                          680 35
-                    "
-                    fill="none"
-                    stroke="url(#v7-wisp-${id})"
-                    stroke-width="48"
-                    stroke-linecap="round"
-                    opacity=".48"
-                />
-
-            </g>
-        `;
-
-        return svg;
-    }
-
+    /* V13.1: legacy SVG smoke generator removed. */
 
     function installIntoCard(sceneId){
 
@@ -1595,9 +1259,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     "rukhnav-v7-master-preview"
                 );
 
-                card.prepend(
-                    createSmokeSvg(sceneId)
-                );
             });
     }
 
@@ -1741,45 +1402,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
 })();
 
-
 /* =========================================================
-   RUKHNAV V11 CODED CLOUD PROTOTYPES
-   Only:
+   RUKHNAV V13 PROCEDURAL ATMOSPHERIC CLOUD ENGINE
+
+   Prototypes only:
    - Midnight Aurora
    - Rose Cloud
    - Black Champagne
 
-   HTML/CSS only.
+   Code only.
    No images.
-   No SVG turbulence.
+   No SVG.
+   No canvas.
+   No WebGL.
+   No 3D.
    ========================================================= */
 
-(function installRukhnavV11CloudScenes(){
+(function installRukhnavV13AtmosphericScenes(){
 
-    const PROTOTYPES = {
-        "midnight-aurora": {
-            cloudCount: 12
-        },
-
-        "rose-cloud": {
-            cloudCount: 11
-        },
-
-        "black-champagne": {
-            cloudCount: 10
-        }
-    };
+    const PROTOTYPES = new Set([
+        "midnight-aurora",
+        "rose-cloud",
+        "black-champagne"
+    ]);
 
 
     function getSceneId(card){
 
         const sceneClass =
             Array.from(card.classList)
-                .find(
-                    className =>
-                        className.startsWith(
-                            "rukhnav-theme-scene-"
-                        )
+                .find(className =>
+                    className.startsWith(
+                        "rukhnav-theme-scene-"
+                    )
                 );
 
         if (!sceneClass) {
@@ -1793,74 +1448,174 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    function buildScene(sceneId){
+    function createElement(
+        tag,
+        className
+    ){
 
-        const scene =
-            document.createElement("div");
+        const element =
+            document.createElement(tag);
 
-        scene.className =
-            `rukhnav-v11-scene ` +
-            `rukhnav-v11-scene-${sceneId}`;
+        element.className =
+            className;
 
-        scene.setAttribute(
+        element.setAttribute(
             "aria-hidden",
             "true"
         );
 
-
-        /* background light field */
-
-        const glow =
-            document.createElement("div");
-
-        glow.className =
-            "rukhnav-v11-backlight";
-
-        scene.appendChild(glow);
+        return element;
+    }
 
 
-        /* directional light beam */
+    function buildCloudBank(
+        bankName,
+        lobeCount
+    ){
 
-        const beam =
-            document.createElement("div");
+        const bank =
+            createElement(
+                "div",
+                `rukhnav-v13-cloud-bank ` +
+                `rukhnav-v13-bank-${bankName}`
+            );
 
-        beam.className =
-            "rukhnav-v11-light-beam";
+        const body =
+            createElement(
+                "div",
+                "rukhnav-v13-cloud-body"
+            );
 
-        scene.appendChild(beam);
+        bank.appendChild(body);
 
-
-        /* cloud groups */
-
-        const count =
-            PROTOTYPES[sceneId].cloudCount;
 
         for (
             let index = 1;
-            index <= count;
+            index <= lobeCount;
             index += 1
         ) {
 
-            const cloud =
-                document.createElement("span");
+            const lobe =
+                createElement(
+                    "span",
+                    `rukhnav-v13-lobe ` +
+                    `rukhnav-v13-lobe-${index}`
+                );
 
-            cloud.className =
-                `rukhnav-v11-cloud ` +
-                `rukhnav-v11-cloud-${index}`;
-
-            scene.appendChild(cloud);
+            bank.appendChild(lobe);
         }
 
 
-        /* foreground atmospheric veil */
+        const shade =
+            createElement(
+                "div",
+                "rukhnav-v13-cloud-shade"
+            );
 
-        const veil =
-            document.createElement("div");
+        bank.appendChild(shade);
 
-        veil.className =
-            "rukhnav-v11-veil";
 
-        scene.appendChild(veil);
+        const rim =
+            createElement(
+                "div",
+                "rukhnav-v13-cloud-rim"
+            );
+
+        bank.appendChild(rim);
+
+        return bank;
+    }
+
+
+    function buildScene(sceneId){
+
+        const scene =
+            createElement(
+                "div",
+                `rukhnav-v13-scene ` +
+                `rukhnav-v13-scene-${sceneId}`
+            );
+
+
+        scene.appendChild(
+            createElement(
+                "div",
+                "rukhnav-v13-base-glow"
+            )
+        );
+
+
+        scene.appendChild(
+            createElement(
+                "div",
+                "rukhnav-v13-secondary-glow"
+            )
+        );
+
+
+        scene.appendChild(
+            createElement(
+                "div",
+                "rukhnav-v13-ray rukhnav-v13-ray-one"
+            )
+        );
+
+
+        scene.appendChild(
+            createElement(
+                "div",
+                "rukhnav-v13-ray rukhnav-v13-ray-two"
+            )
+        );
+
+
+        scene.appendChild(
+            buildCloudBank(
+                "back",
+                5
+            )
+        );
+
+
+        scene.appendChild(
+            buildCloudBank(
+                "middle",
+                7
+            )
+        );
+
+
+        scene.appendChild(
+            buildCloudBank(
+                "front",
+                6
+            )
+        );
+
+
+        scene.appendChild(
+            createElement(
+                "div",
+                "rukhnav-v13-mist rukhnav-v13-mist-one"
+            )
+        );
+
+
+        scene.appendChild(
+            createElement(
+                "div",
+                "rukhnav-v13-mist rukhnav-v13-mist-two"
+            )
+        );
+
+
+        scene.appendChild(
+            createElement(
+                "div",
+                "rukhnav-v13-vignette"
+            )
+        );
+
 
         return scene;
     }
@@ -1879,10 +1634,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (
                     !sceneId ||
-                    !PROTOTYPES[sceneId]
+                    !PROTOTYPES.has(sceneId)
                 ) {
                     return;
                 }
+
 
                 const preview =
                     card.querySelector(
@@ -1893,21 +1649,54 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                card.classList.add(
+                /*
+                 * V13.1:
+                 * Remove any stale legacy V7 SVG atmosphere
+                 * left in the DOM by an older cached script.
+                 */
+                card
+                    .querySelectorAll(
+                        ".rukhnav-v7-smoke-svg"
+                    )
+                    .forEach(element =>
+                        element.remove()
+                    );
+
+
+                card.classList.remove(
                     "rukhnav-v11-prototype"
                 );
 
-                card.classList.add(
-                    `rukhnav-v11-${sceneId}`
+                card.classList.remove(
+                    "rukhnav-v11-midnight-aurora",
+                    "rukhnav-v11-rose-cloud",
+                    "rukhnav-v11-black-champagne"
                 );
+
+
+                card.classList.add(
+                    "rukhnav-v13-prototype",
+                    `rukhnav-v13-${sceneId}`
+                );
+
+
+                preview
+                    .querySelectorAll(
+                        ".rukhnav-v11-scene"
+                    )
+                    .forEach(element =>
+                        element.remove()
+                    );
+
 
                 if (
                     preview.querySelector(
-                        ".rukhnav-v11-scene"
+                        ".rukhnav-v13-scene"
                     )
                 ) {
                     return;
                 }
+
 
                 preview.prepend(
                     buildScene(sceneId)
@@ -1918,6 +1707,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let scheduled = false;
 
+
     function schedule(){
 
         if (scheduled) {
@@ -1927,21 +1717,24 @@ document.addEventListener("DOMContentLoaded", () => {
         scheduled = true;
 
         requestAnimationFrame(() => {
+
             scheduled = false;
+
             install();
         });
     }
 
 
     if (
-        document.readyState === "loading"
+        document.readyState ===
+        "loading"
     ) {
 
         document.addEventListener(
             "DOMContentLoaded",
             schedule,
             {
-                once: true
+                once:true
             }
         );
 
@@ -1956,11 +1749,12 @@ document.addEventListener("DOMContentLoaded", () => {
             schedule
         );
 
+
     observer.observe(
         document.body,
         {
-            childList: true,
-            subtree: true
+            childList:true,
+            subtree:true
         }
     );
 
