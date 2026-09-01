@@ -251,13 +251,11 @@ function initializeProductShowcase(products = []) {
 
 
     const featured =
-        products
-            .filter(product =>
+        products.filter(
+            product =>
                 product &&
-                product.id &&
-                getImage(product)
-            )
-            .slice(0, 8);
+                product.id
+        );
 
     if (!featured.length) {
         showcase.classList.add("hidden");
@@ -268,7 +266,6 @@ function initializeProductShowcase(products = []) {
     let current = 0;
     let timer = null;
     let renderTimer = null;
-    let failedProducts = new Set();
 
     const ROTATION_MS = 4200;
 
@@ -336,22 +333,6 @@ function initializeProductShowcase(products = []) {
             (index + featured.length) %
             featured.length;
 
-        /*
-         * Skip images which already failed during this page visit.
-         */
-        let attempts = 0;
-
-        while (
-            failedProducts.has(featured[current].id) &&
-            attempts < featured.length
-        ) {
-            current =
-                (current + 1) %
-                featured.length;
-
-            attempts += 1;
-        }
-
         const product =
             featured[current];
 
@@ -374,37 +355,56 @@ function initializeProductShowcase(products = []) {
             const imageUrl =
                 getImage(product);
 
-            image.style.display = "";
+            const picture =
+                image.closest(".rk-showcase-picture");
+
+            const showPlaceholder = () => {
+
+                image.style.display = "none";
+
+                if (picture) {
+                    picture.classList.add(
+                        "no-product-image"
+                    );
+                }
+            };
+
+            const showProductImage = () => {
+
+                image.style.display = "";
+
+                if (picture) {
+                    picture.classList.remove(
+                        "no-product-image"
+                    );
+                }
+            };
 
             image.onerror = () => {
-
-                failedProducts.add(product.id);
 
                 image.onerror = null;
                 image.removeAttribute("src");
 
-                /*
-                 * Do not leave browser broken-image icon visible.
-                 */
-                image.style.display = "none";
-
-                if (
-                    failedProducts.size <
-                    featured.length
-                ) {
-                    window.setTimeout(() => {
-                        render(current + 1);
-                        scheduleNext();
-                    }, 350);
-                }
+                showPlaceholder();
             };
 
             image.onload = () => {
-                image.style.display = "";
+                showProductImage();
             };
 
-            image.src =
-                imageUrl;
+            if (imageUrl) {
+
+                showProductImage();
+
+                image.src =
+                    imageUrl;
+
+            } else {
+
+                image.removeAttribute("src");
+
+                showPlaceholder();
+            }
 
             image.alt =
                 product.product_name ||

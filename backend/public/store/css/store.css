@@ -6317,3 +6317,130 @@ button{
         right:6px;
     }
 }
+
+
+/* =========================================================
+   RUKHNAV PRODUCT SHOWCASE - LEFT IMAGE / RIGHT CONTENT
+   ========================================================= */
+
+.rk-showcase-main{
+    display:grid;
+    grid-template-columns:
+        minmax(320px, 46%)
+        minmax(0, 54%);
+    align-items:stretch;
+}
+
+.rk-showcase-picture{
+    grid-column:1;
+    grid-row:1;
+    min-width:0;
+    width:100%;
+    height:300px;
+    padding:22px 35px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+}
+
+.rk-showcase-picture img{
+    display:block;
+    width:100%;
+    max-width:440px;
+    height:255px;
+    object-fit:contain;
+    object-position:center;
+}
+
+.rk-showcase-copy{
+    grid-column:2;
+    grid-row:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    text-align:left;
+    padding:
+        34px
+        72px
+        34px
+        38px;
+}
+
+
+/* Product has no usable picture */
+.rk-showcase-picture.no-product-image::before{
+    content:"R";
+    width:120px;
+    height:120px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,.72);
+    border:1px solid rgba(0,0,0,.08);
+    font-family:var(--heading);
+    font-size:62px;
+    font-weight:700;
+    color:var(--primary);
+    box-shadow:0 12px 35px rgba(0,0,0,.07);
+}
+
+.rk-showcase-picture.no-product-image::after{
+    content:"RUKHNAV";
+    position:absolute;
+    left:50%;
+    top:72%;
+    transform:translateX(-50%);
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:2px;
+    color:var(--muted);
+}
+
+
+/* Mobile still keeps image LEFT and text RIGHT */
+@media(max-width:700px){
+
+    .rk-showcase-main{
+        grid-template-columns:
+            minmax(120px, 43%)
+            minmax(0, 57%);
+    }
+
+    .rk-showcase-picture{
+        grid-column:1;
+        height:210px;
+        padding:16px 10px 20px 18px;
+    }
+
+    .rk-showcase-picture img{
+        width:100%;
+        height:180px;
+        max-width:100%;
+        object-fit:contain;
+    }
+
+    .rk-showcase-copy{
+        grid-column:2;
+        padding:
+            22px
+            30px
+            26px
+            10px;
+        text-align:left;
+        align-items:flex-start;
+    }
+
+    .rk-showcase-picture.no-product-image::before{
+        width:75px;
+        height:75px;
+        font-size:38px;
+    }
+
+    .rk-showcase-picture.no-product-image::after{
+        font-size:8px;
+    }
+}
