@@ -411,10 +411,83 @@ function initializeProductShowcase(products = []) {
                 product.name ||
                 "RUKHNAV product";
 
-            name.textContent =
+            const productName =
                 product.product_name ||
                 product.name ||
                 "RUKHNAV Product";
+
+            const ratingValue =
+                Number(
+                    product.averageRating ??
+                    product.average_rating ??
+                    product.rating ??
+                    0
+                );
+
+            const reviewTotal =
+                Number(
+                    product.totalReviews ??
+                    product.total_reviews ??
+                    product.review_count ??
+                    product.reviews_count ??
+                    0
+                );
+
+            const safeRating =
+                Number.isFinite(ratingValue)
+                    ? Math.max(
+                        0,
+                        Math.min(5, ratingValue)
+                    )
+                    : 0;
+
+            const roundedRating =
+                Math.round(safeRating);
+
+            name.textContent =
+                productName;
+
+            let rating =
+                name.parentElement
+                    ?.querySelector(
+                        ".rk-showcase-rating"
+                    );
+
+            if (!rating) {
+
+                rating =
+                    document.createElement("div");
+
+                rating.className =
+                    "rk-showcase-rating";
+
+                name.insertAdjacentElement(
+                    "afterend",
+                    rating
+                );
+            }
+
+            rating.innerHTML = `
+                <span class="rk-showcase-stars">
+                    ${"★".repeat(roundedRating)}
+                    ${"☆".repeat(5 - roundedRating)}
+                </span>
+
+                ${
+                    reviewTotal > 0
+                        ? `
+                            <span class="rk-showcase-rating-text">
+                                ${safeRating.toFixed(1)}
+                                (${reviewTotal})
+                            </span>
+                        `
+                        : `
+                            <span class="rk-showcase-rating-text">
+                                No reviews yet
+                            </span>
+                        `
+                }
+            `;
 
             description.textContent =
                 product.short_description ||

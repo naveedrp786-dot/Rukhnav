@@ -6444,3 +6444,47 @@ button{
         font-size:8px;
     }
 }
+
+
+/* =========================================================
+   HOMEPAGE SHOWCASE RATING
+   ========================================================= */
+
+.rk-showcase-rating{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:7px 0 10px;
+    min-height:22px;
+}
+
+.rk-showcase-stars{
+    color:#d4a62a;
+    font-size:17px;
+    line-height:1;
+    letter-spacing:1px;
+}
+
+.rk-showcase-rating-text{
+    color:var(--muted);
+    font-size:12px;
+    font-weight:700;
+}
+
+
+@media(max-width:700px){
+
+    .rk-showcase-rating{
+        gap:5px;
+        margin:5px 0 8px;
+    }
+
+    .rk-showcase-stars{
+        font-size:13px;
+    }
+
+    .rk-showcase-rating-text{
+        font-size:10px;
+    }
+}

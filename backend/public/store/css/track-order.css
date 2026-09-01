@@ -344,3 +344,109 @@
         height:40px;
     }
 }
+
+
+/* =========================================================
+   RUKHNAV STOREFRONT THEME ALIGNMENT
+   ========================================================= */
+
+body{
+    background:#fff;
+}
+
+.public-tracking-page{
+    width:min(1180px,calc(100% - 36px));
+    padding:38px 0 72px;
+}
+
+.tracking-intro{
+    max-width:760px;
+    margin-bottom:24px;
+}
+
+.tracking-eyebrow{
+    color:var(--primary);
+}
+
+.tracking-intro h1{
+    color:var(--primary);
+    font-size:clamp(34px,5vw,50px);
+}
+
+.tracking-intro p{
+    max-width:700px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.tracking-search-card,
+.tracking-result{
+    border-radius:16px;
+    border:1px solid var(--line);
+    box-shadow:0 8px 28px rgba(0,0,0,.055);
+}
+
+.tracking-search-card{
+    max-width:900px;
+    padding:22px;
+}
+
+.tracking-field input{
+    border-radius:10px;
+    background:#fff;
+}
+
+.tracking-field input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(212,166,42,.12);
+}
+
+.tracking-submit{
+    border-radius:10px;
+    background:var(--primary);
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
+}
+
+.tracking-submit:hover{
+    transform:translateY(-1px);
+    box-shadow:0 8px 18px rgba(0,0,0,.13);
+}
+
+.tracking-result-header h2,
+.tracking-products-heading h3{
+    color:var(--primary);
+}
+
+.tracking-message{
+    border:1px solid #f1c7c7;
+}
+
+.tracking-step.complete span,
+.tracking-status-badge{
+    background:var(--primary);
+}
+
+.tracking-result-actions a{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    min-height:38px;
+    padding:0 13px;
+    border:1px solid var(--primary);
+    border-radius:9px;
+    text-decoration:none;
+}
+
+.tracking-result-actions a:first-child{
+    background:var(--primary);
+    color:#fff;
+}
+
+.tracking-result-actions a:last-child{
+    background:#fff;
+    color:var(--primary);
+}

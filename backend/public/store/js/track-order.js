@@ -373,19 +373,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            const payload =
-                await API.request(
+            const response =
+                await fetch(
                     "/api/orders/public-track",
                     {
                         method: "POST",
-                        body: {
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        credentials: "same-origin",
+                        body: JSON.stringify({
                             order_number:
                                 orderNumber,
 
                             identifier
-                        }
+                        })
                     }
                 );
+
+            let payload = {};
+
+            try {
+                payload =
+                    await response.json();
+            } catch (_) {
+                payload = {};
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    payload.message ||
+                    "Unable to verify this order."
+                );
+            }
+
+            if (!payload.success) {
+                throw new Error(
+                    payload.message ||
+                    "Unable to verify this order."
+                );
+            }
 
             render(payload);
 
