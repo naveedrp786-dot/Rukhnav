@@ -1682,9 +1682,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
                 }
 
-                preview.prepend(
-                    createSmokeSvg(sceneId)
-                );
+                /*
+                 * V8:
+                 * lightweight cinematic atmosphere.
+                 * Do not create SVG turbulence layers.
+                 */
             });
     }
 

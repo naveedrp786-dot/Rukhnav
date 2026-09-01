@@ -1969,11 +1969,236 @@ body.rk-home .store-header{
         this.ensureV6AtmosphereStyles();
 
         /*
-         * V6 profile renderer:
-         * every theme receives atmospheric depth.
-         * visual_profile controls intensity and treatment.
+         * RUKHNAV V8 LIGHT CINEMATIC STOREFRONT
+         * Lightweight coloured illumination.
          */
-        this.ensureHeroSmokeLayers();
+
+        if (
+            !document.getElementById(
+                "rukhnav-v8-light-cinematic"
+            )
+        ) {
+
+            const v8Style =
+                document.createElement(
+                    "style"
+                );
+
+            v8Style.id =
+                "rukhnav-v8-light-cinematic";
+
+            v8Style.textContent = `
+                .rukhnav-real-smoke{
+                    display:none !important;
+                }
+
+                body.rk-home .rk-hero{
+                    position:relative;
+                    isolation:isolate;
+                    overflow:hidden;
+                }
+
+                body.rk-home .rk-hero::before{
+                    content:"";
+                    position:absolute;
+                    z-index:0;
+
+                    width:82%;
+                    height:62%;
+
+                    left:-18%;
+                    top:-18%;
+
+                    border-radius:50%;
+
+                    pointer-events:none;
+
+                    background:
+                        radial-gradient(
+                            ellipse at center,
+                            color-mix(
+                                in srgb,
+                                var(--highlight) 72%,
+                                white
+                            ),
+                            color-mix(
+                                in srgb,
+                                var(--shade-2) 38%,
+                                transparent
+                            ) 48%,
+                            transparent 74%
+                        );
+
+                    filter:
+                        blur(44px)
+                        saturate(1.12)
+                        brightness(1.12);
+
+                    opacity:.56;
+
+                    animation:
+                        rukhnavV8StoreLightA
+                        16s ease-in-out
+                        infinite alternate;
+                }
+
+                body.rk-home .rk-hero::after{
+                    content:"";
+                    position:absolute;
+                    z-index:0;
+
+                    width:76%;
+                    height:56%;
+
+                    right:-16%;
+                    top:2%;
+
+                    border-radius:50%;
+
+                    pointer-events:none;
+
+                    background:
+                        radial-gradient(
+                            ellipse at center,
+                            color-mix(
+                                in srgb,
+                                var(--glow-color) 74%,
+                                white
+                            ),
+                            color-mix(
+                                in srgb,
+                                var(--shade-4) 42%,
+                                transparent
+                            ) 46%,
+                            transparent 74%
+                        );
+
+                    filter:
+                        blur(48px)
+                        saturate(1.16)
+                        brightness(1.14);
+
+                    opacity:.50;
+
+                    animation:
+                        rukhnavV8StoreLightB
+                        18s ease-in-out
+                        infinite alternate;
+                }
+
+                body.rk-home .rk-hero > *{
+                    position:relative;
+                    z-index:2;
+                }
+
+                html[data-theme-mode="dark"]
+                body.rk-home .rk-hero{
+                    background:
+                        linear-gradient(
+                            145deg,
+                            color-mix(
+                                in srgb,
+                                var(--background) 80%,
+                                white
+                            ),
+                            color-mix(
+                                in srgb,
+                                var(--shade-2) 72%,
+                                white
+                            )
+                        ) !important;
+                }
+
+                html[data-theme-mode="light"]
+                body.rk-home .rk-hero{
+                    background:
+                        linear-gradient(
+                            145deg,
+                            color-mix(
+                                in srgb,
+                                var(--background) 90%,
+                                white
+                            ),
+                            color-mix(
+                                in srgb,
+                                var(--surface) 82%,
+                                white
+                            )
+                        ) !important;
+                }
+
+                body.rk-home .rk-product-card,
+                body.rk-home .rk-newsletter-card,
+                body.rk-home .store-header{
+                    backdrop-filter:
+                        blur(14px)
+                        saturate(1.06) !important;
+
+                    -webkit-backdrop-filter:
+                        blur(14px)
+                        saturate(1.06) !important;
+
+                    box-shadow:
+                        0 14px 34px
+                        rgba(20,30,38,.12) !important;
+                }
+
+                @keyframes rukhnavV8StoreLightA{
+                    from{
+                        transform:
+                            translate3d(-2%,0,0)
+                            scale(1);
+                    }
+
+                    to{
+                        transform:
+                            translate3d(8%,5%,0)
+                            scale(1.08);
+                    }
+                }
+
+                @keyframes rukhnavV8StoreLightB{
+                    from{
+                        transform:
+                            translate3d(3%,-2%,0)
+                            scale(1);
+                    }
+
+                    to{
+                        transform:
+                            translate3d(-7%,7%,0)
+                            scale(1.07);
+                    }
+                }
+
+                @media(prefers-reduced-motion:reduce){
+
+                    body.rk-home .rk-hero::before,
+                    body.rk-home .rk-hero::after{
+                        animation:none !important;
+                    }
+
+                }
+            `;
+
+            document.head.appendChild(
+                v8Style
+            );
+        }
+
+        /*
+         * V8 lightweight cinematic renderer.
+         * Heavy SVG turbulence is disabled for storefront
+         * performance. Atmospheric lighting is CSS-driven.
+         */
+
+        document
+            .querySelectorAll(
+                ".rukhnav-real-smoke"
+            )
+            .forEach(
+                element => element.remove()
+            );
 
         let style =
             document.getElementById(

@@ -4938,3 +4938,625 @@
     }
 
 }
+
+
+/* =========================================================
+   RUKHNAV V8 LIGHT CINEMATIC PERFORMANCE MODE
+
+   - no bevel
+   - no extrusion
+   - no embossed typography
+   - no perspective-heavy transforms
+   - no SVG turbulence
+   - cinematic illuminated smoke using lightweight CSS
+   ========================================================= */
+
+
+/* =========================================================
+   REMOVE V7 HEAVY SVG RENDERING
+   ========================================================= */
+
+.rukhnav-v7-smoke-svg{
+    display:none !important;
+}
+
+
+/* =========================================================
+   REMOVE ALL HEAVY 3D / EXTRUSION
+   ========================================================= */
+
+.rukhnav-theme-card-preview,
+.rukhnav-theme-preview-browser,
+.preview-copy,
+.preview-copy strong,
+.preview-copy button{
+    perspective:none !important;
+    transform-style:flat !important;
+}
+
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.rukhnav-theme-preview-browser,
+
+.rukhnav-theme-scene-midnight-aurora
+.rukhnav-theme-preview-browser,
+
+.rukhnav-theme-scene-black-champagne
+.rukhnav-theme-preview-browser,
+
+.rukhnav-theme-scene-tropical-prism
+.rukhnav-theme-preview-browser{
+    transform:none !important;
+}
+
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.rukhnav-theme-preview-browser::after,
+
+.rukhnav-theme-scene-midnight-aurora
+.rukhnav-theme-preview-browser::after,
+
+.rukhnav-theme-scene-black-champagne
+.rukhnav-theme-preview-browser::after,
+
+.rukhnav-theme-scene-tropical-prism
+.rukhnav-theme-preview-browser::after{
+    display:none !important;
+}
+
+
+/* remove embossed/extruded title stacks */
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.preview-copy strong,
+
+.rukhnav-theme-scene-midnight-aurora
+.preview-copy strong,
+
+.rukhnav-theme-scene-black-champagne
+.preview-copy strong,
+
+.rukhnav-theme-scene-tropical-prism
+.preview-copy strong{
+    transform:none !important;
+
+    text-shadow:
+        0 5px 22px
+        color-mix(
+            in srgb,
+            var(--preview-glow) 24%,
+            transparent
+        ) !important;
+}
+
+
+/* remove raised/extruded buttons */
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.preview-copy button,
+
+.rukhnav-theme-scene-midnight-aurora
+.preview-copy button,
+
+.rukhnav-theme-scene-black-champagne
+.preview-copy button,
+
+.rukhnav-theme-scene-tropical-prism
+.preview-copy button{
+    transform:none !important;
+
+    box-shadow:
+        0 8px 22px
+        rgba(0,0,0,.15),
+        inset 0 1px 0
+        rgba(255,255,255,.30)
+        !important;
+}
+
+
+/* =========================================================
+   GLOBAL LIGHTER STAGE — ALL 50 THEMES
+   ========================================================= */
+
+.rukhnav-theme-card-preview{
+    position:relative;
+
+    isolation:isolate;
+
+    overflow:hidden;
+
+    transform:none !important;
+
+    box-shadow:
+        0 18px 42px
+        rgba(24,33,45,.12) !important;
+}
+
+
+/* dark themes receive more ambient light */
+
+.rukhnav-theme-card-dark
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            ellipse 74% 58%
+            at 16% 8%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 62%,
+                transparent
+            ),
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse 70% 60%
+            at 86% 18%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 58%,
+                transparent
+            ),
+            transparent 70%
+        ),
+
+        linear-gradient(
+            145deg,
+            color-mix(
+                in srgb,
+                var(--preview-background) 82%,
+                white
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-shade-2) 70%,
+                white
+            )
+        ) !important;
+}
+
+
+/* light themes keep airy luminous atmosphere */
+
+.rukhnav-theme-card-light
+.rukhnav-theme-card-preview{
+    background:
+        radial-gradient(
+            ellipse 72% 60%
+            at 12% 10%,
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 42%,
+                white
+            ),
+            transparent 70%
+        ),
+
+        radial-gradient(
+            ellipse 68% 58%
+            at 92% 18%,
+            color-mix(
+                in srgb,
+                var(--preview-glow) 36%,
+                white
+            ),
+            transparent 72%
+        ),
+
+        linear-gradient(
+            145deg,
+            color-mix(
+                in srgb,
+                var(--preview-background) 88%,
+                white
+            ),
+            color-mix(
+                in srgb,
+                var(--preview-surface) 78%,
+                white
+            )
+        ) !important;
+}
+
+
+/* =========================================================
+   LIGHTNING / CINEMATIC LIGHT CLOUDS
+   Existing 3 preview orbs are reused.
+   Very light rendering cost.
+   ========================================================= */
+
+.rukhnav-v7-smoke-preview
+.rukhnav-preview-orb{
+    display:block !important;
+
+    position:absolute !important;
+
+    z-index:2 !important;
+
+    pointer-events:none;
+
+    opacity:.52 !important;
+
+    border-radius:
+        55% 45% 62% 38% /
+        48% 58% 42% 52% !important;
+
+    mix-blend-mode:screen !important;
+
+    filter:
+        blur(24px)
+        saturate(1.18)
+        brightness(1.14)
+        !important;
+
+    box-shadow:none !important;
+
+    animation:
+        rukhnavV8LightDrift
+        13s ease-in-out
+        infinite alternate
+        !important;
+}
+
+
+/* Light themes use softer blend */
+
+.rukhnav-theme-card-light
+.rukhnav-preview-orb{
+    mix-blend-mode:multiply !important;
+
+    opacity:.22 !important;
+
+    filter:
+        blur(30px)
+        saturate(.85)
+        brightness(1.10)
+        !important;
+}
+
+
+/* =========================================================
+   ORB 1 — LONG LIGHT RIBBON
+   ========================================================= */
+
+.rukhnav-v7-smoke-preview
+.orb-one{
+    width:115% !important;
+    height:36% !important;
+
+    left:-34% !important;
+    top:3% !important;
+
+    background:
+        linear-gradient(
+            98deg,
+            transparent 0%,
+
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 86%,
+                white
+            ) 28%,
+
+            color-mix(
+                in srgb,
+                var(--preview-primary) 72%,
+                white
+            ) 52%,
+
+            transparent 86%
+        ) !important;
+
+    transform:
+        rotate(-11deg) !important;
+}
+
+
+/* =========================================================
+   ORB 2 — LIGHTNING BLOOM
+   ========================================================= */
+
+.rukhnav-v7-smoke-preview
+.orb-two{
+    width:76% !important;
+    height:54% !important;
+
+    right:-24% !important;
+    top:8% !important;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+
+            color-mix(
+                in srgb,
+                var(--preview-glow) 88%,
+                white
+            ),
+
+            color-mix(
+                in srgb,
+                var(--preview-accent) 54%,
+                transparent
+            ) 42%,
+
+            transparent 74%
+        ) !important;
+}
+
+
+/* =========================================================
+   ORB 3 — LOWER COLOURED MIST
+   ========================================================= */
+
+.rukhnav-v7-smoke-preview
+.orb-three{
+    width:124% !important;
+    height:34% !important;
+
+    left:-18% !important;
+    bottom:-4% !important;
+
+    background:
+        linear-gradient(
+            90deg,
+
+            transparent,
+
+            color-mix(
+                in srgb,
+                var(--preview-shade-3) 64%,
+                white
+            ),
+
+            color-mix(
+                in srgb,
+                var(--preview-glow) 72%,
+                white
+            ),
+
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 58%,
+                white
+            ),
+
+            transparent
+        ) !important;
+
+    transform:
+        rotate(4deg) !important;
+}
+
+
+/* =========================================================
+   LIGHTER CINEMATIC GLASS
+   ========================================================= */
+
+.rukhnav-v7-smoke-preview
+.rukhnav-theme-preview-browser{
+    position:relative;
+
+    z-index:6;
+
+    transform:none !important;
+
+    background:
+        linear-gradient(
+            145deg,
+
+            color-mix(
+                in srgb,
+                var(--preview-surface) 48%,
+                rgba(255,255,255,.38)
+            ),
+
+            color-mix(
+                in srgb,
+                var(--preview-surface) 28%,
+                rgba(255,255,255,.16)
+            )
+        ) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.34)
+        !important;
+
+    backdrop-filter:
+        blur(15px)
+        saturate(1.08)
+        !important;
+
+    -webkit-backdrop-filter:
+        blur(15px)
+        saturate(1.08)
+        !important;
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.42),
+
+        0 14px 34px
+        rgba(22,28,38,.14)
+        !important;
+}
+
+
+/* lighter glass on light themes */
+
+.rukhnav-theme-card-light
+.rukhnav-theme-preview-browser{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.64),
+            rgba(255,255,255,.34)
+        ) !important;
+
+    border-color:
+        rgba(255,255,255,.76)
+        !important;
+}
+
+
+/* =========================================================
+   CATEGORY LIGHT CHARACTER
+   ========================================================= */
+
+
+/* Signature — emerald/champagne illumination */
+
+.rukhnav-theme-profile-signature
+.rukhnav-preview-orb{
+    opacity:.46 !important;
+}
+
+
+/* Smoke & cinematic — strongest luminous ribbons */
+
+.rukhnav-theme-profile-smoke
+.rukhnav-preview-orb{
+    opacity:.66 !important;
+
+    filter:
+        blur(22px)
+        saturate(1.34)
+        brightness(1.18)
+        !important;
+}
+
+
+/* Pastel — delicate cosmetic mist */
+
+.rukhnav-theme-profile-pastel
+.rukhnav-preview-orb{
+    opacity:.20 !important;
+
+    filter:
+        blur(32px)
+        saturate(.76)
+        brightness(1.12)
+        !important;
+}
+
+
+/* Luxury — warm controlled illumination */
+
+.rukhnav-theme-profile-luxury
+.rukhnav-preview-orb{
+    opacity:.40 !important;
+
+    filter:
+        blur(27px)
+        saturate(.96)
+        brightness(1.13)
+        !important;
+}
+
+
+/* Vibrant — bright spectral lighting */
+
+.rukhnav-theme-profile-vibrant
+.rukhnav-preview-orb{
+    opacity:.68 !important;
+
+    filter:
+        blur(22px)
+        saturate(1.46)
+        brightness(1.18)
+        !important;
+}
+
+
+/* Minimal glass — faint frost lighting */
+
+.rukhnav-theme-profile-glass
+.rukhnav-preview-orb{
+    opacity:.16 !important;
+
+    filter:
+        blur(34px)
+        saturate(.60)
+        brightness(1.14)
+        !important;
+}
+
+
+/* =========================================================
+   REMOVE OLD MASTER-SCENE HEAVY DARK OVERRIDES
+   ========================================================= */
+
+.rukhnav-theme-scene-rukhnav-gold-smoke
+.rukhnav-theme-preview-browser,
+
+.rukhnav-theme-scene-midnight-aurora
+.rukhnav-theme-preview-browser,
+
+.rukhnav-theme-scene-black-champagne
+.rukhnav-theme-preview-browser,
+
+.rukhnav-theme-scene-tropical-prism
+.rukhnav-theme-preview-browser{
+    transform:none !important;
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.34),
+
+        0 16px 36px
+        rgba(0,0,0,.14)
+        !important;
+}
+
+
+/* =========================================================
+   LIGHT MOTION
+   one simple transform animation
+   ========================================================= */
+
+@keyframes rukhnavV8LightDrift{
+
+    from{
+        translate:-5px -2px;
+        scale:1;
+    }
+
+    to{
+        translate:9px 6px;
+        scale:1.06;
+    }
+}
+
+
+/* no expensive movement while user prefers reduced motion */
+
+@media(prefers-reduced-motion:reduce){
+
+    .rukhnav-v7-smoke-preview
+    .rukhnav-preview-orb{
+        animation:none !important;
+    }
+}
+
+
+/* normal hover — no perspective */
+
+@media(hover:hover){
+
+    .rukhnav-v7-smoke-preview:hover
+    .rukhnav-theme-preview-browser{
+        transform:
+            translateY(-2px)
+            !important;
+
+        box-shadow:
+            inset 0 1px 0
+            rgba(255,255,255,.40),
+
+            0 18px 38px
+            rgba(25,33,42,.16)
+            !important;
+    }
+
+}
