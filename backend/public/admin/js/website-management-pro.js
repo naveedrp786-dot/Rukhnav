@@ -1740,3 +1740,228 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 })();
+
+
+/* =========================================================
+   RUKHNAV V11 CODED CLOUD PROTOTYPES
+   Only:
+   - Midnight Aurora
+   - Rose Cloud
+   - Black Champagne
+
+   HTML/CSS only.
+   No images.
+   No SVG turbulence.
+   ========================================================= */
+
+(function installRukhnavV11CloudScenes(){
+
+    const PROTOTYPES = {
+        "midnight-aurora": {
+            cloudCount: 12
+        },
+
+        "rose-cloud": {
+            cloudCount: 11
+        },
+
+        "black-champagne": {
+            cloudCount: 10
+        }
+    };
+
+
+    function getSceneId(card){
+
+        const sceneClass =
+            Array.from(card.classList)
+                .find(
+                    className =>
+                        className.startsWith(
+                            "rukhnav-theme-scene-"
+                        )
+                );
+
+        if (!sceneClass) {
+            return null;
+        }
+
+        return sceneClass.replace(
+            "rukhnav-theme-scene-",
+            ""
+        );
+    }
+
+
+    function buildScene(sceneId){
+
+        const scene =
+            document.createElement("div");
+
+        scene.className =
+            `rukhnav-v11-scene ` +
+            `rukhnav-v11-scene-${sceneId}`;
+
+        scene.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        /* background light field */
+
+        const glow =
+            document.createElement("div");
+
+        glow.className =
+            "rukhnav-v11-backlight";
+
+        scene.appendChild(glow);
+
+
+        /* directional light beam */
+
+        const beam =
+            document.createElement("div");
+
+        beam.className =
+            "rukhnav-v11-light-beam";
+
+        scene.appendChild(beam);
+
+
+        /* cloud groups */
+
+        const count =
+            PROTOTYPES[sceneId].cloudCount;
+
+        for (
+            let index = 1;
+            index <= count;
+            index += 1
+        ) {
+
+            const cloud =
+                document.createElement("span");
+
+            cloud.className =
+                `rukhnav-v11-cloud ` +
+                `rukhnav-v11-cloud-${index}`;
+
+            scene.appendChild(cloud);
+        }
+
+
+        /* foreground atmospheric veil */
+
+        const veil =
+            document.createElement("div");
+
+        veil.className =
+            "rukhnav-v11-veil";
+
+        scene.appendChild(veil);
+
+        return scene;
+    }
+
+
+    function install(){
+
+        document
+            .querySelectorAll(
+                '[class*="rukhnav-theme-scene-"]'
+            )
+            .forEach(card => {
+
+                const sceneId =
+                    getSceneId(card);
+
+                if (
+                    !sceneId ||
+                    !PROTOTYPES[sceneId]
+                ) {
+                    return;
+                }
+
+                const preview =
+                    card.querySelector(
+                        ".rukhnav-theme-card-preview"
+                    );
+
+                if (!preview) {
+                    return;
+                }
+
+                card.classList.add(
+                    "rukhnav-v11-prototype"
+                );
+
+                card.classList.add(
+                    `rukhnav-v11-${sceneId}`
+                );
+
+                if (
+                    preview.querySelector(
+                        ".rukhnav-v11-scene"
+                    )
+                ) {
+                    return;
+                }
+
+                preview.prepend(
+                    buildScene(sceneId)
+                );
+            });
+    }
+
+
+    let scheduled = false;
+
+    function schedule(){
+
+        if (scheduled) {
+            return;
+        }
+
+        scheduled = true;
+
+        requestAnimationFrame(() => {
+            scheduled = false;
+            install();
+        });
+    }
+
+
+    if (
+        document.readyState === "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            schedule,
+            {
+                once: true
+            }
+        );
+
+    } else {
+
+        schedule();
+    }
+
+
+    const observer =
+        new MutationObserver(
+            schedule
+        );
+
+    observer.observe(
+        document.body,
+        {
+            childList: true,
+            subtree: true
+        }
+    );
+
+})();
