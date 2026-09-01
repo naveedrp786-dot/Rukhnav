@@ -172,7 +172,7 @@ function initializeProductShowcase(products = []) {
     const showcase =
         document.getElementById("productShowcase");
 
-    if (!showcase || !products.length) {
+    if (!showcase || !Array.isArray(products) || !products.length) {
         return;
     }
 
@@ -186,9 +186,7 @@ function initializeProductShowcase(products = []) {
         document.getElementById("showcaseName");
 
     const description =
-        document.getElementById(
-            "showcaseDescription"
-        );
+        document.getElementById("showcaseDescription");
 
     const price =
         document.getElementById("showcasePrice");
@@ -202,39 +200,45 @@ function initializeProductShowcase(products = []) {
     const next =
         document.getElementById("showcaseNext");
 
-
-    const featured =
-        products
-            .filter(product =>
-                product &&
-                product.id &&
-                (
-                    product.image ||
-                    product.image_url
-                )
-            )
-            .slice(0, 8);
-
-    if (!featured.length) {
-        showcase.classList.add("hidden");
+    if (
+        !link ||
+        !image ||
+        !name ||
+        !description ||
+        !price ||
+        !dots
+    ) {
         return;
     }
 
 
-    let current = 0;
-    let timer = null;
+    /*
+     * Use the same product-image fields as Store.img().
+     */
+    const getImage = product => {
 
-
-    const productImage = product => {
+        if (
+            window.Store &&
+            typeof Store.img === "function"
+        ) {
+            return Store.img(product);
+        }
 
         const value =
-            product.image_url ||
             product.image ||
+            product.product_image ||
+            product.image_url ||
+            product.main_image ||
             "";
 
-        if (!value) return "";
+        if (!value) {
+            return "";
+        }
 
-        if (/^https?:\/\//i.test(value)) {
+        if (
+            /^(https?:)?\/\//i.test(value) ||
+            String(value).startsWith("data:")
+        ) {
             return value;
         }
 
@@ -246,46 +250,161 @@ function initializeProductShowcase(products = []) {
     };
 
 
-    const productPrice = product => {
+    const featured =
+        products
+            .filter(product =>
+                product &&
+                product.id &&
+                getImage(product)
+            )
+            .slice(0, 8);
 
-        const value =
-            Number(
-                product.sale_price ||
-                product.price ||
-                0
-            );
+    if (!featured.length) {
+        showcase.classList.add("hidden");
+        return;
+    }
 
-        return `Rs. ${value.toLocaleString(
+
+    let current = 0;
+    let timer = null;
+    let renderTimer = null;
+    let failedProducts = new Set();
+
+    const ROTATION_MS = 4200;
+
+
+    const getPrice = product => {
+
+        const value = Number(
+            product.selling_price ??
+            product.sale_price ??
+            product.price ??
+            0
+        );
+
+        const symbol =
+            Store?.settings?.store?.currency_symbol ||
+            Store?.settings?.currency_symbol ||
+            "Rs.";
+
+        return `${symbol} ${new Intl.NumberFormat(
             "en-PK",
             {
-                maximumFractionDigits:2
+                maximumFractionDigits: 2
             }
-        )}`;
+        ).format(value)}`;
+    };
+
+
+    const stop = () => {
+
+        if (timer) {
+            window.clearTimeout(timer);
+            timer = null;
+        }
+    };
+
+
+    const scheduleNext = () => {
+
+        stop();
+
+        if (
+            featured.length <= 1 ||
+            document.hidden
+        ) {
+            return;
+        }
+
+        timer = window.setTimeout(() => {
+
+            render(current + 1);
+
+            scheduleNext();
+
+        }, ROTATION_MS);
     };
 
 
     const render = index => {
 
+        if (!featured.length) {
+            return;
+        }
+
         current =
             (index + featured.length) %
             featured.length;
 
+        /*
+         * Skip images which already failed during this page visit.
+         */
+        let attempts = 0;
+
+        while (
+            failedProducts.has(featured[current].id) &&
+            attempts < featured.length
+        ) {
+            current =
+                (current + 1) %
+                featured.length;
+
+            attempts += 1;
+        }
+
         const product =
             featured[current];
 
-        showcase.classList.add(
-            "is-changing"
-        );
+        showcase.classList.add("is-changing");
 
-        window.setTimeout(() => {
+        if (renderTimer) {
+            window.clearTimeout(renderTimer);
+        }
 
+        renderTimer = window.setTimeout(() => {
+
+            /*
+             * Canonical storefront product page.
+             */
             link.href =
-                `product-details.html?id=${
+                `product.html?id=${
                     encodeURIComponent(product.id)
                 }`;
 
+            const imageUrl =
+                getImage(product);
+
+            image.style.display = "";
+
+            image.onerror = () => {
+
+                failedProducts.add(product.id);
+
+                image.onerror = null;
+                image.removeAttribute("src");
+
+                /*
+                 * Do not leave browser broken-image icon visible.
+                 */
+                image.style.display = "none";
+
+                if (
+                    failedProducts.size <
+                    featured.length
+                ) {
+                    window.setTimeout(() => {
+                        render(current + 1);
+                        scheduleNext();
+                    }, 350);
+                }
+            };
+
+            image.onload = () => {
+                image.style.display = "";
+            };
+
             image.src =
-                productImage(product);
+                imageUrl;
 
             image.alt =
                 product.product_name ||
@@ -300,115 +419,157 @@ function initializeProductShowcase(products = []) {
             description.textContent =
                 product.short_description ||
                 product.description ||
+                product.category ||
+                product.category_name ||
                 "Discover natural care from RUKHNAV.";
 
             price.textContent =
-                productPrice(product);
+                getPrice(product);
 
             Array
                 .from(dots.children)
-                .forEach((dot, dotIndex) => {
-                    dot.classList.toggle(
-                        "active",
-                        dotIndex === current
-                    );
-                });
+                .forEach(
+                    (dot, dotIndex) => {
+
+                        const active =
+                            dotIndex === current;
+
+                        dot.classList.toggle(
+                            "active",
+                            active
+                        );
+
+                        dot.setAttribute(
+                            "aria-current",
+                            active
+                                ? "true"
+                                : "false"
+                        );
+                    }
+                );
 
             showcase.classList.remove(
                 "is-changing"
             );
 
-        }, 180);
+        }, 220);
     };
 
 
-    const start = () => {
+    /*
+     * Build selector dots once.
+     */
+    dots.innerHTML = "";
 
-        window.clearInterval(timer);
+    featured.forEach((product, index) => {
 
-        if (featured.length > 1) {
-            timer =
-                window.setInterval(
-                    () => render(current + 1),
-                    5000
-                );
-        }
-    };
+        const dot =
+            document.createElement("button");
 
+        dot.type =
+            "button";
 
-    dots.innerHTML =
-        featured
-            .map(
-                (_, index) =>
-                    `<button
-                        type="button"
-                        class="rk-showcase-dot${
-                            index === 0
-                                ? " active"
-                                : ""
-                        }"
-                        aria-label="Show product ${
-                            index + 1
-                        }"
-                        data-index="${index}"
-                    ></button>`
-            )
-            .join("");
+        dot.className =
+            "rk-showcase-dot";
 
+        dot.setAttribute(
+            "aria-label",
+            `Show ${
+                product.product_name ||
+                product.name ||
+                `product ${index + 1}`
+            }`
+        );
 
-    dots.addEventListener(
-        "click",
-        event => {
+        dot.addEventListener(
+            "click",
+            event => {
 
-            const button =
-                event.target.closest(
-                    ".rk-showcase-dot"
-                );
+                event.preventDefault();
 
-            if (!button) return;
+                render(index);
+                scheduleNext();
+            }
+        );
 
-            render(
-                Number(button.dataset.index)
-            );
-
-            start();
-        }
-    );
+        dots.appendChild(dot);
+    });
 
 
-    prev?.addEventListener(
-        "click",
-        event => {
-            event.preventDefault();
-            render(current - 1);
-            start();
-        }
-    );
+    if (prev) {
+
+        prev.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                render(current - 1);
+                scheduleNext();
+            }
+        );
+    }
 
 
-    next?.addEventListener(
-        "click",
-        event => {
-            event.preventDefault();
-            render(current + 1);
-            start();
-        }
-    );
+    if (next) {
+
+        next.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                render(current + 1);
+                scheduleNext();
+            }
+        );
+    }
 
 
+    /*
+     * Pause while customer is interacting with the showcase.
+     */
     showcase.addEventListener(
         "mouseenter",
-        () =>
-            window.clearInterval(timer)
+        stop
     );
-
 
     showcase.addEventListener(
         "mouseleave",
-        start
+        scheduleNext
+    );
+
+    showcase.addEventListener(
+        "focusin",
+        stop
+    );
+
+    showcase.addEventListener(
+        "focusout",
+        scheduleNext
     );
 
 
+    /*
+     * Do not keep running timers in an inactive browser tab.
+     */
+    document.addEventListener(
+        "visibilitychange",
+        () => {
+
+            if (document.hidden) {
+                stop();
+            } else {
+                scheduleNext();
+            }
+        }
+    );
+
+
+    /*
+     * IMPORTANT:
+     * Render immediately and start automatic rotation.
+     */
     render(0);
-    start();
+    scheduleNext();
 }
