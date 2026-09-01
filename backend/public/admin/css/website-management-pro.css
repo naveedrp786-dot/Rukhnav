@@ -5560,3 +5560,551 @@
     }
 
 }
+
+
+/* =========================================================
+   RUKHNAV V9 FINAL 20 PREMIUM LIBRARY
+   Compact, bright cinematic cards
+   Reference-inspired layout
+   No images / no 3D / no heavy SVG
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   GRID
+   --------------------------------------------------------- */
+
+.rukhnav-theme-grid{
+    display:grid !important;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0,1fr)
+        ) !important;
+
+    gap:18px !important;
+}
+
+
+@media(min-width:1500px){
+
+    .rukhnav-theme-grid{
+        grid-template-columns:
+            repeat(
+                5,
+                minmax(0,1fr)
+            ) !important;
+    }
+
+}
+
+
+@media(max-width:1100px){
+
+    .rukhnav-theme-grid{
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0,1fr)
+            ) !important;
+    }
+
+}
+
+
+@media(max-width:760px){
+
+    .rukhnav-theme-grid{
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0,1fr)
+            ) !important;
+    }
+
+}
+
+
+@media(max-width:520px){
+
+    .rukhnav-theme-grid{
+        grid-template-columns:
+            1fr !important;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   CARD
+   --------------------------------------------------------- */
+
+.rukhnav-theme-card{
+    overflow:hidden;
+
+    border-radius:19px !important;
+
+    border:
+        1px solid
+        rgba(31,45,38,.09) !important;
+
+    background:#fff !important;
+
+    box-shadow:
+        0 10px 30px
+        rgba(32,44,38,.08) !important;
+
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease !important;
+}
+
+
+@media(hover:hover){
+
+    .rukhnav-theme-card:hover{
+        transform:
+            translateY(-3px) !important;
+
+        box-shadow:
+            0 16px 38px
+            rgba(32,44,38,.12)
+            !important;
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   PREVIEW — cinematic composition
+   --------------------------------------------------------- */
+
+.rukhnav-theme-card-preview{
+    min-height:190px !important;
+    height:190px !important;
+
+    padding:14px !important;
+
+    border-radius:
+        18px 18px 0 0 !important;
+
+    overflow:hidden !important;
+
+    transform:none !important;
+}
+
+
+.rukhnav-theme-card-preview::before{
+    content:"";
+
+    position:absolute;
+
+    width:105%;
+    height:76%;
+
+    left:-28%;
+    top:-30%;
+
+    border-radius:50%;
+
+    pointer-events:none;
+
+    opacity:.68 !important;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 78%,
+                white
+            ),
+
+            color-mix(
+                in srgb,
+                var(--preview-shade-2) 38%,
+                transparent
+            ) 45%,
+
+            transparent 72%
+        ) !important;
+
+    filter:
+        blur(30px)
+        saturate(1.08)
+        !important;
+
+    transform:
+        rotate(-12deg)
+        !important;
+}
+
+
+.rukhnav-theme-card-preview::after{
+    content:"";
+
+    position:absolute;
+
+    width:92%;
+    height:70%;
+
+    right:-30%;
+    bottom:-32%;
+
+    border-radius:50%;
+
+    pointer-events:none;
+
+    opacity:.58 !important;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+
+            color-mix(
+                in srgb,
+                var(--preview-glow) 74%,
+                white
+            ),
+
+            color-mix(
+                in srgb,
+                var(--preview-shade-4) 32%,
+                transparent
+            ) 48%,
+
+            transparent 74%
+        ) !important;
+
+    filter:
+        blur(32px)
+        saturate(1.08)
+        !important;
+
+    transform:none !important;
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT RIBBON
+   --------------------------------------------------------- */
+
+.rukhnav-preview-orb.orb-one{
+    width:105% !important;
+    height:38% !important;
+
+    left:-36% !important;
+    top:16% !important;
+
+    opacity:.34 !important;
+
+    filter:
+        blur(22px)
+        saturate(1.10)
+        !important;
+
+    background:
+        linear-gradient(
+            100deg,
+            transparent,
+
+            color-mix(
+                in srgb,
+                var(--preview-shade-2) 74%,
+                white
+            ),
+
+            color-mix(
+                in srgb,
+                var(--preview-highlight) 70%,
+                white
+            ),
+
+            transparent
+        ) !important;
+
+    transform:
+        rotate(-11deg)
+        !important;
+}
+
+
+/* ---------------------------------------------------------
+   SECOND LIGHT BLOOM
+   --------------------------------------------------------- */
+
+.rukhnav-preview-orb.orb-two{
+    width:70% !important;
+    height:62% !important;
+
+    right:-28% !important;
+    top:-12% !important;
+
+    opacity:.30 !important;
+
+    filter:
+        blur(28px)
+        saturate(1.12)
+        !important;
+
+    background:
+        radial-gradient(
+            ellipse,
+
+            color-mix(
+                in srgb,
+                var(--preview-glow) 72%,
+                white
+            ),
+
+            transparent 72%
+        ) !important;
+
+    transform:none !important;
+}
+
+
+/* ---------------------------------------------------------
+   LOWER MIST
+   --------------------------------------------------------- */
+
+.rukhnav-preview-orb.orb-three{
+    width:118% !important;
+    height:34% !important;
+
+    left:-12% !important;
+    bottom:-14% !important;
+
+    opacity:.24 !important;
+
+    filter:
+        blur(24px)
+        saturate(1.06)
+        !important;
+
+    background:
+        linear-gradient(
+            90deg,
+
+            transparent,
+
+            color-mix(
+                in srgb,
+                var(--preview-shade-3) 62%,
+                white
+            ),
+
+            color-mix(
+                in srgb,
+                var(--preview-glow) 64%,
+                white
+            ),
+
+            transparent
+        ) !important;
+
+    transform:none !important;
+}
+
+
+/* ---------------------------------------------------------
+   MINI WEBSITE GLASS
+   --------------------------------------------------------- */
+
+.rukhnav-theme-preview-browser{
+    position:relative !important;
+
+    z-index:5 !important;
+
+    min-height:146px !important;
+
+    padding:13px 14px !important;
+
+    border-radius:15px !important;
+
+    transform:none !important;
+
+    background:
+        linear-gradient(
+            145deg,
+
+            rgba(255,255,255,.34),
+
+            color-mix(
+                in srgb,
+                var(--preview-surface) 40%,
+                transparent
+            )
+        ) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.36)
+        !important;
+
+    backdrop-filter:
+        blur(12px)
+        saturate(1.06)
+        !important;
+
+    -webkit-backdrop-filter:
+        blur(12px)
+        saturate(1.06)
+        !important;
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.40),
+
+        0 8px 22px
+        rgba(28,37,42,.10)
+        !important;
+}
+
+
+/* keep lighter previews airy */
+
+.rukhnav-theme-card-light
+.rukhnav-theme-preview-browser{
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.68),
+            rgba(255,255,255,.36)
+        ) !important;
+
+    border-color:
+        rgba(255,255,255,.76)
+        !important;
+}
+
+
+/* ---------------------------------------------------------
+   TYPOGRAPHY
+   --------------------------------------------------------- */
+
+.preview-copy strong{
+    font-size:
+        clamp(
+            17px,
+            1.4vw,
+            24px
+        ) !important;
+
+    line-height:1.02 !important;
+
+    text-shadow:
+        0 5px 18px
+        color-mix(
+            in srgb,
+            var(--preview-glow) 18%,
+            transparent
+        ) !important;
+}
+
+
+/* ---------------------------------------------------------
+   CARD BODY MORE COMPACT
+   --------------------------------------------------------- */
+
+.rukhnav-theme-card-body{
+    padding:
+        13px 14px 14px
+        !important;
+}
+
+
+.rukhnav-theme-card h3{
+    margin:
+        2px 0 5px !important;
+
+    font-size:
+        17px !important;
+}
+
+
+.rukhnav-theme-card-description{
+    min-height:
+        38px !important;
+
+    margin-bottom:
+        9px !important;
+
+    font-size:
+        12px !important;
+
+    line-height:
+        1.45 !important;
+}
+
+
+/* ---------------------------------------------------------
+   SMALLER SWATCHES
+   --------------------------------------------------------- */
+
+.rukhnav-theme-swatches{
+    gap:
+        6px !important;
+
+    margin:
+        8px 0 !important;
+}
+
+
+.rukhnav-theme-swatch{
+    width:
+        22px !important;
+
+    height:
+        22px !important;
+}
+
+
+/* ---------------------------------------------------------
+   FONT BOXES
+   --------------------------------------------------------- */
+
+.rukhnav-theme-fonts{
+    gap:
+        8px !important;
+
+    margin-top:
+        8px !important;
+}
+
+
+.rukhnav-theme-font{
+    min-height:
+        46px !important;
+
+    padding:
+        8px 9px !important;
+}
+
+
+/* ---------------------------------------------------------
+   APPLY BUTTON
+   --------------------------------------------------------- */
+
+.rukhnav-theme-card
+.theme-apply-btn{
+    min-height:
+        38px !important;
+
+    border-radius:
+        10px !important;
+}
+
+
+/* ---------------------------------------------------------
+   NO V7/V8 HEAVY ANIMATION
+   --------------------------------------------------------- */
+
+.rukhnav-theme-card-preview::before,
+.rukhnav-theme-card-preview::after,
+.rukhnav-preview-orb{
+    animation:
+        none !important;
+}
