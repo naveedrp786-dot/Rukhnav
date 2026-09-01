@@ -1604,9 +1604,88 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function refresh(){
 
-        MASTER_SCENES.forEach(
-            installIntoCard
-        );
+        /*
+         * V7 Phase 4:
+         * install procedural atmosphere into every
+         * Theme Studio preview, while preserving
+         * the six original master-scene classes.
+         */
+
+        document
+            .querySelectorAll(
+                ".rukhnav-theme-card-preview"
+            )
+            .forEach(preview => {
+
+                const owner =
+                    preview.closest(
+                        '[class*="rukhnav-theme-scene-"]'
+                    );
+
+                if (!owner) {
+                    return;
+                }
+
+                const sceneClass =
+                    Array.from(
+                        owner.classList
+                    ).find(
+                        className =>
+                            className.startsWith(
+                                "rukhnav-theme-scene-"
+                            )
+                    );
+
+                if (!sceneClass) {
+                    return;
+                }
+
+                const sceneId =
+                    sceneClass.replace(
+                        "rukhnav-theme-scene-",
+                        ""
+                    );
+
+                if (
+                    preview.querySelector(
+                        ".rukhnav-v7-smoke-svg"
+                    )
+                ) {
+                    preview.classList.add(
+                        "rukhnav-v7-smoke-preview"
+                    );
+
+                    if (
+                        MASTER_SCENES.includes(
+                            sceneId
+                        )
+                    ) {
+                        preview.classList.add(
+                            "rukhnav-v7-master-preview"
+                        );
+                    }
+
+                    return;
+                }
+
+                preview.classList.add(
+                    "rukhnav-v7-smoke-preview"
+                );
+
+                if (
+                    MASTER_SCENES.includes(
+                        sceneId
+                    )
+                ) {
+                    preview.classList.add(
+                        "rukhnav-v7-master-preview"
+                    );
+                }
+
+                preview.prepend(
+                    createSmokeSvg(sceneId)
+                );
+            });
     }
 
 
