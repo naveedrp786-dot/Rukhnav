@@ -51,17 +51,26 @@ async function api(endpoint = "", options = {}) {
         data = {};
     }
 
-    if (response.status === 401 || response.status === 403) {
+    if (response.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("adminToken");
+        localStorage.removeItem("admin_token");
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("adminToken");
+        sessionStorage.removeItem("admin_token");
 
         window.location.href = "/admin/login.html";
 
         throw new Error(
             data.message ||
             "Your admin session has expired."
+        );
+    }
+
+    if (response.status === 403) {
+        throw new Error(
+            data.message ||
+            "You do not have permission to perform this action."
         );
     }
 
