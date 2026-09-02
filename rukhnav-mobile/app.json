@@ -18,7 +18,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.rukhnav.rukhnavmobile"
+      "package": "com.rukhnav.rukhnavmobile",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "static",

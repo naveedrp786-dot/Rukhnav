@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1063209659759",
+    "project_id": "rukhnav",
+    "storage_bucket": "rukhnav.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063209659759:android:1f35ee9270b2c8a1bccc9a",
+        "android_client_info": {
+          "package_name": "com.rukhnav.rukhnavmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnGG3W7dlfa6Jg6uo3aoZJY8EKTMZS7E4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

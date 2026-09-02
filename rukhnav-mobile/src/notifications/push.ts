@@ -36,8 +36,6 @@ export async function configurePushNotifications() {
             Notifications
               .AndroidImportance
               .HIGH,
-          sound:
-            "default",
           vibrationPattern: [
             0,
             250,
