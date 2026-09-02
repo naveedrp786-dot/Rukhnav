@@ -22,16 +22,38 @@ const ProfilePreferences = {
 
     async load() {
         try {
-            const [profileResponse, accountResponse, loyaltyResponse] =
+            /*
+             * Customer account data is authoritative for identity/contact
+             * fields such as full name, email, phone and verification state.
+             *
+             * Extended profile and loyalty data are optional. A temporary
+             * failure in either must not prevent the customer's real account
+             * phone/email from appearing in the Profile form.
+             */
+            const [accountResponse, profileResponse, loyaltyResponse] =
                 await Promise.all([
-                    API.get("/api/profile"),
                     API.get(API.customer("/profile")),
-                    API.get("/api/customer-loyalty/me").catch(() => ({ loyalty: {} }))
+                    API.get("/api/profile").catch(error => {
+                        console.warn(
+                            "Extended profile unavailable:",
+                            error.message
+                        );
+
+                        return { profile: {} };
+                    }),
+                    API.get("/api/customer-loyalty/me").catch(() => ({
+                        loyalty: {}
+                    }))
                 ]);
 
-            this.profile = profileResponse.profile || {};
-            this.account = accountResponse.customer || {};
-            this.loyalty = loyaltyResponse.loyalty || {};
+            this.account =
+                accountResponse?.customer || {};
+
+            this.profile =
+                profileResponse?.profile || {};
+
+            this.loyalty =
+                loyaltyResponse?.loyalty || {};
 
             this.populateProfile();
             this.populatePreferences();
