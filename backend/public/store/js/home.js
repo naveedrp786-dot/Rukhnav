@@ -84,6 +84,24 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
         }
 
+        /*
+         * Share the already-loaded homepage catalogue with
+         * Commerce Pro live search. No second API request.
+         */
+        window.RukhnavHomeProducts =
+            products;
+
+        window.dispatchEvent(
+            new CustomEvent(
+                "rukhnav:home-products-ready",
+                {
+                    detail: {
+                        products
+                    }
+                }
+            )
+        );
+
         if (!products.length) {
             if (empty) {
                 empty.classList.remove(

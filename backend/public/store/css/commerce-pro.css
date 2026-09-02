@@ -1329,3 +1329,91 @@ body.rk-home
         min-width: 52px;
     }
 }
+
+
+/* ==========================================================
+   LIVE HOMEPAGE SEARCH RESULTS
+   ========================================================== */
+
+body.marketplace-home .rk-home-live-search,
+body.rk-home .rk-home-live-search {
+    margin-top: 16px;
+}
+
+body.marketplace-home .rk-home-live-search.hidden,
+body.rk-home .rk-home-live-search.hidden {
+    display: none;
+}
+
+body.marketplace-home .rk-home-live-search-head,
+body.rk-home .rk-home-live-search-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+body.marketplace-home .rk-home-live-search-head strong,
+body.rk-home .rk-home-live-search-head strong {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+body.marketplace-home .rk-home-live-search-head span,
+body.rk-home .rk-home-live-search-head span {
+    font-size: 13px;
+    opacity: .72;
+}
+
+body.marketplace-home .rk-home-live-search-results,
+body.rk-home .rk-home-live-search-results {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+body.marketplace-home .rk-home-live-search-empty,
+body.rk-home .rk-home-live-search-empty {
+    padding: 22px;
+    text-align: center;
+    border: 1px dashed
+        rgba(25, 64, 52, .18);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .55);
+}
+
+body.marketplace-home .rk-home-live-search-empty.hidden,
+body.rk-home .rk-home-live-search-empty.hidden {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    body.marketplace-home .rk-home-live-search-results,
+    body.rk-home .rk-home-live-search-results {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+/*
+ * Preserve RUKHNAV's approved three-product mobile web grid.
+ */
+@media (max-width: 650px) {
+    body.marketplace-home .rk-home-live-search-results,
+    body.rk-home .rk-home-live-search-results {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+        gap: 7px;
+    }
+}
+
+@media (max-width: 390px) {
+    body.marketplace-home .rk-home-live-search-results,
+    body.rk-home .rk-home-live-search-results {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+        gap: 5px;
+    }
+}
