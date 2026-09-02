@@ -1,7 +1,9 @@
 "use strict";
 
 (() => {
-    function moveHomepageSearch() {
+    function moveHomepageSearch(
+        attempt = 0
+    ) {
         const search =
             document.getElementById(
                 "globalSearch"
@@ -12,16 +14,35 @@
                 "homeSearchMount"
             );
 
+        /*
+         * The shared header is rendered dynamically.
+         * Commerce Pro can initialise before Components.header()
+         * has created #globalSearch, so wait briefly for it.
+         */
         if (!search || !mount) {
+            if (attempt < 40) {
+                window.setTimeout(
+                    () =>
+                        moveHomepageSearch(
+                            attempt + 1
+                        ),
+                    50
+                );
+            }
+
             return;
         }
 
         /*
-         * Move the existing shared search form instead of
-         * cloning it. This preserves the canonical search
-         * IDs and the existing Store.js submit behaviour.
+         * Moving the original form preserves its IDs and any
+         * submit/input listeners already attached by store.js.
          */
-        mount.appendChild(search);
+        if (
+            search.parentElement !==
+            mount
+        ) {
+            mount.appendChild(search);
+        }
 
         search.classList.add(
             "rk-home-search-form"
