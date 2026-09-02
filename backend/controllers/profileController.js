@@ -186,14 +186,51 @@ exports.updateProfile = async (req, res) => {
             return res.status(404).json({ success: false, message: "Customer was not found." });
         }
         const [duplicates] = await connection.query(`
-            SELECT id FROM customers
-            WHERE id <> ? AND deleted_at IS NULL
-              AND ((? IS NOT NULL AND email = ?) OR (? IS NOT NULL AND phone = ?))
+            SELECT id, email, phone
+            FROM customers
+            WHERE id <> ?
+              AND deleted_at IS NULL
+              AND (
+                    (? IS NOT NULL AND email = ?)
+                    OR
+                    (? IS NOT NULL AND phone = ?)
+                  )
             LIMIT 1
-        `, [customerId, email, email, phone, phone]);
+        `, [
+            customerId,
+            email,
+            email,
+            phone,
+            phone
+        ]);
+
         if (duplicates.length) {
             await connection.rollback();
-            return res.status(409).json({ success: false, message: "Another customer already uses this email or mobile number." });
+
+            const existing =
+                duplicates[0];
+
+            let message =
+                "Another customer already uses these contact details.";
+
+            if (
+                email &&
+                existing.email === email
+            ) {
+                message =
+                    "This email address is already registered to another account.";
+            } else if (
+                phone &&
+                existing.phone === phone
+            ) {
+                message =
+                    "This mobile number is already registered to another account.";
+            }
+
+            return res.status(409).json({
+                success: false,
+                message
+            });
         }
         const emailChanged = (currentRows[0].email || null) !== email;
         const phoneChanged = (currentRows[0].phone || null) !== phone;
