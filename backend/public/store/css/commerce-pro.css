@@ -1,0 +1,1155 @@
+/* =========================================================
+   RUKHNAV COMMERCE PRO
+   Shared professional ecommerce architecture
+   Website Management themes remain the colour source.
+   ========================================================= */
+
+body.marketplace-home,
+body.rk-home {
+    --commerce-deep:
+        color-mix(
+            in srgb,
+            var(--primary) 38%,
+            #07120e
+        );
+
+    --commerce-deeper:
+        color-mix(
+            in srgb,
+            var(--primary) 22%,
+            #050a08
+        );
+
+    --commerce-border:
+        color-mix(
+            in srgb,
+            var(--text) 10%,
+            transparent
+        );
+
+    --commerce-soft:
+        color-mix(
+            in srgb,
+            var(--surface) 96%,
+            var(--background)
+        );
+
+    --commerce-shadow:
+        0 8px 28px rgba(0,0,0,.075);
+
+    background:
+        var(--surface) !important;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+body.marketplace-home .store-header,
+body.rk-home .store-header {
+    position: relative;
+    z-index: 100;
+
+    background:
+        var(--commerce-deep) !important;
+
+    color: #fff !important;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+
+    box-shadow:
+        0 5px 18px rgba(0,0,0,.14) !important;
+}
+
+
+body.marketplace-home .header-main,
+body.rk-home .header-main {
+    max-width: var(--max);
+    margin: auto;
+
+    padding:
+        13px 24px 11px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(180px,260px)
+        minmax(320px,1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+body.marketplace-home .brand,
+body.rk-home .brand {
+    color: #fff !important;
+}
+
+
+body.marketplace-home .brand-copy strong,
+body.rk-home .brand-copy strong {
+    color: #fff !important;
+
+    font-family: var(--heading);
+
+    font-size: 23px;
+
+    letter-spacing: 3px;
+}
+
+
+body.marketplace-home .brand-copy small,
+body.rk-home .brand-copy small {
+    color:
+        var(--secondary) !important;
+
+    opacity: 1 !important;
+
+    font-size: 10px;
+
+    letter-spacing: .7px;
+}
+
+
+body.marketplace-home .search,
+body.rk-home .search {
+    min-height: 46px;
+
+    overflow: hidden;
+
+    display: grid;
+
+    grid-template-columns:
+        auto 1fr 48px;
+
+    background: #fff !important;
+
+    border:
+        1px solid rgba(255,255,255,.18);
+
+    border-radius: 11px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,.13);
+}
+
+
+body.marketplace-home .search select,
+body.rk-home .search select {
+    min-width: 125px;
+
+    padding: 0 13px;
+
+    border: 0;
+    border-right:
+        1px solid #e8e8e8;
+
+    outline: 0;
+
+    background: #f6f6f6;
+
+    color: #4c4c4c;
+
+    font-size: 12px;
+}
+
+
+body.marketplace-home .search input,
+body.rk-home .search input {
+    min-width: 0;
+
+    padding: 0 15px;
+
+    border: 0;
+    outline: 0;
+
+    background: #fff !important;
+
+    color: #1c211e !important;
+
+    font-size: 14px;
+}
+
+
+body.marketplace-home .search button,
+body.rk-home .search button {
+    border: 0;
+
+    cursor: pointer;
+
+    background:
+        var(--secondary) !important;
+
+    color:
+        var(--commerce-deeper) !important;
+
+    font-size: 16px;
+}
+
+
+body.marketplace-home .actions,
+body.rk-home .actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 3px;
+}
+
+
+body.marketplace-home .actions .action,
+body.rk-home .actions .action {
+    color: #fff !important;
+
+    border-radius: 8px;
+}
+
+
+body.marketplace-home .actions .action:hover,
+body.rk-home .actions .action:hover {
+    background:
+        rgba(255,255,255,.08);
+}
+
+
+body.marketplace-home .actions .label,
+body.rk-home .actions .label {
+    color:
+        rgba(255,255,255,.84) !important;
+}
+
+
+body.marketplace-home .categories-nav,
+body.rk-home .categories-nav {
+    padding: 6px 0 !important;
+
+    background:
+        var(--commerce-deeper) !important;
+
+    border-top:
+        1px solid rgba(255,255,255,.06) !important;
+
+    border-bottom: 0 !important;
+}
+
+
+body.marketplace-home .categories-nav a,
+body.rk-home .categories-nav a {
+    min-height: 32px !important;
+
+    border:
+        1px solid transparent !important;
+
+    background:
+        transparent !important;
+
+    color:
+        rgba(255,255,255,.86) !important;
+
+    box-shadow: none !important;
+}
+
+
+body.marketplace-home .categories-nav a:hover,
+body.rk-home .categories-nav a:hover {
+    border-color:
+        rgba(255,255,255,.12) !important;
+
+    background:
+        rgba(255,255,255,.07) !important;
+
+    color:
+        var(--secondary) !important;
+}
+
+
+/* =========================================================
+   COMMERCE UTILITY STRIP
+   ========================================================= */
+
+.rk-commerce-utility {
+    max-width: var(--max);
+
+    margin:
+        14px auto 0;
+
+    padding:
+        0 24px;
+}
+
+
+.rk-commerce-utility-inner {
+    min-height: 70px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    overflow: hidden;
+
+    background:
+        var(--surface);
+
+    border:
+        1px solid var(--commerce-border);
+
+    border-radius: 14px;
+
+    box-shadow:
+        var(--commerce-shadow);
+}
+
+
+.rk-commerce-utility-item {
+    min-width: 0;
+
+    padding:
+        13px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    text-decoration: none;
+
+    color:
+        var(--text);
+
+    border-right:
+        1px solid var(--commerce-border);
+}
+
+
+.rk-commerce-utility-item:last-child {
+    border-right: 0;
+}
+
+
+.rk-commerce-utility-icon {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 9%,
+            var(--surface)
+        );
+
+    color:
+        var(--primary);
+
+    font-size: 15px;
+}
+
+
+.rk-commerce-utility-copy {
+    min-width: 0;
+}
+
+
+.rk-commerce-utility-copy strong {
+    display: block;
+
+    color:
+        var(--heading-color,var(--text));
+
+    font-size: 12px;
+
+    line-height: 1.2;
+}
+
+
+.rk-commerce-utility-copy span {
+    display: block;
+
+    margin-top: 3px;
+
+    color:
+        var(--muted);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   SHOWCASE
+   ========================================================= */
+
+body.marketplace-home .rk-product-showcase,
+body.rk-home .rk-product-showcase {
+    max-width: var(--max);
+
+    margin:
+        18px auto 0 !important;
+
+    border:
+        1px solid var(--commerce-border) !important;
+
+    border-radius:
+        18px !important;
+
+    background:
+        var(--surface) !important;
+
+    box-shadow:
+        var(--commerce-shadow) !important;
+}
+
+
+body.marketplace-home .rk-product-showcase h1,
+body.marketplace-home .rk-product-showcase h2,
+body.marketplace-home .rk-product-showcase h3,
+body.rk-home .rk-product-showcase h1,
+body.rk-home .rk-product-showcase h2,
+body.rk-home .rk-product-showcase h3 {
+    color:
+        var(--heading-color,var(--text)) !important;
+}
+
+
+body.marketplace-home .rk-product-showcase p,
+body.rk-home .rk-product-showcase p {
+    color:
+        var(--muted) !important;
+}
+
+
+/* =========================================================
+   EXISTING CATEGORY SHORTCUTS
+   ========================================================= */
+
+body.marketplace-home .home-shop-shortcuts,
+body.rk-home .home-shop-shortcuts {
+    max-width: var(--max);
+
+    margin:
+        22px auto 0 !important;
+
+    padding:
+        0 24px !important;
+}
+
+
+body.marketplace-home .categories,
+body.rk-home .categories {
+    gap: 10px !important;
+}
+
+
+body.marketplace-home .categories a,
+body.rk-home .categories a {
+    min-height: 86px !important;
+
+    padding:
+        14px 16px !important;
+
+    border:
+        1px solid var(--commerce-border) !important;
+
+    border-radius:
+        13px !important;
+
+    background:
+        var(--surface) !important;
+
+    box-shadow:
+        none !important;
+}
+
+
+body.marketplace-home .categories a:hover,
+body.rk-home .categories a:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--primary) 28%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.06) !important;
+}
+
+
+/* =========================================================
+   PROMOTIONAL CARDS
+   ========================================================= */
+
+.rk-commerce-promos {
+    max-width: var(--max);
+
+    margin:
+        22px auto 0;
+
+    padding:
+        0 24px;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 12px;
+}
+
+
+.rk-commerce-promo {
+    min-height: 112px;
+
+    padding:
+        19px 20px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    text-decoration: none;
+
+    color:
+        var(--text);
+
+    background:
+        var(--surface);
+
+    border:
+        1px solid var(--commerce-border);
+
+    border-radius:
+        15px;
+
+    box-shadow:
+        0 5px 18px rgba(0,0,0,.04);
+}
+
+
+.rk-commerce-promo:first-child {
+    border-left:
+        4px solid var(--secondary);
+}
+
+
+.rk-commerce-promo:last-child {
+    border-left:
+        4px solid var(--primary);
+}
+
+
+.rk-commerce-promo-icon {
+    width: 48px;
+    height: 48px;
+
+    flex: 0 0 48px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 8%,
+            var(--surface)
+        );
+
+    color:
+        var(--primary);
+
+    font-size: 19px;
+}
+
+
+.rk-commerce-promo-copy {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.rk-commerce-promo-kicker {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color:
+        var(--secondary);
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.rk-commerce-promo h3 {
+    margin: 0;
+
+    color:
+        var(--heading-color,var(--text));
+
+    font-size: 17px;
+}
+
+
+.rk-commerce-promo p {
+    margin:
+        5px 0 0;
+
+    color:
+        var(--muted);
+
+    font-size: 11px;
+
+    line-height: 1.45;
+}
+
+
+.rk-commerce-promo-arrow {
+    color:
+        var(--primary);
+
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   PRODUCT SECTION
+   ========================================================= */
+
+body.marketplace-home .home-products-section,
+body.rk-home .home-products-section {
+    max-width: var(--max);
+
+    margin:
+        28px auto 0 !important;
+
+    padding:
+        0 24px !important;
+}
+
+
+body.marketplace-home .home-products-section .section-head,
+body.rk-home .home-products-section .section-head {
+    margin-bottom: 14px;
+}
+
+
+body.marketplace-home .home-products-section .section-head h2,
+body.rk-home .home-products-section .section-head h2 {
+    font-size:
+        clamp(23px,2.2vw,31px) !important;
+
+    line-height: 1.15 !important;
+}
+
+
+body.marketplace-home .products,
+body.rk-home .products {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(5,minmax(0,1fr)) !important;
+
+    gap: 12px !important;
+}
+
+
+body.marketplace-home .product-card,
+body.rk-home .product-card {
+    overflow: hidden;
+
+    border:
+        1px solid var(--commerce-border) !important;
+
+    border-radius:
+        13px !important;
+
+    background:
+        var(--surface) !important;
+
+    box-shadow:
+        none !important;
+}
+
+
+body.marketplace-home .product-card:hover,
+body.rk-home .product-card:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.07) !important;
+}
+
+
+/* =========================================================
+   BENEFITS
+   ========================================================= */
+
+body.marketplace-home .rk-store-benefits,
+body.rk-home .rk-store-benefits {
+    max-width: var(--max);
+
+    margin:
+        28px auto 0;
+
+    padding:
+        0 24px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    background:
+        transparent !important;
+
+    gap: 0;
+}
+
+
+body.marketplace-home .rk-benefit-item,
+body.rk-home .rk-benefit-item {
+    min-height: 88px;
+
+    padding:
+        16px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    background:
+        var(--surface) !important;
+
+    color:
+        var(--text) !important;
+
+    border-top:
+        1px solid var(--commerce-border);
+
+    border-bottom:
+        1px solid var(--commerce-border);
+
+    border-right:
+        1px solid var(--commerce-border);
+}
+
+
+body.marketplace-home .rk-benefit-item:first-child,
+body.rk-home .rk-benefit-item:first-child {
+    border-left:
+        1px solid var(--commerce-border);
+
+    border-radius:
+        14px 0 0 14px;
+}
+
+
+body.marketplace-home .rk-benefit-item:last-child,
+body.rk-home .rk-benefit-item:last-child {
+    border-radius:
+        0 14px 14px 0;
+}
+
+
+body.marketplace-home .rk-benefit-icon,
+body.rk-home .rk-benefit-icon {
+    color:
+        var(--primary) !important;
+}
+
+
+body.marketplace-home .rk-benefit-item strong,
+body.rk-home .rk-benefit-item strong {
+    color:
+        var(--heading-color,var(--text)) !important;
+}
+
+
+body.marketplace-home .rk-benefit-item p,
+body.rk-home .rk-benefit-item p {
+    color:
+        var(--muted) !important;
+}
+
+
+/* =========================================================
+   MEMBERSHIP / REWARDS
+   ========================================================= */
+
+body.marketplace-home .rk-membership,
+body.marketplace-home .rk-membership-section,
+body.rk-home .rk-membership,
+body.rk-home .rk-membership-section {
+    max-width: var(--max);
+
+    margin:
+        28px auto 0 !important;
+
+    border-radius:
+        16px !important;
+
+    background:
+        var(--commerce-deep) !important;
+
+    color: #fff !important;
+
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+body.marketplace-home .store-footer,
+body.rk-home .store-footer {
+    margin-top: 42px;
+
+    border-top:
+        1px solid rgba(255,255,255,.08);
+
+    background:
+        var(--commerce-deeper) !important;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    body.marketplace-home .header-main,
+    body.rk-home .header-main {
+        grid-template-columns:
+            minmax(150px,210px)
+            minmax(260px,1fr)
+            auto;
+
+        gap: 12px;
+
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+
+    body.marketplace-home .actions .label,
+    body.rk-home .actions .label {
+        display: none;
+    }
+
+
+    body.marketplace-home .products,
+    body.rk-home .products {
+        grid-template-columns:
+            repeat(4,minmax(0,1fr)) !important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE / SMALL TABLET
+   ========================================================= */
+
+@media (max-width: 920px) {
+
+    body.marketplace-home .header-main,
+    body.rk-home .header-main {
+        display: flex;
+
+        flex-wrap: wrap;
+
+        padding:
+            9px 14px 11px;
+
+        gap: 8px;
+    }
+
+
+    body.marketplace-home .brand,
+    body.rk-home .brand {
+        flex: 1;
+    }
+
+
+    body.marketplace-home .search,
+    body.rk-home .search {
+        order: 10;
+
+        width: 100%;
+
+        flex:
+            0 0 100%;
+
+        grid-template-columns:
+            1fr 44px;
+    }
+
+
+    body.marketplace-home .search select,
+    body.rk-home .search select {
+        display: none;
+    }
+
+
+    body.marketplace-home .categories-nav,
+    body.rk-home .categories-nav {
+        padding:
+            6px 0 !important;
+    }
+
+
+    .rk-commerce-utility,
+    .rk-commerce-promos,
+    body.marketplace-home .home-shop-shortcuts,
+    body.rk-home .home-shop-shortcuts,
+    body.marketplace-home .home-products-section,
+    body.rk-home .home-products-section,
+    body.marketplace-home .rk-store-benefits,
+    body.rk-home .rk-store-benefits {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+
+    .rk-commerce-utility-inner {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+
+    .rk-commerce-utility-item {
+        border-bottom:
+            1px solid var(--commerce-border);
+    }
+
+
+    .rk-commerce-promos {
+        grid-template-columns: 1fr;
+    }
+
+
+    body.marketplace-home .products,
+    body.rk-home .products {
+        grid-template-columns:
+            repeat(3,minmax(0,1fr)) !important;
+    }
+
+
+    body.marketplace-home .rk-store-benefits,
+    body.rk-home .rk-store-benefits {
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+
+    body.marketplace-home .rk-benefit-item:first-child,
+    body.rk-home .rk-benefit-item:first-child,
+    body.marketplace-home .rk-benefit-item:last-child,
+    body.rk-home .rk-benefit-item:last-child {
+        border-radius: 0;
+    }
+}
+
+
+/* =========================================================
+   PHONE — MIRRORS APPROVED APP FEEL
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    body.marketplace-home .brand-copy strong,
+    body.rk-home .brand-copy strong {
+        font-size: 18px;
+
+        letter-spacing: 2.4px;
+    }
+
+
+    body.marketplace-home .brand-copy small,
+    body.rk-home .brand-copy small {
+        font-size: 8px;
+    }
+
+
+    .rk-commerce-utility {
+        margin-top: 10px;
+    }
+
+
+    .rk-commerce-utility-inner {
+        min-height: 64px;
+
+        grid-template-columns:
+            repeat(4,minmax(0,1fr));
+    }
+
+
+    .rk-commerce-utility-item {
+        padding: 8px 3px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        gap: 4px;
+
+        text-align: center;
+
+        border-bottom: 0;
+    }
+
+
+    .rk-commerce-utility-icon {
+        width: 28px;
+        height: 28px;
+
+        flex-basis: 28px;
+
+        font-size: 12px;
+    }
+
+
+    .rk-commerce-utility-copy strong {
+        font-size: 8px;
+    }
+
+
+    .rk-commerce-utility-copy span {
+        font-size: 6.5px;
+    }
+
+
+    .rk-commerce-promos {
+        margin-top: 16px;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 7px;
+    }
+
+
+    .rk-commerce-promo {
+        min-height: 88px;
+
+        padding: 10px;
+
+        gap: 7px;
+    }
+
+
+    .rk-commerce-promo-icon {
+        width: 30px;
+        height: 30px;
+
+        flex-basis: 30px;
+
+        font-size: 12px;
+    }
+
+
+    .rk-commerce-promo-kicker {
+        font-size: 6px;
+    }
+
+
+    .rk-commerce-promo h3 {
+        font-size: 10px;
+    }
+
+
+    .rk-commerce-promo p {
+        font-size: 7px;
+
+        line-height: 1.3;
+    }
+
+
+    .rk-commerce-promo-arrow {
+        display: none;
+    }
+
+
+    body.marketplace-home .products,
+    body.rk-home .products {
+        grid-template-columns:
+            repeat(2,minmax(0,1fr)) !important;
+
+        gap: 8px !important;
+    }
+
+
+    body.marketplace-home .rk-store-benefits,
+    body.rk-home .rk-store-benefits {
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+
+        gap: 7px;
+    }
+
+
+    body.marketplace-home .rk-benefit-item,
+    body.rk-home .rk-benefit-item {
+        min-height: 72px;
+
+        padding: 10px;
+
+        border:
+            1px solid var(--commerce-border);
+
+        border-radius:
+            10px !important;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    body.marketplace-home .product-card,
+    body.rk-home .product-card,
+    body.marketplace-home .categories a,
+    body.rk-home .categories a {
+        transition: none !important;
+    }
+}
