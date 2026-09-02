@@ -6,11 +6,14 @@ const providerService =
     require("./notificationProviderService");
 const templateService =
     require("./notificationTemplateService");
+const pushNotificationService =
+    require("./pushNotificationService");
 
 const CHANNELS = [
     "Email",
     "WhatsApp",
-    "SMS"
+    "SMS",
+    "Push"
 ];
 
 function booleanValue(
@@ -131,6 +134,14 @@ function customerAllows(
     customer,
     channel
 ) {
+    if (channel === "Push") {
+        /*
+         * Registering an active mobile push device
+         * represents the customer's current push opt-in.
+         */
+        return true;
+    }
+
     if (channel === "Email") {
         return booleanValue(
             customer
@@ -155,6 +166,15 @@ function verifiedFor(
     customer,
     channel
 ) {
+    if (channel === "Push") {
+        /*
+         * Expo device registration is authenticated,
+         * so Push does not depend on email/phone
+         * verification.
+         */
+        return true;
+    }
+
     if (channel === "Email") {
         return Boolean(
             customer.email_verified_at
@@ -164,6 +184,32 @@ function verifiedFor(
     return Boolean(
         customer.phone_verified_at
     );
+}
+
+
+async function activePushDevices(
+    customerId
+) {
+    const [rows] =
+        await db.query(
+            `
+            SELECT
+                id,
+                expo_push_token,
+                platform,
+                device_name,
+                device_id
+            FROM customer_push_devices
+            WHERE customer_id = ?
+              AND is_active = 1
+            ORDER BY id ASC
+            `,
+            [
+                customerId
+            ]
+        );
+
+    return rows;
 }
 
 async function queueNotification({
@@ -384,20 +430,6 @@ async function queueCustomerEvent({
             continue;
         }
 
-        const recipient =
-            recipientFor(
-                customer,
-                rule.channel
-            );
-
-        if (!recipient) {
-            skipped.push(
-                `${rule.channel}: recipient is missing.`
-            );
-
-            continue;
-        }
-
         const allVariables = {
             customer_id:
                 customer.id,
@@ -420,9 +452,95 @@ async function queueCustomerEvent({
                         rule.channel,
                     variables:
                         allVariables,
+                    fallbackSubject:
+                        rule.channel === "Push"
+                            ? "RUKHNAV"
+                            : "",
                     fallbackMessage:
                         `${eventKey} notification`
                 });
+
+        /*
+         * Push is different from Email / WhatsApp / SMS:
+         * one customer can own multiple active devices.
+         * Each device therefore receives its own queue row.
+         */
+        if (rule.channel === "Push") {
+            const devices =
+                await activePushDevices(
+                    customer.id
+                );
+
+            if (!devices.length) {
+                skipped.push(
+                    "Push: no active mobile device."
+                );
+
+                continue;
+            }
+
+            for (const device of devices) {
+                const queued =
+                    await queueNotification({
+                        eventKey,
+                        customerId:
+                            customer.id,
+                        channel:
+                            "Push",
+                        templateKey:
+                            rule.template_key,
+                        recipient:
+                            device.expo_push_token,
+                        subject:
+                            rendered.subject ||
+                            "RUKHNAV",
+                        message:
+                            rendered.message,
+                        payload: {
+                            ...allVariables,
+                            push_device_id:
+                                device.id,
+                            push_platform:
+                                device.platform
+                        },
+                        priority:
+                            rule.priority,
+                        maxAttempts:
+                            rule.max_attempts,
+                        scheduledFor,
+                        dedupeKey:
+                            dedupeReference
+                                ? [
+                                    eventKey,
+                                    "Push",
+                                    customer.id,
+                                    device.id,
+                                    dedupeReference
+                                ].join(":")
+                                : null
+                    });
+
+                results.push(
+                    queued
+                );
+            }
+
+            continue;
+        }
+
+        const recipient =
+            recipientFor(
+                customer,
+                rule.channel
+            );
+
+        if (!recipient) {
+            skipped.push(
+                `${rule.channel}: recipient is missing.`
+            );
+
+            continue;
+        }
 
         const queued =
             await queueNotification({
@@ -577,6 +695,46 @@ async function sendByChannel(
                     item.recipient,
                 message:
                     item.message
+            });
+    }
+
+    if (
+        item.channel ===
+        "Push"
+    ) {
+        const payload =
+            queuePayload(item);
+
+        return pushNotificationService
+            .sendPush({
+                to:
+                    item.recipient,
+                title:
+                    item.subject ||
+                    "RUKHNAV",
+                message:
+                    item.message,
+                data: {
+                    eventKey:
+                        item.event_key ||
+                        "",
+                    orderId:
+                        payload.order_id ||
+                        payload.orderId ||
+                        null,
+                    orderNumber:
+                        payload.order_number ||
+                        payload.orderNumber ||
+                        null,
+                    actionUrl:
+                        payload.action_url ||
+                        payload.actionUrl ||
+                        ""
+                },
+                priority:
+                    Number(item.priority) <= 2
+                        ? "high"
+                        : "default"
             });
     }
 
@@ -830,7 +988,15 @@ async function processItem(
                 item.attempt_count
             ) + 1;
 
+        const permanentFailure =
+            String(
+                error?.message || ""
+            ).startsWith(
+                "PUSH_PERMANENT:"
+            );
+
         const finalFailure =
+            permanentFailure ||
             attempt >=
             Number(
                 item.max_attempts

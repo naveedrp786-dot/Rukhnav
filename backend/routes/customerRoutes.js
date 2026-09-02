@@ -19,6 +19,9 @@ const customerSecurityController =
 const customerNotificationController =
     require("../controllers/customerNotificationController");
 
+const customerPushDeviceController =
+    require("../controllers/customerPushDeviceController");
+
 const auth =
     require("../middleware/auth");
 
@@ -163,6 +166,35 @@ router.patch(
     "/notifications/:id/read",
     auth,
     customerNotificationController.markRead
+);
+
+
+// =========================================
+// Protected Mobile Push Devices
+// =========================================
+
+router.post(
+    "/push-devices/test",
+    auth,
+    customerPushDeviceController.testPush
+);
+
+router.get(
+    "/push-devices",
+    auth,
+    customerPushDeviceController.listDevices
+);
+
+router.post(
+    "/push-devices",
+    auth,
+    customerPushDeviceController.registerDevice
+);
+
+router.delete(
+    "/push-devices",
+    auth,
+    customerPushDeviceController.unregisterDevice
 );
 
 

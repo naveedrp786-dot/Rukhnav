@@ -8,6 +8,11 @@ import {
 } from "expo-router";
 
 import * as SplashScreen from "expo-splash-screen";
+import * as Notifications from "expo-notifications";
+
+import {
+  useEffect,
+} from "react";
 
 import {
   Pressable,
@@ -31,8 +36,26 @@ import {
   useWebsiteTheme,
 } from "../theme/website-theme";
 
+import {
+  getToken,
+} from "../auth/session";
+
+import {
+  registerForPushNotifications,
+} from "../notifications/push";
+
 
 SplashScreen.preventAutoHideAsync();
+
+Notifications.setNotificationHandler({
+  handleNotification:
+    async () => ({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+});
 
 
 function GlobalBottomNav() {
@@ -253,9 +276,122 @@ function GlobalBottomNav() {
 }
 
 
+function PushNotificationLifecycle() {
+  useEffect(() => {
+    let mounted = true;
+
+    async function registerDevice() {
+      try {
+        const token =
+          await getToken();
+
+        if (!token || !mounted) {
+          return;
+        }
+
+        const result =
+          await registerForPushNotifications();
+
+        if (
+          mounted &&
+          !result.registered &&
+          result.reason
+        ) {
+          console.log(
+            "RUKHNAV push registration:",
+            result.reason
+          );
+        }
+      } catch (error) {
+        console.error(
+          "RUKHNAV push registration failed:",
+          error
+        );
+      }
+    }
+
+    registerDevice();
+
+    const responseSubscription =
+      Notifications
+        .addNotificationResponseReceivedListener(
+          response => {
+            const data =
+              response.notification
+                .request.content.data || {};
+
+            const actionUrl =
+              typeof data.actionUrl ===
+              "string"
+                ? data.actionUrl
+                : "";
+
+            const orderId =
+              data.orderId;
+
+            /*
+             * Only route to known native screens.
+             * More event-specific deep links can
+             * be added as those screens are built.
+             */
+            if (
+              actionUrl === "/cart"
+            ) {
+              router.push("/cart");
+              return;
+            }
+
+            if (
+              actionUrl === "/wishlist"
+            ) {
+              router.push("/wishlist");
+              return;
+            }
+
+            if (
+              actionUrl === "/rewards"
+            ) {
+              router.push("/rewards");
+              return;
+            }
+
+            if (
+              actionUrl === "/account"
+            ) {
+              router.push("/account");
+              return;
+            }
+
+            if (
+              typeof orderId === "number" ||
+              typeof orderId === "string"
+            ) {
+              /*
+               * Until a dedicated native order-detail
+               * route exists, order notifications
+               * safely open the account area.
+               */
+              router.push("/account");
+            }
+          }
+        );
+
+    return () => {
+      mounted = false;
+
+      responseSubscription.remove();
+    };
+  }, []);
+
+  return null;
+}
+
+
 function AppShell() {
   return (
     <View style={styles.shell}>
+
+      <PushNotificationLifecycle />
 
       <View style={styles.stackArea}>
         <Stack
