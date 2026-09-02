@@ -1403,216 +1403,209 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 
 /* =========================================================
-   RUKHNAV V13 PROCEDURAL ATMOSPHERIC CLOUD ENGINE
+   RUKHNAV V14 FINAL PROCEDURAL THEME ATMOSPHERE
 
-   Prototypes only:
-   - Midnight Aurora
-   - Rose Cloud
-   - Black Champagne
-
-   Code only.
-   No images.
+   All 20 final themes.
+   Code-only atmosphere.
+   No image assets.
    No SVG.
-   No canvas.
+   No Canvas.
    No WebGL.
-   No 3D.
+   No animation.
    ========================================================= */
 
-(function installRukhnavV13AtmosphericScenes(){
+(function installRukhnavV14FinalThemeScenes(){
 
-    const PROTOTYPES = new Set([
+    const THEMES = new Set([
+
+        "rukhnav-gold-smoke",
+        "emerald-champagne",
+        "ivory-botanical",
+
         "midnight-aurora",
+        "electric-violet-smoke",
+        "ocean-smoke",
+        "purple-haze",
+
+        "aqua-peach-mist",
         "rose-cloud",
-        "black-champagne"
+        "lavender-sky",
+        "mint-blush",
+
+        "black-champagne",
+        "royal-plum-gold",
+        "sapphire-gold",
+
+        "tropical-prism",
+        "aqua-magenta",
+        "violet-peach",
+
+        "frosted-lavender",
+        "ice-glass",
+        "pearl-glass"
+
     ]);
 
 
     function getSceneId(card){
 
-        const sceneClass =
-            Array.from(card.classList)
-                .find(className =>
-                    className.startsWith(
+        const className =
+            Array
+                .from(card.classList)
+                .find(item =>
+                    item.startsWith(
                         "rukhnav-theme-scene-"
                     )
                 );
 
-        if (!sceneClass) {
+        if (!className) {
             return null;
         }
 
-        return sceneClass.replace(
+        return className.replace(
             "rukhnav-theme-scene-",
             ""
         );
     }
 
 
-    function createElement(
+    function element(
         tag,
         className
     ){
 
-        const element =
+        const node =
             document.createElement(tag);
 
-        element.className =
+        node.className =
             className;
 
-        element.setAttribute(
+        node.setAttribute(
             "aria-hidden",
             "true"
         );
 
-        return element;
+        return node;
     }
 
 
-    function buildCloudBank(
-        bankName,
-        lobeCount
+    function createCloudBank(
+        depth
     ){
 
         const bank =
-            createElement(
+            element(
                 "div",
-                `rukhnav-v13-cloud-bank ` +
-                `rukhnav-v13-bank-${bankName}`
+                `rukhnav-v14-bank ` +
+                `rukhnav-v14-bank-${depth}`
             );
 
-        const body =
-            createElement(
+
+        bank.appendChild(
+            element(
                 "div",
-                "rukhnav-v13-cloud-body"
-            );
-
-        bank.appendChild(body);
-
-
-        for (
-            let index = 1;
-            index <= lobeCount;
-            index += 1
-        ) {
-
-            const lobe =
-                createElement(
-                    "span",
-                    `rukhnav-v13-lobe ` +
-                    `rukhnav-v13-lobe-${index}`
-                );
-
-            bank.appendChild(lobe);
-        }
+                "rukhnav-v14-cloud-mass"
+            )
+        );
 
 
-        const shade =
-            createElement(
+        bank.appendChild(
+            element(
                 "div",
-                "rukhnav-v13-cloud-shade"
-            );
+                "rukhnav-v14-cloud-light"
+            )
+        );
 
-        bank.appendChild(shade);
 
-
-        const rim =
-            createElement(
+        bank.appendChild(
+            element(
                 "div",
-                "rukhnav-v13-cloud-rim"
-            );
+                "rukhnav-v14-cloud-shadow"
+            )
+        );
 
-        bank.appendChild(rim);
 
         return bank;
     }
 
 
-    function buildScene(sceneId){
+    function createScene(
+        sceneId
+    ){
 
         const scene =
-            createElement(
+            element(
                 "div",
-                `rukhnav-v13-scene ` +
-                `rukhnav-v13-scene-${sceneId}`
+                `rukhnav-v14-scene ` +
+                `rukhnav-v14-scene-${sceneId}`
             );
 
 
         scene.appendChild(
-            createElement(
+            element(
                 "div",
-                "rukhnav-v13-base-glow"
+                "rukhnav-v14-light-source"
             )
         );
 
 
         scene.appendChild(
-            createElement(
+            element(
                 "div",
-                "rukhnav-v13-secondary-glow"
+                "rukhnav-v14-secondary-light"
             )
         );
 
 
         scene.appendChild(
-            createElement(
+            element(
                 "div",
-                "rukhnav-v13-ray rukhnav-v13-ray-one"
+                "rukhnav-v14-ray rukhnav-v14-ray-one"
             )
         );
 
 
         scene.appendChild(
-            createElement(
+            element(
                 "div",
-                "rukhnav-v13-ray rukhnav-v13-ray-two"
+                "rukhnav-v14-ray rukhnav-v14-ray-two"
             )
         );
 
 
         scene.appendChild(
-            buildCloudBank(
-                "back",
-                5
+            createCloudBank(
+                "back"
             )
         );
 
 
         scene.appendChild(
-            buildCloudBank(
-                "middle",
-                7
+            createCloudBank(
+                "middle"
             )
         );
 
 
         scene.appendChild(
-            buildCloudBank(
-                "front",
-                6
+            createCloudBank(
+                "front"
             )
         );
 
 
         scene.appendChild(
-            createElement(
+            element(
                 "div",
-                "rukhnav-v13-mist rukhnav-v13-mist-one"
+                "rukhnav-v14-haze"
             )
         );
 
 
         scene.appendChild(
-            createElement(
+            element(
                 "div",
-                "rukhnav-v13-mist rukhnav-v13-mist-two"
-            )
-        );
-
-
-        scene.appendChild(
-            createElement(
-                "div",
-                "rukhnav-v13-vignette"
+                "rukhnav-v14-vignette"
             )
         );
 
@@ -1632,9 +1625,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const sceneId =
                     getSceneId(card);
 
+
                 if (
                     !sceneId ||
-                    !PROTOTYPES.has(sceneId)
+                    !THEMES.has(sceneId)
                 ) {
                     return;
                 }
@@ -1645,53 +1639,52 @@ document.addEventListener("DOMContentLoaded", () => {
                         ".rukhnav-theme-card-preview"
                     );
 
+
                 if (!preview) {
                     return;
                 }
 
+
                 /*
-                 * V13.1:
-                 * Remove any stale legacy V7 SVG atmosphere
-                 * left in the DOM by an older cached script.
+                 * Remove any previous prototype renderer.
                  */
-                card
+
+                preview
                     .querySelectorAll(
-                        ".rukhnav-v7-smoke-svg"
+                        [
+                            ".rukhnav-v11-scene",
+                            ".rukhnav-v13-scene",
+                            ".rukhnav-v7-smoke-svg"
+                        ].join(",")
                     )
-                    .forEach(element =>
-                        element.remove()
+                    .forEach(node =>
+                        node.remove()
                     );
 
 
                 card.classList.remove(
-                    "rukhnav-v11-prototype"
-                );
+                    "rukhnav-v11-prototype",
+                    "rukhnav-v13-prototype",
 
-                card.classList.remove(
                     "rukhnav-v11-midnight-aurora",
                     "rukhnav-v11-rose-cloud",
-                    "rukhnav-v11-black-champagne"
+                    "rukhnav-v11-black-champagne",
+
+                    "rukhnav-v13-midnight-aurora",
+                    "rukhnav-v13-rose-cloud",
+                    "rukhnav-v13-black-champagne"
                 );
 
 
                 card.classList.add(
-                    "rukhnav-v13-prototype",
-                    `rukhnav-v13-${sceneId}`
+                    "rukhnav-v14-prototype",
+                    `rukhnav-v14-${sceneId}`
                 );
-
-
-                preview
-                    .querySelectorAll(
-                        ".rukhnav-v11-scene"
-                    )
-                    .forEach(element =>
-                        element.remove()
-                    );
 
 
                 if (
                     preview.querySelector(
-                        ".rukhnav-v13-scene"
+                        ".rukhnav-v14-scene"
                     )
                 ) {
                     return;
@@ -1699,26 +1692,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 preview.prepend(
-                    buildScene(sceneId)
+                    createScene(
+                        sceneId
+                    )
                 );
             });
     }
 
 
-    let scheduled = false;
+    let queued = false;
 
 
     function schedule(){
 
-        if (scheduled) {
+        if (queued) {
             return;
         }
 
-        scheduled = true;
+        queued = true;
+
 
         requestAnimationFrame(() => {
 
-            scheduled = false;
+            queued = false;
 
             install();
         });
