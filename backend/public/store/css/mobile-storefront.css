@@ -784,3 +784,208 @@
     }
 
 }
+
+
+/* =========================================================
+   RUKHNAV MOBILE — 3 PRODUCTS PER ROW
+   2026-09-02
+   Desktop/tablet remain unchanged.
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    /* Main product grids */
+    .products,
+    .marketplace-home .products,
+    .product-grid,
+    .products-grid,
+    .pd-products-grid,
+    .pd-related-grid,
+    .pd-related-products,
+    .related-products .products {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+    }
+
+
+    /* Give storefront sections more usable mobile width */
+    .section {
+        padding-left: 9px !important;
+        padding-right: 9px !important;
+    }
+
+    .catalog {
+        padding-left: 9px !important;
+        padding-right: 9px !important;
+    }
+
+
+    /* Product cards */
+    .product-card,
+    .pd-product-card {
+        min-width: 0 !important;
+        width: 100% !important;
+        border-radius: 10px !important;
+        overflow: hidden;
+    }
+
+
+    /* Product image remains the main visual element */
+    .product-image,
+    .pd-product-card-image {
+        width: 100% !important;
+        aspect-ratio: 1 / 1.08 !important;
+        overflow: hidden;
+    }
+
+    .product-image img,
+    .pd-product-card img,
+    .pd-product-card-image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+
+
+    /* Compact card body */
+    .product-body,
+    .pd-product-card-body {
+        padding: 7px 6px 8px !important;
+    }
+
+
+    /* Category/meta */
+    .product-body small,
+    .pd-product-card small,
+    .product-category,
+    .product-meta {
+        font-size: 7px !important;
+        line-height: 1.2 !important;
+    }
+
+
+    /* Product title */
+    .product-body > a,
+    .product-card .product-name,
+    .pd-product-card h3,
+    .pd-product-card .product-title {
+        min-height: 29px !important;
+        margin: 4px 0 !important;
+
+        font-size: 10px !important;
+        line-height: 1.35 !important;
+        font-weight: 700 !important;
+
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+
+    /* Rating */
+    .product-card .stars,
+    .pd-product-card .stars,
+    .product-rating {
+        font-size: 7px !important;
+        line-height: 1 !important;
+        white-space: nowrap;
+    }
+
+
+    /* Price + cart row */
+    .price-row {
+        gap: 3px !important;
+        margin-top: 6px !important;
+    }
+
+    .price,
+    .product-price,
+    .pd-product-price {
+        min-width: 0;
+        font-size: 10px !important;
+        line-height: 1.15 !important;
+        font-weight: 800 !important;
+    }
+
+
+    /* Add-to-cart becomes compact */
+    .add-card {
+        flex: 0 0 27px !important;
+        width: 27px !important;
+        height: 27px !important;
+        min-width: 27px !important;
+        min-height: 27px !important;
+        border-radius: 7px !important;
+        padding: 0 !important;
+    }
+
+    .add-card i {
+        font-size: 10px !important;
+    }
+
+
+    /* Wishlist heart */
+    .wish-card {
+        top: 5px !important;
+        right: 5px !important;
+
+        width: 27px !important;
+        height: 27px !important;
+        min-width: 27px !important;
+        min-height: 27px !important;
+    }
+
+    .wish-card i {
+        font-size: 10px !important;
+    }
+
+
+    /* Prevent card content from forcing horizontal overflow */
+    .product-card *,
+    .pd-product-card * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+
+/* Very narrow phones still keep 3 products.
+   Reduce spacing rather than dropping to 2 columns. */
+@media (max-width: 390px) {
+
+    .products,
+    .marketplace-home .products,
+    .product-grid,
+    .products-grid,
+    .pd-products-grid,
+    .pd-related-grid,
+    .pd-related-products,
+    .related-products .products {
+        gap: 5px !important;
+    }
+
+    .section,
+    .catalog {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+
+    .product-body,
+    .pd-product-card-body {
+        padding: 6px 5px 7px !important;
+    }
+
+    .product-body > a,
+    .product-card .product-name,
+    .pd-product-card h3,
+    .pd-product-card .product-title {
+        font-size: 9px !important;
+    }
+
+    .price,
+    .product-price,
+    .pd-product-price {
+        font-size: 9px !important;
+    }
+}
