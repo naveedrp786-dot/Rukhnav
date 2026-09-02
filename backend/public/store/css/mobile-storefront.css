@@ -1327,3 +1327,303 @@
         font-size:11px !important;
     }
 }
+
+
+/* =========================================================
+   RUKHNAV MOBILE HEADER — COMPACT NON-OVERLAPPING LAYOUT
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    /*
+     * Reserve explicit space for the menu and action group.
+     * The brand gets the remaining flexible space.
+     */
+    .store-header .header-main {
+        grid-template-columns:
+            38px
+            minmax(0, 1fr)
+            minmax(132px, auto);
+
+        grid-template-areas:
+            "menu brand actions"
+            "search search search";
+
+        column-gap: 7px;
+        row-gap: 10px;
+
+        padding:
+            11px
+            10px
+            10px;
+
+        overflow: visible;
+    }
+
+
+    /* ---------- Hamburger ---------- */
+
+    .store-header .menu-btn {
+        width: 36px;
+        min-width: 36px;
+        height: 38px;
+
+        padding: 0;
+        margin: 0;
+
+        font-size: 20px;
+    }
+
+
+    /* ---------- Brand ---------- */
+
+    .store-header .brand {
+        min-width: 0;
+        width: 100%;
+
+        overflow: hidden;
+
+        justify-self: stretch;
+        justify-content: flex-start;
+    }
+
+    .store-header .brand-copy {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .store-header .brand-copy strong {
+        display: block;
+
+        max-width: 100%;
+
+        overflow: hidden;
+
+        font-size:
+            clamp(
+                19px,
+                5.8vw,
+                27px
+            );
+
+        line-height: 1;
+
+        letter-spacing: .4px;
+
+        white-space: nowrap;
+
+        text-overflow: clip;
+    }
+
+    .store-header .brand-copy small {
+        display: none !important;
+    }
+
+
+    /* ---------- Right actions ---------- */
+
+    .store-header .actions {
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 30px);
+
+        justify-content: end;
+        align-items: center;
+
+        gap: 3px;
+
+        min-width: 129px;
+        width: 129px;
+
+        overflow: visible;
+    }
+
+    .store-header .actions .action {
+        position: relative;
+
+        width: 30px;
+        min-width: 30px;
+
+        height: 36px;
+        min-height: 36px;
+
+        padding: 0;
+        margin: 0;
+
+        border-radius: 9px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: visible;
+    }
+
+    .store-header .actions .action > i {
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .store-header .actions .label {
+        display: none !important;
+    }
+
+
+    /* ---------- Customer avatar ---------- */
+
+    .store-header
+    .account-action
+    .header-account-avatar {
+        width: 29px;
+        height: 29px;
+
+        min-width: 29px;
+        min-height: 29px;
+
+        border-width: 1px;
+
+        flex: 0 0 29px;
+    }
+
+    .store-header
+    .account-action
+    .header-account-avatar i {
+        font-size: 14px;
+    }
+
+    .store-header
+    .header-account-initials {
+        font-size: 8px;
+        line-height: 1;
+
+        letter-spacing: 0;
+
+        white-space: nowrap;
+    }
+
+
+    /* ---------- Counters ---------- */
+
+    .store-header .actions .count {
+        top: -3px;
+        right: -3px;
+
+        min-width: 15px;
+        width: auto;
+        height: 15px;
+
+        padding: 0 3px;
+
+        border-radius: 999px;
+
+        font-size: 8px;
+        line-height: 15px;
+
+        text-align: center;
+
+        z-index: 3;
+    }
+
+
+    /* ---------- Search ---------- */
+
+    .store-header .search {
+        width: 100%;
+
+        margin-top: 1px;
+
+        border-radius: 12px;
+    }
+
+    .store-header .search input {
+        height: 44px;
+
+        padding-left: 13px;
+        padding-right: 10px;
+
+        font-size: 14px;
+    }
+
+    .store-header .search button {
+        width: 48px;
+        min-width: 48px;
+    }
+}
+
+
+/*
+ * Extra protection for very narrow phones.
+ */
+@media (max-width: 390px) {
+
+    .store-header .header-main {
+        grid-template-columns:
+            34px
+            minmax(0, 1fr)
+            116px;
+
+        column-gap: 5px;
+
+        padding-left: 7px;
+        padding-right: 7px;
+    }
+
+    .store-header .menu-btn {
+        width: 32px;
+        min-width: 32px;
+    }
+
+    .store-header .actions {
+        grid-template-columns:
+            repeat(4, 27px);
+
+        gap: 2px;
+
+        width: 114px;
+        min-width: 114px;
+    }
+
+    .store-header .actions .action {
+        width: 27px;
+        min-width: 27px;
+
+        height: 34px;
+        min-height: 34px;
+    }
+
+    .store-header
+    .account-action
+    .header-account-avatar {
+        width: 26px;
+        height: 26px;
+
+        min-width: 26px;
+        min-height: 26px;
+
+        flex-basis: 26px;
+    }
+
+    .store-header .actions .action > i {
+        font-size: 16px;
+    }
+
+    .store-header .brand-copy strong {
+        font-size:
+            clamp(
+                17px,
+                5.4vw,
+                22px
+            );
+
+        letter-spacing: 0;
+    }
+
+    .store-header .actions .count {
+        min-width: 14px;
+        height: 14px;
+
+        font-size: 7px;
+        line-height: 14px;
+    }
+}
