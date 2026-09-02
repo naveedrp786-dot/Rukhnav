@@ -85,12 +85,47 @@ exports.createCategory = async (req, res) => {
         const {
             category_name,
             description,
-            status
+            status,
+            icon_key,
+            icon_color
         } = req.body;
 
         const image = req.file
             ? req.file.filename
             : null;
+
+        const allowedIcons = new Set([
+            "leaf",
+            "droplet",
+            "sparkles",
+            "flower",
+            "heart",
+            "sun",
+            "bottle",
+            "seedling",
+            "spa",
+            "hair",
+            "gift",
+            "star",
+            "beauty",
+            "cleanser",
+            "shopping",
+            "shirt"
+        ]);
+
+        const safeIconKey =
+            allowedIcons.has(
+                String(icon_key || "").trim()
+            )
+                ? String(icon_key).trim()
+                : "sparkles";
+
+        const safeIconColor =
+            /^#[0-9a-fA-F]{6}$/.test(
+                String(icon_color || "").trim()
+            )
+                ? String(icon_color).trim()
+                : "#D4A72C";
 
         await db.query(
             `
@@ -99,14 +134,18 @@ exports.createCategory = async (req, res) => {
                 category_name,
                 description,
                 image,
+                icon_key,
+                icon_color,
                 status
             )
-            VALUES (?,?,?,?)
+            VALUES (?,?,?,?,?,?)
             `,
             [
                 category_name,
                 description,
                 image,
+                safeIconKey,
+                safeIconColor,
                 status || "active"
             ]
         );
@@ -171,8 +210,53 @@ exports.updateCategory = async (req, res) => {
         const {
             category_name,
             description,
-            status
+            status,
+            icon_key,
+            icon_color
         } = req.body;
+
+        const allowedIcons = new Set([
+            "leaf",
+            "droplet",
+            "sparkles",
+            "flower",
+            "heart",
+            "sun",
+            "bottle",
+            "seedling",
+            "spa",
+            "hair",
+            "gift",
+            "star",
+            "beauty",
+            "cleanser",
+            "shopping",
+            "shirt"
+        ]);
+
+        const requestedIcon =
+            String(icon_key || "").trim();
+
+        const safeIconKey =
+            allowedIcons.has(requestedIcon)
+                ? requestedIcon
+                : (
+                    rows[0].icon_key ||
+                    "sparkles"
+                );
+
+        const requestedColor =
+            String(icon_color || "").trim();
+
+        const safeIconColor =
+            /^#[0-9a-fA-F]{6}$/.test(
+                requestedColor
+            )
+                ? requestedColor
+                : (
+                    rows[0].icon_color ||
+                    "#D4A72C"
+                );
 
         await db.query(
             `
@@ -181,6 +265,8 @@ exports.updateCategory = async (req, res) => {
                 category_name=?,
                 description=?,
                 image=?,
+                icon_key=?,
+                icon_color=?,
                 status=?
             WHERE id=?
             `,
@@ -188,7 +274,9 @@ exports.updateCategory = async (req, res) => {
                 category_name,
                 description,
                 image,
-                status,
+                safeIconKey,
+                safeIconColor,
+                status || "active",
                 req.params.id
             ]
         );

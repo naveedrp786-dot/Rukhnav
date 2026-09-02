@@ -7447,3 +7447,210 @@ button{
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
 }
+
+
+/* =========================================================
+   RUKHNAV CATEGORY ICON SYSTEM
+   Shared category metadata from Admin / API
+   ========================================================= */
+
+.marketplace-home .categories > a.rukhnav-category-card,
+.home-shop-shortcuts .categories > a.rukhnav-category-card{
+    --category-accent:#D4A72C;
+
+    min-width:0;
+    overflow:hidden;
+
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+
+    position:relative;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--category-accent) 18%,
+            var(--border)
+        );
+
+    background:
+        linear-gradient(
+            145deg,
+            color-mix(
+                in srgb,
+                var(--category-accent) 5%,
+                var(--surface)
+            ),
+            var(--surface)
+        );
+}
+
+.marketplace-home
+.categories
+> a.rukhnav-category-card
+.rukhnav-category-visual,
+
+.home-shop-shortcuts
+.categories
+> a.rukhnav-category-card
+.rukhnav-category-visual{
+    width:64px;
+    height:64px;
+    min-width:64px;
+    flex:0 0 64px;
+
+    display:grid;
+    place-items:center;
+
+    margin:0 0 24px;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    color:var(--category-accent);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--category-accent) 11%,
+            var(--surface)
+        );
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--category-accent) 24%,
+            transparent
+        );
+
+    box-shadow:
+        0 10px 24px
+        color-mix(
+            in srgb,
+            var(--category-accent) 12%,
+            transparent
+        );
+
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease;
+}
+
+.marketplace-home
+.categories
+> a.rukhnav-category-card
+.rukhnav-category-visual--icon
+i,
+
+.home-shop-shortcuts
+.categories
+> a.rukhnav-category-card
+.rukhnav-category-visual--icon
+i{
+    width:auto;
+    height:auto;
+    margin:0;
+
+    display:block;
+
+    color:inherit;
+    background:none;
+
+    border:0;
+    border-radius:0;
+
+    font-size:30px;
+    line-height:1;
+}
+
+.marketplace-home
+.categories
+> a.rukhnav-category-card
+.rukhnav-category-visual--image,
+
+.home-shop-shortcuts
+.categories
+> a.rukhnav-category-card
+.rukhnav-category-visual--image{
+    background:
+        color-mix(
+            in srgb,
+            var(--category-accent) 7%,
+            var(--surface)
+        );
+}
+
+.marketplace-home
+.categories
+> a.rukhnav-category-card
+.cms-category-image,
+
+.home-shop-shortcuts
+.categories
+> a.rukhnav-category-card
+.cms-category-image{
+    width:100%;
+    height:100%;
+    margin:0;
+
+    display:block;
+
+    object-fit:cover;
+    border-radius:inherit;
+}
+
+.marketplace-home
+.categories
+> a.rukhnav-category-card
+b,
+
+.home-shop-shortcuts
+.categories
+> a.rukhnav-category-card
+b{
+    margin:0;
+
+    font-size:18px;
+    line-height:1.2;
+}
+
+.marketplace-home
+.categories
+> a.rukhnav-category-card
+span,
+
+.home-shop-shortcuts
+.categories
+> a.rukhnav-category-card
+span{
+    margin-top:7px;
+
+    font-size:11px;
+    line-height:1.45;
+}
+
+.marketplace-home
+.categories
+> a.rukhnav-category-card:hover
+.rukhnav-category-visual,
+
+.home-shop-shortcuts
+.categories
+> a.rukhnav-category-card:hover
+.rukhnav-category-visual{
+    transform:
+        translateY(-3px)
+        scale(1.035);
+
+    box-shadow:
+        0 14px 30px
+        color-mix(
+            in srgb,
+            var(--category-accent) 18%,
+            transparent
+        );
+}

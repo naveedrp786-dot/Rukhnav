@@ -54,6 +54,11 @@ function cacheElements() {
         "status",
         "categoryImage",
         "imagePreview",
+        "categoryIconKey",
+        "categoryIconColor",
+        "categoryIconPreview",
+        "categoryIconPicker",
+        "categoryColourPicker",
         "saveCategoryButton",
         "deleteCategoryModal",
         "deleteCategoryName",
@@ -113,6 +118,45 @@ function bindEvents() {
             "change",
             previewSelectedImage
         );
+
+    elements.categoryIconPicker
+        ?.addEventListener(
+            "click",
+            event => {
+                const button =
+                    event.target.closest(
+                        "[data-icon-key]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                selectCategoryIcon(
+                    button.dataset.iconKey
+                );
+            }
+        );
+
+    elements.categoryColourPicker
+        ?.addEventListener(
+            "click",
+            event => {
+                const button =
+                    event.target.closest(
+                        "[data-icon-color]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                selectCategoryIconColor(
+                    button.dataset.iconColor
+                );
+            }
+        );
+
 
     elements.categoryForm
         ?.addEventListener(
@@ -507,6 +551,112 @@ function categoryRow(category) {
     `;
 }
 
+
+const CATEGORY_ICON_CLASSES = {
+    leaf: "fa-leaf",
+    droplet: "fa-droplet",
+    sparkles: "fa-sparkles",
+    flower: "fa-fan",
+    heart: "fa-heart",
+    sun: "fa-sun",
+    bottle: "fa-bottle-droplet",
+    seedling: "fa-seedling",
+    spa: "fa-spa",
+    hair: "fa-wand-magic-sparkles",
+    gift: "fa-gift",
+    star: "fa-star",
+    beauty: "fa-wand-sparkles",
+    cleanser: "fa-pump-soap",
+    shopping: "fa-bag-shopping",
+    shirt: "fa-shirt"
+};
+
+function selectCategoryIcon(
+    iconKey = "sparkles"
+) {
+    const safeKey =
+        CATEGORY_ICON_CLASSES[iconKey]
+            ? iconKey
+            : "sparkles";
+
+    elements.categoryIconKey.value =
+        safeKey;
+
+    elements.categoryIconPicker
+        ?.querySelectorAll(
+            "[data-icon-key]"
+        )
+        .forEach(button => {
+            button.classList.toggle(
+                "selected",
+                button.dataset.iconKey ===
+                    safeKey
+            );
+        });
+
+    renderCategoryIconPreview();
+}
+
+function selectCategoryIconColor(
+    color = "#D4A72C"
+) {
+    const safeColor =
+        /^#[0-9a-fA-F]{6}$/.test(
+            String(color)
+        )
+            ? String(color)
+            : "#D4A72C";
+
+    elements.categoryIconColor.value =
+        safeColor;
+
+    elements.categoryColourPicker
+        ?.querySelectorAll(
+            "[data-icon-color]"
+        )
+        .forEach(button => {
+            button.classList.toggle(
+                "selected",
+                String(
+                    button.dataset.iconColor
+                ).toLowerCase() ===
+                    safeColor.toLowerCase()
+            );
+        });
+
+    renderCategoryIconPreview();
+}
+
+function renderCategoryIconPreview() {
+    if (!elements.categoryIconPreview) {
+        return;
+    }
+
+    const key =
+        elements.categoryIconKey?.value ||
+        "sparkles";
+
+    const color =
+        elements.categoryIconColor?.value ||
+        "#D4A72C";
+
+    const iconClass =
+        CATEGORY_ICON_CLASSES[key] ||
+        CATEGORY_ICON_CLASSES.sparkles;
+
+    elements.categoryIconPreview.innerHTML = `
+        <i class="fa-solid ${iconClass}"></i>
+    `;
+
+    elements.categoryIconPreview.style.color =
+        color;
+
+    elements.categoryIconPreview.style.setProperty(
+        "--category-preview-color",
+        color
+    );
+}
+
 function openCategoryModal(
     category = null
 ) {
@@ -547,6 +697,16 @@ function openCategoryModal(
                 category.status
             ) || "active";
 
+        selectCategoryIcon(
+            category.icon_key ||
+            "sparkles"
+        );
+
+        selectCategoryIconColor(
+            category.icon_color ||
+            "#D4A72C"
+        );
+
         renderImagePreview(
             categoryImageUrl(
                 category.image
@@ -555,6 +715,14 @@ function openCategoryModal(
     } else {
         elements.status.value =
             "active";
+
+        selectCategoryIcon(
+            "sparkles"
+        );
+
+        selectCategoryIconColor(
+            "#D4A72C"
+        );
 
         renderImagePreview("");
     }
@@ -774,6 +942,20 @@ async function saveCategory(event) {
         formData.append(
             "status",
             elements.status.value
+        );
+
+        formData.append(
+            "icon_key",
+            elements.categoryIconKey
+                ?.value ||
+                "sparkles"
+        );
+
+        formData.append(
+            "icon_color",
+            elements.categoryIconColor
+                ?.value ||
+                "#D4A72C"
         );
 
         const image =

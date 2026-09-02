@@ -23,6 +23,7 @@ import {
 import { router } from "expo-router";
 
 import { getProducts } from "../api/products";
+import { getCategories } from "../api/categories";
 import {
   getCustomerProfile,
 } from "../api/profile";
@@ -31,6 +32,7 @@ import {
 } from "../auth/session";
 import { productImageUrl } from "../config/images";
 import type { Product } from "../types/product";
+import type { Category } from "../types/category";
 
 import {
   colors,
@@ -44,6 +46,49 @@ function money(value: string | number) {
   const amount = Number(value || 0);
 
   return `Rs. ${amount.toLocaleString("en-PK")}`;
+}
+
+const CATEGORY_ICON_SYMBOLS: Record<string, string> = {
+  leaf: "❧",
+  droplet: "💧",
+  sparkles: "✦",
+  flower: "✿",
+  heart: "♥",
+  sun: "☀",
+  bottle: "♢",
+  seedling: "♧",
+  spa: "✾",
+  hair: "✧",
+  gift: "🎁",
+  star: "★",
+  beauty: "✦",
+  cleanser: "◇",
+  shopping: "◆",
+  shirt: "♜",
+};
+
+function categoryIconSymbol(
+  iconKey?: string | null
+) {
+  return (
+    CATEGORY_ICON_SYMBOLS[
+      String(iconKey || "")
+        .trim()
+        .toLowerCase()
+    ] ||
+    CATEGORY_ICON_SYMBOLS.sparkles
+  );
+}
+
+function safeCategoryColour(
+  colour?: string | null
+) {
+  const value =
+    String(colour || "").trim();
+
+  return /^#[0-9a-fA-F]{6}$/.test(value)
+    ? value
+    : "#D4A72C";
 }
 
 function ProductCard({
@@ -285,6 +330,12 @@ export default function HomeScreen() {
   const [products, setProducts] =
     useState<Product[]>([]);
 
+  const [categories, setCategories] =
+    useState<Category[]>([]);
+
+  const [selectedCategory, setSelectedCategory] =
+    useState("All");
+
   const [loading, setLoading] =
     useState(true);
 
@@ -319,6 +370,24 @@ export default function HomeScreen() {
       }
     }, []);
 
+  const loadCategories =
+    useCallback(async () => {
+      try {
+        const rows =
+          await getCategories();
+
+        if (rows.length) {
+          setCategories(rows);
+          return;
+        }
+      } catch {
+        // Product-derived fallback keeps shopping usable
+        // if the category endpoint is temporarily unavailable.
+      }
+
+      setCategories([]);
+    }, []);
+
   const loadAccountPhoto =
     useCallback(async () => {
       try {
@@ -347,6 +416,7 @@ export default function HomeScreen() {
     (async () => {
       await Promise.all([
         loadProducts(),
+        loadCategories(),
         loadAccountPhoto(),
       ]);
 
@@ -354,6 +424,7 @@ export default function HomeScreen() {
     })();
   }, [
     loadProducts,
+    loadCategories,
     loadAccountPhoto,
   ]);
 
@@ -362,11 +433,51 @@ export default function HomeScreen() {
 
     await Promise.all([
       loadProducts(),
+      loadCategories(),
       loadAccountPhoto(),
     ]);
 
     setRefreshing(false);
   }
+
+  const fallbackCategoryNames =
+    Array.from(
+      new Set(
+        products
+          .map(product =>
+            String(product.category || "").trim()
+          )
+          .filter(Boolean)
+      )
+    );
+
+  const displayCategories: Category[] =
+    categories.length
+      ? categories
+      : fallbackCategoryNames.map(
+          (categoryName, index) => ({
+            id: -(index + 1),
+            category_name: categoryName,
+            description: null,
+            image: null,
+            icon_key: "sparkles",
+            icon_color: "#D4A72C",
+            status: "active",
+          })
+        );
+
+  const filteredProducts =
+    selectedCategory === "All"
+      ? products
+      : products.filter(
+          product =>
+            String(product.category || "")
+              .trim()
+              .toLowerCase() ===
+            selectedCategory
+              .trim()
+              .toLowerCase()
+        );
 
   if (loading) {
     return (
@@ -487,7 +598,7 @@ export default function HomeScreen() {
       </View>
 
       <FlatList
-        data={products}
+        data={filteredProducts}
         keyExtractor={item =>
           String(item.id)
         }
@@ -537,8 +648,103 @@ export default function HomeScreen() {
                   styles.productTotal
                 }
               >
-                {products.length} products
+                {filteredProducts.length} products
               </Text>
+            </View>
+
+            <View style={styles.categorySection}>
+              <Text style={styles.categorySectionLabel}>
+                SHOP BY CATEGORY
+              </Text>
+
+              <FlatList
+                horizontal
+                data={[
+                  {
+                    id: 0,
+                    category_name: "All",
+                    description: null,
+                    image: null,
+                    icon_key: "sparkles",
+                    icon_color: theme.secondary,
+                    status: "active",
+                  } as Category,
+                  ...displayCategories,
+                ]}
+                keyExtractor={item =>
+                  `category-${item.id}-${item.category_name}`
+                }
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={
+                  styles.categoryList
+                }
+                renderItem={({ item }) => {
+                  const active =
+                    selectedCategory ===
+                    item.category_name;
+
+                  const iconColour =
+                    safeCategoryColour(
+                      item.icon_color
+                    );
+
+                  return (
+                    <Pressable
+                      onPress={() =>
+                        setSelectedCategory(
+                          item.category_name
+                        )
+                      }
+                      style={[
+                        styles.categoryChip,
+                        active &&
+                          styles.categoryChipActive,
+                      ]}
+                    >
+                      <View
+                        style={[
+                          styles.categoryIconBadge,
+                          {
+                            borderColor:
+                              iconColour,
+                            backgroundColor:
+                              `${iconColour}18`,
+                          },
+                          active &&
+                            styles.categoryIconBadgeActive,
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.categoryIcon,
+                            {
+                              color:
+                                active
+                                  ? theme.surface
+                                  : iconColour,
+                            },
+                          ]}
+                        >
+                          {categoryIconSymbol(
+                            item.icon_key
+                          )}
+                        </Text>
+                      </View>
+
+                      <Text
+                        numberOfLines={1}
+                        style={[
+                          styles.categoryChipText,
+                          active &&
+                            styles.categoryChipTextActive,
+                        ]}
+                      >
+                        {item.category_name}
+                      </Text>
+                    </Pressable>
+                  );
+                }}
+              />
             </View>
 
             {error ? (
@@ -760,6 +966,77 @@ function createStyles(
   productTotal: {
     color: theme.muted,
     fontSize: 12,
+  },
+
+  categorySection: {
+    marginBottom: 17,
+  },
+
+  categorySectionLabel: {
+    marginHorizontal: 12,
+    marginBottom: 9,
+    color: theme.muted,
+    fontSize: 9,
+    fontWeight: "800",
+    letterSpacing: 1.15,
+  },
+
+  categoryList: {
+    paddingHorizontal: 10,
+    gap: 8,
+  },
+
+  categoryChip: {
+    width: 76,
+    minHeight: 84,
+    paddingHorizontal: 5,
+    paddingVertical: 8,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: theme.shade4,
+    backgroundColor: theme.surface,
+  },
+
+  categoryChipActive: {
+    borderColor: theme.primary,
+    backgroundColor: theme.primary,
+  },
+
+  categoryIconBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  categoryIconBadgeActive: {
+    borderColor: theme.surface,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+
+  categoryIcon: {
+    fontSize: 24,
+    lineHeight: 29,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+
+  categoryChipText: {
+    width: "100%",
+    marginTop: 7,
+    color: theme.primary,
+    fontSize: 9,
+    lineHeight: 12,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+
+  categoryChipTextActive: {
+    color: theme.surface,
   },
 
   productRow: {

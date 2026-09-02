@@ -6,6 +6,7 @@ export const API_BASE_URL =
 
 export const API_ENDPOINTS = {
   products: `${API_BASE_URL}/products`,
+  categories: `${API_BASE_URL}/categories`,
   customers: `${API_BASE_URL}/customers`,
   cart: `${API_BASE_URL}/cart`,
   orders: `${API_BASE_URL}/orders`,

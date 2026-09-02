@@ -1062,3 +1062,268 @@
     }
 
 }
+
+
+/* =========================================================
+   RUKHNAV MOBILE CATEGORY ICON SYSTEM
+   Final authoritative category layout
+   ========================================================= */
+
+@media (max-width:650px){
+
+    .home-shop-shortcuts .categories,
+    .section:has(.categories) .categories{
+        grid-template-columns:
+            repeat(4,minmax(0,1fr)) !important;
+
+        gap:8px !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card{
+
+        --category-accent:#D4A72C;
+
+        min-height:112px !important;
+        height:auto !important;
+
+        padding:10px 5px 9px !important;
+
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:center !important;
+        justify-content:flex-start !important;
+
+        overflow:hidden !important;
+
+        border-radius:16px !important;
+
+        text-align:center !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card
+    .rukhnav-category-visual,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card
+    .rukhnav-category-visual{
+
+        width:46px !important;
+        height:46px !important;
+        min-width:46px !important;
+        min-height:46px !important;
+        flex:0 0 46px !important;
+
+        margin:
+            0 auto 8px !important;
+
+        display:grid !important;
+        place-items:center !important;
+
+        overflow:hidden !important;
+
+        border-radius:14px !important;
+
+        color:
+            var(--category-accent) !important;
+
+        background:
+            color-mix(
+                in srgb,
+                var(--category-accent) 12%,
+                var(--surface,#fff)
+            ) !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card
+    .rukhnav-category-visual--icon
+    i,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card
+    .rukhnav-category-visual--icon
+    i{
+
+        width:auto !important;
+        height:auto !important;
+
+        margin:0 !important;
+
+        display:block !important;
+
+        color:inherit !important;
+        background:none !important;
+
+        border:0 !important;
+        border-radius:0 !important;
+
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card
+    .cms-category-image,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card
+    .cms-category-image{
+
+        width:100% !important;
+        height:100% !important;
+
+        margin:0 !important;
+
+        display:block !important;
+
+        object-fit:cover !important;
+
+        border-radius:
+            inherit !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card
+    b,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card
+    b{
+
+        width:100%;
+
+        padding:0 !important;
+        margin:0 !important;
+
+        overflow:hidden;
+
+        color:
+            var(
+                --heading-color,
+                var(--text,#24332a)
+            );
+
+        font-size:12px !important;
+        font-weight:800 !important;
+        line-height:1.2 !important;
+
+        text-align:center !important;
+
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card
+    span,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card
+    span{
+
+        width:100%;
+
+        margin-top:4px !important;
+
+        display:-webkit-box !important;
+        overflow:hidden;
+
+        color:
+            var(--muted,#727a75);
+
+        font-size:8px !important;
+        line-height:1.25 !important;
+
+        text-align:center !important;
+
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+    }
+}
+
+
+@media (max-width:390px){
+
+    .home-shop-shortcuts .categories,
+    .section:has(.categories) .categories{
+
+        gap:6px !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card{
+
+        min-height:105px !important;
+        padding:
+            9px 4px 8px !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card
+    .rukhnav-category-visual,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card
+    .rukhnav-category-visual{
+
+        width:42px !important;
+        height:42px !important;
+        min-width:42px !important;
+        min-height:42px !important;
+        flex-basis:42px !important;
+
+        border-radius:13px !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card
+    .rukhnav-category-visual--icon
+    i,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card
+    .rukhnav-category-visual--icon
+    i{
+
+        font-size:20px !important;
+    }
+
+    .home-shop-shortcuts
+    .categories
+    > a.rukhnav-category-card
+    b,
+
+    .section:has(.categories)
+    .categories
+    > a.rukhnav-category-card
+    b{
+
+        font-size:11px !important;
+    }
+}

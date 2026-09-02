@@ -109,7 +109,19 @@ window.Store = {
                                     image:
                                         category.image ||
                                         category.image_url ||
-                                        ""
+                                        "",
+
+                                    icon_key:
+                                        String(
+                                            category.icon_key ||
+                                            "sparkles"
+                                        ).trim(),
+
+                                    icon_color:
+                                        String(
+                                            category.icon_color ||
+                                            "#D4A72C"
+                                        ).trim()
                                 })
                             )
                             .filter(
@@ -183,40 +195,51 @@ window.Store = {
     },
 
 
-    categoryIcon(categoryName = "") {
+    categoryIcon(iconKey = "sparkles") {
+
+        const icons = {
+            leaf: "fa-leaf",
+            droplet: "fa-droplet",
+            sparkles: "fa-sparkles",
+            flower: "fa-fan",
+            heart: "fa-heart",
+            sun: "fa-sun",
+            bottle: "fa-bottle-droplet",
+            seedling: "fa-seedling",
+            spa: "fa-spa",
+            hair: "fa-wand-magic-sparkles",
+            gift: "fa-gift",
+            star: "fa-star",
+            beauty: "fa-wand-sparkles",
+            cleanser: "fa-pump-soap",
+            shopping: "fa-bag-shopping",
+            shirt: "fa-shirt"
+        };
+
+        const key =
+            String(
+                iconKey ||
+                "sparkles"
+            ).trim();
+
+        return (
+            icons[key] ||
+            icons.sparkles
+        );
+    },
+
+
+    categoryIconColor(color = "") {
 
         const value =
             String(
-                categoryName
-            ).toLowerCase();
+                color ||
+                ""
+            ).trim();
 
-        if (value.includes("hair")) {
-            return "fa-wand-magic-sparkles";
-        }
-
-        if (
-            value.includes("face") ||
-            value.includes("skin")
-        ) {
-            return "fa-droplet";
-        }
-
-        if (value.includes("body")) {
-            return "fa-spa";
-        }
-
-        if (value.includes("fashion")) {
-            return "fa-shirt";
-        }
-
-        if (
-            value.includes("herbal") ||
-            value.includes("natural")
-        ) {
-            return "fa-leaf";
-        }
-
-        return "fa-sparkles";
+        return /^#[0-9a-fA-F]{6}$/.test(value)
+            ? value
+            : "#D4A72C";
     },
 
 
@@ -365,30 +388,55 @@ window.Store = {
                             category.description ||
                             `Explore ${name} products`;
 
+                        const iconKey =
+                            category.icon_key ||
+                            "sparkles";
+
+                        const iconColor =
+                            this.categoryIconColor(
+                                category.icon_color
+                            );
+
+                        const iconClass =
+                            this.categoryIcon(
+                                iconKey
+                            );
+
                         return `
-                            <a href="${Components.e(
-                                this.categoryUrl(name)
-                            )}">
+                            <a
+                                href="${Components.e(
+                                    this.categoryUrl(name)
+                                )}"
+                                class="rukhnav-category-card"
+                                style="--category-accent:${Components.e(
+                                    iconColor
+                                )}"
+                            >
 
                                 ${
                                     image
                                         ? `
-                                            <img
-                                                class="cms-category-image"
-                                                src="${Components.e(
-                                                    image
-                                                )}"
-                                                alt="${Components.e(
-                                                    name
-                                                )}"
-                                            >
+                                            <div class="rukhnav-category-visual rukhnav-category-visual--image">
+                                                <img
+                                                    class="cms-category-image"
+                                                    src="${Components.e(
+                                                        image
+                                                    )}"
+                                                    alt="${Components.e(
+                                                        name
+                                                    )}"
+                                                >
+                                            </div>
                                         `
                                         : `
-                                            <i class="fa-solid ${Components.e(
-                                                this.categoryIcon(
-                                                    name
-                                                )
-                                            )}"></i>
+                                            <div class="rukhnav-category-visual rukhnav-category-visual--icon">
+                                                <i
+                                                    class="fa-solid ${Components.e(
+                                                        iconClass
+                                                    )}"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </div>
                                         `
                                 }
 
