@@ -1025,6 +1025,32 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] =
     useState("");
 
+  const homeScrollRef =
+    useRef<ScrollView>(null);
+
+  const catalogueYRef =
+    useRef(0);
+
+  const submitHomeSearch =
+    useCallback(() => {
+      const query =
+        searchQuery.trim();
+
+      if (!query) {
+        return;
+      }
+
+      requestAnimationFrame(() => {
+        homeScrollRef.current?.scrollTo({
+          y: Math.max(
+            catalogueYRef.current - 12,
+            0
+          ),
+          animated: true,
+        });
+      });
+    }, [searchQuery]);
+
   const [loading, setLoading] =
     useState(true);
 
@@ -1419,6 +1445,9 @@ export default function HomeScreen() {
             }
             style={styles.searchInput}
             returnKeyType="search"
+            onSubmitEditing={
+              submitHomeSearch
+            }
           />
 
           {searchQuery ? (
@@ -1465,6 +1494,7 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView
+        ref={homeScrollRef}
         style={styles.scroll}
         contentContainerStyle={
           styles.content
@@ -1686,7 +1716,13 @@ export default function HomeScreen() {
           }}
         />
 
-        <View style={styles.catalogueSection}>
+        <View
+          style={styles.catalogueSection}
+          onLayout={event => {
+            catalogueYRef.current =
+              event.nativeEvent.layout.y;
+          }}
+        >
           <SectionHeader
             eyebrow={
               selectedCategory === "All"
