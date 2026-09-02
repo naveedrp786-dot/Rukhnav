@@ -1153,3 +1153,179 @@ body.rk-home .store-footer {
         transition: none !important;
     }
 }
+
+
+/* ==========================================================
+   HOMEPAGE PRODUCT SEARCH
+   Positioned directly below the animated product showcase.
+   ========================================================== */
+
+body.marketplace-home .rk-home-product-search,
+body.rk-home .rk-home-product-search {
+    width: min(1180px, calc(100% - 40px));
+    margin: 22px auto 18px;
+    padding: 0;
+}
+
+body.marketplace-home .rk-home-search-heading,
+body.rk-home .rk-home-search-heading {
+    margin-bottom: 12px;
+}
+
+body.marketplace-home .rk-home-search-heading span,
+body.rk-home .rk-home-search-heading span {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--primary, #2f765f);
+}
+
+body.marketplace-home .rk-home-search-heading h2,
+body.rk-home .rk-home-search-heading h2 {
+    margin: 0;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(22px, 2vw, 30px);
+    line-height: 1.15;
+}
+
+body.marketplace-home .rk-home-search-mount,
+body.rk-home .rk-home-search-mount {
+    width: 100%;
+}
+
+body.marketplace-home
+.rk-home-search-mount
+#globalSearch,
+body.rk-home
+.rk-home-search-mount
+#globalSearch {
+    width: 100%;
+    max-width: none;
+    min-height: 58px;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr) 58px;
+    align-items: stretch;
+    overflow: hidden;
+    border: 1px solid rgba(25, 64, 52, .15);
+    border-radius: 15px;
+    background: #fff;
+    box-shadow:
+        0 8px 28px rgba(24, 54, 45, .07);
+}
+
+body.marketplace-home
+.rk-home-search-mount
+#globalSearch select,
+body.rk-home
+.rk-home-search-mount
+#globalSearch select {
+    width: 100%;
+    min-width: 0;
+    padding: 0 18px;
+    border: 0;
+    border-right:
+        1px solid rgba(25, 64, 52, .11);
+    border-radius: 0;
+    background: transparent;
+    font: inherit;
+    outline: none;
+}
+
+body.marketplace-home
+.rk-home-search-mount
+#globalSearch input,
+body.rk-home
+.rk-home-search-mount
+#globalSearch input {
+    width: 100%;
+    min-width: 0;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font: inherit;
+    outline: none;
+}
+
+body.marketplace-home
+.rk-home-search-mount
+#globalSearch button,
+body.rk-home
+.rk-home-search-mount
+#globalSearch button {
+    width: 58px;
+    min-width: 58px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    color: var(--primary, #2f765f);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+body.marketplace-home
+.rk-home-search-mount
+#globalSearch button:hover,
+body.rk-home
+.rk-home-search-mount
+#globalSearch button:hover {
+    background: rgba(47, 118, 95, .07);
+}
+
+@media (max-width: 650px) {
+    body.marketplace-home .rk-home-product-search,
+    body.rk-home .rk-home-product-search {
+        width: calc(100% - 24px);
+        margin: 16px auto 14px;
+    }
+
+    body.marketplace-home
+    .rk-home-search-mount
+    #globalSearch,
+    body.rk-home
+    .rk-home-search-mount
+    #globalSearch {
+        min-height: 52px;
+        grid-template-columns:
+            minmax(0, 1fr) 52px;
+        border-radius: 13px;
+    }
+
+    body.marketplace-home
+    .rk-home-search-mount
+    #globalSearch select,
+    body.rk-home
+    .rk-home-search-mount
+    #globalSearch select {
+        display: none;
+    }
+
+    body.marketplace-home
+    .rk-home-search-mount
+    #globalSearch input,
+    body.rk-home
+    .rk-home-search-mount
+    #globalSearch input {
+        padding: 0 15px;
+        font-size: 14px;
+    }
+
+    body.marketplace-home
+    .rk-home-search-mount
+    #globalSearch button,
+    body.rk-home
+    .rk-home-search-mount
+    #globalSearch button {
+        width: 52px;
+        min-width: 52px;
+    }
+}

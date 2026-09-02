@@ -1,6 +1,34 @@
 "use strict";
 
 (() => {
+    function moveHomepageSearch() {
+        const search =
+            document.getElementById(
+                "globalSearch"
+            );
+
+        const mount =
+            document.getElementById(
+                "homeSearchMount"
+            );
+
+        if (!search || !mount) {
+            return;
+        }
+
+        /*
+         * Move the existing shared search form instead of
+         * cloning it. This preserves the canonical search
+         * IDs and the existing Store.js submit behaviour.
+         */
+        mount.appendChild(search);
+
+        search.classList.add(
+            "rk-home-search-form"
+        );
+    }
+
+
     function createUtilityStrip() {
         if (
             document.querySelector(
@@ -199,6 +227,7 @@
 
     function init() {
         markCommerceHome();
+        moveHomepageSearch();
         createUtilityStrip();
         createPromoCards();
     }
