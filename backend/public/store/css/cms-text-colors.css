@@ -1,0 +1,237 @@
+/*
+=========================================================
+RUKHNAV CMS — MANUAL FRONTEND TEXT COLOUR OVERRIDES
+=========================================================
+
+These variables are populated by website-cms-bridge.js.
+
+The fallback chain always ends at the active theme, so an
+empty CMS override continues using the selected theme.
+=========================================================
+*/
+
+:root {
+    --cms-body-text: var(--text);
+    --cms-h1-text: var(--heading-color, var(--text));
+    --cms-h2-text: var(--heading-color, var(--text));
+    --cms-h3-text: var(--heading-color, var(--text));
+    --cms-h4-h6-text: var(--heading-color, var(--text));
+    --cms-paragraph-text: var(--text);
+    --cms-muted-text: var(--muted);
+    --cms-link-text: var(--link, var(--primary));
+    --cms-link-hover-text: var(--secondary);
+
+    --cms-announcement-text: inherit;
+    --cms-brand-text: var(--primary);
+    --cms-nav-text: var(--text);
+    --cms-nav-hover-text: var(--primary);
+    --cms-header-icon-text: var(--primary);
+
+    --cms-product-name-text: var(--text);
+    --cms-product-description-text: var(--text);
+    --cms-product-price-text: var(--primary);
+    --cms-product-old-price-text: var(--muted);
+    --cms-product-meta-text: var(--muted);
+    --cms-badge-text: inherit;
+
+    --cms-primary-button-text: #ffffff;
+    --cms-secondary-button-text: var(--primary);
+
+    --cms-form-label-text: var(--text);
+    --cms-input-text: var(--text);
+    --cms-placeholder-text: var(--muted);
+
+    --cms-footer-heading-text: inherit;
+    --cms-footer-text: inherit;
+
+    --cms-success-text: #176b38;
+    --cms-warning-text: #846000;
+    --cms-error-text: #9e2b22;
+    --cms-info-text: #275da4;
+}
+
+
+/* -------------------------------------------------------
+   GENERAL TYPOGRAPHY
+------------------------------------------------------- */
+
+body {
+    color: var(--cms-body-text);
+}
+
+h1 {
+    color: var(--cms-h1-text);
+}
+
+h2 {
+    color: var(--cms-h2-text);
+}
+
+h3 {
+    color: var(--cms-h3-text);
+}
+
+h4,
+h5,
+h6 {
+    color: var(--cms-h4-h6-text);
+}
+
+p {
+    color: var(--cms-paragraph-text);
+}
+
+
+/* -------------------------------------------------------
+   LINKS
+------------------------------------------------------- */
+
+main a:not(.btn):not([class*="button"]),
+.customer-dashboard a:not(.btn):not([class*="button"]) {
+    color: var(--cms-link-text);
+}
+
+main a:not(.btn):not([class*="button"]):hover,
+.customer-dashboard a:not(.btn):not([class*="button"]):hover {
+    color: var(--cms-link-hover-text);
+}
+
+
+/* -------------------------------------------------------
+   PRODUCT TYPOGRAPHY
+------------------------------------------------------- */
+
+.product-card h2,
+.product-card h3,
+.product-card .product-name,
+.wishlist-card-body h3,
+.pd-info h1,
+.pd-product-card h3,
+[class*="product"] .product-title {
+    color: var(--cms-product-name-text);
+}
+
+.pd-short,
+.product-description,
+.product-card p {
+    color: var(--cms-product-description-text);
+}
+
+.price,
+.product-price,
+.wishlist-price,
+.pd-price,
+.pd-product-price {
+    color: var(--cms-product-price-text);
+}
+
+.old-price,
+.pd-old-price,
+.product-old-price {
+    color: var(--cms-product-old-price-text);
+}
+
+.pd-meta-grid span,
+.product-meta,
+.product-category,
+.wishlist-card-body small {
+    color: var(--cms-product-meta-text);
+}
+
+
+/* -------------------------------------------------------
+   FORMS
+------------------------------------------------------- */
+
+label,
+.checkout-field > span,
+.guest-field > span,
+.profile-form-group label,
+.account-form > label,
+.account-field-grid label {
+    color: var(--cms-form-label-text);
+}
+
+input,
+textarea,
+select {
+    color: var(--cms-input-text);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--cms-placeholder-text);
+}
+
+
+/* -------------------------------------------------------
+   BUTTON TEXT
+------------------------------------------------------- */
+
+.btn-primary,
+button.btn-primary,
+.place-order-button,
+.guest-place-order-button,
+.events-primary-button,
+.wishlist-shopping-button,
+.account-submit {
+    color: var(--cms-primary-button-text) !important;
+}
+
+.btn-secondary,
+.btn-outline,
+button.btn-secondary,
+button.btn-outline {
+    color: var(--cms-secondary-button-text);
+}
+
+
+/* -------------------------------------------------------
+   COMMON MUTED TEXT
+------------------------------------------------------- */
+
+small,
+.muted,
+.text-muted,
+.pd-breadcrumb,
+.pd-review-link,
+.checkout-card-heading p,
+.guest-card-heading p,
+.wishlist-results-text {
+    color: var(--cms-muted-text);
+}
+
+
+/* -------------------------------------------------------
+   STATUS TEXT
+------------------------------------------------------- */
+
+.success,
+.success-text,
+.account-message.success,
+.inline-save-message.success {
+    color: var(--cms-success-text);
+}
+
+.warning,
+.warning-text,
+.verification-pill.pending {
+    color: var(--cms-warning-text);
+}
+
+.error,
+.error-text,
+.account-message.error,
+.inline-save-message.error,
+.checkout-message.error,
+.guest-checkout-message.error {
+    color: var(--cms-error-text);
+}
+
+.info,
+.info-text,
+.account-message.info,
+.checkout-message.info,
+.guest-checkout-message.info {
+    color: var(--cms-info-text);
+}

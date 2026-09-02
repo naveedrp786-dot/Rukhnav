@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Website Management | RUKHNAV ERP</title>
 <link rel="stylesheet" href="/admin/css/erp.css">
-<link rel="stylesheet" href="/admin/css/website-management-pro.css?v=20260902-theme-v14-final-20-1">
+<link rel="stylesheet" href="/admin/css/website-management-pro.css?v=20260902-text-colour-studio-final-1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 <!-- rukhnav-theme-studio-fonts-v5 -->
@@ -660,10 +660,114 @@
 </section>
 
 <div id="footer-container"></div>
+
+<!-- RUKHNAV MANUAL TEXT COLORS -->
+<section class="wm-panel" id="frontendTextColorPanel">
+    <div class="wm-panel-heading">
+        <div>
+            <span class="wm-eyebrow">Typography</span>
+            <h2>Frontend Text Colours</h2>
+            <p>
+                Override individual storefront text colours.
+                Leave a field empty to use the selected theme's default colour.
+            </p>
+        </div>
+    </div>
+
+    <style>
+        #frontendTextColorPanel .rukhnav-text-color-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+            gap:14px;
+            margin-top:18px;
+        }
+
+        #frontendTextColorPanel .rukhnav-text-color-group {
+            grid-column:1/-1;
+            margin-top:14px;
+            padding:10px 0 2px;
+            border-bottom:1px solid rgba(120,120,120,.18);
+            font-weight:800;
+            font-size:13px;
+            letter-spacing:.02em;
+        }
+
+        #frontendTextColorPanel .rukhnav-text-color-field {
+            padding:13px;
+            border:1px solid rgba(120,120,120,.18);
+            border-radius:12px;
+            background:rgba(255,255,255,.035);
+        }
+
+        #frontendTextColorPanel .rukhnav-text-color-field > label {
+            display:block;
+            margin-bottom:9px;
+            font-size:11px;
+            font-weight:800;
+        }
+
+        #frontendTextColorPanel .rukhnav-text-color-control {
+            display:grid;
+            grid-template-columns:46px 1fr auto;
+            gap:8px;
+            align-items:center;
+        }
+
+        #frontendTextColorPanel input[type="color"] {
+            width:46px;
+            height:38px;
+            padding:2px;
+            border:1px solid rgba(120,120,120,.25);
+            border-radius:8px;
+            background:transparent;
+            cursor:pointer;
+        }
+
+        #frontendTextColorPanel .rukhnav-text-color-hex {
+            width:100%;
+            min-width:0;
+            height:38px;
+            padding:0 10px;
+            border:1px solid rgba(120,120,120,.25);
+            border-radius:8px;
+            background:var(--admin-surface,#fff);
+            color:inherit;
+            font:inherit;
+            font-size:11px;
+        }
+
+        #frontendTextColorPanel .rukhnav-theme-default {
+            height:38px;
+            padding:0 10px;
+            border:1px solid rgba(120,120,120,.22);
+            border-radius:8px;
+            background:transparent;
+            color:inherit;
+            font-size:10px;
+            font-weight:800;
+            cursor:pointer;
+            white-space:nowrap;
+        }
+
+        #frontendTextColorPanel .rukhnav-theme-default:hover {
+            background:rgba(120,120,120,.08);
+        }
+
+        #frontendTextColorPanel .rukhnav-text-color-help {
+            margin-top:7px;
+            opacity:.68;
+            font-size:9px;
+            line-height:1.45;
+        }
+    </style>
+
+    <div class="rukhnav-text-color-grid" id="rukhnavTextColorGrid"></div>
+</section>
+
 </main>
 </div>
 <script src="/admin/js/adminLayout.js"></script>
 <script src="/admin/js/website-theme-presets.js?v=20260901-theme-v9-final20-1"></script>
-<script src="/admin/js/website-management-pro.js?v=20260902-theme-v14-final-20-1"></script>
+<script src="/admin/js/website-management-pro.js?v=20260902-text-colour-studio-final-1"></script>
 </body>
 </html>

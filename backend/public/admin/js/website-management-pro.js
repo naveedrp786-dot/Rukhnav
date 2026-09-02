@@ -1755,3 +1755,473 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 })();
+
+
+/* =========================================================
+   RUKHNAV FRONTEND TEXT COLOUR CONTROL STUDIO
+   Manual overrides live at:
+   state.settings.theme.text_overrides
+   ========================================================= */
+
+(function installRukhnavTextColourStudio(){
+
+    const FIELDS = [
+
+        ["General", "body_text", "Body text"],
+        ["General", "h1_text", "H1 headings"],
+        ["General", "h2_text", "H2 headings"],
+        ["General", "h3_text", "H3 headings"],
+        ["General", "h4_h6_text", "H4 – H6 headings"],
+        ["General", "paragraph_text", "Paragraph text"],
+        ["General", "muted_text", "Muted / secondary text"],
+        ["General", "link_text", "Links"],
+        ["General", "link_hover_text", "Link hover"],
+
+        ["Header", "announcement_text", "Announcement text"],
+        ["Header", "brand_text", "Brand text"],
+        ["Header", "nav_text", "Navigation text"],
+        ["Header", "nav_hover_text", "Navigation hover"],
+        ["Header", "header_icon_text", "Header icons"],
+
+        ["Products", "product_name_text", "Product names"],
+        ["Products", "product_description_text", "Product descriptions"],
+        ["Products", "product_price_text", "Product prices"],
+        ["Products", "product_old_price_text", "Old / crossed prices"],
+        ["Products", "product_meta_text", "Product meta / category"],
+        ["Products", "badge_text", "Badge text"],
+
+        ["Buttons", "primary_button_text", "Primary button text"],
+        ["Buttons", "secondary_button_text", "Secondary button text"],
+
+        ["Forms", "form_label_text", "Form labels"],
+        ["Forms", "input_text", "Input text"],
+        ["Forms", "placeholder_text", "Placeholder text"],
+
+        ["Footer", "footer_heading_text", "Footer headings"],
+        ["Footer", "footer_text", "Footer text"],
+
+        ["Status", "success_text", "Success messages"],
+        ["Status", "warning_text", "Warning messages"],
+        ["Status", "error_text", "Error messages"],
+        ["Status", "info_text", "Information messages"]
+    ];
+
+
+    function getState(){
+
+        /*
+         * website-management-pro.js owns `state` in this
+         * same script scope. Use that canonical state so
+         * text overrides are included automatically in the
+         * existing Save Draft / Publish workflow.
+         */
+        if (
+            typeof state !== "undefined" &&
+            state &&
+            typeof state === "object"
+        ) {
+            return state;
+        }
+
+        return null;
+    }
+
+
+    function ensureOverrides(){
+
+        const currentState =
+            getState();
+
+        if (!currentState) {
+            return null;
+        }
+
+        currentState.settings =
+            currentState.settings || {};
+
+        currentState.settings.theme =
+            currentState.settings.theme || {};
+
+        currentState.settings.theme.text_overrides =
+            currentState.settings.theme.text_overrides || {};
+
+        return currentState.settings.theme.text_overrides;
+    }
+
+
+    function normaliseHex(value){
+
+        const cleaned =
+            String(value || "")
+                .trim();
+
+        if (!cleaned) {
+            return "";
+        }
+
+        if (/^#[0-9a-f]{6}$/i.test(cleaned)) {
+            return cleaned.toUpperCase();
+        }
+
+        if (/^[0-9a-f]{6}$/i.test(cleaned)) {
+            return "#" + cleaned.toUpperCase();
+        }
+
+        return null;
+    }
+
+
+    function markChanged(){
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "rukhnav:website-management-changed"
+            )
+        );
+
+        const saveButton =
+            document.querySelector(
+                '[data-action="save-draft"], #saveDraftButton'
+            );
+
+        if (saveButton) {
+            saveButton.classList.add(
+                "has-unsaved-changes"
+            );
+        }
+    }
+
+
+    function updateValue(key, value){
+
+        const overrides =
+            ensureOverrides();
+
+        if (!overrides) {
+            return;
+        }
+
+        if (value) {
+            overrides[key] = value;
+        } else {
+            delete overrides[key];
+        }
+
+        markChanged();
+    }
+
+
+    function createField(
+        key,
+        label
+    ){
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.className =
+            "rukhnav-text-color-field";
+
+
+        const title =
+            document.createElement("label");
+
+        title.textContent =
+            label;
+
+        wrapper.appendChild(title);
+
+
+        const controls =
+            document.createElement("div");
+
+        controls.className =
+            "rukhnav-text-color-control";
+
+
+        const picker =
+            document.createElement("input");
+
+        picker.type =
+            "color";
+
+        picker.value =
+            "#173F2B";
+
+        picker.setAttribute(
+            "aria-label",
+            `${label} colour`
+        );
+
+
+        const hex =
+            document.createElement("input");
+
+        hex.type =
+            "text";
+
+        hex.className =
+            "rukhnav-text-color-hex";
+
+        hex.placeholder =
+            "Theme default";
+
+        hex.maxLength =
+            7;
+
+
+        const reset =
+            document.createElement("button");
+
+        reset.type =
+            "button";
+
+        reset.className =
+            "rukhnav-theme-default";
+
+        reset.textContent =
+            "Theme Default";
+
+
+        controls.append(
+            picker,
+            hex,
+            reset
+        );
+
+        wrapper.appendChild(
+            controls
+        );
+
+
+        const help =
+            document.createElement("div");
+
+        help.className =
+            "rukhnav-text-color-help";
+
+        help.textContent =
+            "Leave empty to inherit the active theme.";
+
+        wrapper.appendChild(
+            help
+        );
+
+
+        picker.addEventListener(
+            "input",
+            () => {
+
+                const value =
+                    picker.value.toUpperCase();
+
+                hex.value =
+                    value;
+
+                updateValue(
+                    key,
+                    value
+                );
+            }
+        );
+
+
+        hex.addEventListener(
+            "change",
+            () => {
+
+                const value =
+                    normaliseHex(
+                        hex.value
+                    );
+
+                if (value === null) {
+                    hex.setCustomValidity(
+                        "Enter a valid 6-digit HEX colour."
+                    );
+
+                    hex.reportValidity();
+                    return;
+                }
+
+                hex.setCustomValidity("");
+
+                hex.value =
+                    value;
+
+                if (value) {
+                    picker.value =
+                        value;
+                }
+
+                updateValue(
+                    key,
+                    value
+                );
+            }
+        );
+
+
+        reset.addEventListener(
+            "click",
+            () => {
+
+                hex.value =
+                    "";
+
+                updateValue(
+                    key,
+                    ""
+                );
+            }
+        );
+
+
+        wrapper.dataset.textColourKey =
+            key;
+
+        wrapper._rukhnavPicker =
+            picker;
+
+        wrapper._rukhnavHex =
+            hex;
+
+        return wrapper;
+    }
+
+
+    function render(){
+
+        const grid =
+            document.getElementById(
+                "rukhnavTextColorGrid"
+            );
+
+        if (!grid) {
+            return;
+        }
+
+        if (!grid.dataset.built) {
+
+            let currentGroup =
+                null;
+
+            FIELDS.forEach(
+                ([group, key, label]) => {
+
+                    if (group !== currentGroup) {
+
+                        currentGroup =
+                            group;
+
+                        const heading =
+                            document.createElement(
+                                "div"
+                            );
+
+                        heading.className =
+                            "rukhnav-text-color-group";
+
+                        heading.textContent =
+                            group;
+
+                        grid.appendChild(
+                            heading
+                        );
+                    }
+
+                    grid.appendChild(
+                        createField(
+                            key,
+                            label
+                        )
+                    );
+                }
+            );
+
+            grid.dataset.built =
+                "true";
+        }
+
+
+        const overrides =
+            ensureOverrides() || {};
+
+        grid.querySelectorAll(
+            "[data-text-colour-key]"
+        ).forEach(field => {
+
+            const key =
+                field.dataset.textColourKey;
+
+            const value =
+                normaliseHex(
+                    overrides[key]
+                );
+
+            field._rukhnavHex.value =
+                value || "";
+
+            if (value) {
+                field._rukhnavPicker.value =
+                    value;
+            }
+        });
+    }
+
+
+    function scheduleRender(){
+
+        requestAnimationFrame(
+            render
+        );
+    }
+
+
+    if (
+        document.readyState === "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            scheduleRender,
+            {
+                once:true
+            }
+        );
+
+    } else {
+
+        scheduleRender();
+    }
+
+
+    document.addEventListener(
+        "rukhnav:website-management-loaded",
+        scheduleRender
+    );
+
+
+    const observer =
+        new MutationObserver(
+            () => {
+
+                if (
+                    document.getElementById(
+                        "rukhnavTextColorGrid"
+                    )
+                ) {
+                    scheduleRender();
+                }
+            }
+        );
+
+    observer.observe(
+        document.documentElement,
+        {
+            childList:true,
+            subtree:true
+        }
+    );
+
+})();

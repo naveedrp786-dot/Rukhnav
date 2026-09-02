@@ -2222,6 +2222,15 @@ body.rk-home .store-header{
         style.textContent =
             settings.advanced
                 ?.custom_css || "";
+
+        /* RUKHNAV DIRECT TEXT COLOUR APPLY
+           Manual values override the active theme only when set. */
+        if (
+            typeof window.RukhnavApplyManualTextColours === "function"
+        ) {
+            window.RukhnavApplyManualTextColours(settings);
+        }
+
     },
 
     applyBranding(settings) {
@@ -3422,3 +3431,122 @@ document.addEventListener(
         );
     }
 );
+
+
+/* =========================================================
+   RUKHNAV MANUAL FRONTEND TEXT COLOUR OVERRIDES
+   Empty/null value = use active theme default.
+   ========================================================= */
+
+(function installRukhnavManualTextColours(){
+
+    const CSS_VARIABLES = {
+        body_text: "--cms-body-text",
+        h1_text: "--cms-h1-text",
+        h2_text: "--cms-h2-text",
+        h3_text: "--cms-h3-text",
+        h4_h6_text: "--cms-h4-h6-text",
+        paragraph_text: "--cms-paragraph-text",
+        muted_text: "--cms-muted-text",
+        link_text: "--cms-link-text",
+        link_hover_text: "--cms-link-hover-text",
+
+        announcement_text: "--cms-announcement-text",
+        brand_text: "--cms-brand-text",
+        nav_text: "--cms-nav-text",
+        nav_hover_text: "--cms-nav-hover-text",
+        header_icon_text: "--cms-header-icon-text",
+
+        product_name_text: "--cms-product-name-text",
+        product_description_text: "--cms-product-description-text",
+        product_price_text: "--cms-product-price-text",
+        product_old_price_text: "--cms-product-old-price-text",
+        product_meta_text: "--cms-product-meta-text",
+        badge_text: "--cms-badge-text",
+
+        primary_button_text: "--cms-primary-button-text",
+        secondary_button_text: "--cms-secondary-button-text",
+
+        form_label_text: "--cms-form-label-text",
+        input_text: "--cms-input-text",
+        placeholder_text: "--cms-placeholder-text",
+
+        footer_heading_text: "--cms-footer-heading-text",
+        footer_text: "--cms-footer-text",
+
+        success_text: "--cms-success-text",
+        warning_text: "--cms-warning-text",
+        error_text: "--cms-error-text",
+        info_text: "--cms-info-text"
+    };
+
+
+    function validColour(value){
+
+        if (
+            typeof value !== "string" ||
+            !value.trim()
+        ) {
+            return false;
+        }
+
+        return CSS.supports(
+            "color",
+            value.trim()
+        );
+    }
+
+
+    function findTheme(settings){
+
+        if (
+            settings &&
+            settings.theme &&
+            typeof settings.theme === "object"
+        ) {
+            return settings.theme;
+        }
+
+        return {};
+    }
+
+
+    function applyManualTextColours(settings){
+
+        const theme =
+            findTheme(settings);
+
+        const overrides =
+            theme.text_overrides &&
+            typeof theme.text_overrides === "object"
+                ? theme.text_overrides
+                : {};
+
+        const root =
+            document.documentElement;
+
+        Object.entries(CSS_VARIABLES)
+            .forEach(([key, variable]) => {
+
+                const value =
+                    overrides[key];
+
+                if (validColour(value)) {
+                    root.style.setProperty(
+                        variable,
+                        value.trim()
+                    );
+                } else {
+                    root.style.removeProperty(
+                        variable
+                    );
+                }
+            });
+    }
+
+
+    window.RukhnavApplyManualTextColours =
+        applyManualTextColours;
+
+
+})();
