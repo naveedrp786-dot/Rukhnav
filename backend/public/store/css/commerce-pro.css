@@ -1417,3 +1417,47 @@ body.rk-home .rk-home-live-search-empty.hidden {
         gap: 5px;
     }
 }
+
+/* =========================================================
+   COMMERCE PRO HEADER THEME AUTHORITY
+   Keep the Commerce Pro ecommerce header architecture stable
+   after Website CMS/theme runtime styles are applied.
+   Colours still come from the currently published theme.
+   ========================================================= */
+
+body.marketplace-home.rk-home .store-header {
+    background:
+        var(--commerce-deep) !important;
+
+    color:
+        #fff !important;
+
+    border-bottom:
+        1px solid
+        color-mix(
+            in srgb,
+            white 8%,
+            transparent
+        ) !important;
+
+    box-shadow:
+        0 5px 18px
+        rgba(0, 0, 0, .14) !important;
+}
+
+body.marketplace-home.rk-home .categories-nav {
+    background:
+        var(--commerce-deeper) !important;
+}
+
+body.marketplace-home.rk-home .brand,
+body.marketplace-home.rk-home .brand-copy strong,
+body.marketplace-home.rk-home .actions .action {
+    color:
+        #fff !important;
+}
+
+body.marketplace-home.rk-home .actions .label {
+    color:
+        rgba(255, 255, 255, .84) !important;
+}
