@@ -989,3 +989,76 @@
         font-size: 9px !important;
     }
 }
+
+
+/* =========================================================
+   RUKHNAV MOBILE — PREMIUM ANNOUNCEMENT TICKER
+   Mobile only
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    #announcement {
+        position: relative !important;
+        width: 100% !important;
+        min-height: 30px !important;
+        height: 30px !important;
+
+        padding: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+
+        overflow: hidden !important;
+        white-space: nowrap !important;
+
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        letter-spacing: .35px !important;
+
+        text-align: left !important;
+
+        box-sizing: border-box !important;
+
+        /* ticker movement */
+        animation: rukhnav-mobile-announcement 12s linear infinite;
+    }
+
+
+    @keyframes rukhnav-mobile-announcement {
+
+        0% {
+            text-indent: 100%;
+        }
+
+        100% {
+            text-indent: -100%;
+        }
+
+    }
+
+}
+
+
+/* Respect accessibility preference */
+@media
+    (max-width: 650px)
+    and (prefers-reduced-motion: reduce) {
+
+    #announcement {
+        animation: none !important;
+
+        justify-content: center !important;
+
+        padding: 0 10px !important;
+
+        text-align: center !important;
+
+        text-indent: 0 !important;
+
+        overflow: hidden !important;
+
+        text-overflow: ellipsis !important;
+    }
+
+}
