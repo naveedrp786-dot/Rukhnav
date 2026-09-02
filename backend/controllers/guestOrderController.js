@@ -7,6 +7,9 @@ const db = require("../config/db");
 const inventoryService =
     require("../services/inventoryService");
 
+const notificationHooks =
+    require("../services/notificationHooks");
+
 const ALLOWED_PAYMENT_METHODS = new Set([
     "cash_on_delivery",
     "bank_transfer",
@@ -843,6 +846,42 @@ exports.placeGuestOrder = async (
 
         await connection.commit();
         transactionStarted = false;
+
+        /*
+         * The guest order is already committed.
+         *
+         * Queue Email / WhatsApp through the same
+         * ORDER_PLACED notification system used by
+         * authenticated customer checkout.
+         *
+         * Notification failure must never turn a
+         * successful guest checkout into a failed order.
+         */
+        notificationHooks
+            .orderPlaced({
+                customerId: null,
+                orderId,
+                orderNumber,
+                grandTotal,
+                orderStatus:
+                    "Pending",
+                paymentMethod,
+                paymentStatus,
+                orderUrl:
+                    `/store/guest-order-success.html?order=${encodeURIComponent(orderNumber)}&token=${encodeURIComponent(guestToken)}`,
+                customerName:
+                    fullName,
+                customerEmail:
+                    email || "",
+                customerPhone:
+                    phone || ""
+            })
+            .catch(error => {
+                console.error(
+                    "Guest order placed notification queue error:",
+                    error.message
+                );
+            });
 
         return res.status(201).json({
             success: true,
