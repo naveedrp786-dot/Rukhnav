@@ -1279,7 +1279,24 @@ exports.placeOrder = async (req, res) => {
                 paymentMethod,
                 paymentStatus,
                 orderUrl:
-                    `/store/order-details.html?id=${orderId}`
+                    `/store/order-details.html?id=${orderId}`,
+                customerName:
+                    fullName,
+                customerEmail:
+                    email || "",
+                customerPhone:
+                    phone || ""
+            })
+            .catch(error => {
+                /*
+                 * Order has already committed.
+                 * Notification failure must never turn a
+                 * successful checkout into a failed order.
+                 */
+                console.error(
+                    "Order placed notification queue error:",
+                    error.message
+                );
             });
 
         return res.status(201).json({

@@ -330,18 +330,65 @@ async function queueCustomerEvent({
     variables = {},
     dedupeReference = "",
     forceChannels = null,
-    scheduledFor = null
+    scheduledFor = null,
+    recipientFallback = null
 }) {
+    const registeredCustomer =
+        customerId
+            ? await customerProfile(
+                customerId
+            )
+            : null;
+
+    /*
+     * ORDER_PLACED may belong to a guest checkout.
+     * In that case use the contact details stored with the
+     * order rather than creating a fake customer account.
+     *
+     * Other customer events remain unchanged because they do
+     * not provide recipientFallback.
+     */
+    const fallbackCustomer =
+        recipientFallback &&
+        (
+            recipientFallback.email ||
+            recipientFallback.phone
+        )
+            ? {
+                id: null,
+                full_name:
+                    recipientFallback.full_name ||
+                    "Customer",
+                email:
+                    recipientFallback.email ||
+                    "",
+                phone:
+                    recipientFallback.phone ||
+                    "",
+                email_verified_at:
+                    recipientFallback.email
+                        ? new Date()
+                        : null,
+                phone_verified_at:
+                    recipientFallback.phone
+                        ? new Date()
+                        : null,
+                email_reminders_enabled: 1,
+                whatsapp_reminders_enabled: 1,
+                sms_reminders_enabled: 1,
+                __guestRecipient: true
+            }
+            : null;
+
     const customer =
-        await customerProfile(
-            customerId
-        );
+        registeredCustomer ||
+        fallbackCustomer;
 
     if (!customer) {
         return {
             queued: 0,
             skipped: [
-                "Customer not found."
+                "Customer or checkout recipient not found."
             ]
         };
     }
@@ -465,6 +512,17 @@ async function queueCustomerEvent({
          * one customer can own multiple active devices.
          * Each device therefore receives its own queue row.
          */
+        if (
+            rule.channel === "Push" &&
+            customer.__guestRecipient
+        ) {
+            skipped.push(
+                "Push: guest checkout has no registered device."
+            );
+
+            continue;
+        }
+
         if (rule.channel === "Push") {
             const devices =
                 await activePushDevices(
@@ -546,7 +604,7 @@ async function queueCustomerEvent({
             await queueNotification({
                 eventKey,
                 customerId:
-                    customer.id,
+                    customer.id || null,
                 channel:
                     rule.channel,
                 templateKey:

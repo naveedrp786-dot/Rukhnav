@@ -104,7 +104,10 @@ function orderPlaced({
     paymentStatus = "",
     trackingNumber = "",
     trackingUrl = "",
-    orderUrl = ""
+    orderUrl = "",
+    customerName = "",
+    customerEmail = "",
+    customerPhone = ""
 }) {
     return safeQueue(
         queueService
@@ -112,6 +115,14 @@ function orderPlaced({
                 eventKey:
                     "ORDER_PLACED",
                 customerId,
+                recipientFallback: {
+                    full_name:
+                        customerName || "",
+                    email:
+                        customerEmail || "",
+                    phone:
+                        customerPhone || ""
+                },
                 variables: {
                     order_id:
                         orderId,
