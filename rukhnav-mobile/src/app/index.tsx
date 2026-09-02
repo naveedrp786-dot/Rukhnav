@@ -1025,32 +1025,6 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] =
     useState("");
 
-  const homeScrollRef =
-    useRef<ScrollView>(null);
-
-  const catalogueYRef =
-    useRef(0);
-
-  const submitHomeSearch =
-    useCallback(() => {
-      const query =
-        searchQuery.trim();
-
-      if (!query) {
-        return;
-      }
-
-      requestAnimationFrame(() => {
-        homeScrollRef.current?.scrollTo({
-          y: Math.max(
-            catalogueYRef.current - 12,
-            0
-          ),
-          animated: true,
-        });
-      });
-    }, [searchQuery]);
-
   const [loading, setLoading] =
     useState(true);
 
@@ -1438,16 +1412,15 @@ export default function HomeScreen() {
 
           <TextInput
             value={searchQuery}
-            onChangeText={setSearchQuery}
+            onChangeText={value => {
+              setSearchQuery(value);
+            }}
             placeholder="Search RUKHNAV products"
             placeholderTextColor={
               theme.muted
             }
             style={styles.searchInput}
             returnKeyType="search"
-            onSubmitEditing={
-              submitHomeSearch
-            }
           />
 
           {searchQuery ? (
@@ -1494,7 +1467,6 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView
-        ref={homeScrollRef}
         style={styles.scroll}
         contentContainerStyle={
           styles.content
@@ -1508,6 +1480,120 @@ export default function HomeScreen() {
           />
         }
       >
+        {searchQuery.trim() ? (
+          <View
+            style={
+              styles.liveSearchSection
+            }
+          >
+            <View
+              style={
+                styles.liveSearchHeader
+              }
+            >
+              <View>
+                <Text
+                  style={
+                    styles.liveSearchEyebrow
+                  }
+                >
+                  SEARCH RESULTS
+                </Text>
+
+                <Text
+                  style={
+                    styles.liveSearchTitle
+                  }
+                >
+                  Results for “
+                  {searchQuery.trim()}”
+                </Text>
+              </View>
+
+              <Text
+                style={
+                  styles.liveSearchCount
+                }
+              >
+                {filteredProducts.length}{" "}
+                {filteredProducts.length ===
+                1
+                  ? "item"
+                  : "items"}
+              </Text>
+            </View>
+
+            {filteredProducts.length ? (
+              <View
+                style={
+                  styles.productGrid
+                }
+              >
+                {filteredProducts.map(
+                  product => (
+                    <View
+                      key={`live-${product.id}`}
+                      style={
+                        styles.productGridCell
+                      }
+                    >
+                      <ProductGridCard
+                        product={product}
+                      />
+                    </View>
+                  )
+                )}
+              </View>
+            ) : (
+              <View
+                style={styles.empty}
+              >
+                <Text
+                  style={
+                    styles.emptyIcon
+                  }
+                >
+                  ◇
+                </Text>
+
+                <Text
+                  style={
+                    styles.emptyTitle
+                  }
+                >
+                  No products found
+                </Text>
+
+                <Text
+                  style={
+                    styles.emptyText
+                  }
+                >
+                  Try another product name,
+                  category or search term.
+                </Text>
+
+                <Pressable
+                  style={
+                    styles.emptyResetButton
+                  }
+                  onPress={() =>
+                    setSearchQuery("")
+                  }
+                >
+                  <Text
+                    style={
+                      styles.emptyResetText
+                    }
+                  >
+                    CLEAR SEARCH
+                  </Text>
+                </Pressable>
+              </View>
+            )}
+          </View>
+        ) : null}
+
         {error ? (
           <View style={styles.errorBox}>
             <View style={styles.errorCopy}>
@@ -1716,12 +1802,9 @@ export default function HomeScreen() {
           }}
         />
 
+        {!searchQuery.trim() ? (
         <View
           style={styles.catalogueSection}
-          onLayout={event => {
-            catalogueYRef.current =
-              event.nativeEvent.layout.y;
-          }}
         >
           <SectionHeader
             eyebrow={
@@ -1827,6 +1910,7 @@ export default function HomeScreen() {
             </View>
           )}
         </View>
+        ) : null}
 
         <StoreBenefits />
       </ScrollView>
@@ -1844,6 +1928,41 @@ function createStyles(
     darkenHex(theme.primary, 0.18);
 
   return StyleSheet.create({
+    liveSearchSection: {
+      paddingTop: 18,
+      paddingBottom: 8,
+    },
+
+    liveSearchHeader: {
+      flexDirection: "row",
+      alignItems: "flex-end",
+      justifyContent: "space-between",
+      gap: 12,
+      marginBottom: 14,
+    },
+
+    liveSearchEyebrow: {
+      color: theme.primary,
+      fontSize: 11,
+      fontWeight: "800",
+      letterSpacing: 1.1,
+      marginBottom: 4,
+    },
+
+    liveSearchTitle: {
+      color: theme.text,
+      fontSize: 20,
+      fontWeight: "800",
+      flexShrink: 1,
+    },
+
+    liveSearchCount: {
+      color: theme.muted,
+      fontSize: 12,
+      fontWeight: "700",
+      paddingBottom: 2,
+    },
+
     page: {
       flex: 1,
       backgroundColor:
