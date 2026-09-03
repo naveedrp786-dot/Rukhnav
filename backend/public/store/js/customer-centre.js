@@ -1717,15 +1717,6 @@ window.CustomerCentre = {
             return;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
-            event.target.value = "";
-            this.setProfilePictureMessage(
-                "Image size must be less than 5 MB.",
-                "error"
-            );
-            return;
-        }
-
         const previewUrl =
             URL.createObjectURL(file);
 
