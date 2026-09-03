@@ -2737,3 +2737,273 @@ body .store-header.rk-global-header
         width: 100%;
     }
 }
+
+/* =========================================================
+   RUKHNAV HEADER ACTIONS — TRUE FINAL ALIGNMENT
+   ========================================================= */
+
+/*
+ * Desktop:
+ * all Account / Orders / Wishlist / Updates / Cart
+ * controls use identical outer geometry.
+ */
+
+body .store-header.rk-global-header
+.rk-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 5px !important;
+}
+
+body .store-header.rk-global-header
+.rk-header-actions .action {
+    position: relative !important;
+
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+
+    height: 58px !important;
+    min-height: 58px !important;
+    max-height: 58px !important;
+
+    margin: 0 !important;
+    padding: 4px 2px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    gap: 3px !important;
+
+    text-align: center !important;
+}
+
+
+/*
+ * Force every icon into the same first-row box.
+ */
+
+body .store-header.rk-global-header
+.rk-header-actions .action > i,
+body .store-header.rk-global-header
+.rk-header-actions .rk-cart-icon {
+    width: 26px !important;
+    min-width: 26px !important;
+    max-width: 26px !important;
+
+    height: 26px !important;
+    min-height: 26px !important;
+    max-height: 26px !important;
+
+    margin: 0 auto !important;
+    padding: 0 !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    flex: 0 0 26px !important;
+
+    font-size: 19px !important;
+    line-height: 1 !important;
+}
+
+
+/*
+ * Account avatar must occupy exactly the same
+ * icon row as heart / bell / cart.
+ */
+
+body .store-header.rk-global-header
+.rk-header-actions
+.account-action
+.header-account-avatar {
+    width: 26px !important;
+    min-width: 26px !important;
+    max-width: 26px !important;
+
+    height: 26px !important;
+    min-height: 26px !important;
+    max-height: 26px !important;
+
+    margin: 0 auto !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    flex: 0 0 26px !important;
+
+    font-size: 8px !important;
+    line-height: 1 !important;
+}
+
+
+/*
+ * All desktop text lives in the same second row.
+ */
+
+body .store-header.rk-global-header
+.rk-header-actions .rk-action-copy,
+body .store-header.rk-global-header
+.rk-header-actions .label,
+body .store-header.rk-global-header
+.rk-header-actions .rk-cart-action strong {
+    min-height: 20px !important;
+    height: 20px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+
+    overflow: hidden !important;
+
+    font-size: 9px !important;
+    line-height: 10px !important;
+
+    text-align: center !important;
+}
+
+
+/*
+ * Badges float independently and therefore
+ * cannot push the base icon out of alignment.
+ */
+
+body .store-header.rk-global-header
+.rk-header-actions .count {
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 3px !important;
+
+    margin: 0 !important;
+
+    z-index: 4 !important;
+}
+
+
+/* =========================================================
+   CONTINUE SHOPPING — FORCE READABLE FOREGROUND
+   ========================================================= */
+
+a.btn.primary[href="products.html"],
+a.btn.primary[href="./products.html"],
+a.btn[href="products.html"].primary {
+    color: #ffffff !important;
+}
+
+a.btn.primary[href="products.html"] *,
+a.btn.primary[href="./products.html"] *,
+a.btn[href="products.html"].primary * {
+    color: #ffffff !important;
+}
+
+
+/*
+ * White/secondary Continue Shopping buttons keep
+ * the dark-green foreground.
+ */
+
+a.btn.secondary[href="products.html"],
+a.btn.secondary[href="./products.html"] {
+    color: var(--primary, #2f765f) !important;
+}
+
+a.btn.secondary[href="products.html"] *,
+a.btn.secondary[href="./products.html"] * {
+    color: currentColor !important;
+}
+
+
+/* =========================================================
+   MOBILE — ICONS ONLY, ONE EXACT CENTER LINE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    body .store-header.rk-global-header
+    .rk-header-actions {
+        height: 42px !important;
+        min-height: 42px !important;
+
+        gap: 3px !important;
+
+        align-items: center !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
+
+        height: 40px !important;
+        min-height: 40px !important;
+        max-height: 40px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: grid !important;
+        place-items: center !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action > i,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-cart-icon {
+        width: 26px !important;
+        min-width: 26px !important;
+        max-width: 26px !important;
+
+        height: 26px !important;
+        min-height: 26px !important;
+        max-height: 26px !important;
+
+        margin: 0 !important;
+
+        display: grid !important;
+        place-items: center !important;
+
+        font-size: 21px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions
+    .account-action
+    .header-account-avatar {
+        width: 30px !important;
+        min-width: 30px !important;
+        max-width: 30px !important;
+
+        height: 30px !important;
+        min-height: 30px !important;
+        max-height: 30px !important;
+
+        margin: 0 !important;
+
+        font-size: 9px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-action-copy,
+    body .store-header.rk-global-header
+    .rk-header-actions .label,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-cart-action strong {
+        display: none !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .count {
+        top: -2px !important;
+        right: -1px !important;
+    }
+}
