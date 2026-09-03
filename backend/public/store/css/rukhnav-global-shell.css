@@ -2332,3 +2332,408 @@ body .store-header.rk-global-header .rk-global-search button {
         font-size: 13px;
     }
 }
+
+
+/* =========================================================
+   GLOBAL HEADER — ACTION ALIGNMENT REFINEMENT
+   ========================================================= */
+
+body .store-header.rk-global-header
+.rk-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+}
+
+body .store-header.rk-global-header
+.rk-header-actions .action {
+    align-self: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+}
+
+body .store-header.rk-global-header
+.rk-header-actions .rk-icon-action,
+body .store-header.rk-global-header
+.rk-header-actions .rk-cart-action {
+    position: relative !important;
+}
+
+body .store-header.rk-global-header
+.rk-header-actions .action i,
+body .store-header.rk-global-header
+.rk-header-actions .rk-cart-icon {
+    line-height: 1 !important;
+    vertical-align: middle !important;
+}
+
+
+/* Desktop alignment */
+
+@media (min-width: 701px) {
+
+    body .store-header.rk-global-header
+    .rk-header-actions {
+        min-height: 52px !important;
+        gap: 4px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        min-height: 52px !important;
+        height: 52px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-icon-action,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-cart-action {
+        min-width: 52px !important;
+    }
+
+    body .store-header.rk-global-header
+    .account-action .header-account-avatar {
+        flex: 0 0 auto !important;
+    }
+}
+
+
+/* Mobile: every right-hand action uses identical geometry */
+
+@media (max-width: 700px) {
+
+    body .store-header.rk-global-header
+    .rk-header-actions {
+        height: 42px !important;
+
+        display: flex !important;
+        align-items: center !important;
+
+        gap: 2px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        width: 42px !important;
+        min-width: 42px !important;
+        max-width: 42px !important;
+
+        height: 42px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
+
+        padding: 0 !important;
+        margin: 0 !important;
+
+        display: grid !important;
+        place-items: center !important;
+    }
+
+    body .store-header.rk-global-header
+    .account-action .header-account-avatar {
+        width: 32px !important;
+        min-width: 32px !important;
+        max-width: 32px !important;
+
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+
+        margin: 0 auto !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action > i,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-cart-icon {
+        width: 24px !important;
+        height: 24px !important;
+
+        margin: 0 !important;
+
+        display: grid !important;
+        place-items: center !important;
+
+        font-size: 21px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .count {
+        top: 0 !important;
+        right: 0 !important;
+    }
+}
+
+
+/* =========================================================
+   DELIVERED PRODUCT REVIEW MODAL
+   ========================================================= */
+
+.rk-review-modal {
+    position: fixed;
+    z-index: 5000;
+    inset: 0;
+
+    display: grid;
+    place-items: center;
+
+    padding: 24px;
+}
+
+.rk-review-modal.hidden {
+    display: none !important;
+}
+
+.rk-review-modal-backdrop {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+
+    background: rgba(9, 27, 20, .72);
+
+    cursor: pointer;
+}
+
+.rk-review-dialog {
+    position: relative;
+    z-index: 1;
+
+    width: min(760px, 100%);
+    max-height: min(820px, calc(100vh - 48px));
+
+    overflow-y: auto;
+
+    background: #fff;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, .28);
+}
+
+.rk-review-dialog-header {
+    position: sticky;
+    z-index: 3;
+    top: 0;
+
+    padding: 22px 24px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+
+    background: #fff;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.rk-review-dialog-header span {
+    color: var(--accent);
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.3px;
+}
+
+.rk-review-dialog-header h2 {
+    margin: 4px 0;
+
+    color: var(--primary);
+
+    font-size: 30px;
+}
+
+.rk-review-dialog-header p {
+    margin: 0;
+
+    color: var(--muted);
+}
+
+.rk-review-close {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+
+    background: #fff;
+
+    cursor: pointer;
+}
+
+.rk-review-dialog-body {
+    padding: 22px 24px 26px;
+}
+
+.rk-delivered-review-form {
+    margin-top: 20px;
+
+    display: grid;
+
+    gap: 16px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid var(--border);
+}
+
+.rk-delivered-review-form.hidden {
+    display: none !important;
+}
+
+.rk-review-selected-product {
+    padding: 14px 16px;
+
+    display: grid;
+    gap: 3px;
+
+    background: rgba(47, 118, 95, .08);
+
+    border-radius: 12px;
+}
+
+.rk-review-selected-product span {
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.rk-review-selected-product strong {
+    color: var(--primary);
+
+    font-size: 17px;
+}
+
+.rk-review-field {
+    display: grid;
+    gap: 7px;
+}
+
+.rk-review-field > span {
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.rk-review-field select,
+.rk-review-field textarea,
+.rk-review-field input[type="file"] {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: #fff;
+
+    font: inherit;
+}
+
+.rk-review-field select {
+    min-height: 48px;
+
+    padding: 0 13px;
+}
+
+.rk-review-field textarea {
+    padding: 13px;
+
+    resize: vertical;
+}
+
+.rk-review-field input[type="file"] {
+    padding: 12px;
+}
+
+.rk-review-field small {
+    color: var(--muted);
+}
+
+.rk-review-preview {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.rk-review-preview img {
+    width: 86px;
+    height: 86px;
+
+    object-fit: cover;
+
+    border-radius: 10px;
+
+    border: 1px solid var(--border);
+}
+
+.rk-review-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.rk-review-form-actions .btn {
+    min-height: 45px;
+
+    padding: 0 18px;
+}
+
+
+/* Existing eligible-product cards */
+
+#eligibleReviewProducts {
+    display: grid;
+
+    gap: 12px;
+}
+
+
+@media (max-width: 650px) {
+
+    .rk-review-modal {
+        padding: 10px;
+        align-items: end;
+    }
+
+    .rk-review-dialog {
+        width: 100%;
+        max-height: calc(100vh - 20px);
+
+        border-radius: 18px 18px 10px 10px;
+    }
+
+    .rk-review-dialog-header {
+        padding: 18px;
+    }
+
+    .rk-review-dialog-header h2 {
+        font-size: 25px;
+    }
+
+    .rk-review-dialog-body {
+        padding: 18px;
+    }
+
+    .rk-review-form-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .rk-review-form-actions .btn {
+        width: 100%;
+    }
+}

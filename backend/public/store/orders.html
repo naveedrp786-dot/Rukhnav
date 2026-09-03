@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="css/mobile-storefront.css?v=20260902-mobile-header-1">
     <link rel="stylesheet" href="/store/css/cms-text-colors.css?v=20260902-text-colour-final-1">
 <link rel="stylesheet" href="css/commerce-shell.css?v=20260903-compact-mobile-header-1">
-    <link rel="stylesheet" href="css/rukhnav-global-shell.css?v=20260903-header-layout-2">
+    <link rel="stylesheet" href="css/rukhnav-global-shell.css?v=20260903-icons-review-1">
 </head>
 <body>
 <div id="announcement"></div>
@@ -110,6 +110,193 @@
     </section>
 </main>
 
+
+<!-- ======================================================
+     DELIVERED PRODUCT REVIEW MODAL
+     Required by js/orders.js
+     ====================================================== -->
+
+<div
+    id="deliveredReviewModal"
+    class="rk-review-modal hidden"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deliveredReviewTitle"
+>
+    <button
+        type="button"
+        class="rk-review-modal-backdrop"
+        data-close-review-modal
+        aria-label="Close review"
+    ></button>
+
+    <section class="rk-review-dialog">
+
+        <header class="rk-review-dialog-header">
+            <div>
+                <span>DELIVERED PURCHASE</span>
+
+                <h2 id="deliveredReviewTitle">
+                    Review your products
+                </h2>
+
+                <p id="deliveredReviewOrderLabel">
+                    Delivered products
+                </p>
+            </div>
+
+            <button
+                id="closeDeliveredReviewModal"
+                type="button"
+                class="rk-review-close"
+                aria-label="Close"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+
+
+        <div class="rk-review-dialog-body">
+
+            <div id="eligibleReviewProducts">
+                <div class="delivered-review-loading">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Loading delivered products...
+                </div>
+            </div>
+
+
+            <form
+                id="deliveredProductReviewForm"
+                class="rk-delivered-review-form hidden"
+            >
+                <input
+                    id="deliveredReviewProductId"
+                    type="hidden"
+                >
+
+                <div class="rk-review-selected-product">
+                    <span>Reviewing</span>
+
+                    <strong id="deliveredReviewProductName">
+                        Product
+                    </strong>
+                </div>
+
+
+                <label
+                    class="rk-review-field"
+                    for="deliveredReviewRating"
+                >
+                    <span>Your rating</span>
+
+                    <select
+                        id="deliveredReviewRating"
+                        required
+                    >
+                        <option value="">
+                            Select rating
+                        </option>
+                        <option value="5">
+                            5 — Excellent
+                        </option>
+                        <option value="4">
+                            4 — Very good
+                        </option>
+                        <option value="3">
+                            3 — Good
+                        </option>
+                        <option value="2">
+                            2 — Fair
+                        </option>
+                        <option value="1">
+                            1 — Poor
+                        </option>
+                    </select>
+                </label>
+
+
+                <label
+                    class="rk-review-field"
+                    for="deliveredReviewComment"
+                >
+                    <span>Your review</span>
+
+                    <textarea
+                        id="deliveredReviewComment"
+                        rows="5"
+                        maxlength="2000"
+                        placeholder="Tell other customers about this product..."
+                        required
+                    ></textarea>
+                </label>
+
+
+                <label
+                    class="rk-review-field"
+                    for="deliveredReviewImages"
+                >
+                    <span>
+                        Add product photos
+                    </span>
+
+                    <input
+                        id="deliveredReviewImages"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        multiple
+                    >
+
+                    <small>
+                        JPG, PNG or WEBP.
+                    </small>
+                </label>
+
+
+                <div
+                    id="deliveredReviewPreview"
+                    class="rk-review-preview"
+                ></div>
+
+
+                <div
+                    id="deliveredReviewMessage"
+                    class="delivered-review-message"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
+
+
+                <div class="rk-review-form-actions">
+
+                    <button
+                        type="button"
+                        class="btn secondary"
+                        data-close-review-modal
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        id="submitDeliveredReviewButton"
+                        type="submit"
+                        class="btn primary"
+                    >
+                        <i class="fa-solid fa-star"></i>
+                        Submit Review
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+</div>
+
+
 <div id="footer"></div>
 <div id="toast" class="toast-region"></div>
 <div id="overlay" class="overlay"></div>
@@ -118,7 +305,7 @@
 <script src="js/theme.js"></script>
 <script src="js/components.js?v=20260903-commerce-shell-2"></script><script src="js/customer-notifications.js?v=20260901-notification-reader-1"></script>
 <script src="js/store.js?v=20260902-category-icons-1"></script>
-<script src="js/orders.js?v=20260903-product-actions-1"></script>
+<script src="js/orders.js?v=20260903-review-modal-2"></script>
 <script src="js/demo-visuals.js?v=20260827-2"></script>
 
 <script src="js/website-cms-bridge.js?v=20260901-theme-v9-final20-1"></script>

@@ -66,8 +66,14 @@ const OrdersPage = {
         document.getElementById("closeDeliveredReviewModal")
             ?.addEventListener("click", () => this.closeDeliveredReview());
 
-        document.querySelector("[data-close-review-modal]")
-            ?.addEventListener("click", () => this.closeDeliveredReview());
+        document.querySelectorAll(
+            "[data-close-review-modal]"
+        ).forEach(element =>
+            element.addEventListener(
+                "click",
+                () => this.closeDeliveredReview()
+            )
+        );
 
         document.getElementById("eligibleReviewProducts")
             ?.addEventListener("click", event => this.selectReviewProduct(event));
