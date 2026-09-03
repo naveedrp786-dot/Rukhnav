@@ -440,6 +440,24 @@ export default function AccountScreen() {
           <Pressable
             style={styles.editProfileButton}
             onPress={() =>
+              router.push(
+                "/orders" as any
+              )
+            }
+            disabled={loading}
+          >
+            <Text
+              style={
+                styles.editProfileButtonText
+              }
+            >
+              My Orders
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.editProfileButton}
+            onPress={() =>
               router.push("/edit-profile")
             }
             disabled={loading}

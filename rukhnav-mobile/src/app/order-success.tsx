@@ -32,6 +32,15 @@ export default function OrderSuccessScreen() {
       ? params.order
       : "";
 
+  const orderId =
+    typeof params.id === "string"
+      ? Number(params.id)
+      : 0;
+
+  const canViewOrder =
+    Number.isInteger(orderId) &&
+    orderId > 0;
+
   return (
     <SafeAreaView
       style={styles.page}
@@ -112,24 +121,51 @@ export default function OrderSuccessScreen() {
           </Text>
         </Pressable>
 
-        <Pressable
-          style={
-            styles.secondaryButton
-          }
-          onPress={() =>
-            router.replace(
-              "/account"
-            )
-          }
-        >
-          <Text
+        {canViewOrder ? (
+          <Pressable
             style={
-              styles.secondaryText
+              styles.secondaryButton
+            }
+            onPress={() =>
+              router.replace({
+                pathname:
+                  "/order/[id]" as any,
+
+                params: {
+                  id:
+                    String(orderId),
+                },
+              })
             }
           >
-            Go to My Account
-          </Text>
-        </Pressable>
+            <Text
+              style={
+                styles.secondaryText
+              }
+            >
+              View Order
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            style={
+              styles.secondaryButton
+            }
+            onPress={() =>
+              router.replace(
+                "/orders" as any
+              )
+            }
+          >
+            <Text
+              style={
+                styles.secondaryText
+              }
+            >
+              My Orders
+            </Text>
+          </Pressable>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

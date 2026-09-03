@@ -92,6 +92,10 @@ function GlobalBottomNav() {
 
   const accountActive =
     pathname === "/account" ||
+    pathname === "/orders" ||
+    pathname.startsWith(
+      "/order/"
+    ) ||
     pathname === "/rewards" ||
     pathname === "/edit-profile" ||
     pathname === "/change-password" ||
@@ -334,6 +338,32 @@ function PushNotificationLifecycle() {
              * More event-specific deep links can
              * be added as those screens are built.
              */
+            const numericOrderId =
+              typeof orderId === "number"
+                ? orderId
+                : Number(orderId);
+
+            if (
+              Number.isInteger(
+                numericOrderId
+              ) &&
+              numericOrderId > 0
+            ) {
+              router.push({
+                pathname:
+                  "/order/[id]" as any,
+
+                params: {
+                  id:
+                    String(
+                      numericOrderId
+                    ),
+                },
+              });
+
+              return;
+            }
+
             if (
               actionUrl === "/cart"
             ) {
@@ -424,6 +454,16 @@ function AppShell() {
           <Stack.Screen
             name="order-success"
           />
+
+          <Stack.Screen
+            name="orders"
+          />
+
+          <Stack.Screen
+            name="order/[id]"
+          />
+
+
 
           <Stack.Screen
             name="rewards"
