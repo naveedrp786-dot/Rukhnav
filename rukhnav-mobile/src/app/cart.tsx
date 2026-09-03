@@ -35,6 +35,20 @@ import {
 } from "../api/cart";
 
 import {
+  getToken,
+} from "../auth/session";
+
+import {
+  getGuestCart,
+  removeGuestCartItem,
+  updateGuestCartItem,
+} from "../cart/guestCart";
+
+import {
+  getProductById,
+} from "../api/products";
+
+import {
   productImageUrl,
 } from "../config/images";
 
@@ -72,37 +86,205 @@ export default function CartScreen() {
   const [message, setMessage] =
     useState("");
 
+  const [guestMode, setGuestMode] =
+    useState(false);
+
   const loadCart =
     useCallback(async () => {
       try {
         setMessage("");
 
-        const result =
-          await getCart();
+        const token =
+          await getToken();
 
-        setItems(
-          result.cart || []
-        );
+        if (token) {
+          setGuestMode(false);
+
+          const result =
+            await getCart();
+
+          setItems(
+            result.cart || []
+          );
+
+          setGrandTotal(
+            Number(
+              result.grandTotal || 0
+            )
+          );
+
+          return;
+        }
+
+        setGuestMode(true);
+
+        const guestItems =
+          await getGuestCart();
+
+        if (guestItems.length === 0) {
+          setItems([]);
+          setGrandTotal(0);
+          return;
+        }
+
+        const resolved:
+          Array<CartItem | null> =
+          await Promise.all(
+            guestItems.map(
+              async guestItem => {
+                try {
+                  const product =
+                    await getProductById(
+                      guestItem.product_id
+                    );
+
+                  const stock =
+                    Math.max(
+                      0,
+                      Number(
+                        product.stock_quantity ||
+                          0
+                      )
+                    );
+
+                  if (
+                    stock <= 0 ||
+                    String(
+                      product.status || ""
+                    ).toLowerCase() ===
+                      "inactive"
+                  ) {
+                    return null;
+                  }
+
+                  const quantity =
+                    Math.min(
+                      Math.max(
+                        1,
+                        guestItem.quantity
+                      ),
+                      stock
+                    );
+
+                  const price =
+                    Number(
+                      product.selling_price ||
+                        0
+                    );
+
+                  return {
+                    /*
+                     * Guest cart IDs are negative
+                     * product IDs so they cannot be
+                     * confused with server cart IDs.
+                     */
+                    cart_id:
+                      -Number(product.id),
+
+                    product_id:
+                      Number(product.id),
+
+                    product_name:
+                      product.product_name,
+
+                    price,
+                    selling_price:
+                      price,
+
+                    image:
+                      product.image,
+
+                    stock_quantity:
+                      stock,
+
+                    stock_status:
+                      product.stock_status,
+
+                    product_status:
+                      product.status,
+
+                    quantity,
+
+                    subtotal:
+                      price * quantity,
+                  } satisfies CartItem;
+                } catch {
+                  return null;
+                }
+              }
+            )
+          );
+
+        const validItems =
+          resolved.filter(
+            (
+              item
+            ): item is CartItem =>
+              item !== null
+          );
+
+        /*
+         * Persist any stock corrections and
+         * remove products that no longer resolve.
+         */
+        const validIds =
+          new Set(
+            validItems.map(
+              item =>
+                item.product_id
+            )
+          );
+
+        for (const guestItem of guestItems) {
+          const resolvedItem =
+            validItems.find(
+              item =>
+                item.product_id ===
+                guestItem.product_id
+            );
+
+          if (!validIds.has(
+            guestItem.product_id
+          )) {
+            await removeGuestCartItem(
+              guestItem.product_id
+            );
+
+            continue;
+          }
+
+          if (
+            resolvedItem &&
+            resolvedItem.quantity !==
+              guestItem.quantity
+          ) {
+            await updateGuestCartItem(
+              guestItem.product_id,
+              resolvedItem.quantity
+            );
+          }
+        }
+
+        setItems(validItems);
 
         setGrandTotal(
-          Number(
-            result.grandTotal || 0
+          validItems.reduce(
+            (total, item) =>
+              total +
+              Number(
+                item.subtotal || 0
+              ),
+            0
           )
         );
       } catch (error) {
         if (
           error instanceof ApiError
         ) {
-          if (error.status === 401) {
-            router.replace(
-              "/account"
-            );
-            return;
-          }
-
           setMessage(
             error.message
           );
+
           return;
         }
 
@@ -145,10 +327,17 @@ export default function CartScreen() {
     setMessage("");
 
     try {
-      await updateCartQuantity(
-        item.cart_id,
-        nextQuantity
-      );
+      if (guestMode) {
+        await updateGuestCartItem(
+          item.product_id,
+          nextQuantity
+        );
+      } else {
+        await updateCartQuantity(
+          item.cart_id,
+          nextQuantity
+        );
+      }
 
       await loadCart();
     } catch (error) {
@@ -177,9 +366,15 @@ export default function CartScreen() {
     setMessage("");
 
     try {
-      await removeCartItem(
-        item.cart_id
-      );
+      if (guestMode) {
+        await removeGuestCartItem(
+          item.product_id
+        );
+      } else {
+        await removeCartItem(
+          item.cart_id
+        );
+      }
 
       await loadCart();
 
@@ -636,7 +831,13 @@ export default function CartScreen() {
                 }
                 onPress={() => {
                   router.push(
-                    "/checkout" as any
+                    guestMode
+                      ? (
+                          "/guest-checkout" as any
+                        )
+                      : (
+                          "/checkout" as any
+                        )
                   );
                 }}
               >

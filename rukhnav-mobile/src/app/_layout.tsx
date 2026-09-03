@@ -452,6 +452,18 @@ function AppShell() {
           />
 
           <Stack.Screen
+            name="guest-checkout"
+          />
+
+          <Stack.Screen
+            name="guest-order-success"
+          />
+
+          <Stack.Screen
+            name="track-order"
+          />
+
+          <Stack.Screen
             name="order-success"
           />
 

@@ -36,6 +36,14 @@ import {
 } from "../../api/cart";
 
 import {
+  getToken,
+} from "../../auth/session";
+
+import {
+  addGuestCartItem,
+} from "../../cart/guestCart";
+
+import {
   getProductMedia,
 } from "../../api/product-media";
 
@@ -222,45 +230,39 @@ export default function ProductScreen() {
     setAddingToCart(true);
 
     try {
-      const result =
-        await addToCart({
-          product_id:
-            Number(product.id),
-          quantity,
-        });
+      const token =
+        await getToken();
 
-      setCartToast({
-        visible: true,
-        message:
-          result.message ||
-          "Product added to your cart.",
-      });
+      if (token) {
+        const result =
+          await addToCart({
+            product_id:
+              Number(product.id),
+            quantity,
+          });
+
+        setCartToast({
+          visible: true,
+          message:
+            result.message ||
+            "Product added to your cart.",
+        });
+      } else {
+        await addGuestCartItem(
+          Number(product.id),
+          quantity
+        );
+
+        setCartToast({
+          visible: true,
+          message:
+            "Product added to your cart.",
+        });
+      }
     } catch (err) {
       if (
         err instanceof ApiError
       ) {
-        if (err.status === 401) {
-          Alert.alert(
-            "Sign In Required",
-            "Please sign in to add products to your cart.",
-            [
-              {
-                text: "Cancel",
-                style: "cancel",
-              },
-              {
-                text: "Sign In",
-                onPress: () =>
-                  router.push(
-                    "/account"
-                  ),
-              },
-            ]
-          );
-
-          return;
-        }
-
         Alert.alert(
           "Unable to Add",
           err.message
@@ -398,39 +400,24 @@ export default function ProductScreen() {
     setAddingToCart(true);
 
     try {
-      await addToCart({
-        product_id:
+      const token =
+        await getToken();
+
+      if (token) {
+        await addToCart({
+          product_id:
+            Number(product.id),
+          quantity,
+        });
+      } else {
+        await addGuestCartItem(
           Number(product.id),
-        quantity,
-      });
+          quantity
+        );
+      }
 
       router.push("/cart");
     } catch (err) {
-      if (
-        err instanceof ApiError &&
-        err.status === 401
-      ) {
-        Alert.alert(
-          "Sign In Required",
-          "Please sign in before continuing.",
-          [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-            {
-              text: "Sign In",
-              onPress: () =>
-                router.push(
-                  "/account"
-                ),
-            },
-          ]
-        );
-
-        return;
-      }
-
       Alert.alert(
         "Unable to Continue",
         err instanceof Error
@@ -441,7 +428,6 @@ export default function ProductScreen() {
       setAddingToCart(false);
     }
   }
-
 
   if (loading) {
     return (
