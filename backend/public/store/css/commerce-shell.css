@@ -1,0 +1,388 @@
+/* =========================================================
+   RUKHNAV COMMERCE SHELL
+   Shared header / navigation / footer for every store page.
+
+   IMPORTANT:
+   - Uses Website Management theme variables.
+   - Does not alter page content/layout.
+   - Homepage Commerce Pro architecture remains independent.
+   ========================================================= */
+
+:root {
+    --rk-shell-deep:
+        color-mix(
+            in srgb,
+            var(--primary) 38%,
+            #07120e
+        );
+
+    --rk-shell-deeper:
+        color-mix(
+            in srgb,
+            var(--primary) 22%,
+            #050a08
+        );
+
+    --rk-shell-border:
+        color-mix(
+            in srgb,
+            white 9%,
+            transparent
+        );
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+body:not(.marketplace-home):not(.rk-home) .store-header {
+    position: relative;
+    z-index: 100;
+
+    background:
+        var(--rk-shell-deep) !important;
+
+    color:
+        #fff !important;
+
+    border-bottom:
+        1px solid var(--rk-shell-border) !important;
+
+    box-shadow:
+        0 5px 18px
+        rgba(0, 0, 0, .14) !important;
+}
+
+
+/* Brand */
+
+body:not(.marketplace-home):not(.rk-home) .store-header .brand,
+body:not(.marketplace-home):not(.rk-home) .store-header .brand-copy strong,
+body:not(.marketplace-home):not(.rk-home) .store-header .action,
+body:not(.marketplace-home):not(.rk-home) .store-header .actions .action {
+    color:
+        #fff !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home) .store-header .brand-copy small,
+body:not(.marketplace-home):not(.rk-home) .store-header .actions .label {
+    color:
+        rgba(255, 255, 255, .82) !important;
+}
+
+
+/* Header icons */
+
+body:not(.marketplace-home):not(.rk-home) .store-header .menu-btn,
+body:not(.marketplace-home):not(.rk-home) .store-header .actions i,
+body:not(.marketplace-home):not(.rk-home) .store-header .action i {
+    color:
+        #fff !important;
+}
+
+
+/* Account/avatar circles */
+
+body:not(.marketplace-home):not(.rk-home)
+.store-header .header-account-avatar {
+    border-color:
+        rgba(255, 255, 255, .20) !important;
+
+    background:
+        rgba(255, 255, 255, .10) !important;
+
+    color:
+        #fff !important;
+}
+
+
+/* Count bubbles stay readable */
+
+body:not(.marketplace-home):not(.rk-home)
+.store-header .count {
+    background:
+        #fff !important;
+
+    color:
+        var(--rk-shell-deep) !important;
+}
+
+
+/* =========================================================
+   SEARCH
+   Keep non-homepage search inside header.
+   ========================================================= */
+
+body:not(.marketplace-home):not(.rk-home)
+.store-header .search {
+    min-height:
+        46px;
+
+    overflow:
+        hidden;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        auto minmax(0, 1fr) 48px;
+
+    background:
+        #fff !important;
+
+    border:
+        1px solid rgba(255, 255, 255, .18) !important;
+
+    border-radius:
+        11px !important;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0, 0, 0, .13) !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.store-header .search select {
+    border:
+        0 !important;
+
+    border-right:
+        1px solid #e7e7e7 !important;
+
+    outline:
+        0;
+
+    background:
+        #f7f7f7 !important;
+
+    color:
+        #444 !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.store-header .search input {
+    min-width:
+        0;
+
+    border:
+        0 !important;
+
+    outline:
+        0;
+
+    background:
+        #fff !important;
+
+    color:
+        #27322e !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.store-header .search input::placeholder {
+    color:
+        #77817d !important;
+
+    opacity:
+        1;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.store-header .search button {
+    border:
+        0 !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 76%,
+            white
+        ) !important;
+
+    color:
+        #fff !important;
+}
+
+
+/* =========================================================
+   CATEGORY / SECONDARY NAVIGATION
+   ========================================================= */
+
+body:not(.marketplace-home):not(.rk-home)
+.categories-nav {
+    background:
+        var(--rk-shell-deeper) !important;
+
+    color:
+        #fff !important;
+
+    border:
+        0 !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.categories-nav a {
+    color:
+        rgba(255, 255, 255, .92) !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.categories-nav a:hover,
+body:not(.marketplace-home):not(.rk-home)
+.categories-nav a.active {
+    background:
+        rgba(255, 255, 255, .10) !important;
+
+    border-color:
+        rgba(255, 255, 255, .18) !important;
+
+    color:
+        #fff !important;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+body:not(.marketplace-home):not(.rk-home)
+.store-footer {
+    margin-top:
+        42px;
+
+    background:
+        var(--rk-shell-deeper) !important;
+
+    color:
+        rgba(255, 255, 255, .86) !important;
+
+    border-top:
+        1px solid rgba(255, 255, 255, .08) !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.store-footer h1,
+body:not(.marketplace-home):not(.rk-home)
+.store-footer h2,
+body:not(.marketplace-home):not(.rk-home)
+.store-footer h3,
+body:not(.marketplace-home):not(.rk-home)
+.store-footer h4,
+body:not(.marketplace-home):not(.rk-home)
+.store-footer strong {
+    color:
+        #fff !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.store-footer p,
+body:not(.marketplace-home):not(.rk-home)
+.store-footer span,
+body:not(.marketplace-home):not(.rk-home)
+.store-footer li {
+    color:
+        rgba(255, 255, 255, .72) !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.store-footer a {
+    color:
+        rgba(255, 255, 255, .86) !important;
+}
+
+
+body:not(.marketplace-home):not(.rk-home)
+.store-footer a:hover {
+    color:
+        var(--secondary) !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 920px) {
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header .header-main {
+        padding:
+            12px 14px 13px;
+    }
+
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header .search {
+        width:
+            100%;
+
+        grid-template-columns:
+            minmax(0, 1fr) 46px;
+
+        min-height:
+            50px;
+
+        border-radius:
+            13px !important;
+    }
+
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header .search select {
+        display:
+            none !important;
+    }
+
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header .search input {
+        padding-left:
+            15px !important;
+
+        font-size:
+            15px !important;
+    }
+
+
+    body:not(.marketplace-home):not(.rk-home)
+    .categories-nav {
+        background:
+            var(--rk-shell-deeper) !important;
+    }
+}
+
+
+/* Very small phone */
+
+@media (max-width: 650px) {
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header .brand-copy strong {
+        color:
+            #fff !important;
+    }
+
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header .actions {
+        color:
+            #fff !important;
+    }
+
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-footer {
+        margin-top:
+            28px;
+    }
+}
