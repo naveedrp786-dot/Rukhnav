@@ -418,6 +418,14 @@ function AppShell() {
           />
 
           <Stack.Screen
+            name="checkout"
+          />
+
+          <Stack.Screen
+            name="order-success"
+          />
+
+          <Stack.Screen
             name="rewards"
           />
 

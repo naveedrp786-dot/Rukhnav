@@ -635,8 +635,8 @@ export default function CartScreen() {
                   styles.checkoutButton
                 }
                 onPress={() => {
-                  setMessage(
-                    "Checkout is the next mobile module we will connect."
+                  router.push(
+                    "/checkout" as any
                   );
                 }}
               >
