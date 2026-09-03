@@ -34,6 +34,10 @@ import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 
 import {
+  File,
+} from "expo-file-system";
+
+import {
   ApiError,
 } from "../api/client";
 
@@ -392,7 +396,12 @@ export default function EditProfileScreen() {
     setMessage("");
 
     try {
-      const result =
+      const TARGET_BYTES =
+        4 * 1024 * 1024;
+
+      let quality = 0.82;
+
+      let result =
         await ImageManipulator.manipulateAsync(
           uri,
           [
@@ -404,19 +413,66 @@ export default function EditProfileScreen() {
             },
           ],
           {
-            compress: 0.82,
+            compress: quality,
             format:
               ImageManipulator.SaveFormat
                 .JPEG,
           }
         );
 
+      let preparedFile =
+        new File(result.uri);
+
+      while (
+        preparedFile.size >
+          TARGET_BYTES &&
+        quality > 0.5
+      ) {
+        quality =
+          Math.max(
+            0.5,
+            quality - 0.08
+          );
+
+        result =
+          await ImageManipulator
+            .manipulateAsync(
+              result.uri,
+              [],
+              {
+                compress: quality,
+                format:
+                  ImageManipulator
+                    .SaveFormat
+                    .JPEG,
+              }
+            );
+
+        preparedFile =
+          new File(result.uri);
+      }
+
+      if (
+        preparedFile.size >
+        TARGET_BYTES
+      ) {
+        throw new Error(
+          "Unable to reduce this photo below the upload limit."
+        );
+      }
+
       setPendingPhotoUri(
         result.uri
       );
 
+      const sizeMb =
+        preparedFile.size /
+        (1024 * 1024);
+
       setMessage(
-        "Photo ready. Preview it, rotate if needed, then tap Save Profile Picture."
+        `Photo optimized to ${sizeMb.toFixed(
+          1
+        )} MB. Preview it, rotate if needed, then tap Save Profile Picture.`
       );
     } catch (error) {
       console.error(

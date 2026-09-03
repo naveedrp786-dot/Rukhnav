@@ -1798,9 +1798,19 @@ window.CustomerCentre = {
             const formData =
                 new FormData();
 
+            this.setProfilePictureMessage(
+                "Optimizing your photo...",
+                ""
+            );
+
+            const optimized =
+                await this.optimizeProfilePicture(
+                    file
+                );
+
             formData.append(
                 "profile_picture",
-                file
+                optimized.file
             );
 
             const response =
@@ -1909,6 +1919,144 @@ window.CustomerCentre = {
             button.disabled = true;
             button.innerHTML = original;
         }
+    },
+
+
+    async optimizeProfilePicture(file) {
+        const MAX_DIMENSION = 1024;
+        const TARGET_BYTES = 4 * 1024 * 1024;
+
+        if (!file || !file.type?.startsWith("image/")) {
+            throw new Error(
+                "Please choose a valid image."
+            );
+        }
+
+        const originalBytes = file.size || 0;
+
+        const image = await new Promise(
+            (resolve, reject) => {
+                const img = new Image();
+                const url =
+                    URL.createObjectURL(file);
+
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    resolve(img);
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(
+                        new Error(
+                            "Unable to read that picture."
+                        )
+                    );
+                };
+
+                img.src = url;
+            }
+        );
+
+        const sourceWidth =
+            image.naturalWidth || image.width;
+
+        const sourceHeight =
+            image.naturalHeight || image.height;
+
+        const scale = Math.min(
+            1,
+            MAX_DIMENSION / sourceWidth,
+            MAX_DIMENSION / sourceHeight
+        );
+
+        const width = Math.max(
+            1,
+            Math.round(sourceWidth * scale)
+        );
+
+        const height = Math.max(
+            1,
+            Math.round(sourceHeight * scale)
+        );
+
+        const canvas =
+            document.createElement("canvas");
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const context =
+            canvas.getContext("2d");
+
+        if (!context) {
+            throw new Error(
+                "Photo optimization is not supported by this browser."
+            );
+        }
+
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+
+        context.drawImage(
+            image,
+            0,
+            0,
+            width,
+            height
+        );
+
+        const toBlob = quality =>
+            new Promise((resolve, reject) => {
+                canvas.toBlob(
+                    blob => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject(
+                                new Error(
+                                    "Unable to optimize the picture."
+                                )
+                            );
+                        }
+                    },
+                    "image/jpeg",
+                    quality
+                );
+            });
+
+        let quality = 0.84;
+        let blob = await toBlob(quality);
+
+        while (
+            blob.size > TARGET_BYTES &&
+            quality > 0.5
+        ) {
+            quality -= 0.08;
+            blob = await toBlob(quality);
+        }
+
+        if (blob.size > TARGET_BYTES) {
+            throw new Error(
+                "We could not reduce this photo below the upload limit. Please choose another picture."
+            );
+        }
+
+        const optimizedFile = new File(
+            [blob],
+            "rukhnav-profile.jpg",
+            {
+                type: "image/jpeg",
+                lastModified: Date.now()
+            }
+        );
+
+        return {
+            file: optimizedFile,
+            originalBytes,
+            optimizedBytes:
+                optimizedFile.size
+        };
     },
 
     async removeProfilePicture() {
