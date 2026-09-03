@@ -386,3 +386,34 @@ body:not(.marketplace-home):not(.rk-home)
             28px;
     }
 }
+
+/* =========================================================
+   RUKHNAV MOBILE NON-HOME COMPACT HEADER
+   Homepage owns its dedicated Search Products experience.
+   Content pages keep a compact mobile header.
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header .header-main {
+        grid-template-areas:
+            "menu brand actions" !important;
+
+        grid-template-rows:
+            auto !important;
+
+        row-gap:
+            0 !important;
+
+        padding-bottom:
+            11px !important;
+    }
+
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header .search {
+        display:
+            none !important;
+    }
+}

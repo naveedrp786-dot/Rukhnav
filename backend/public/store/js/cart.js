@@ -37,7 +37,8 @@ const CartPage = {
 
             await this.loadBackendCart();
         } else {
-            this.showSignInState();
+            this.guestMode = true;
+            await this.loadGuestCart();
         }
 
         await this.loadRecommendations();
@@ -94,26 +95,15 @@ const CartPage = {
                 "click",
                 () => {
                     if (
-                    API.isAuthenticated()
-                ) {
-                    location.href =
-                        "checkout.html";
-                    return;
-                }
+                        API.isAuthenticated()
+                    ) {
+                        location.href =
+                            "checkout.html";
+                        return;
+                    }
 
-                /*
-                 * Guest customers who selected
-                 * "Continue as guest" should proceed
-                 * directly to guest checkout.
-                 */
-                if (this.guestMode) {
                     location.href =
                         "guest-checkout.html?source=cart";
-                    return;
-                }
-
-                location.href =
-                    "account.html?return=checkout.html";
                 }
             );
 

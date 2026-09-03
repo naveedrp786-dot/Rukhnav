@@ -504,3 +504,30 @@
 @media(max-width:460px){
     .cart-heading-actions{grid-template-columns:1fr}
 }
+
+/* =========================================================
+   CART CONTINUE SHOPPING TEXT AUTHORITY
+   Preserve readable primary-action text under all themes.
+   ========================================================= */
+
+.cart-page-heading .continue-shopping-link,
+.cart-page-heading .continue-shopping-link:visited,
+.cart-page-heading .continue-shopping-link:hover,
+.cart-page-heading .continue-shopping-link:focus,
+.cart-page-heading .continue-shopping-link:active {
+    color:
+        #fff !important;
+
+    -webkit-text-fill-color:
+        #fff !important;
+}
+
+
+.cart-page-heading .continue-shopping-link i,
+.cart-page-heading .continue-shopping-link span {
+    color:
+        #fff !important;
+
+    -webkit-text-fill-color:
+        #fff !important;
+}
