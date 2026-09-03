@@ -3007,3 +3007,289 @@ a.btn.secondary[href="./products.html"] * {
         right: -1px !important;
     }
 }
+
+/* =========================================================
+   RUKHNAV FINAL FOUR-ACTION HEADER
+   Account / Wishlist / Updates / Cart
+   ========================================================= */
+
+/* Dedicated Returns & Orders action is intentionally removed. */
+
+body .store-header.rk-global-header
+.rk-orders-action {
+    display: none !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+
+    gap: 6px !important;
+}
+
+
+/* Every remaining action gets exactly the same box. */
+
+body .store-header.rk-global-header
+.rk-header-actions .action {
+    position: relative !important;
+
+    width: 64px !important;
+    min-width: 64px !important;
+    max-width: 64px !important;
+
+    height: 58px !important;
+    min-height: 58px !important;
+    max-height: 58px !important;
+
+    margin: 0 !important;
+    padding: 4px 2px !important;
+
+    box-sizing: border-box !important;
+
+    display: grid !important;
+    grid-template-rows: 26px 20px !important;
+
+    align-items: center !important;
+    justify-items: center !important;
+
+    row-gap: 3px !important;
+
+    text-align: center !important;
+}
+
+
+/* Heart / bell / cart icon box */
+
+body .store-header.rk-global-header
+.rk-header-actions .action > i,
+body .store-header.rk-global-header
+.rk-header-actions .rk-cart-icon {
+    grid-row: 1 !important;
+
+    width: 26px !important;
+    min-width: 26px !important;
+    max-width: 26px !important;
+
+    height: 26px !important;
+    min-height: 26px !important;
+    max-height: 26px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    font-size: 20px !important;
+    line-height: 1 !important;
+}
+
+
+/* Account avatar uses exactly the same icon row. */
+
+body .store-header.rk-global-header
+.rk-header-actions
+.account-action
+.header-account-avatar {
+    grid-row: 1 !important;
+
+    width: 26px !important;
+    min-width: 26px !important;
+    max-width: 26px !important;
+
+    height: 26px !important;
+    min-height: 26px !important;
+    max-height: 26px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    font-size: 8px !important;
+}
+
+
+/* Every desktop label occupies the same second row. */
+
+body .store-header.rk-global-header
+.rk-header-actions .rk-action-copy,
+body .store-header.rk-global-header
+.rk-header-actions .label,
+body .store-header.rk-global-header
+.rk-header-actions .rk-cart-action strong {
+    grid-row: 2 !important;
+
+    width: 100% !important;
+    min-height: 20px !important;
+    height: 20px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+
+    overflow: hidden !important;
+
+    font-size: 9px !important;
+    line-height: 10px !important;
+
+    text-align: center !important;
+}
+
+
+/* Account greeting is unnecessary in the compact header. */
+
+body .store-header.rk-global-header
+.account-action .rk-action-copy small {
+    display: none !important;
+}
+
+
+/* Counts float over icon row without changing alignment. */
+
+body .store-header.rk-global-header
+.rk-header-actions .count {
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 5px !important;
+
+    z-index: 5 !important;
+}
+
+
+/* =========================================================
+   CONTINUE SHOPPING — DEFINITIVE TEXT FIX
+   ========================================================= */
+
+.continue-shopping-link,
+a.continue-shopping-link,
+.cart-page-heading .continue-shopping-link,
+.orders-page-heading .continue-shopping-link {
+    color: #ffffff !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+.continue-shopping-link *,
+a.continue-shopping-link *,
+.cart-page-heading .continue-shopping-link *,
+.orders-page-heading .continue-shopping-link * {
+    color: #ffffff !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+
+/* Product-detail secondary Continue Shopping remains white card. */
+
+.pd-continue-shopping {
+    color: var(--primary, #2f765f) !important;
+
+    -webkit-text-fill-color:
+        var(--primary, #2f765f) !important;
+}
+
+.pd-continue-shopping * {
+    color: currentColor !important;
+
+    -webkit-text-fill-color: currentColor !important;
+}
+
+
+/* =========================================================
+   MOBILE — FOUR ICONS, SINGLE CENTER LINE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    body .store-header.rk-global-header
+    .rk-header-actions {
+        height: 42px !important;
+        min-height: 42px !important;
+
+        gap: 3px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
+
+        height: 40px !important;
+        min-height: 40px !important;
+        max-height: 40px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: grid !important;
+        grid-template-rows: 40px !important;
+
+        place-items: center !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action > i,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-cart-icon {
+        grid-row: 1 !important;
+
+        width: 26px !important;
+        height: 26px !important;
+
+        margin: 0 !important;
+
+        display: grid !important;
+        place-items: center !important;
+
+        font-size: 21px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions
+    .account-action
+    .header-account-avatar {
+        grid-row: 1 !important;
+
+        width: 26px !important;
+        min-width: 26px !important;
+        max-width: 26px !important;
+
+        height: 26px !important;
+        min-height: 26px !important;
+        max-height: 26px !important;
+
+        margin: 0 !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-action-copy,
+    body .store-header.rk-global-header
+    .rk-header-actions .label,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-cart-action strong {
+        display: none !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .count {
+        top: -1px !important;
+        right: 0 !important;
+    }
+}

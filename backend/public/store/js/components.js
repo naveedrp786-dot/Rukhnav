@@ -215,21 +215,6 @@ window.Components = {
             </a>
 
 
-            <a
-                class="action rk-orders-action"
-                href="orders.html"
-            >
-                <span class="rk-action-copy">
-                    <small>
-                        Returns
-                    </small>
-
-                    <strong>
-                        & Orders
-                    </strong>
-                </span>
-            </a>
-
 
             ${
                 store.wishlist_enabled === false
