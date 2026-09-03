@@ -330,10 +330,6 @@ window.Components = {
                 New Arrivals
             </a>
 
-            <a href="products.html?sort=popular">
-                Best Sellers
-            </a>
-
             <a href="products.html?category=Hair%20Care">
                 Hair Care
             </a>

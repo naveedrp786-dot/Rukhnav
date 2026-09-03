@@ -1283,3 +1283,332 @@ body .store-footer.rk-global-footer
             1fr !important;
     }
 }
+
+
+/* =========================================================
+   RUKHNAV GLOBAL HEADER RESPONSIVE CORRECTION
+   2026-09-03
+   ========================================================= */
+
+/* Desktop: search is the dominant commerce control */
+
+@media (min-width: 1051px) {
+
+    body .store-header.rk-global-header
+    .rk-header-main {
+        grid-template-columns:
+            auto
+            minmax(125px, 165px)
+            auto
+            minmax(420px, 1fr)
+            auto !important;
+
+        gap: 10px !important;
+        padding:
+            8px 14px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search {
+        width: 100% !important;
+        min-width: 420px !important;
+        max-width: none !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+}
+
+
+/* Tablet */
+
+@media (min-width: 701px) and (max-width: 1050px) {
+
+    body .store-header.rk-global-header
+    .rk-header-main {
+        grid-template-columns:
+            auto
+            minmax(120px,150px)
+            minmax(300px,1fr)
+            auto !important;
+
+        gap: 9px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search {
+        width: 100% !important;
+        max-width: none !important;
+    }
+}
+
+
+/* Mobile:
+   Override legacy commerce-shell rule that hides search.
+*/
+
+@media (max-width: 700px) {
+
+    body .store-header.rk-global-header
+    .rk-header-main {
+        display: grid !important;
+
+        grid-template-columns:
+            40px
+            minmax(0,1fr)
+            auto !important;
+
+        grid-template-areas:
+            "menu brand actions"
+            "search search search" !important;
+
+        grid-template-rows:
+            auto auto !important;
+
+        gap:
+            8px 9px !important;
+
+        padding:
+            8px 10px 10px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search,
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header.rk-global-header
+    .rk-global-search,
+
+    body.marketplace-home
+    .store-header.rk-global-header
+    .rk-global-search,
+
+    body.rk-home
+    .store-header.rk-global-header
+    .rk-global-search {
+
+        grid-area: search !important;
+
+        display: grid !important;
+
+        visibility: visible !important;
+        opacity: 1 !important;
+
+        width: 100% !important;
+        max-width: none !important;
+
+        min-height: 42px !important;
+
+        margin: 0 !important;
+
+        grid-template-columns:
+            minmax(0,1fr)
+            46px !important;
+
+        background:
+            #fff !important;
+
+        border:
+            2px solid
+            var(--rk-shell-accent) !important;
+
+        border-radius:
+            7px !important;
+
+        overflow:
+            hidden !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search select {
+        display: none !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search input {
+        display: block !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+
+        height: 42px !important;
+
+        padding:
+            0 13px !important;
+
+        font-size:
+            14px !important;
+
+        border:
+            0 !important;
+
+        background:
+            #fff !important;
+
+        color:
+            #171717 !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search button {
+        display: grid !important;
+        place-items: center !important;
+
+        width: 46px !important;
+        height: 42px !important;
+
+        border:
+            0 !important;
+
+        background:
+            var(--rk-shell-accent) !important;
+    }
+
+
+    /* Keep mobile actions compact */
+
+    body .store-header.rk-global-header
+    .rk-header-actions {
+        max-width:
+            max-content !important;
+
+        gap:
+            0 !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        min-width:
+            32px !important;
+
+        padding:
+            3px 4px !important;
+    }
+
+
+    /* Secondary nav behaves like a horizontal commerce rail */
+
+    body .store-header.rk-global-header
+    .rk-commerce-nav {
+        overflow:
+            hidden !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-commerce-nav > div {
+        display:
+            flex !important;
+
+        flex-wrap:
+            nowrap !important;
+
+        overflow-x:
+            auto !important;
+
+        overflow-y:
+            hidden !important;
+
+        scrollbar-width:
+            none;
+
+        -webkit-overflow-scrolling:
+            touch;
+
+        white-space:
+            nowrap !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-commerce-nav > div::-webkit-scrollbar {
+        display:
+            none;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-commerce-nav a,
+    body .store-header.rk-global-header
+    .rk-nav-all {
+        flex:
+            0 0 auto !important;
+
+        white-space:
+            nowrap !important;
+    }
+}
+
+
+/* =========================================================
+   ORDER REVIEW PRODUCT ACTION CORRECTION
+   ========================================================= */
+
+.eligible-product-card {
+    cursor: default !important;
+}
+
+.eligible-product-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.eligible-product-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.eligible-product-actions .btn {
+    width: auto;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.eligible-reviewed-status {
+    min-height: 38px;
+    padding: 8px 12px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    border-radius: 6px;
+
+    background: rgba(28, 103, 70, .09);
+    color: #286347;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+@media (max-width: 650px) {
+
+    .eligible-product-actions {
+        align-items: stretch;
+    }
+
+    .eligible-product-actions .btn,
+    .eligible-reviewed-status {
+        flex: 1 1 145px;
+    }
+}

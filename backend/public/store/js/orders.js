@@ -476,32 +476,98 @@ const OrdersPage = {
 
         container.innerHTML =
             this.eligibleProducts.map(
-                product => `
-                    <button
-                        type="button"
-                        class="eligible-product-card ${product.can_review ? "" : "reviewed"}"
-                        data-select-review-product="${Components.e(product.product_id)}"
-                        ${product.can_review ? "" : "disabled"}
-                    >
-                        <span class="eligible-product-icon">
-                            <i class="fa-solid ${product.can_review ? "fa-box-open" : "fa-circle-check"}"></i>
-                        </span>
+                product => {
+                    const productId =
+                        Number(product.product_id);
 
-                        <span class="eligible-product-copy">
-                            <strong>${Components.e(product.product_name || `Product #${product.product_id}`)}</strong>
-                            <small>
-                                Qty ${Number(product.delivered_quantity || 0)}
-                                · ${product.latest_order_number ? Components.e(product.latest_order_number) : "Delivered order"}
-                            </small>
-                        </span>
+                    const safeProductId =
+                        encodeURIComponent(productId);
 
-                        <span class="eligible-product-status">
-                            ${product.can_review
-                                ? "Write review"
-                                : `Reviewed · ${Components.e(product.review_status || "Submitted")}`}
-                        </span>
-                    </button>
-                `
+                    const productName =
+                        Components.e(
+                            product.product_name ||
+                            `Product #${productId}`
+                        );
+
+                    const orderNumber =
+                        product.latest_order_number
+                            ? Components.e(
+                                product.latest_order_number
+                            )
+                            : "Delivered order";
+
+                    const reviewAction =
+                        product.can_review
+                            ? `
+                                <button
+                                    type="button"
+                                    class="btn secondary eligible-review-action"
+                                    data-select-review-product="${Components.e(productId)}"
+                                >
+                                    <i class="fa-regular fa-star"></i>
+                                    Write review
+                                </button>
+                            `
+                            : `
+                                <span class="eligible-reviewed-status">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    Reviewed · ${Components.e(
+                                        product.review_status ||
+                                        "Submitted"
+                                    )}
+                                </span>
+                            `;
+
+                    return `
+                        <article
+                            class="eligible-product-card ${
+                                product.can_review
+                                    ? ""
+                                    : "reviewed"
+                            }"
+                        >
+                            <div class="eligible-product-main">
+
+                                <span class="eligible-product-icon">
+                                    <i class="fa-solid ${
+                                        product.can_review
+                                            ? "fa-box-open"
+                                            : "fa-circle-check"
+                                    }"></i>
+                                </span>
+
+                                <span class="eligible-product-copy">
+                                    <strong>
+                                        ${productName}
+                                    </strong>
+
+                                    <small>
+                                        Qty ${Number(
+                                            product.delivered_quantity ||
+                                            0
+                                        )}
+                                        · ${orderNumber}
+                                    </small>
+                                </span>
+
+                            </div>
+
+                            <div class="eligible-product-actions">
+
+                                <a
+                                    class="btn primary eligible-view-product"
+                                    href="product.html?id=${safeProductId}"
+                                >
+                                    <i class="fa-solid fa-eye"></i>
+                                    View product
+                                </a>
+
+                                ${reviewAction}
+
+                            </div>
+                        </article>
+                    `;
+                }
             ).join("");
     },
 
