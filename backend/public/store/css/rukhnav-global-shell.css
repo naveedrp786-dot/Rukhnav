@@ -1614,117 +1614,623 @@ body .store-footer.rk-global-footer
 }
 
 /* =========================================================
-   RUKHNAV FINAL COMMERCE HEADER SEARCH AUTHORITY
+   RUKHNAV GLOBAL HEADER — FINAL LAYOUT AUTHORITY
+   Desktop + tablet + mobile
    2026-09-03
    ========================================================= */
 
-.rk-header-main {
+/*
+ * The shared header has five real children:
+ * menu / brand / delivery / search / actions.
+ *
+ * Use named grid areas so legacy store.css,
+ * commerce-shell.css and commerce-pro.css cannot
+ * auto-place these elements incorrectly.
+ */
+
+body .store-header.rk-global-header .rk-header-main {
     width: 100% !important;
     max-width: 1600px !important;
+    min-width: 0 !important;
+
     margin: 0 auto !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
+    padding: 11px 18px !important;
+
     box-sizing: border-box !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        auto
+        minmax(125px, auto)
+        minmax(95px, auto)
+        minmax(420px, 1fr)
+        auto !important;
+
+    grid-template-areas:
+        "menu brand delivery search actions" !important;
+
+    align-items: center !important;
+    column-gap: 14px !important;
+    row-gap: 0 !important;
 }
 
-.rk-global-search,
-#globalSearch.rk-global-search {
-    width: 100% !important;
+
+/* ---------- Explicit placement ---------- */
+
+body .store-header.rk-global-header .rk-header-menu {
+    grid-area: menu !important;
+}
+
+body .store-header.rk-global-header .rk-header-brand {
+    grid-area: brand !important;
     min-width: 0 !important;
+}
+
+body .store-header.rk-global-header .rk-delivery-location {
+    grid-area: delivery !important;
+}
+
+body .store-header.rk-global-header .rk-global-search,
+body .store-header.rk-global-header #globalSearch.rk-global-search {
+    grid-area: search !important;
+
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+
+    transform: none !important;
+
+    width: 100% !important;
     max-width: none !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+
+    display: grid !important;
+    grid-template-columns:
+        105px
+        minmax(0, 1fr)
+        50px !important;
+
+    align-items: stretch !important;
+
+    overflow: hidden !important;
+
+    min-height: 46px !important;
+
     box-sizing: border-box !important;
 }
 
-.rk-global-search input,
-#globalSearch.rk-global-search input {
+body .store-header.rk-global-header .rk-header-actions {
+    grid-area: actions !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+
+    gap: 3px !important;
+}
+
+
+/* ---------- Search internals ---------- */
+
+body .store-header.rk-global-header .rk-global-search select {
+    display: block !important;
+
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
+
+    box-sizing: border-box !important;
+}
+
+body .store-header.rk-global-header .rk-global-search input {
     width: 100% !important;
     min-width: 0 !important;
+
+    height: 46px !important;
+
     box-sizing: border-box !important;
 }
 
-.rk-global-search button,
-#globalSearch.rk-global-search button {
-    flex: 0 0 auto !important;
+body .store-header.rk-global-header .rk-global-search button {
+    position: static !important;
+
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+
+    height: 46px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    transform: none !important;
+
     box-sizing: border-box !important;
 }
 
-/* Desktop */
-@media (min-width: 921px) {
-    .rk-header-main {
-        display: grid !important;
+
+/* =========================================================
+   WIDE DESKTOP
+   Give search the majority of available header space.
+   ========================================================= */
+
+@media (min-width: 1250px) {
+
+    body .store-header.rk-global-header .rk-header-main {
         grid-template-columns:
-            minmax(230px, auto)
-            minmax(430px, 1fr)
+            auto
+            minmax(125px, auto)
+            minmax(105px, auto)
+            minmax(520px, 1fr)
             auto !important;
-        gap: 22px !important;
-        align-items: center !important;
-    }
 
-    .rk-global-search,
-    #globalSearch.rk-global-search {
-        display: grid !important;
-        grid-template-columns: 120px minmax(0, 1fr) 54px !important;
+        column-gap: 16px !important;
     }
 }
 
-/* Mobile/tablet */
-@media (max-width: 920px) {
-    .rk-header-main {
-        display: grid !important;
-        grid-template-columns: auto minmax(0, 1fr) auto !important;
-        gap: 10px !important;
-        padding: 12px 14px 76px !important;
-        position: relative !important;
+
+/* =========================================================
+   TABLET / SMALL DESKTOP
+   Hide delivery + Returns & Orders first.
+   Search remains a normal grid child.
+   ========================================================= */
+
+@media (min-width: 701px) and (max-width: 1100px) {
+
+    body .store-header.rk-global-header .rk-header-main {
+        grid-template-columns:
+            auto
+            minmax(120px, auto)
+            minmax(280px, 1fr)
+            auto !important;
+
+        grid-template-areas:
+            "menu brand search actions" !important;
+
+        column-gap: 10px !important;
+        padding: 10px 14px !important;
     }
 
-    .rk-global-search,
-    #globalSearch.rk-global-search {
-        position: absolute !important;
-        left: 14px !important;
-        right: 14px !important;
-        bottom: 10px !important;
-        width: auto !important;
-        max-width: none !important;
+    body .store-header.rk-global-header .rk-header-menu {
+        width: 38px !important;
+        height: 38px !important;
+
         display: grid !important;
-        grid-template-columns: minmax(0, 1fr) 52px !important;
-        overflow: hidden !important;
-        margin: 0 !important;
+        place-items: center !important;
+
+        padding: 0 !important;
+
+        color: #fff !important;
+        background: transparent !important;
+        border: 1px solid transparent !important;
     }
 
-    .rk-global-search select,
-    #globalSearch.rk-global-search select {
+    body .store-header.rk-global-header .rk-header-menu span {
         display: none !important;
     }
 
-    .rk-global-search input,
-    #globalSearch.rk-global-search input {
-        min-width: 0 !important;
-        width: 100% !important;
+    body .store-header.rk-global-header .rk-delivery-location {
+        display: none !important;
     }
 
-    .rk-global-search button,
-    #globalSearch.rk-global-search button {
-        width: 52px !important;
-        min-width: 52px !important;
-        max-width: 52px !important;
-        position: static !important;
+    body .store-header.rk-global-header .rk-orders-action {
+        display: none !important;
+    }
+
+    body .store-header.rk-global-header .rk-global-search,
+    body .store-header.rk-global-header #globalSearch.rk-global-search {
+        grid-template-columns:
+            90px
+            minmax(0, 1fr)
+            48px !important;
+    }
+
+    body .store-header.rk-global-header .rk-global-search select {
+        width: 90px !important;
+        min-width: 90px !important;
+        max-width: 90px !important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   Row 1: menu | brand | account/wishlist/bell/cart
+   Row 2: full-width search
+   No absolute positioning.
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    body .store-header.rk-global-header .rk-header-main {
+        width: 100% !important;
+        max-width: none !important;
+
+        padding: 10px !important;
+
+        display: grid !important;
+
+        grid-template-columns:
+            40px
+            minmax(0, 1fr)
+            auto !important;
+
+        grid-template-areas:
+            "menu brand actions"
+            "search search search" !important;
+
+        align-items: center !important;
+
+        column-gap: 8px !important;
+        row-gap: 10px !important;
+    }
+
+
+    /* Menu */
+
+    body .store-header.rk-global-header .rk-header-menu {
+        grid-area: menu !important;
+
+        width: 40px !important;
+        min-width: 40px !important;
+        height: 40px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: grid !important;
+        place-items: center !important;
+
+        color: #fff !important;
+        background: transparent !important;
+
+        border: 0 !important;
+        border-radius: 4px !important;
+
+        font-size: 19px !important;
+    }
+
+    body .store-header.rk-global-header .rk-header-menu span {
+        display: none !important;
+    }
+
+
+    /* Brand */
+
+    body .store-header.rk-global-header .rk-header-brand {
+        grid-area: brand !important;
+
+        width: auto !important;
+        min-width: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        justify-self: start !important;
+    }
+
+    body .store-header.rk-global-header .rk-header-brand img {
+        width: 34px !important;
+        height: 34px !important;
+        flex: 0 0 34px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-brand .brand-copy strong {
+        font-size: 18px !important;
+        line-height: 1 !important;
+        letter-spacing: 2px !important;
+        white-space: nowrap !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-brand .brand-copy small {
+        display: none !important;
+    }
+
+
+    /* Delivery not needed in compact mobile row */
+
+    body .store-header.rk-global-header .rk-delivery-location {
+        display: none !important;
+    }
+
+
+    /* Actions */
+
+    body .store-header.rk-global-header .rk-header-actions {
+        grid-area: actions !important;
+
+        width: auto !important;
+        min-width: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+
+        gap: 2px !important;
+
+        overflow: visible !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        position: relative !important;
+
+        width: 38px !important;
+        min-width: 38px !important;
+        max-width: 38px !important;
+
+        height: 40px !important;
+        min-height: 40px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        gap: 0 !important;
+
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-orders-action {
+        display: none !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-action-copy,
+    body .store-header.rk-global-header
+    .rk-header-actions .label,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-cart-action strong {
+        display: none !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action i,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-cart-icon {
+        margin: 0 !important;
+
+        font-size: 20px !important;
+        line-height: 1 !important;
+
+        display: block !important;
+    }
+
+
+    /* Account avatar becomes same-size action icon */
+
+    body .store-header.rk-global-header
+    .account-action .header-account-avatar {
+        width: 32px !important;
+        min-width: 32px !important;
+        height: 32px !important;
+
+        margin: 0 !important;
+
+        display: grid !important;
+        place-items: center !important;
+    }
+
+
+    /* Count bubbles */
+
+    body .store-header.rk-global-header
+    .rk-header-actions .count {
+        position: absolute !important;
+
+        top: 0 !important;
+        right: 0 !important;
+
+        min-width: 16px !important;
+        width: auto !important;
+        height: 16px !important;
+
+        padding: 0 3px !important;
+
+        font-size: 8px !important;
+        line-height: 16px !important;
+
+        z-index: 2 !important;
+    }
+
+
+    /* Search — genuine second row */
+
+    body .store-header.rk-global-header .rk-global-search,
+    body .store-header.rk-global-header #globalSearch.rk-global-search {
+        grid-area: search !important;
+
+        position: relative !important;
+
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        inset: auto !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+
+        min-height: 46px !important;
+
+        margin: 0 !important;
+
+        display: grid !important;
+        grid-template-columns:
+            minmax(0, 1fr)
+            48px !important;
+
+        overflow: hidden !important;
+
+        box-sizing: border-box !important;
+
         transform: none !important;
     }
-}
 
-@media (max-width: 420px) {
+    body .store-header.rk-global-header
+    .rk-global-search select {
+        display: none !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-global-search input {
+        width: 100% !important;
+        min-width: 0 !important;
+
+        height: 46px !important;
+
+        padding: 0 14px !important;
+
+        font-size: 15px !important;
+
+        box-sizing: border-box !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-global-search button {
+        position: static !important;
+
+        width: 48px !important;
+        min-width: 48px !important;
+        max-width: 48px !important;
+
+        height: 46px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        transform: none !important;
+
+        display: grid !important;
+        place-items: center !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    /*
+     * commerce-shell.css contains an old
+     * display:none !important mobile search rule.
+     * This later and more-specific authority defeats it.
+     */
+
+    body:not(.marketplace-home):not(.rk-home)
+    .store-header.rk-global-header
+    .rk-global-search {
+        display: grid !important;
+    }
+
+
+    /*
+     * commerce-pro.css still has Home-specific flex rules.
+     * Force the shared global header architecture on Home too.
+     */
+
+    body.marketplace-home
+    .store-header.rk-global-header
+    .rk-header-main,
+    body.rk-home
+    .store-header.rk-global-header
     .rk-header-main {
-        padding-left: 10px !important;
-        padding-right: 10px !important;
+        display: grid !important;
+
+        grid-template-columns:
+            40px
+            minmax(0, 1fr)
+            auto !important;
+
+        grid-template-areas:
+            "menu brand actions"
+            "search search search" !important;
     }
 
+    body.marketplace-home
+    .store-header.rk-global-header
     .rk-global-search,
-    #globalSearch.rk-global-search {
-        left: 10px !important;
-        right: 10px !important;
+    body.rk-home
+    .store-header.rk-global-header
+    .rk-global-search {
+        position: relative !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        flex: none !important;
+        order: initial !important;
+
+        display: grid !important;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            48px !important;
     }
 }
 
+
+/* =========================================================
+   VERY SMALL MOBILE
+   Protect the action row on 320–390px devices.
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    body .store-header.rk-global-header .rk-header-main {
+        grid-template-columns:
+            36px
+            minmax(0, 1fr)
+            auto !important;
+
+        column-gap: 5px !important;
+
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    body .store-header.rk-global-header .rk-header-menu {
+        width: 36px !important;
+        min-width: 36px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        width: 34px !important;
+        min-width: 34px !important;
+        max-width: 34px !important;
+    }
+
+    body .store-header.rk-global-header
+    .account-action .header-account-avatar {
+        width: 29px !important;
+        min-width: 29px !important;
+        height: 29px !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-header-brand .brand-copy strong {
+        font-size: 16px !important;
+        letter-spacing: 1.5px !important;
+    }
+}
 
 /* =========================================================
    PRODUCT DETAIL SHOPPING ACTIONS
