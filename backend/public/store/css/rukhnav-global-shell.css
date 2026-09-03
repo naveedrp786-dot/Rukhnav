@@ -3293,3 +3293,31 @@ a.continue-shopping-link *,
         right: 0 !important;
     }
 }
+
+/* =========================================================
+   FINAL FULL-WIDTH HEADER BACKGROUND FIX
+   Keep header content/layout unchanged; remove legacy gutters.
+   ========================================================= */
+
+html body .store-header.rk-global-header {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    background: var(--rk-shell-top) !important;
+}
+
+html body .store-header.rk-global-header > .rk-header-main {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    box-sizing: border-box !important;
+}
