@@ -104,3 +104,233 @@
         grid-column:2
     }
 }
+
+
+/* =========================================================
+   COMPACT GUEST CHECKOUT NOTICE
+   Keep checkout introduction informative but unobtrusive.
+   ========================================================= */
+
+.guest-checkout-heading {
+    max-width: 1180px;
+
+    margin:
+        0 auto 16px;
+
+    padding:
+        14px 18px;
+
+    border-radius:
+        14px;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(0, 1fr) auto;
+
+    align-items:
+        center;
+
+    gap:
+        16px;
+}
+
+
+.guest-checkout-heading > div:first-child > span {
+    display:
+        block;
+
+    margin-bottom:
+        3px;
+
+    font-size:
+        8px;
+
+    letter-spacing:
+        1px;
+}
+
+
+.guest-checkout-heading h1 {
+    margin:
+        0;
+
+    font:
+        700 22px
+        var(--heading);
+
+    line-height:
+        1.15;
+}
+
+
+.guest-checkout-heading p {
+    max-width:
+        720px;
+
+    margin:
+        5px 0 0;
+
+    font-size:
+        11px;
+
+    line-height:
+        1.45;
+}
+
+
+.guest-trust-badge {
+    min-width:
+        auto;
+
+    padding:
+        9px 12px;
+
+    border-radius:
+        10px;
+
+    gap:
+        7px;
+
+    white-space:
+        nowrap;
+
+    font-size:
+        11px;
+}
+
+
+.guest-trust-badge i {
+    font-size:
+        16px;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .guest-checkout-heading {
+        display:
+            grid;
+
+        grid-template-columns:
+            minmax(0, 1fr) auto;
+
+        align-items:
+            center;
+
+        padding:
+            13px 15px;
+    }
+
+
+    .guest-checkout-heading h1 {
+        font-size:
+            20px;
+    }
+
+
+    .guest-checkout-heading p {
+        font-size:
+            10px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .guest-checkout-page {
+        padding-top:
+            16px;
+    }
+
+
+    .guest-checkout-heading {
+        margin-bottom:
+            14px;
+
+        padding:
+            13px 14px;
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            9px;
+
+        border-radius:
+            13px;
+    }
+
+
+    .guest-checkout-heading h1 {
+        font-size:
+            19px;
+
+        line-height:
+            1.2;
+    }
+
+
+    .guest-checkout-heading p {
+        margin-top:
+            4px;
+
+        font-size:
+            10px;
+
+        line-height:
+            1.4;
+    }
+
+
+    .guest-trust-badge {
+        width:
+            fit-content;
+
+        padding:
+            8px 10px;
+
+        font-size:
+            10px;
+    }
+
+
+    .guest-trust-badge i {
+        font-size:
+            15px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .guest-checkout-heading {
+        padding:
+            11px 12px;
+    }
+
+
+    .guest-checkout-heading h1 {
+        font-size:
+            18px;
+    }
+
+
+    .guest-checkout-heading p {
+        font-size:
+            9px;
+    }
+}
