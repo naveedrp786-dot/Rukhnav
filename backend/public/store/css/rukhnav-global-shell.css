@@ -1,0 +1,1285 @@
+/* =========================================================
+   RUKHNAV GLOBAL COMMERCE SHELL
+   One permanent header/footer architecture for every page.
+   ========================================================= */
+
+:root {
+    --rk-shell-top: #16251f;
+    --rk-shell-nav: #22372f;
+    --rk-shell-footer: #1d2d27;
+    --rk-shell-footer-bottom: #111c18;
+    --rk-shell-accent: #d8b55b;
+    --rk-shell-white: #ffffff;
+    --rk-shell-muted: #d3ddd8;
+    --rk-shell-border: rgba(255,255,255,.12);
+}
+
+
+/* ================= HEADER ================= */
+
+.rk-global-header {
+    width: 100%;
+    position: relative;
+    z-index: 500;
+    background: var(--rk-shell-top) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 7px rgba(0,0,0,.22);
+}
+
+.rk-header-main {
+    width: 100%;
+    min-height: 66px;
+    padding: 8px 20px;
+
+    display: grid;
+    grid-template-columns:
+        auto
+        minmax(145px,210px)
+        auto
+        minmax(280px,1fr)
+        auto;
+
+    align-items: center;
+    gap: 14px;
+
+    box-sizing: border-box;
+}
+
+.rk-header-menu {
+    display: none;
+}
+
+.rk-header-brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.rk-header-brand img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.rk-header-brand .brand-copy {
+    min-width: 0;
+}
+
+.rk-header-brand .brand-copy strong {
+    display: block;
+    color: #fff !important;
+    font-size: 21px;
+    line-height: 1;
+    letter-spacing: 2.6px;
+}
+
+.rk-header-brand .brand-copy small {
+    display: block;
+    margin-top: 5px;
+    color: var(--rk-shell-accent) !important;
+    font-size: 9px;
+    line-height: 1.1;
+}
+
+.rk-delivery-location {
+    min-width: 90px;
+    display: flex;
+    align-items: flex-end;
+    gap: 7px;
+    padding: 7px 8px;
+    color: #fff !important;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 3px;
+}
+
+.rk-delivery-location:hover {
+    border-color: rgba(255,255,255,.7);
+}
+
+.rk-delivery-location i {
+    font-size: 16px;
+}
+
+.rk-delivery-location span {
+    display: block;
+}
+
+.rk-delivery-location small,
+.rk-action-copy small {
+    display: block;
+    color: rgba(255,255,255,.72) !important;
+    font-size: 10px;
+    line-height: 1.1;
+}
+
+.rk-delivery-location strong,
+.rk-action-copy strong {
+    display: block;
+    color: #fff !important;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+
+/* ================= SEARCH ================= */
+
+.rk-global-search {
+    width: 100% !important;
+    min-height: 44px !important;
+    display: grid !important;
+    grid-template-columns: auto 1fr 48px !important;
+    overflow: hidden;
+    background: #fff !important;
+    border: 0 !important;
+    border-radius: 5px !important;
+    box-shadow: none !important;
+}
+
+.rk-global-search:focus-within {
+    box-shadow:
+        0 0 0 3px rgba(216,181,91,.55) !important;
+}
+
+.rk-global-search select {
+    min-width: 70px !important;
+    max-width: 95px;
+    padding: 0 9px !important;
+    border: 0 !important;
+    border-right: 1px solid #ddd !important;
+    background: #f2f2f2 !important;
+    color: #555 !important;
+    font-size: 11px !important;
+}
+
+.rk-global-search input {
+    width: 100%;
+    min-width: 0;
+    padding: 0 14px !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: #fff !important;
+    color: #171717 !important;
+    font-size: 14px !important;
+}
+
+.rk-global-search button {
+    border: 0 !important;
+    background: var(--rk-shell-accent) !important;
+    color: #17231e !important;
+    font-size: 17px !important;
+    cursor: pointer;
+}
+
+
+/* ================= ACTIONS ================= */
+
+.rk-header-actions {
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: flex-end !important;
+    gap: 2px !important;
+}
+
+.rk-header-actions .action {
+    min-height: 45px;
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center;
+    gap: 7px;
+    padding: 5px 8px !important;
+    color: #fff !important;
+    text-decoration: none;
+    border: 1px solid transparent !important;
+    border-radius: 3px !important;
+    background: transparent !important;
+}
+
+.rk-header-actions .action:hover {
+    border-color: rgba(255,255,255,.7) !important;
+}
+
+.rk-header-actions i {
+    color: #fff !important;
+}
+
+.rk-header-actions .label {
+    color: #fff !important;
+}
+
+.rk-icon-action {
+    min-width: 47px;
+}
+
+.rk-cart-action {
+    font-size: 12px;
+}
+
+.rk-cart-icon {
+    position: relative;
+    font-size: 22px;
+}
+
+.rk-header-actions .count {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    min-width: 17px;
+    height: 17px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0 4px;
+
+    border-radius: 10px;
+
+    background: var(--rk-shell-accent) !important;
+    color: #17231e !important;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+/* ================= NAVIGATION ================= */
+
+.rk-commerce-nav {
+    width: 100%;
+    padding: 0 !important;
+    background: var(--rk-shell-nav) !important;
+    border: 0 !important;
+}
+
+.rk-commerce-nav > div {
+    width: 100%;
+    min-height: 39px;
+
+    padding: 0 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 3px;
+
+    overflow-x: auto;
+
+    box-sizing: border-box;
+}
+
+.rk-commerce-nav a,
+.rk-nav-all {
+    min-height: 31px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 5px 9px;
+
+    flex: 0 0 auto;
+
+    border: 1px solid transparent !important;
+    border-radius: 2px !important;
+
+    background: transparent !important;
+    color: #fff !important;
+
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.rk-commerce-nav a:hover,
+.rk-nav-all:hover {
+    border-color: rgba(255,255,255,.75) !important;
+}
+
+
+/* ================= NOTIFICATIONS ================= */
+
+.rk-notification-popover-layer {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 5000 !important;
+    pointer-events: none;
+}
+
+.rk-notification-popover-layer:not([hidden]) {
+    display: block !important;
+}
+
+.rk-notification-popover-layer
+.customer-notification-backdrop {
+    position: absolute !important;
+    inset: 0 !important;
+    background: transparent !important;
+    pointer-events: auto;
+}
+
+.rk-notification-popover {
+    position: absolute !important;
+    top: 70px !important;
+    right: 74px !important;
+    left: auto !important;
+    bottom: auto !important;
+
+    width: min(390px,calc(100vw - 28px)) !important;
+    max-height: min(620px,calc(100vh - 95px)) !important;
+
+    overflow: hidden !important;
+
+    border: 1px solid rgba(0,0,0,.12) !important;
+    border-radius: 10px !important;
+
+    background: #fff !important;
+    box-shadow: 0 14px 40px rgba(0,0,0,.25) !important;
+
+    transform: none !important;
+
+    pointer-events: auto;
+}
+
+
+/* ================= FOOTER ================= */
+
+.rk-global-footer {
+    width: 100%;
+    margin-top: 44px !important;
+    background: var(--rk-shell-footer) !important;
+    color: #fff !important;
+    border: 0 !important;
+}
+
+.rk-back-to-top {
+    min-height: 47px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #31473e !important;
+    color: #fff !important;
+
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.rk-back-to-top:hover {
+    background: #3b5349 !important;
+}
+
+.rk-footer-main {
+    max-width: 1100px;
+    margin: auto;
+    padding: 42px 30px 38px;
+}
+
+.rk-footer-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+    gap: 55px;
+}
+
+.rk-global-footer .footer-col h3 {
+    margin: 0 0 13px;
+    color: #fff !important;
+    font-size: 14px;
+}
+
+.rk-global-footer .footer-col a {
+    display: block;
+    margin: 8px 0;
+    color: rgba(255,255,255,.76) !important;
+    text-decoration: none;
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.rk-global-footer .footer-col a:hover {
+    color: #fff !important;
+    text-decoration: underline;
+}
+
+.rk-footer-brandbar {
+    min-height: 95px;
+
+    padding: 22px 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+
+    border-top: 1px solid var(--rk-shell-border);
+}
+
+.rk-footer-logo {
+    color: #fff !important;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.rk-footer-settings {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rk-footer-settings span {
+    min-height: 34px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 6px 12px;
+
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 3px;
+
+    color: rgba(255,255,255,.82) !important;
+
+    font-size: 10px;
+}
+
+.rk-footer-bottom {
+    min-height: 125px;
+
+    padding: 28px 24px;
+
+    text-align: center;
+
+    background:
+        var(--rk-shell-footer-bottom) !important;
+
+    color:
+        rgba(255,255,255,.7) !important;
+}
+
+.rk-footer-bottom-links,
+.rk-footer-payment {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.rk-footer-bottom a {
+    color: rgba(255,255,255,.82) !important;
+    text-decoration: none;
+    font-size: 10px;
+}
+
+.rk-footer-bottom p,
+.rk-footer-payment {
+    margin: 10px 0 0;
+    font-size: 9px;
+}
+
+.rk-footer-support {
+    display: inline-block;
+    margin-top: 8px;
+}
+
+
+/* ================= TABLET ================= */
+
+@media (max-width: 1050px) {
+
+    .rk-header-main {
+        grid-template-columns:
+            auto
+            minmax(125px,170px)
+            minmax(240px,1fr)
+            auto;
+    }
+
+    .rk-delivery-location {
+        display: none;
+    }
+
+    .rk-orders-action {
+        display: none !important;
+    }
+
+    .rk-action-copy small {
+        display: none;
+    }
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+
+    .rk-header-main {
+        min-height: auto;
+
+        padding: 9px 10px;
+
+        grid-template-columns:
+            auto
+            minmax(0,1fr)
+            auto;
+
+        grid-template-areas:
+            "menu brand actions"
+            "search search search";
+
+        gap: 8px 9px;
+    }
+
+    .rk-header-menu {
+        grid-area: menu;
+
+        width: 38px;
+        height: 38px;
+
+        display: grid;
+        place-items: center;
+
+        padding: 0;
+
+        border: 1px solid transparent;
+        border-radius: 3px;
+
+        background: transparent;
+        color: #fff;
+
+        font-size: 17px;
+    }
+
+    .rk-header-menu span {
+        display: none;
+    }
+
+    .rk-header-brand {
+        grid-area: brand;
+    }
+
+    .rk-header-brand img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .rk-header-brand .brand-copy strong {
+        font-size: 18px;
+    }
+
+    .rk-header-brand .brand-copy small {
+        display: none;
+    }
+
+    .rk-global-search {
+        grid-area: search;
+
+        min-height: 42px !important;
+
+        grid-template-columns:
+            1fr 46px !important;
+    }
+
+    .rk-global-search select {
+        display: none !important;
+    }
+
+    .rk-header-actions {
+        grid-area: actions;
+        gap: 0 !important;
+    }
+
+    .rk-header-actions .action {
+        min-width: 34px !important;
+        min-height: 38px !important;
+        padding: 4px 5px !important;
+    }
+
+    .rk-header-actions .label,
+    .rk-header-actions .rk-action-copy,
+    .rk-header-actions .rk-cart-action strong,
+    .rk-orders-action {
+        display: none !important;
+    }
+
+    .rk-icon-action i,
+    .rk-cart-icon {
+        font-size: 18px !important;
+    }
+
+    .rk-commerce-nav > div {
+        min-height: 37px;
+        padding: 0 8px;
+    }
+
+    .rk-commerce-nav a,
+    .rk-nav-all {
+        min-height: 29px;
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .rk-notification-popover {
+        top: 58px !important;
+        right: 10px !important;
+        width: calc(100vw - 20px) !important;
+        max-height: calc(100vh - 76px) !important;
+    }
+
+    .rk-footer-main {
+        padding: 31px 22px;
+    }
+
+    .rk-footer-grid {
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+
+        gap: 28px 22px;
+    }
+
+    .rk-footer-brandbar {
+        min-height: auto;
+
+        padding: 25px 18px;
+
+        flex-direction: column;
+        gap: 17px;
+    }
+
+    .rk-footer-settings {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .rk-footer-bottom {
+        padding: 25px 18px;
+    }
+}
+
+
+/* ================= SMALL PHONE ================= */
+
+@media (max-width: 420px) {
+
+    .rk-header-brand .brand-copy strong {
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
+
+    .rk-footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rk-footer-main {
+        padding-left: 26px;
+        padding-right: 26px;
+    }
+}
+
+
+/* =========================================================
+   FINAL GLOBAL SHELL AUTHORITY
+   Overrides legacy Commerce Pro / Commerce Shell chrome.
+   Product cards, homepage sections and page content remain
+   controlled by their existing styles.
+   ========================================================= */
+
+
+/* ---------- Header authority ---------- */
+
+body .store-header.rk-global-header {
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+
+    background:
+        var(--rk-shell-top) !important;
+
+    color: #fff !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    box-shadow:
+        0 2px 7px rgba(0,0,0,.22) !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-header-main {
+    width: 100% !important;
+    max-width: none !important;
+
+    min-height: 66px !important;
+
+    margin: 0 !important;
+    padding: 8px 20px !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        auto
+        minmax(145px,210px)
+        auto
+        minmax(280px,1fr)
+        auto !important;
+
+    align-items: center !important;
+    gap: 14px !important;
+
+    background:
+        var(--rk-shell-top) !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-header-brand {
+    display: flex !important;
+    align-items: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #fff !important;
+
+    background: transparent !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-header-brand .brand-copy strong {
+    color: #fff !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-header-brand .brand-copy small {
+    color:
+        var(--rk-shell-accent) !important;
+}
+
+
+/* ---------- Search authority ---------- */
+
+body .store-header.rk-global-header
+.rk-global-search {
+    width: 100% !important;
+    max-width: none !important;
+
+    min-height: 44px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        auto
+        minmax(0,1fr)
+        48px !important;
+
+    overflow: hidden !important;
+
+    background: #fff !important;
+
+    border: 0 !important;
+    border-radius: 5px !important;
+
+    box-shadow: none !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-global-search select {
+    display: block !important;
+
+    min-width: 70px !important;
+    max-width: 95px !important;
+
+    height: 44px !important;
+
+    margin: 0 !important;
+    padding: 0 9px !important;
+
+    border: 0 !important;
+    border-right:
+        1px solid #ddd !important;
+
+    border-radius: 0 !important;
+
+    background: #f2f2f2 !important;
+    color: #555 !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-global-search input {
+    display: block !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 44px !important;
+
+    margin: 0 !important;
+    padding: 0 14px !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    outline: 0 !important;
+
+    background: #fff !important;
+    color: #171717 !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-global-search button {
+    width: 48px !important;
+    height: 44px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background:
+        var(--rk-shell-accent) !important;
+
+    color: #17231e !important;
+}
+
+
+/* ---------- Action authority ---------- */
+
+body .store-header.rk-global-header
+.rk-header-actions {
+    display: flex !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    align-items: stretch !important;
+    justify-content: flex-end !important;
+
+    gap: 2px !important;
+
+    background: transparent !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-header-actions .action {
+    position: relative !important;
+
+    min-height: 45px !important;
+
+    margin: 0 !important;
+    padding: 5px 8px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 7px !important;
+
+    color: #fff !important;
+
+    background: transparent !important;
+
+    border:
+        1px solid transparent !important;
+
+    border-radius: 3px !important;
+
+    box-shadow: none !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-header-actions .action:hover {
+    border-color:
+        rgba(255,255,255,.72) !important;
+
+    background: transparent !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-header-actions .action i,
+body .store-header.rk-global-header
+.rk-header-actions .action .label,
+body .store-header.rk-global-header
+.rk-header-actions .action strong {
+    color: #fff !important;
+}
+
+
+/* ---------- Navigation authority ---------- */
+
+body .store-header.rk-global-header
+.rk-commerce-nav {
+    width: 100% !important;
+    max-width: none !important;
+
+    min-height: 39px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: block !important;
+
+    background:
+        var(--rk-shell-nav) !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-commerce-nav > div {
+    width: 100% !important;
+    max-width: none !important;
+
+    min-height: 39px !important;
+
+    margin: 0 !important;
+    padding: 0 18px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 3px !important;
+
+    overflow-x: auto !important;
+}
+
+
+body .store-header.rk-global-header
+.rk-commerce-nav a,
+body .store-header.rk-global-header
+.rk-nav-all {
+    width: auto !important;
+
+    min-height: 31px !important;
+
+    margin: 0 !important;
+    padding: 5px 9px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+
+    flex: 0 0 auto !important;
+
+    color: #fff !important;
+
+    background: transparent !important;
+
+    border:
+        1px solid transparent !important;
+
+    border-radius: 2px !important;
+
+    box-shadow: none !important;
+}
+
+
+/* ---------- Footer authority ---------- */
+
+body .store-footer.rk-global-footer {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 44px 0 0 !important;
+    padding: 0 !important;
+
+    display: block !important;
+
+    background:
+        var(--rk-shell-footer) !important;
+
+    color: #fff !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+}
+
+
+body .store-footer.rk-global-footer
+.rk-footer-main {
+    max-width: 1100px !important;
+
+    margin: 0 auto !important;
+
+    padding:
+        42px 30px 38px !important;
+}
+
+
+body .store-footer.rk-global-footer
+.rk-footer-grid {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr)) !important;
+
+    gap: 55px !important;
+}
+
+
+body .store-footer.rk-global-footer
+.footer-col {
+    width: auto !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+
+body .store-footer.rk-global-footer
+.footer-col h3 {
+    color: #fff !important;
+}
+
+
+body .store-footer.rk-global-footer
+.footer-col a {
+    color:
+        rgba(255,255,255,.76) !important;
+}
+
+
+body .store-footer.rk-global-footer
+.rk-footer-brandbar {
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    background:
+        var(--rk-shell-footer) !important;
+}
+
+
+body .store-footer.rk-global-footer
+.rk-footer-bottom {
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    background:
+        var(--rk-shell-footer-bottom) !important;
+}
+
+
+/* =========================================================
+   FINAL RESPONSIVE AUTHORITY
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    body .store-header.rk-global-header
+    .rk-header-main {
+        grid-template-columns:
+            auto
+            minmax(125px,170px)
+            minmax(240px,1fr)
+            auto !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-delivery-location {
+        display: none !important;
+    }
+
+    body .store-header.rk-global-header
+    .rk-orders-action {
+        display: none !important;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    body .store-header.rk-global-header
+    .rk-header-main {
+        min-height: auto !important;
+
+        padding: 9px 10px !important;
+
+        grid-template-columns:
+            auto
+            minmax(0,1fr)
+            auto !important;
+
+        grid-template-areas:
+            "menu brand actions"
+            "search search search" !important;
+
+        gap: 8px 9px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-header-menu {
+        grid-area: menu;
+
+        width: 38px !important;
+        height: 38px !important;
+
+        display: grid !important;
+        place-items: center !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        background:
+            transparent !important;
+
+        color: #fff !important;
+
+        border:
+            1px solid transparent !important;
+
+        border-radius: 3px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-header-brand {
+        grid-area: brand;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search {
+        grid-area: search;
+
+        min-height: 42px !important;
+
+        grid-template-columns:
+            minmax(0,1fr)
+            46px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search select {
+        display: none !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search input {
+        height: 42px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-global-search button {
+        width: 46px !important;
+        height: 42px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-header-actions {
+        grid-area: actions;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-header-actions .action {
+        min-width: 34px !important;
+        min-height: 38px !important;
+
+        padding: 4px 5px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-header-actions .label,
+    body .store-header.rk-global-header
+    .rk-header-actions .rk-action-copy,
+    body .store-header.rk-global-header
+    .rk-orders-action {
+        display: none !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-commerce-nav > div {
+        min-height: 37px !important;
+        padding: 0 8px !important;
+    }
+
+
+    body .store-header.rk-global-header
+    .rk-commerce-nav a,
+    body .store-header.rk-global-header
+    .rk-nav-all {
+        min-height: 29px !important;
+        padding: 4px 8px !important;
+        font-size: 11px !important;
+    }
+
+
+    body .store-footer.rk-global-footer
+    .rk-footer-main {
+        padding:
+            31px 22px !important;
+    }
+
+
+    body .store-footer.rk-global-footer
+    .rk-footer-grid {
+        grid-template-columns:
+            repeat(2,minmax(0,1fr)) !important;
+
+        gap: 28px 22px !important;
+    }
+}
+
+
+@media (max-width: 420px) {
+
+    body .store-footer.rk-global-footer
+    .rk-footer-grid {
+        grid-template-columns:
+            1fr !important;
+    }
+}
