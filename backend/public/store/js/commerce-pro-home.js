@@ -489,7 +489,11 @@
 
     function init() {
         markCommerceHome();
-        moveHomepageSearch();
+        /*
+         * Global commerce shell owns #globalSearch.
+         * Keep it in the shared header on every page.
+         */
+        bindLiveHomeSearch();
         createUtilityStrip();
         createPromoCards();
     }

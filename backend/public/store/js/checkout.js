@@ -98,6 +98,24 @@ const Checkout = {
             ?.addEventListener("submit", event => this.submit(event));
 
         document
+            .getElementById("checkoutItems")
+            ?.addEventListener("click", event => {
+                const button =
+                    event.target.closest(
+                        "[data-checkout-remove]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                this.removeCheckoutItem(
+                    button.dataset.checkoutRemove,
+                    button
+                );
+            });
+
+        document
             .querySelectorAll('input[name="deliveryOption"]')
             .forEach(input => {
                 input.addEventListener("change", () => {
@@ -179,23 +197,152 @@ this.calculate();
             container.innerHTML = this.cart.map(item => {
                 const price = Number(item.price ?? item.selling_price ?? 0);
                 const subtotal = Number(item.subtotal ?? price * Number(item.quantity || 0));
-                const image = this.image(item.image);
+                const image =
+                    typeof Store?.img === "function"
+                        ? Store.img(item)
+                        : this.image(
+                            item.image ||
+                            item.product_image ||
+                            item.image_url
+                        );
+
+                const cartId =
+                    item.cart_id ??
+                    item.cartId ??
+                    item.id;
 
                 return `
-                    <article class="checkout-item">
+                    <article
+                        class="checkout-item"
+                        data-checkout-item="${Components.e(cartId)}"
+                    >
                         ${
                             image
                                 ? `<img src="${Components.e(image)}" alt="${Components.e(item.product_name || "Product")}">`
                                 : `<div class="checkout-item-placeholder"><i class="fa-solid fa-spa"></i></div>`
                         }
-                        <div>
+
+                        <div class="checkout-item-copy">
                             <strong>${Components.e(item.product_name || "Product")}</strong>
                             <span>Quantity: ${Number(item.quantity || 0)}</span>
+
+                            <button
+                                type="button"
+                                class="checkout-remove-item"
+                                data-checkout-remove="${Components.e(cartId)}"
+                                aria-label="Remove ${Components.e(item.product_name || "product")} from cart"
+                            >
+                                <i class="fa-solid fa-trash-can"></i>
+                                Remove
+                            </button>
                         </div>
+
                         <b>${Store.money(subtotal)}</b>
                     </article>
                 `;
             }).join("");
+        }
+    },
+
+    async removeCheckoutItem(cartId, button) {
+        const item =
+            this.cart.find(row =>
+                String(
+                    row.cart_id ??
+                    row.cartId ??
+                    row.id
+                ) === String(cartId)
+            );
+
+        if (!item) {
+            return;
+        }
+
+        if (
+            !confirm(
+                `Remove ${item.product_name || "this product"} from your cart?`
+            )
+        ) {
+            return;
+        }
+
+        if (button) {
+            button.disabled = true;
+        }
+
+        try {
+            await API.delete(
+                `${API.cart}/${encodeURIComponent(cartId)}`
+            );
+
+            this.cart =
+                this.cart.filter(row =>
+                    String(
+                        row.cart_id ??
+                        row.cartId ??
+                        row.id
+                    ) !== String(cartId)
+                );
+
+            /*
+             * A changed cart invalidates any checkout
+             * discount preview based on the old subtotal.
+             */
+            this.coupon = null;
+            this.couponDiscount = 0;
+            this.rewardPointsToRedeem = 0;
+            this.rewardPointsDiscount = 0;
+
+            const couponInput =
+                document.getElementById(
+                    "checkoutCoupon"
+                );
+
+            if (couponInput) {
+                couponInput.value = "";
+            }
+
+            const rewardInput =
+                document.getElementById(
+                    "checkoutRewardPoints"
+                );
+
+            if (rewardInput) {
+                rewardInput.value = "0";
+            }
+
+            if (!this.cart.length) {
+                this.hide("checkoutContent");
+                this.show("checkoutEmpty");
+
+                await Store.refreshCartCount();
+
+                Store.toast(
+                    "Your cart is now empty."
+                );
+
+                return;
+            }
+
+            this.renderCart();
+            this.renderLoyalty();
+            this.calculate();
+
+            await Store.refreshCartCount();
+
+            Store.toast(
+                "Product removed from cart."
+            );
+        } catch (error) {
+            if (button) {
+                button.disabled = false;
+            }
+
+            Store.toast(
+                error.message ||
+                "Unable to remove this product.",
+                "error"
+            );
         }
     },
 

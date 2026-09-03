@@ -461,7 +461,100 @@ const GuestCheckout = {
             : 250;
     },
 
+    bindSummaryRemoval() {
+        const container =
+            document.getElementById(
+                "guestOrderItems"
+            );
+
+        if (
+            !container ||
+            container.dataset.removeBound === "1"
+        ) {
+            return;
+        }
+
+        container.dataset.removeBound = "1";
+
+        container.addEventListener(
+            "click",
+            event => {
+                const button =
+                    event.target.closest(
+                        "[data-guest-checkout-remove]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                this.removeCheckoutItem(
+                    button.dataset.guestCheckoutRemove
+                );
+            }
+        );
+    },
+
+    async removeCheckoutItem(productId) {
+        if (!this.cartMode) {
+            return;
+        }
+
+        const item =
+            this.items.find(row =>
+                String(row.product?.id) ===
+                String(productId)
+            );
+
+        if (!item) {
+            return;
+        }
+
+        if (
+            !confirm(
+                `Remove ${item.product?.product_name || "this product"} from your cart?`
+            )
+        ) {
+            return;
+        }
+
+        const next =
+            Store.read(
+                Store.cartKey
+            ).filter(row =>
+                String(row.productId) !==
+                String(productId)
+            );
+
+        Store.write(
+            Store.cartKey,
+            next
+        );
+
+        this.items =
+            this.items.filter(row =>
+                String(row.product?.id) !==
+                String(productId)
+            );
+
+        await Store.refreshCartCount();
+
+        if (!this.items.length) {
+            location.href =
+                "cart.html";
+            return;
+        }
+
+        this.render();
+
+        Store.toast(
+            "Product removed from cart."
+        );
+    },
+
     render() {
+        this.bindSummaryRemoval();
+
         const checkoutItems =
             Array.isArray(this.items) &&
             this.items.length
@@ -505,9 +598,26 @@ const GuestCheckout = {
                     lineTotal;
 
                 const image =
-                    this.productImage(
-                        product
-                    );
+                    typeof Store?.img === "function"
+                        ? Store.img(product)
+                        : this.productImage(
+                            product
+                        );
+
+                const removeAction =
+                    this.cartMode
+                        ? `
+                            <button
+                                type="button"
+                                class="checkout-remove-item"
+                                data-guest-checkout-remove="${Components.e(product.id)}"
+                                aria-label="Remove ${Components.e(product.product_name || "product")} from cart"
+                            >
+                                <i class="fa-solid fa-trash-can"></i>
+                                Remove
+                            </button>
+                        `
+                        : "";
 
                 const stock =
                     this.productStock(
@@ -522,10 +632,11 @@ const GuestCheckout = {
                                 : `<div class="guest-order-placeholder"><i class="fa-solid fa-spa"></i></div>`
                         }
 
-                        <div>
+                        <div class="checkout-item-copy">
                             <strong>${Components.e(product.product_name || "Product")}</strong>
                             <span>Quantity: ${quantity}</span>
                             <small>${stock} available</small>
+                            ${removeAction}
                         </div>
 
                         <b>${Store.money(lineTotal)}</b>

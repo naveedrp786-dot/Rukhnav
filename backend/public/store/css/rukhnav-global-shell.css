@@ -1612,3 +1612,217 @@ body .store-footer.rk-global-footer
         flex: 1 1 145px;
     }
 }
+
+/* =========================================================
+   RUKHNAV FINAL COMMERCE HEADER SEARCH AUTHORITY
+   2026-09-03
+   ========================================================= */
+
+.rk-header-main {
+    width: 100% !important;
+    max-width: 1600px !important;
+    margin: 0 auto !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+    box-sizing: border-box !important;
+}
+
+.rk-global-search,
+#globalSearch.rk-global-search {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+}
+
+.rk-global-search input,
+#globalSearch.rk-global-search input {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.rk-global-search button,
+#globalSearch.rk-global-search button {
+    flex: 0 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Desktop */
+@media (min-width: 921px) {
+    .rk-header-main {
+        display: grid !important;
+        grid-template-columns:
+            minmax(230px, auto)
+            minmax(430px, 1fr)
+            auto !important;
+        gap: 22px !important;
+        align-items: center !important;
+    }
+
+    .rk-global-search,
+    #globalSearch.rk-global-search {
+        display: grid !important;
+        grid-template-columns: 120px minmax(0, 1fr) 54px !important;
+    }
+}
+
+/* Mobile/tablet */
+@media (max-width: 920px) {
+    .rk-header-main {
+        display: grid !important;
+        grid-template-columns: auto minmax(0, 1fr) auto !important;
+        gap: 10px !important;
+        padding: 12px 14px 76px !important;
+        position: relative !important;
+    }
+
+    .rk-global-search,
+    #globalSearch.rk-global-search {
+        position: absolute !important;
+        left: 14px !important;
+        right: 14px !important;
+        bottom: 10px !important;
+        width: auto !important;
+        max-width: none !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 52px !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+    }
+
+    .rk-global-search select,
+    #globalSearch.rk-global-search select {
+        display: none !important;
+    }
+
+    .rk-global-search input,
+    #globalSearch.rk-global-search input {
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .rk-global-search button,
+    #globalSearch.rk-global-search button {
+        width: 52px !important;
+        min-width: 52px !important;
+        max-width: 52px !important;
+        position: static !important;
+        transform: none !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .rk-header-main {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .rk-global-search,
+    #globalSearch.rk-global-search {
+        left: 10px !important;
+        right: 10px !important;
+    }
+}
+
+
+/* =========================================================
+   PRODUCT DETAIL SHOPPING ACTIONS
+   ========================================================= */
+
+.pd-shopping-links {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+}
+
+.pd-shopping-links .btn {
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.pd-go-cart {
+    background: var(--primary);
+    color: #fff;
+}
+
+.pd-continue-shopping {
+    background: #fff;
+    color: var(--primary);
+    border: 1px solid var(--border);
+}
+
+@media (max-width: 650px) {
+    .pd-shopping-links {
+        grid-template-columns: 1fr;
+    }
+
+    .pd-shopping-links .btn {
+        width: 100%;
+        min-height: 50px;
+    }
+}
+
+
+/* =========================================================
+   CHECKOUT ITEM MANAGEMENT
+   ========================================================= */
+
+.checkout-item-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+
+.checkout-remove-item {
+    margin-top: 7px;
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    border: 0;
+    background: transparent;
+
+    color: #a83232;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.checkout-remove-item:hover {
+    text-decoration: underline;
+}
+
+.checkout-remove-item:disabled {
+    opacity: .45;
+    cursor: wait;
+}
+
+.checkout-remove-item i {
+    font-size: 12px;
+}
+
+@media (max-width: 650px) {
+    .checkout-item,
+    .guest-order-item {
+        align-items: flex-start !important;
+    }
+
+    .checkout-remove-item {
+        min-height: 32px;
+        padding: 5px 0;
+        font-size: 13px;
+    }
+}
