@@ -213,6 +213,12 @@ window.CustomerCentre = {
             });
 
         document
+            .getElementById("accountSubviewBack")
+            ?.addEventListener("click", () => {
+                this.openAccountView("overview");
+            });
+
+        document
             .getElementById("copyReferralButton")
             ?.addEventListener("click", () => {
                 this.copyReferral();
@@ -1616,6 +1622,30 @@ window.CustomerCentre = {
                         .centrePanel === target
                 );
             });
+
+        const customerCentre =
+            document.getElementById("customerCentre");
+
+        const backButton =
+            document.getElementById("accountSubviewBack");
+
+        const isSubview =
+            target !== "overview";
+
+        customerCentre?.classList.toggle(
+            "account-subview-active",
+            isSubview
+        );
+
+        customerCentre?.setAttribute(
+            "data-account-view",
+            target
+        );
+
+        backButton?.classList.toggle(
+            "hidden",
+            !isSubview
+        );
 
         if (
             target === "reviews" &&

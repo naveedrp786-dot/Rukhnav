@@ -236,7 +236,7 @@
    ========================================================= */
 
 @media (max-width: 767px) {
-    #guestAccountView .customer-auth-shell {
+    #guestAccountView.customer-auth-layout {
         display: flex !important;
         flex-direction: column !important;
     }
@@ -256,5 +256,61 @@
 
     #customerCentre .account-dashboard {
         scroll-margin-top: 0 !important;
+    }
+}
+
+/* =========================================================
+   RUKHNAV MOBILE ACCOUNT SUBVIEW
+   Internal account sections behave like separate pages.
+   ========================================================= */
+.account-subview-back {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #customerCentre.account-subview-active {
+        padding-top: 0;
+    }
+
+    #customerCentre.account-subview-active .centre-header {
+        display: none !important;
+    }
+
+    #customerCentre.account-subview-active .centre-sidebar {
+        display: none !important;
+    }
+
+    #customerCentre.account-subview-active .centre-layout {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #customerCentre.account-subview-active .centre-content {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 12px !important;
+    }
+
+    #customerCentre.account-subview-active .account-subview-back {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 8px;
+        min-height: 42px;
+        margin: 0 0 14px;
+        padding: 9px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #ffffff;
+        color: var(--primary);
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    #customerCentre.account-subview-active .centre-panel {
+        margin-top: 0 !important;
     }
 }
