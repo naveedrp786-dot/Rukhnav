@@ -610,7 +610,10 @@ window.CustomerCentre = {
             document.getElementById("registerLastName").value.trim();
 
         const full_name =
-            document.getElementById("registerFullName").value.trim();
+            [first_name, last_name]
+                .filter(Boolean)
+                .join(" ")
+                .trim();
 
         const registrationMethod =
             document.querySelector('input[name="registration_method"]:checked')?.value || "email";
