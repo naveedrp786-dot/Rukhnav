@@ -3321,3 +3321,594 @@ html body .store-header.rk-global-header > .rk-header-main {
 
     box-sizing: border-box !important;
 }
+
+/* ==========================================================
+   RUKHNAV PREMIUM LOGO + HEADER POLISH
+   2026-09-04
+   ========================================================== */
+
+/* Give the main storefront header more visual presence */
+body .store-header.rk-global-header .rk-header-main {
+    min-height: 92px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    align-items: center !important;
+}
+
+/* Brand area */
+body .store-header.rk-global-header .rk-header-brand {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-width: 245px !important;
+    overflow: visible !important;
+}
+
+/* New Website Management logo */
+body .store-header.rk-global-header .rk-header-brand img {
+    width: 235px !important;
+    max-width: 235px !important;
+    height: 68px !important;
+    max-height: 68px !important;
+
+    object-fit: contain !important;
+    object-position: left center !important;
+
+    display: block !important;
+
+    transform-origin: left center;
+    will-change: transform, filter, opacity;
+
+    animation:
+        rkLogoEntrance .75s cubic-bezier(.22,.8,.35,1) both,
+        rkLogoIdle 4.8s ease-in-out 1s infinite;
+}
+
+/*
+ * The new image already contains RUKHNAV + tagline.
+ * Hide the old textual brand copy only when an actual image exists.
+ */
+body .store-header.rk-global-header
+.rk-header-brand:has(img)
+.brand-copy {
+    display: none !important;
+}
+
+/* Subtle premium interaction */
+@media (hover: hover) and (pointer: fine) {
+    body .store-header.rk-global-header
+    .rk-header-brand:hover img {
+        animation: none !important;
+        transform: translateY(-1px) scale(1.025);
+        filter:
+            brightness(1.06)
+            saturate(1.04)
+            drop-shadow(0 4px 9px rgba(226, 176, 98, .28));
+    }
+}
+
+/* Entrance */
+@keyframes rkLogoEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(-7px) scale(.965);
+        filter:
+            brightness(.88)
+            drop-shadow(0 0 0 rgba(220, 170, 90, 0));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter:
+            brightness(1)
+            drop-shadow(0 3px 7px rgba(220, 170, 90, .16));
+    }
+}
+
+/* Gentle floating movement + rose-gold breathing glow */
+@keyframes rkLogoIdle {
+    0%,
+    100% {
+        transform: translateY(0);
+        filter:
+            brightness(1)
+            drop-shadow(0 2px 5px rgba(220, 170, 90, .12));
+    }
+
+    50% {
+        transform: translateY(-2px);
+        filter:
+            brightness(1.045)
+            drop-shadow(0 3px 10px rgba(231, 177, 105, .32));
+    }
+}
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 1100px) {
+    body .store-header.rk-global-header .rk-header-main {
+        min-height: 86px !important;
+    }
+
+    body .store-header.rk-global-header .rk-header-brand {
+        min-width: 205px !important;
+    }
+
+    body .store-header.rk-global-header .rk-header-brand img {
+        width: 200px !important;
+        max-width: 200px !important;
+        height: 60px !important;
+        max-height: 60px !important;
+    }
+}
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 760px) {
+    body .store-header.rk-global-header .rk-header-main {
+        min-height: 76px !important;
+        padding-top: 9px !important;
+        padding-bottom: 9px !important;
+    }
+
+    body .store-header.rk-global-header .rk-header-brand {
+        min-width: 0 !important;
+        justify-content: center !important;
+    }
+
+    body .store-header.rk-global-header .rk-header-brand img {
+        width: 162px !important;
+        max-width: 162px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+
+        object-position: center !important;
+        transform-origin: center;
+    }
+}
+
+/* Smaller phones */
+@media (max-width: 420px) {
+    body .store-header.rk-global-header .rk-header-main {
+        min-height: 72px !important;
+    }
+
+    body .store-header.rk-global-header .rk-header-brand img {
+        width: 145px !important;
+        max-width: 145px !important;
+        height: 48px !important;
+        max-height: 48px !important;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    body .store-header.rk-global-header .rk-header-brand img {
+        animation: none !important;
+        transition: none !important;
+    }
+}\n
+/* ==========================================================
+   RUKHNAV HEADER BRAND — FINAL PREMIUM AUTHORITY
+   Code-only treatment for Website Management logo
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   MAIN HEADER HEIGHT
+   ---------------------------------------------------------- */
+
+html body .store-header.rk-global-header .rk-header-main {
+    min-height: 112px !important;
+    padding: 14px 28px !important;
+    align-items: center !important;
+    column-gap: 18px !important;
+}
+
+
+/* ----------------------------------------------------------
+   BRAND AREA
+   ---------------------------------------------------------- */
+
+html body .store-header.rk-global-header .rk-header-brand {
+    position: relative !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    width: 330px !important;
+    min-width: 330px !important;
+    max-width: 330px !important;
+
+    height: 82px !important;
+
+    overflow: visible !important;
+    isolation: isolate;
+
+    text-decoration: none !important;
+
+    animation:
+        rkBrandEnter .75s cubic-bezier(.22,.8,.35,1) both,
+        rkBrandBreathe 5s ease-in-out .9s infinite;
+}
+
+
+/* ----------------------------------------------------------
+   REMOVE OLD TEXT NEXT TO LOGO
+   ---------------------------------------------------------- */
+
+html body .store-header.rk-global-header
+.rk-header-brand .brand-copy {
+    display: none !important;
+}
+
+
+/* ----------------------------------------------------------
+   WEBSITE MANAGEMENT LOGO
+   ---------------------------------------------------------- */
+
+html body .store-header.rk-global-header
+.rk-header-brand img {
+    position: relative !important;
+    z-index: 2 !important;
+
+    display: block !important;
+
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
+
+    height: 78px !important;
+    min-height: 78px !important;
+    max-height: 78px !important;
+
+    object-fit: contain !important;
+    object-position: left center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    opacity: 1 !important;
+
+    filter:
+        brightness(1.04)
+        contrast(1.04)
+        saturate(1.06)
+        drop-shadow(0 3px 6px rgba(0, 0, 0, .22))
+        drop-shadow(0 0 7px rgba(223, 168, 83, .18));
+
+    transform-origin: center;
+
+    transition:
+        transform .35s ease,
+        filter .35s ease;
+}
+
+
+/* ----------------------------------------------------------
+   GOLD LIGHT SWEEP / SHIMMER
+   ---------------------------------------------------------- */
+
+html body .store-header.rk-global-header
+.rk-header-brand::after {
+    content: "";
+
+    position: absolute;
+    z-index: 3;
+
+    top: 5px;
+    bottom: 5px;
+
+    left: -30%;
+    width: 24%;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            105deg,
+            transparent 0%,
+            rgba(255,255,255,0) 20%,
+            rgba(255,231,183,.10) 35%,
+            rgba(255,236,190,.65) 50%,
+            rgba(255,213,135,.14) 65%,
+            rgba(255,255,255,0) 80%,
+            transparent 100%
+        );
+
+    filter: blur(2px);
+
+    transform: skewX(-12deg);
+
+    opacity: 0;
+
+    animation: rkBrandShimmer 6.5s ease-in-out 2s infinite;
+}
+
+
+/* ----------------------------------------------------------
+   SOFT GOLD GLOW BEHIND LOGO
+   ---------------------------------------------------------- */
+
+html body .store-header.rk-global-header
+.rk-header-brand::before {
+    content: "";
+
+    position: absolute;
+
+    z-index: 1;
+
+    left: 10%;
+    right: 8%;
+
+    top: 19%;
+    bottom: 17%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(226, 172, 92, .18) 0%,
+            rgba(226, 172, 92, .07) 45%,
+            transparent 74%
+        );
+
+    filter: blur(12px);
+
+    opacity: .65;
+
+    pointer-events: none;
+
+    animation: rkBrandAura 4.8s ease-in-out infinite;
+}
+
+
+/* ----------------------------------------------------------
+   DESKTOP HOVER
+   ---------------------------------------------------------- */
+
+@media (hover: hover) and (pointer: fine) {
+
+    html body .store-header.rk-global-header
+    .rk-header-brand:hover {
+        animation-play-state: paused;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand:hover img {
+        transform:
+            translateY(-2px)
+            scale(1.025);
+
+        filter:
+            brightness(1.09)
+            contrast(1.04)
+            saturate(1.08)
+            drop-shadow(0 5px 9px rgba(0,0,0,.24))
+            drop-shadow(0 0 12px rgba(232,177,98,.34));
+    }
+}
+
+
+/* ----------------------------------------------------------
+   ANIMATIONS
+   ---------------------------------------------------------- */
+
+@keyframes rkBrandEnter {
+
+    0% {
+        opacity: 0;
+        transform:
+            translateX(-12px)
+            scale(.97);
+    }
+
+    100% {
+        opacity: 1;
+        transform:
+            translateX(0)
+            scale(1);
+    }
+}
+
+
+@keyframes rkBrandBreathe {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+
+@keyframes rkBrandAura {
+
+    0%,
+    100% {
+        opacity: .42;
+        transform: scale(.96);
+    }
+
+    50% {
+        opacity: .78;
+        transform: scale(1.04);
+    }
+}
+
+
+@keyframes rkBrandShimmer {
+
+    0%,
+    68% {
+        left: -30%;
+        opacity: 0;
+    }
+
+    72% {
+        opacity: .08;
+    }
+
+    80% {
+        opacity: .82;
+    }
+
+    89% {
+        opacity: .10;
+    }
+
+    94%,
+    100% {
+        left: 115%;
+        opacity: 0;
+    }
+}
+
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 1180px) {
+
+    html body .store-header.rk-global-header
+    .rk-header-main {
+        min-height: 98px !important;
+        padding-top: 11px !important;
+        padding-bottom: 11px !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand {
+        width: 270px !important;
+        min-width: 270px !important;
+        max-width: 270px !important;
+
+        height: 70px !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand img {
+        width: 262px !important;
+        min-width: 262px !important;
+        max-width: 262px !important;
+
+        height: 67px !important;
+        min-height: 67px !important;
+        max-height: 67px !important;
+    }
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 760px) {
+
+    html body .store-header.rk-global-header
+    .rk-header-main {
+        min-height: 86px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand {
+        width: 180px !important;
+        min-width: 180px !important;
+        max-width: 180px !important;
+
+        height: 58px !important;
+
+        justify-content: center !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand img {
+        width: 176px !important;
+        min-width: 176px !important;
+        max-width: 176px !important;
+
+        height: 56px !important;
+        min-height: 56px !important;
+        max-height: 56px !important;
+
+        object-position: center !important;
+    }
+
+    /*
+     * Less motion on phones so header stays comfortable
+     * while scrolling.
+     */
+    html body .store-header.rk-global-header
+    .rk-header-brand {
+        animation:
+            rkBrandEnter .7s ease both,
+            rkBrandBreathe 6s ease-in-out 1s infinite;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand::after {
+        animation-duration: 8s;
+    }
+}
+
+
+/* ==========================================================
+   SMALL PHONES
+   ========================================================== */
+
+@media (max-width: 420px) {
+
+    html body .store-header.rk-global-header
+    .rk-header-brand {
+        width: 158px !important;
+        min-width: 158px !important;
+        max-width: 158px !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand img {
+        width: 154px !important;
+        min-width: 154px !important;
+        max-width: 154px !important;
+
+        height: 51px !important;
+        min-height: 51px !important;
+        max-height: 51px !important;
+    }
+}
+
+
+/* ==========================================================
+   ACCESSIBILITY
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html body .store-header.rk-global-header
+    .rk-header-brand,
+
+    html body .store-header.rk-global-header
+    .rk-header-brand::before,
+
+    html body .store-header.rk-global-header
+    .rk-header-brand::after {
+        animation: none !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand img {
+        transition: none !important;
+    }
+}
