@@ -2604,12 +2604,10 @@ window.CustomerCentre = {
         this.customer = null;
         this.loyalty = null;
 
-        this.showGuest();
-        this.showAuthForm("login");
-        Store.refreshCartCount();
-        Store.refreshWishlistCount?.();
-
-        Store.toast("You have signed out.");
+        // Start a completely clean guest Account page after logout.
+        // replace() also prevents Android/browser Back from reopening
+        // the previously rendered authenticated Customer Centre.
+        window.location.replace("account.html");
     },
 
     setLoading(button, loading, label = "") {
