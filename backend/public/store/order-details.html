@@ -17,6 +17,118 @@
     <link rel="stylesheet" href="/store/css/cms-text-colors.css?v=20260902-text-colour-final-1">
 <link rel="stylesheet" href="css/commerce-shell.css?v=20260903-compact-mobile-header-1">
     <link rel="stylesheet" href="css/rukhnav-global-shell.css?v=20260903-four-actions-2">
+
+<style id="rukhnav-one-page-order-print">
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 6mm;
+    }
+
+    html,
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+    }
+
+    body {
+        font-size: 11px !important;
+    }
+
+    #header,
+    #footer,
+    header.store-header,
+    footer.store-footer,
+    .rk-global-header,
+    .rk-global-footer,
+    nav,
+    .order-details-actions,
+    .order-detail-backlinks {
+        display: none !important;
+    }
+
+    #orderDetailsContent {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        zoom: 0.68;
+    }
+
+    #orderDetailsContent * {
+        box-shadow: none !important;
+    }
+
+    .order-details-header {
+        margin: 0 0 8px !important;
+        padding: 0 !important;
+    }
+
+    .order-details-header h1 {
+        margin: 2px 0 3px !important;
+        font-size: 28px !important;
+        line-height: 1.05 !important;
+    }
+
+    .order-details-header p {
+        margin: 0 !important;
+    }
+
+    .order-status-hero,
+    .order-timeline-card {
+        margin: 0 0 8px !important;
+        padding: 12px 14px !important;
+        border-radius: 10px !important;
+    }
+
+    .order-status-hero h2,
+    .order-timeline-card h2 {
+        margin: 2px 0 4px !important;
+        line-height: 1.05 !important;
+    }
+
+    .order-timeline {
+        margin-top: 8px !important;
+    }
+
+    .order-timeline > * {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+        padding-top: 2px !important;
+        padding-bottom: 2px !important;
+    }
+
+    #orderDetailsContent section,
+    #orderDetailsContent article {
+        margin-top: 6px !important;
+        margin-bottom: 6px !important;
+    }
+
+    #orderDetailsContent img {
+        max-height: 72px !important;
+        width: auto !important;
+        object-fit: contain !important;
+    }
+
+    #orderDetailsContent h2,
+    #orderDetailsContent h3 {
+        margin-top: 3px !important;
+        margin-bottom: 5px !important;
+    }
+
+    #orderDetailsContent p {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+    }
+
+    #orderDetailsContent button {
+        display: none !important;
+    }
+}
+</style>
+
 </head>
 <body>
 <div id="announcement"></div>

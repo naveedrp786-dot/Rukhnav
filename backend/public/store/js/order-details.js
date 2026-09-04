@@ -132,7 +132,8 @@ const OrderDetailsPage = {
 
                         <style>
                             @page {
-                                margin: 14mm;
+                                size: A4 portrait;
+                                margin: 6mm;
                             }
 
                             html,
