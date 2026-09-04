@@ -1538,6 +1538,23 @@ window.CustomerCentre = {
         ) {
             await this.loadMyReviews();
         }
+
+        /*
+         * Bring the selected account workspace into view.
+         * This is especially important on mobile where the
+         * navigation/sidebar can be taller than the panel.
+         */
+        const selectedPanel =
+            document.getElementById(`${name}Panel`);
+
+        if (selectedPanel) {
+            requestAnimationFrame(() => {
+                selectedPanel.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            });
+        }
     },
 
     async copyReferral() {

@@ -1294,28 +1294,79 @@ window.Store = {
     },
 
     async toggleWish(productId) {
+        const numericProductId =
+            Number(productId);
+
+        if (
+            !Number.isFinite(numericProductId) ||
+            numericProductId <= 0
+        ) {
+            throw new Error(
+                "Invalid product."
+            );
+        }
+
         if (API.isAuthenticated()) {
-            try {
-                const data =
-                    await API.post(
-                        "/api/wishlist/toggle",
-                        {
-                            product_id:
-                                Number(productId)
-                        }
+            const data =
+                await API.get(
+                    "/api/wishlist"
+                );
+
+            const rows =
+                Array.isArray(data.wishlist)
+                    ? data.wishlist
+                    : Array.isArray(data.items)
+                        ? data.items
+                        : [];
+
+            const existing =
+                rows.find(item =>
+                    String(item.product_id) ===
+                    String(numericProductId)
+                );
+
+            if (existing) {
+                const wishlistId =
+                    existing.wishlist_id ??
+                    existing.id;
+
+                if (!wishlistId) {
+                    throw new Error(
+                        "Unable to remove wishlist item."
                     );
+                }
+
+                await API.delete(
+                    `/api/wishlist/${encodeURIComponent(
+                        wishlistId
+                    )}`
+                );
 
                 await this.refreshWishlistCount();
 
-                return data;
-            } catch (error) {
-                if (
-                    error.status !== 404 &&
-                    error.status !== 405
-                ) {
-                    throw error;
-                }
+                return {
+                    success: true,
+                    added: false,
+                    removed: true
+                };
             }
+
+            const result =
+                await API.post(
+                    "/api/wishlist",
+                    {
+                        product_id:
+                            numericProductId
+                    }
+                );
+
+            await this.refreshWishlistCount();
+
+            return {
+                ...result,
+                added: true,
+                removed: false
+            };
         }
 
         const wishlist =
@@ -1327,23 +1378,24 @@ window.Store = {
             wishlist.some(
                 id =>
                     String(id) ===
-                    String(productId)
+                    String(numericProductId)
             );
 
         if (exists) {
             this.removeGuestWishlist(
-                productId
+                numericProductId
             );
         } else {
             this.addGuestWishlist(
-                productId
+                numericProductId
             );
         }
 
         return {
             success: true,
             guest: true,
-            added: !exists
+            added: !exists,
+            removed: exists
         };
     },
 

@@ -16,6 +16,27 @@ function truthy(value) {
     );
 }
 
+function contactVerified(value) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === false ||
+        value === 0 ||
+        value === "0" ||
+        value === ""
+    ) {
+        return false;
+    }
+
+    if (value instanceof Date) {
+        return !Number.isNaN(
+            value.getTime()
+        );
+    }
+
+    return true;
+}
+
 /**
  * Development policy:
  * - contact must exist
@@ -80,7 +101,7 @@ function validateChannel({
         };
     }
 
-    if (!truthy(verified)) {
+    if (!contactVerified(verified)) {
         return {
             valid: false,
             selected: true,

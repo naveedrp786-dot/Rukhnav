@@ -1171,9 +1171,29 @@ const ReturnsPage = {
         const formData =
             new FormData();
 
+        let optimizedReturnMedia;
+
+        try {
+            optimizedReturnMedia =
+                await window.RukhnavCustomerImages
+                    .optimizeFiles(
+                        this.selectedFiles,
+                        {
+                            maxDimension: 1600,
+                            targetBytes:
+                                4 * 1024 * 1024
+                        }
+                    );
+        } catch (error) {
+            throw new Error(
+                error.message ||
+                "Unable to optimize the selected return evidence."
+            );
+        }
+
         for (
             const file of
-            this.selectedFiles
+            optimizedReturnMedia
         ) {
             formData.append(
                 "return_media",

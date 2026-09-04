@@ -798,12 +798,38 @@ const OrdersPage = {
             comment
         );
 
-        files.forEach(file => {
+        let reviewUploadFiles;
+
+        try {
+            reviewUploadFiles =
+                await window.RukhnavCustomerImages
+                    .optimizeFiles(
+                        files,
+                        {
+                            maxDimension: 1600,
+                            targetBytes:
+                                4 * 1024 * 1024
+                        }
+                    );
+        } catch (error) {
+            this.reviewMessage(
+                error.message ||
+                "Unable to optimize the selected pictures.",
+                "error"
+            );
+
+            return;
+        }
+
+        for (
+            const file of
+            reviewUploadFiles
+        ) {
             formData.append(
                 "review_images",
                 file
             );
-        });
+        }
 
         const button =
             document.getElementById(

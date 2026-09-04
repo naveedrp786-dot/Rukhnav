@@ -56,7 +56,10 @@ const OrderDetailsPage = {
 
     bind() {
         document.getElementById("printOrderButton")
-            .addEventListener("click", () => window.print());
+            .addEventListener(
+                "click",
+                () => this.printOrder()
+            );
 
         document.getElementById("cancelOrderButton")
             .addEventListener("click", () => this.cancelOrder());
@@ -66,6 +69,123 @@ const OrderDetailsPage = {
 
         document.getElementById("reorderButton")
             .addEventListener("click", () => this.reorder());
+    },
+
+    printOrder() {
+        if (
+            window.ReactNativeWebView &&
+            typeof window.ReactNativeWebView.postMessage ===
+                "function"
+        ) {
+            const source =
+                document.getElementById(
+                    "orderDetailsContent"
+                );
+
+            if (!source) {
+                window.print();
+                return;
+            }
+
+            const printable =
+                source.cloneNode(true);
+
+            printable
+                .querySelectorAll(
+                    "button, .order-detail-backlinks"
+                )
+                .forEach(element => {
+                    element.remove();
+                });
+
+            const styles = Array.from(
+                document.querySelectorAll(
+                    'link[rel="stylesheet"], style'
+                )
+            )
+                .map(element => {
+                    if (
+                        element.tagName === "LINK"
+                    ) {
+                        const href =
+                            element.href;
+
+                        return href
+                            ? `<link rel="stylesheet" href="${href}">`
+                            : "";
+                    }
+
+                    return element.outerHTML;
+                })
+                .join("\n");
+
+            const html = `
+                <!doctype html>
+                <html>
+                    <head>
+                        <meta charset="utf-8">
+                        <meta
+                            name="viewport"
+                            content="width=device-width, initial-scale=1"
+                        >
+                        ${styles}
+
+                        <style>
+                            @page {
+                                margin: 14mm;
+                            }
+
+                            html,
+                            body {
+                                background: #fff !important;
+                            }
+
+                            body {
+                                margin: 0;
+                                padding: 0;
+                            }
+
+                            #orderDetailsContent {
+                                display: block !important;
+                                max-width: none !important;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                            }
+
+                            header,
+                            footer,
+                            nav,
+                            .store-header,
+                            .store-footer,
+                            .rk-global-header,
+                            .rk-global-footer {
+                                display: none !important;
+                            }
+
+                            button {
+                                display: none !important;
+                            }
+                        </style>
+                    </head>
+
+                    <body>
+                        ${printable.outerHTML}
+                    </body>
+                </html>
+            `;
+
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type:
+                        "RUKHNAV_PRINT_ORDER",
+                    html
+                })
+            );
+
+            return;
+        }
+
+        window.print();
     },
 
     showAuth(id) {

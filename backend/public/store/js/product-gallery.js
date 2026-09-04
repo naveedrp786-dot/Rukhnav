@@ -2897,41 +2897,45 @@ const ProductDetails = {
             );
 
         try {
-            if (API.isAuthenticated()) {
-                await API.post(
-                    "/api/wishlist",
-                    {
-                        product_id:
-                            this.product.id
-                    }
-                );
-            } else if (
-                typeof Store.addGuestWishlist ===
-                "function"
+            if (
+                !this.product?.id ||
+                typeof Store.toggleWish !==
+                    "function"
             ) {
-                await Store
-                    .addGuestWishlist(
-                        this.product
-                    );
-            } else {
                 throw new Error(
-                    "Sign in to add this product to your wishlist."
+                    "Unable to update wishlist."
                 );
             }
 
-            button
-                ?.querySelector("i")
-                ?.classList.replace(
-                    "fa-regular",
-                    "fa-solid"
+            const result =
+                await Store.toggleWish(
+                    this.product.id
                 );
 
-            Store.toast(
-                "Product added to wishlist."
-            );
+            const added =
+                result?.added !== false &&
+                result?.removed !== true;
 
-            await Store
-                .refreshWishlistCount?.();
+            const icon =
+                button?.querySelector("i");
+
+            if (icon) {
+                icon.classList.toggle(
+                    "fa-solid",
+                    added
+                );
+
+                icon.classList.toggle(
+                    "fa-regular",
+                    !added
+                );
+            }
+
+            Store.toast(
+                added
+                    ? "Product added to wishlist."
+                    : "Product removed from wishlist."
+            );
 
         } catch (error) {
             Store.toast(

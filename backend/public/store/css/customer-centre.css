@@ -228,4 +228,19 @@
         width: 88px;
         height: 88px;
     }
+}\n\n
+/* RUKHNAV mobile auth priority */
+@media (max-width: 768px) {
+    #guestAccountView.customer-auth-layout {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #guestAccountView .customer-auth-card {
+        order: 1;
+    }
+
+    #guestAccountView .customer-auth-brand {
+        order: 2;
+    }
 }
