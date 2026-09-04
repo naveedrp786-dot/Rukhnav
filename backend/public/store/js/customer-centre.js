@@ -43,18 +43,26 @@ window.CustomerCentre = {
     },
 
     waitForStore() {
-        return new Promise(resolve => {
-            if (Store.settings && Object.keys(Store.settings).length) {
-                resolve();
-                return;
-            }
+        if (
+            Store.settings &&
+            Object.keys(Store.settings).length
+        ) {
+            return Promise.resolve();
+        }
 
-            document.addEventListener(
-                "rukhnav:store-ready",
-                resolve,
-                { once: true }
-            );
-        });
+        return Promise.race([
+            new Promise(resolve => {
+                document.addEventListener(
+                    "rukhnav:store-ready",
+                    resolve,
+                    { once: true }
+                );
+            }),
+
+            new Promise(resolve => {
+                setTimeout(resolve, 1800);
+            })
+        ]);
     },
 
     bind() {
@@ -203,19 +211,6 @@ window.CustomerCentre = {
                     this.openAccountView(panel);
                 });
             });
-
-        window.addEventListener(
-            "popstate",
-            () => {
-                this.showPanel(
-                    this.accountViewFromUrl(),
-                    {
-                        updateUrl: false,
-                        focusView: true
-                    }
-                );
-            }
-        );
 
         document
             .getElementById("copyReferralButton")
@@ -1629,6 +1624,36 @@ window.CustomerCentre = {
             await this.loadMyReviews();
         }
 
+        // Full-page account navigation does not produce a second
+        // click event after the destination page loads. Therefore
+        // module-backed workspaces must load from the URL-selected
+        // view itself.
+        if (
+            window.AccountModules &&
+            API.isAuthenticated()
+        ) {
+            if (
+                target === "addresses" &&
+                !AccountModules.loaded?.addresses
+            ) {
+                await AccountModules.loadAddresses();
+            }
+
+            if (
+                target === "coupons" &&
+                !AccountModules.loaded?.coupons
+            ) {
+                await AccountModules.loadCoupons();
+            }
+
+            if (
+                target === "security" &&
+                !AccountModules.loaded?.security
+            ) {
+                await AccountModules.loadSecurity();
+            }
+        }
+
         if (updateUrl) {
             const url =
                 new URL(
@@ -1659,7 +1684,7 @@ window.CustomerCentre = {
             window.scrollTo({
                 top: 0,
                 left: 0,
-                behavior: "instant"
+                behavior: "auto"
             });
         }
     },

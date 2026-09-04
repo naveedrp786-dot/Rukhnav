@@ -31,6 +31,32 @@ window.AccountModules = {
         this.renderVerificationState();
 
         await this.loadOverviewCounts();
+
+        const requestedView =
+            window.CustomerCentre
+                ?.accountViewFromUrl?.() ||
+            "overview";
+
+        if (
+            requestedView === "addresses" &&
+            !this.loaded.addresses
+        ) {
+            await this.loadAddresses();
+        }
+
+        if (
+            requestedView === "coupons" &&
+            !this.loaded.coupons
+        ) {
+            await this.loadCoupons();
+        }
+
+        if (
+            requestedView === "security" &&
+            !this.loaded.security
+        ) {
+            await this.loadSecurity();
+        }
     },
 
     waitForAccount() {
