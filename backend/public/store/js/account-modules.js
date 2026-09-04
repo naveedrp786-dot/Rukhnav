@@ -32,6 +32,25 @@ window.AccountModules = {
 
         await this.loadOverviewCounts();
 
+        // AccountModules must never decide guest/authenticated page
+        // visibility. CustomerCentre owns that state.
+        if (
+            API.isAuthenticated() &&
+            window.CustomerCentre?.customer
+        ) {
+            document
+                .getElementById("guestAccountView")
+                ?.classList.add("hidden");
+
+            document
+                .getElementById("accountLoading")
+                ?.classList.add("hidden");
+
+            document
+                .getElementById("customerCentre")
+                ?.classList.remove("hidden");
+        }
+
         const requestedView =
             window.CustomerCentre
                 ?.accountViewFromUrl?.() ||

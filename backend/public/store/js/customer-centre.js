@@ -1086,6 +1086,17 @@ window.CustomerCentre = {
 
             this.hideViews();
 
+            // CustomerCentre is the single authority for authenticated
+            // Account-page visibility. A successful profile request means
+            // the guest authentication view must remain hidden.
+            document
+                .getElementById("guestAccountView")
+                ?.classList.add("hidden");
+
+            document
+                .getElementById("accountLoading")
+                ?.classList.add("hidden");
+
             document
                 .getElementById("customerCentre")
                 ?.classList.remove("hidden");
