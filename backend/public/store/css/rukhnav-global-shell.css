@@ -4134,3 +4134,292 @@ html body .store-header.rk-global-header
         animation: none !important;
     }
 }
+
+/* ==========================================================
+   RUKHNAV HEADER — TIGHT BRAND + STORE MESSAGE
+   Final desktop authority
+   ========================================================== */
+
+@media (min-width: 1181px) {
+
+    /* Exact desktop header structure:
+       logo | store message | search | actions
+    */
+    html body .store-header.rk-global-header
+    .rk-header-main {
+        grid-template-columns:
+            0
+            270px
+            225px
+            minmax(420px, 1fr)
+            auto !important;
+
+        column-gap: 10px !important;
+
+        min-height: 112px !important;
+
+        padding-left: 30px !important;
+        padding-right: 28px !important;
+
+        align-items: center !important;
+    }
+
+    /* Desktop menu button is not needed in first row */
+    html body .store-header.rk-global-header
+    .rk-header-menu {
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        overflow: hidden !important;
+        visibility: hidden !important;
+    }
+
+
+    /* ======================================================
+       LOGO
+       ====================================================== */
+
+    html body .store-header.rk-global-header
+    .rk-header-brand {
+        grid-area: brand !important;
+
+        width: 270px !important;
+        min-width: 270px !important;
+        max-width: 270px !important;
+
+        height: 82px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        justify-content: flex-start !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand img {
+        width: 265px !important;
+        min-width: 265px !important;
+        max-width: 265px !important;
+
+        height: 78px !important;
+        min-height: 78px !important;
+        max-height: 78px !important;
+
+        object-fit: contain !important;
+        object-position: left center !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-header-brand .brand-copy {
+        display: none !important;
+    }
+
+
+    /* ======================================================
+       REPLACE DELIVERY AREA WITH STORE MESSAGE
+       ====================================================== */
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location {
+        grid-area: delivery !important;
+
+        position: relative !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+
+        justify-content: center !important;
+        align-items: flex-start !important;
+
+        width: 225px !important;
+        min-width: 225px !important;
+        max-width: 225px !important;
+
+        min-height: 72px !important;
+
+        margin: 0 !important;
+        padding: 0 0 0 2px !important;
+
+        transform: translateX(-4px);
+
+        overflow: visible !important;
+
+        cursor: default !important;
+    }
+
+    /* completely remove old Deliver to Pakistan contents */
+    html body .store-header.rk-global-header
+    .rk-delivery-location > * {
+        display: none !important;
+    }
+
+    /*
+       White premium text beside the logo.
+       This is real HTML/CSS-rendered text, not an image.
+    */
+    html body .store-header.rk-global-header
+    .rk-delivery-location::before {
+        content: "STYLE • BEAUTY • WELLNESS";
+
+        display: block !important;
+
+        margin: 0 !important;
+
+        color: #ffffff !important;
+
+        font-family:
+            "Segoe UI",
+            Arial,
+            sans-serif;
+
+        font-size: 12px !important;
+        font-weight: 700 !important;
+
+        line-height: 1.25 !important;
+        letter-spacing: .11em !important;
+
+        white-space: nowrap !important;
+
+        text-shadow:
+            0 1px 2px rgba(0, 0, 0, .35),
+            0 0 8px rgba(255, 255, 255, .06);
+
+        animation:
+            rkStoreTextIn .8s ease both;
+    }
+
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location::after {
+        content: "Everything for a Better You";
+
+        display: block !important;
+
+        position: relative;
+
+        margin-top: 7px !important;
+
+        color: #ffffff !important;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size: 16px !important;
+        font-style: italic !important;
+        font-weight: 500 !important;
+
+        line-height: 1.2 !important;
+
+        white-space: nowrap !important;
+
+        text-shadow:
+            0 1px 3px rgba(0,0,0,.38),
+            0 0 9px rgba(236,190,109,.13);
+
+        animation:
+            rkStoreTextIn .9s ease .12s both,
+            rkStoreTextSoftGlow 4.8s ease-in-out 1.4s infinite;
+    }
+
+
+    /* ======================================================
+       SEARCH
+       ====================================================== */
+
+    html body .store-header.rk-global-header
+    .rk-global-search,
+    html body .store-header.rk-global-header
+    #globalSearch.rk-global-search {
+        grid-area: search !important;
+
+        width: 100% !important;
+
+        min-width: 0 !important;
+
+        margin: 0 !important;
+    }
+
+
+    /* ======================================================
+       ACTIONS
+       ====================================================== */
+
+    html body .store-header.rk-global-header
+    .rk-header-actions {
+        grid-area: actions !important;
+
+        margin-left: 8px !important;
+    }
+}
+
+
+/* ==========================================================
+   STORE MESSAGE ANIMATIONS
+   ========================================================== */
+
+@keyframes rkStoreTextIn {
+
+    from {
+        opacity: 0;
+        transform: translateX(-7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+@keyframes rkStoreTextSoftGlow {
+
+    0%,
+    100% {
+        opacity: .88;
+
+        text-shadow:
+            0 1px 3px rgba(0,0,0,.38),
+            0 0 5px rgba(236,190,109,.08);
+    }
+
+    50% {
+        opacity: 1;
+
+        text-shadow:
+            0 1px 3px rgba(0,0,0,.38),
+            0 0 11px rgba(236,190,109,.22);
+    }
+}
+
+
+/* ==========================================================
+   MOBILE / TABLET
+   Do not force desktop message layout
+   ========================================================== */
+
+@media (max-width: 1180px) {
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location {
+        display: none !important;
+    }
+}
+
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location::before,
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location::after {
+        animation: none !important;
+    }
+}
