@@ -228,19 +228,33 @@
         width: 88px;
         height: 88px;
     }
-}\n\n
-/* RUKHNAV mobile auth priority */
-@media (max-width: 768px) {
-    #guestAccountView.customer-auth-layout {
-        display: flex;
-        flex-direction: column;
+}
+
+/* =========================================================
+   RUKHNAV ACCOUNT MOBILE AUTHORITY
+   Sign-in / registration comes before promotional content.
+   ========================================================= */
+
+@media (max-width: 767px) {
+    #guestAccountView .customer-auth-shell {
+        display: flex !important;
+        flex-direction: column !important;
     }
 
     #guestAccountView .customer-auth-card {
-        order: 1;
+        order: 1 !important;
     }
 
     #guestAccountView .customer-auth-brand {
-        order: 2;
+        order: 2 !important;
+    }
+
+    #guestAccountView .customer-auth-card,
+    #guestAccountView .customer-auth-brand {
+        width: 100% !important;
+    }
+
+    #customerCentre .account-dashboard {
+        scroll-margin-top: 0 !important;
     }
 }

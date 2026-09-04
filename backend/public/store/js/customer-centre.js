@@ -193,12 +193,29 @@ window.CustomerCentre = {
         document
             .querySelectorAll("[data-centre-panel]")
             .forEach(button => {
-                button.addEventListener("click", () => {
-                    this.showPanel(
-                        button.dataset.centrePanel
-                    );
+                button.addEventListener("click", event => {
+                    event.preventDefault();
+
+                    const panel =
+                        button.dataset.centrePanel ||
+                        "overview";
+
+                    this.openAccountView(panel);
                 });
             });
+
+        window.addEventListener(
+            "popstate",
+            () => {
+                this.showPanel(
+                    this.accountViewFromUrl(),
+                    {
+                        updateUrl: false,
+                        focusView: true
+                    }
+                );
+            }
+        );
 
         document
             .getElementById("copyReferralButton")
@@ -1071,6 +1088,19 @@ window.CustomerCentre = {
             document
                 .getElementById("customerCentre")
                 ?.classList.remove("hidden");
+
+            // Open the requested account workspace as a page-like view.
+            // Examples:
+            // account.html?view=profile
+            // account.html?view=reviews
+            // account.html?view=security
+            await this.showPanel(
+                this.accountViewFromUrl(),
+                {
+                    updateUrl: false,
+                    focusView: true
+                }
+            );
         } catch (error) {
             API.clearCustomerSession();
             this.showGuest();
@@ -1495,8 +1525,19 @@ window.CustomerCentre = {
         }
     },
 
-    async showPanel(name) {
-        [
+    accountViewFromUrl() {
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        const requested =
+            String(
+                params.get("view") ||
+                "overview"
+            ).toLowerCase();
+
+        const allowed = new Set([
             "overview",
             "profile",
             "reviews",
@@ -1504,14 +1545,79 @@ window.CustomerCentre = {
             "coupons",
             "preferences",
             "security"
-        ].forEach(panel => {
+        ]);
+
+        return allowed.has(requested)
+            ? requested
+            : "overview";
+    },
+
+    openAccountView(name) {
+        const target =
+            String(name || "overview")
+                .toLowerCase();
+
+        const url =
+            new URL(
+                window.location.href
+            );
+
+        if (target === "overview") {
+            url.searchParams.delete("view");
+        } else {
+            url.searchParams.set(
+                "view",
+                target
+            );
+        }
+
+        window.history.pushState(
+            {
+                accountView: target
+            },
+            "",
+            url
+        );
+
+        this.showPanel(
+            target,
+            {
+                updateUrl: false,
+                focusView: true
+            }
+        );
+    },
+
+    async showPanel(
+        name,
+        {
+            updateUrl = false,
+            focusView = true
+        } = {}
+    ) {
+        const allowed = [
+            "overview",
+            "profile",
+            "reviews",
+            "addresses",
+            "coupons",
+            "preferences",
+            "security"
+        ];
+
+        const target =
+            allowed.includes(name)
+                ? name
+                : "overview";
+
+        allowed.forEach(panel => {
             document
                 .getElementById(
                     `${panel}Panel`
                 )
                 ?.classList.toggle(
                     "hidden",
-                    panel !== name
+                    panel !== target
                 );
         });
 
@@ -1523,36 +1629,48 @@ window.CustomerCentre = {
                 button.classList.toggle(
                     "active",
                     button.dataset
-                        .centrePanel === name
+                        .centrePanel === target
                 );
             });
 
-        /*
-         * The original My Reviews panel only became visible.
-         * It never requested /api/reviews/mine, so the loading
-         * indicator remained on the screen forever.
-         */
         if (
-            name === "reviews" &&
+            target === "reviews" &&
             !this.reviewsLoaded
         ) {
             await this.loadMyReviews();
         }
 
-        /*
-         * Bring the selected account workspace into view.
-         * This is especially important on mobile where the
-         * navigation/sidebar can be taller than the panel.
-         */
-        const selectedPanel =
-            document.getElementById(`${name}Panel`);
+        if (updateUrl) {
+            const url =
+                new URL(
+                    window.location.href
+                );
 
-        if (selectedPanel) {
-            requestAnimationFrame(() => {
-                selectedPanel.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+            if (target === "overview") {
+                url.searchParams.delete(
+                    "view"
+                );
+            } else {
+                url.searchParams.set(
+                    "view",
+                    target
+                );
+            }
+
+            window.history.replaceState(
+                {
+                    accountView: target
+                },
+                "",
+                url
+            );
+        }
+
+        if (focusView) {
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "instant"
             });
         }
     },
