@@ -1103,9 +1103,60 @@ window.CustomerCentre = {
                 }
             );
         } catch (error) {
-            API.clearCustomerSession();
-            this.showGuest();
-            this.showMessage(error.message, "error");
+            const status =
+                Number(
+                    error?.status ||
+                    error?.data?.status ||
+                    0
+                );
+
+            const authenticationFailed =
+                status === 401 ||
+                status === 403;
+
+            if (authenticationFailed) {
+                API.clearCustomerSession();
+                this.customer = null;
+                this.loyalty = null;
+
+                this.showGuest();
+                this.showAuthForm("login");
+
+                this.showMessage(
+                    error?.message ||
+                    "Your session has expired. Please sign in again.",
+                    "error"
+                );
+
+                return;
+            }
+
+            // Do not destroy a valid customer session because an
+            // optional account request, renderer or module failed.
+            console.error(
+                "Customer Centre failed to load:",
+                error
+            );
+
+            this.hideViews();
+
+            document
+                .getElementById("customerCentre")
+                ?.classList.remove("hidden");
+
+            await this.showPanel(
+                this.accountViewFromUrl(),
+                {
+                    updateUrl: false,
+                    focusView: true
+                }
+            );
+
+            this.showMessage(
+                error?.message ||
+                "Some account information could not be loaded. Please try again.",
+                "error"
+            );
         }
     },
 
