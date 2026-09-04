@@ -61,6 +61,70 @@
         box-shadow: none !important;
     }
 
+    .order-invoice-brand {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 16px !important;
+        margin: 0 0 10px !important;
+        padding: 0 0 9px !important;
+        border-bottom: 2px solid #173f2b !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    .order-invoice-brand-identity {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .order-invoice-logo {
+        display: block !important;
+        width: auto !important;
+        height: 42px !important;
+        max-width: 120px !important;
+        max-height: 42px !important;
+        object-fit: contain !important;
+    }
+
+    .order-invoice-logo.hidden {
+        display: none !important;
+    }
+
+    #orderInvoiceBrandName {
+        display: block !important;
+        color: #173f2b !important;
+        font-size: 20px !important;
+        line-height: 1 !important;
+        letter-spacing: 1.4px !important;
+    }
+
+    #orderInvoiceTagline {
+        display: block !important;
+        margin-top: 3px !important;
+        color: #5f675f !important;
+        font-size: 8px !important;
+    }
+
+    .order-invoice-document {
+        text-align: right !important;
+    }
+
+    .order-invoice-document strong {
+        display: block !important;
+        color: #173f2b !important;
+        font-size: 13px !important;
+        letter-spacing: 0.8px !important;
+    }
+
+    .order-invoice-document span {
+        display: block !important;
+        margin-top: 2px !important;
+        color: #6f776f !important;
+        font-size: 8px !important;
+    }
+
     .order-details-header {
         margin: 0 0 8px !important;
         padding: 0 !important;
@@ -148,6 +212,35 @@
     </section>
 
     <section id="orderDetailsContent" class="order-details-content hidden">
+
+        <section
+            id="orderInvoiceBrand"
+            class="order-invoice-brand"
+            aria-label="RUKHNAV invoice"
+        >
+            <div class="order-invoice-brand-identity">
+                <img
+                    id="orderInvoiceLogo"
+                    class="order-invoice-logo hidden"
+                    src=""
+                    alt=""
+                >
+
+                <div>
+                    <strong id="orderInvoiceBrandName">
+                        RUKHNAV
+                    </strong>
+
+                    <span id="orderInvoiceTagline"></span>
+                </div>
+            </div>
+
+            <div class="order-invoice-document">
+                <strong>ORDER / INVOICE</strong>
+                <span>Customer copy</span>
+            </div>
+        </section>
+
         <header class="order-details-header">
             <div>
                 <div class="order-detail-backlinks">

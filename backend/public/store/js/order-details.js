@@ -189,6 +189,79 @@ const OrderDetailsPage = {
         window.print();
     },
 
+    renderInvoiceBrand() {
+        const branding =
+            Store.settings?.branding || {};
+
+        const name =
+            branding.brand_name ||
+            "RUKHNAV";
+
+        const tagline =
+            branding.tagline ||
+            "";
+
+        const logoUrl =
+            branding.logo_url &&
+            typeof Theme !== "undefined" &&
+            typeof Theme.asset === "function"
+                ? Theme.asset(
+                    branding.logo_url
+                )
+                : branding.logo_url || "";
+
+        const nameElement =
+            document.getElementById(
+                "orderInvoiceBrandName"
+            );
+
+        const taglineElement =
+            document.getElementById(
+                "orderInvoiceTagline"
+            );
+
+        const logoElement =
+            document.getElementById(
+                "orderInvoiceLogo"
+            );
+
+        if (nameElement) {
+            nameElement.textContent = name;
+        }
+
+        if (taglineElement) {
+            taglineElement.textContent =
+                tagline;
+
+            taglineElement.classList.toggle(
+                "hidden",
+                !tagline
+            );
+        }
+
+        if (logoElement) {
+            if (logoUrl) {
+                logoElement.src = logoUrl;
+                logoElement.alt =
+                    `${name} logo`;
+
+                logoElement.classList.remove(
+                    "hidden"
+                );
+            } else {
+                logoElement.removeAttribute(
+                    "src"
+                );
+
+                logoElement.alt = "";
+
+                logoElement.classList.add(
+                    "hidden"
+                );
+            }
+        }
+    },
+
     showAuth(id) {
         document.getElementById("orderDetailsLoading").classList.add("hidden");
         document.getElementById("orderDetailsAuthState").classList.remove("hidden");
@@ -218,6 +291,8 @@ const OrderDetailsPage = {
                         )
                             ? data.data.items
                             : [];
+
+            this.renderInvoiceBrand();
 
             this.render({
                 ...data,
