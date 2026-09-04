@@ -1571,21 +1571,10 @@ window.CustomerCentre = {
             );
         }
 
-        window.history.pushState(
-            {
-                accountView: target
-            },
-            "",
-            url
-        );
-
-        this.showPanel(
-            target,
-            {
-                updateUrl: false,
-                focusView: true
-            }
-        );
+        // Treat account workspaces like real pages.
+        // A full navigation gives every account module a clean
+        // initialization cycle and works reliably inside WebView.
+        window.location.assign(url.toString());
     },
 
     async showPanel(
