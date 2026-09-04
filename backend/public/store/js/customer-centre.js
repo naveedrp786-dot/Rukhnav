@@ -14,6 +14,23 @@ window.CustomerCentre = {
         this.bind();
         this.updateRegistrationMethod();
 
+        window.addEventListener(
+            "popstate",
+            () => {
+                if (!API.isAuthenticated()) {
+                    return;
+                }
+
+                this.showPanel(
+                    this.accountViewFromUrl(),
+                    {
+                        updateUrl: false,
+                        focusView: true
+                    }
+                );
+            }
+        );
+
         if (API.isAuthenticated()) {
             await this.loadCustomerCentre();
         } else {
@@ -1101,6 +1118,14 @@ window.CustomerCentre = {
                 .getElementById("customerCentre")
                 ?.classList.remove("hidden");
 
+            document.body.classList.add(
+                "customer-account-authenticated"
+            );
+
+            document.body.classList.remove(
+                "customer-account-guest"
+            );
+
             // Open the requested account workspace as a page-like view.
             // Examples:
             // account.html?view=profile
@@ -1634,10 +1659,21 @@ window.CustomerCentre = {
             );
         }
 
-        // Treat account workspaces like real pages.
-        // A full navigation gives every account module a clean
-        // initialization cycle and works reliably inside WebView.
-        window.location.assign(url.toString());
+        window.history.pushState(
+            {
+                accountView: target
+            },
+            "",
+            url
+        );
+
+        this.showPanel(
+            target,
+            {
+                updateUrl: false,
+                focusView: true
+            }
+        );
     },
 
     async showPanel(

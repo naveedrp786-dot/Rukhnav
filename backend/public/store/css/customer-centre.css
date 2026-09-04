@@ -314,3 +314,47 @@
         margin-top: 0 !important;
     }
 }
+
+/* =========================================================
+   RUKHNAV ACCOUNT AUTHENTICATED VIEW AUTHORITY
+   ========================================================= */
+
+body.customer-account-authenticated #guestAccountView {
+    display: none !important;
+}
+
+body.customer-account-authenticated #accountLoading {
+    display: none !important;
+}
+
+body.customer-account-authenticated #customerCentre {
+    display: block !important;
+}
+
+/* Internal Account modules behave like pages on mobile. */
+@media (max-width: 768px) {
+    body.customer-account-authenticated
+    #customerCentre.account-subview-active
+    .centre-header,
+
+    body.customer-account-authenticated
+    #customerCentre.account-subview-active
+    .centre-sidebar {
+        display: none !important;
+    }
+
+    body.customer-account-authenticated
+    #customerCentre.account-subview-active
+    .centre-layout {
+        display: block !important;
+        margin-top: 0 !important;
+    }
+
+    body.customer-account-authenticated
+    #customerCentre.account-subview-active
+    .centre-content {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 10px 12px 24px !important;
+    }
+}
