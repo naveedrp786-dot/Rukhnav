@@ -3912,3 +3912,225 @@ html body .store-header.rk-global-header
         transition: none !important;
     }
 }
+
+/* ==========================================================
+   RUKHNAV GENERAL STORE HEADER MESSAGE
+   Replace "Deliver to Pakistan" with premium store categories
+   CODE ONLY — no image
+   ========================================================== */
+
+/* Tighten the desktop relationship between brand and message */
+@media (min-width: 1181px) {
+
+    html body .store-header.rk-global-header .rk-header-main {
+        column-gap: 14px !important;
+    }
+
+    /*
+     * Reuse the existing delivery-location grid position.
+     * The underlying header structure stays untouched.
+     */
+    html body .store-header.rk-global-header
+    .rk-delivery-location {
+        position: relative !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+
+        width: 215px !important;
+        min-width: 215px !important;
+        max-width: 215px !important;
+
+        min-height: 64px !important;
+
+        margin: 0 !important;
+        padding: 4px 6px 4px 2px !important;
+
+        color: #ffffff !important;
+
+        overflow: visible !important;
+        text-decoration: none !important;
+
+        cursor: default !important;
+    }
+
+    /* Hide original Deliver-to-Pakistan icon/text */
+    html body .store-header.rk-global-header
+    .rk-delivery-location > * {
+        display: none !important;
+    }
+
+    /* Main premium category line */
+    html body .store-header.rk-global-header
+    .rk-delivery-location::before {
+        content: "FASHION  •  BEAUTY  •  HERBAL  •  HOME";
+
+        display: block;
+
+        color: #ffffff;
+
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.35;
+
+        letter-spacing: .085em;
+        white-space: nowrap;
+
+        text-shadow:
+            0 1px 2px rgba(0,0,0,.32),
+            0 0 8px rgba(255,255,255,.05);
+
+        animation:
+            rkStoreMessageEnter .8s ease .25s both;
+    }
+
+    /* Elegant supporting line */
+    html body .store-header.rk-global-header
+    .rk-delivery-location::after {
+        content: "Everything for a Better You";
+
+        display: block;
+
+        margin-top: 6px;
+
+        color: #e7ba67;
+
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.2;
+
+        letter-spacing: .04em;
+        white-space: nowrap;
+
+        text-shadow:
+            0 1px 3px rgba(0,0,0,.38),
+            0 0 9px rgba(231,186,103,.15);
+
+        animation:
+            rkStoreMessageEnter .9s ease .38s both,
+            rkStoreMessageGlow 4.5s ease-in-out 1.5s infinite;
+    }
+}
+
+
+/* ==========================================================
+   HEADER MESSAGE ANIMATION
+   ========================================================== */
+
+@keyframes rkStoreMessageEnter {
+
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+@keyframes rkStoreMessageGlow {
+
+    0%,
+    100% {
+        color: #e7ba67;
+        text-shadow:
+            0 1px 3px rgba(0,0,0,.38),
+            0 0 5px rgba(231,186,103,.10);
+    }
+
+    50% {
+        color: #f3d598;
+        text-shadow:
+            0 1px 3px rgba(0,0,0,.38),
+            0 0 10px rgba(231,186,103,.28);
+    }
+}
+
+
+/* ==========================================================
+   TABLET
+   Keep message compact
+   ========================================================== */
+
+@media (min-width: 761px) and (max-width: 1180px) {
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+
+        width: 150px !important;
+        min-width: 150px !important;
+        max-width: 150px !important;
+
+        padding: 0 !important;
+
+        cursor: default !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location > * {
+        display: none !important;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location::before {
+        content: "FASHION • BEAUTY • HERBAL";
+
+        color: #ffffff;
+
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1.3;
+
+        letter-spacing: .045em;
+        white-space: nowrap;
+    }
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location::after {
+        content: "Everything for a Better You";
+
+        margin-top: 4px;
+
+        color: #e7ba67;
+
+        font-size: 10px;
+        font-weight: 500;
+
+        white-space: nowrap;
+    }
+}
+
+
+/* ==========================================================
+   MOBILE
+   Extra branding message hidden to protect header space
+   ========================================================== */
+
+@media (max-width: 760px) {
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location {
+        display: none !important;
+    }
+}
+
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location::before,
+
+    html body .store-header.rk-global-header
+    .rk-delivery-location::after {
+        animation: none !important;
+    }
+}
