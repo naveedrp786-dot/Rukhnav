@@ -1456,9 +1456,12 @@ const GuestCheckout = {
         );
     },
 
-    handlePaymentReceiptChange(event) {
+    async handlePaymentReceiptChange(event) {
+        const input =
+            event?.target;
+
         const file =
-            event?.target?.files?.[0] ||
+            input?.files?.[0] ||
             null;
 
         if (!file) {
@@ -1474,7 +1477,7 @@ const GuestCheckout = {
             ]);
 
         if (!allowed.has(file.type)) {
-            event.target.value = "";
+            input.value = "";
 
             this.clearPaymentReceipt();
 
@@ -1486,71 +1489,117 @@ const GuestCheckout = {
             return;
         }
 
-        const maximum =
-            5 * 1024 * 1024;
+        try {
+            this.message(
+                file.size > 4 * 1024 * 1024
+                    ? "Optimizing payment receipt securely..."
+                    : "Preparing payment receipt...",
+                "info"
+            );
 
-        if (file.size > maximum) {
-            event.target.value = "";
+            const optimizer =
+                window.RukhnavCustomerImages;
+
+            if (
+                !optimizer ||
+                typeof optimizer.optimizeImage !==
+                    "function"
+            ) {
+                throw new Error(
+                    "Image optimizer is unavailable. Please refresh the page and try again."
+                );
+            }
+
+            const optimizedFile =
+                await optimizer.optimizeImage(
+                    file,
+                    {
+                        maxDimension: 1600,
+                        targetBytes:
+                            4 * 1024 * 1024
+                    }
+                );
+
+            /*
+             * Backend remains the final 5 MB safety barrier.
+             */
+            if (
+                !optimizedFile ||
+                optimizedFile.size >
+                    5 * 1024 * 1024
+            ) {
+                throw new Error(
+                    "Payment receipt is still too large after optimization. Please choose a smaller image."
+                );
+            }
+
+            if (
+                this.paymentReceiptPreviewUrl
+            ) {
+                URL.revokeObjectURL(
+                    this.paymentReceiptPreviewUrl
+                );
+            }
+
+            this.paymentReceiptFile =
+                optimizedFile;
+
+            this.paymentReceiptPreviewUrl =
+                URL.createObjectURL(
+                    optimizedFile
+                );
+
+            const image =
+                document.getElementById(
+                    "guestPaymentReceiptPreviewImage"
+                );
+
+            if (image) {
+                image.src =
+                    this.paymentReceiptPreviewUrl;
+            }
+
+            this.text(
+                "guestPaymentReceiptFileName",
+                optimizedFile.name ||
+                    "Payment receipt"
+            );
+
+            this.text(
+                "guestPaymentReceiptFileSize",
+                `${(
+                    optimizedFile.size /
+                    1024 /
+                    1024
+                ).toFixed(2)} MB`
+            );
+
+            document
+                .getElementById(
+                    "guestPaymentReceiptPreview"
+                )
+                ?.classList.remove(
+                    "hidden"
+                );
+
+            this.message(
+                optimizedFile.size < file.size
+                    ? "Payment receipt optimized and ready for secure upload."
+                    : "Payment receipt selected. It will be submitted securely with your order.",
+                "success"
+            );
+
+        } catch (error) {
+            input.value = "";
 
             this.clearPaymentReceipt();
 
             this.message(
-                "Payment receipt must be 5 MB or smaller.",
+                error.message ||
+                "Unable to prepare the payment receipt.",
                 "error"
             );
-
-            return;
         }
-
-        if (this.paymentReceiptPreviewUrl) {
-            URL.revokeObjectURL(
-                this.paymentReceiptPreviewUrl
-            );
-        }
-
-        this.paymentReceiptFile =
-            file;
-
-        this.paymentReceiptPreviewUrl =
-            URL.createObjectURL(file);
-
-        const image =
-            document.getElementById(
-                "guestPaymentReceiptPreviewImage"
-            );
-
-        if (image) {
-            image.src =
-                this.paymentReceiptPreviewUrl;
-        }
-
-        this.text(
-            "guestPaymentReceiptFileName",
-            file.name ||
-                "Payment receipt"
-        );
-
-        this.text(
-            "guestPaymentReceiptFileSize",
-            `${(
-                file.size /
-                1024 /
-                1024
-            ).toFixed(2)} MB`
-        );
-
-        document
-            .getElementById(
-                "guestPaymentReceiptPreview"
-            )
-            ?.classList.remove(
-                "hidden"
-            );
-
-        this.message(
-            "Payment receipt selected. It will be submitted securely with your order.",
-            "success"
-        );
     },
 
     clearPaymentReceipt() {
