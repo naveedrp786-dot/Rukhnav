@@ -4423,3 +4423,60 @@ html body .store-header.rk-global-header
         animation: none !important;
     }
 }
+
+/* =========================================================
+   RUKHNAV NOTIFICATION POPOVER — TEXT COLOR AUTHORITY
+   ========================================================= */
+
+.rk-notification-popover .customer-notification-item,
+.rk-notification-popover .customer-notification-item-main,
+.rk-notification-popover .customer-notification-copy {
+    color: #26352d !important;
+}
+
+/* Notification type + time */
+.rk-notification-popover .customer-notification-meta,
+.rk-notification-popover .customer-notification-meta span,
+.rk-notification-popover .customer-notification-meta time {
+    color: #7a7468 !important;
+    -webkit-text-fill-color: #7a7468 !important;
+}
+
+/* Main notification title */
+.rk-notification-popover .customer-notification-copy > strong {
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    opacity: 1 !important;
+    font-weight: 800 !important;
+}
+
+/* Notification message / preview */
+.rk-notification-popover .customer-notification-message {
+    color: #59635c !important;
+    -webkit-text-fill-color: #59635c !important;
+    opacity: 1 !important;
+}
+
+/* Keep action link gold */
+.rk-notification-popover .customer-notification-link,
+.rk-notification-popover .customer-notification-link:link,
+.rk-notification-popover .customer-notification-link:visited {
+    color: #b8892f !important;
+    -webkit-text-fill-color: #b8892f !important;
+}
+
+/* Unread notification stays subtle */
+.rk-notification-popover .customer-notification-item.is-unread {
+    color: #26352d !important;
+}
+
+/* Detail reader title/message */
+.customer-notification-detail-content h2 {
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+}
+
+.customer-notification-detail-message {
+    color: #4f5b53 !important;
+    -webkit-text-fill-color: #4f5b53 !important;
+}
