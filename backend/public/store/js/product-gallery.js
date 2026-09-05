@@ -2778,7 +2778,7 @@ const ProductDetails = {
             "guest-checkout.html?source=cart";
     },
 
-    buyNow() {
+    async buyNow() {
         if (
             this.stock() <= 0
         ) {
@@ -2786,6 +2786,34 @@ const ProductDetails = {
                 "This product is out of stock.",
                 "error"
             );
+            return;
+        }
+
+        /*
+         * Registered customers must remain in the registered
+         * shopping flow. Add the selected product to their
+         * backend cart, then open customer checkout.
+         */
+        if (API.isAuthenticated()) {
+            try {
+                await Store.addCart(
+                    this.product.id,
+                    this.quantity
+                );
+
+                await Store.refreshCartCount?.();
+
+                location.href =
+                    "checkout.html";
+
+            } catch (error) {
+                Store.toast(
+                    error.message ||
+                    "Unable to prepare checkout.",
+                    "error"
+                );
+            }
+
             return;
         }
 

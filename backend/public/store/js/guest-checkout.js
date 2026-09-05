@@ -19,6 +19,19 @@ const GuestCheckout = {
     attribution: {},
 
     async init() {
+        /*
+         * Guest checkout is only for unauthenticated shoppers.
+         * If a registered customer reaches this URL through an
+         * old/cached Buy Now link, transfer them safely into the
+         * registered cart + checkout flow.
+         */
+        if (
+            API.isAuthenticated() &&
+            await this.redirectAuthenticatedCustomer()
+        ) {
+            return;
+        }
+
         this.captureAttribution();
         this.bind();
 
@@ -317,6 +330,101 @@ const GuestCheckout = {
             ?.classList.remove(
                 "hidden"
             );
+    },
+
+    async redirectAuthenticatedCustomer() {
+        const params =
+            new URLSearchParams(
+                location.search
+            );
+
+        /*
+         * Existing registered cart checkout.
+         */
+        if (
+            params.get("source") ===
+            "cart"
+        ) {
+            location.replace(
+                "checkout.html"
+            );
+
+            return true;
+        }
+
+        /*
+         * Buy Now / old direct guest-checkout URL.
+         * Move the selected product into the authenticated
+         * customer's backend cart before opening checkout.
+         */
+        const productId =
+            Number.parseInt(
+                params.get("product_id") ||
+                params.get("id") ||
+                "",
+                10
+            );
+
+        const quantity =
+            Math.min(
+                Math.max(
+                    Number.parseInt(
+                        params.get("quantity") ||
+                        params.get("qty") ||
+                        "1",
+                        10
+                    ) || 1,
+                    1
+                ),
+                50
+            );
+
+        if (
+            Number.isInteger(productId) &&
+            productId > 0
+        ) {
+            try {
+                await Store.addCart(
+                    productId,
+                    quantity
+                );
+
+                await Store.refreshCartCount?.();
+
+                location.replace(
+                    "checkout.html"
+                );
+
+                return true;
+
+            } catch (error) {
+                console.error(
+                    "Registered checkout transfer failed:",
+                    error
+                );
+
+                /*
+                 * Do not silently show a guest checkout to a
+                 * signed-in customer when transfer fails.
+                 */
+                this.showLoadError(
+                    error.message ||
+                    "Unable to prepare your registered checkout."
+                );
+
+                return true;
+            }
+        }
+
+        /*
+         * A signed-in customer should never see guest checkout,
+         * even if the guest URL itself has no product parameters.
+         */
+        location.replace(
+            "cart.html"
+        );
+
+        return true;
     },
 
     async loadPaymentSettings() {
