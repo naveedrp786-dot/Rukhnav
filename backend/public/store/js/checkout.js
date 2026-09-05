@@ -1567,16 +1567,6 @@ this.calculate();
             );
         }
 
-        const token =
-            API.getToken?.() ||
-            "";
-
-        if (!token) {
-            throw new Error(
-                "Your order was created, but your login session is unavailable for receipt upload."
-            );
-        }
-
         const form =
             new FormData();
 
@@ -1585,40 +1575,17 @@ this.calculate();
             this.paymentReceiptFile
         );
 
-        const response =
-            await fetch(
-                `${API.base}/api/orders/${encodeURIComponent(
-                    orderId
-                )}/payment-proof`,
-                {
-                    method: "POST",
-
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`
-                    },
-
-                    body: form
-                }
-            );
-
-        let data = {};
-
-        try {
-            data =
-                await response.json();
-        } catch (_) {
-            data = {};
-        }
-
-        if (!response.ok) {
-            throw new Error(
-                data.message ||
-                "The order was created, but the payment receipt could not be uploaded."
-            );
-        }
-
-        return data;
+        /*
+         * Use the shared authenticated API client.
+         * API.request() automatically attaches the current
+         * registered customer Bearer token.
+         */
+        return API.upload(
+            `/api/orders/${encodeURIComponent(
+                orderId
+            )}/payment-proof`,
+            form
+        );
     },
 
     async submit(event) {
