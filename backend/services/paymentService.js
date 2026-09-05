@@ -96,7 +96,12 @@ const calculateAndUpdateOrderPayment = async (connection, orderId) => {
     return { grandTotal, grossPaid, refunded, paidAmount: netPaid, balanceAmount: balance, paymentStatus };
 };
 
-const recordPayment = async ({ orderId, adminId, payload }) => {
+const recordPayment = async ({
+    orderId,
+    adminId,
+    payload,
+    paymentProofId = null
+}) => {
     const method = normaliseMethod(payload.payment_method);
     const status = normaliseTransactionStatus(payload.status);
     const amount = toMoney(payload.amount);
@@ -210,6 +215,47 @@ const recordPayment = async ({ orderId, adminId, payload }) => {
                     orderId
                 );
 
+        /*
+         * Manual payment proof verification belongs to the
+         * same transaction as the financial payment record.
+         *
+         * paymentProofId is trusted server-side context and
+         * is never taken directly from the public payment
+         * request payload.
+         */
+        if (paymentProofId) {
+            const [proofResult] =
+                await connection.query(
+                    `
+                        UPDATE order_payment_proofs
+                        SET
+                            verification_status = 'Verified',
+                            verified_by = ?,
+                            verified_at = CURRENT_TIMESTAMP,
+                            rejection_reason = NULL
+                        WHERE id = ?
+                          AND order_id = ?
+                          AND verification_status = 'Pending'
+                    `,
+                    [
+                        adminId || null,
+                        paymentProofId,
+                        orderId
+                    ]
+                );
+
+            if (
+                Number(
+                    proofResult.affectedRows || 0
+                ) !== 1
+            ) {
+                throw fail(
+                    "Payment proof is no longer pending verification.",
+                    409
+                );
+            }
+        }
+
         await connection.commit();
 
         // =============================================
@@ -221,23 +267,46 @@ const recordPayment = async ({ orderId, adminId, payload }) => {
         // =============================================
 
         let loyaltyProcessing = null;
+        let loyaltyWarning = null;
 
         if (
             salesSync.linked &&
             salesSync.paymentStatus === "Paid"
         ) {
-            loyaltyProcessing =
-                await orderSalesIntegrationService
-                    .processPaidOrderSale(
-                        salesSync.saleId
-                    );
+            try {
+                loyaltyProcessing =
+                    await orderSalesIntegrationService
+                        .processPaidOrderSale(
+                            salesSync.saleId
+                        );
+            } catch (error) {
+                /*
+                 * IMPORTANT:
+                 * Payment, accounting, sale/invoice sync and
+                 * payment-proof verification have already
+                 * committed successfully.
+                 *
+                 * A loyalty/referral failure must therefore
+                 * never make the completed payment appear
+                 * to have failed.
+                 */
+                console.error(
+                    "Paid order loyalty/referral processing failed:",
+                    error
+                );
+
+                loyaltyWarning =
+                    error.message ||
+                    "Payment completed, but loyalty/referral processing requires review.";
+            }
         }
 
         return {
             payment,
             orderPaymentSummary: summary,
             salesSync,
-            loyaltyProcessing
+            loyaltyProcessing,
+            loyaltyWarning
         };
     } catch (error) {
         if (connection) await rollbackQuietly(connection);

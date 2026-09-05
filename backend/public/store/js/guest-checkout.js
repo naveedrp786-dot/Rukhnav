@@ -1,6 +1,8 @@
 "use strict";
 
 const GuestCheckout = {
+    paymentReceiptFile: null,
+    paymentReceiptPreviewUrl: "",
     product: null,
     quantity: 1,
 
@@ -14,6 +16,7 @@ const GuestCheckout = {
     async init() {
         this.captureAttribution();
         this.bind();
+        this.toggleManualPayment();
 
         const params =
             new URLSearchParams(
@@ -328,6 +331,34 @@ const GuestCheckout = {
                         this.toggleManualPayment()
                 );
             });
+
+        document
+            .getElementById(
+                "guestPaymentReceipt"
+            )
+            ?.addEventListener(
+                "change",
+                event =>
+                    this.handlePaymentReceiptChange(
+                        event
+                    )
+            );
+
+        document
+            .getElementById(
+                "removeGuestPaymentReceiptButton"
+            )
+            ?.addEventListener(
+                "click",
+                () => {
+                    this.clearPaymentReceipt();
+
+                    this.message(
+                        "Payment receipt removed.",
+                        "info"
+                    );
+                }
+            );
     },
 
     captureAttribution() {
@@ -681,6 +712,216 @@ const GuestCheckout = {
         );
     },
 
+    paymentReceiptRequired(method) {
+        return (
+            method === "jazzcash" ||
+            method === "easypaisa"
+        );
+    },
+
+    handlePaymentReceiptChange(event) {
+        const file =
+            event?.target?.files?.[0] ||
+            null;
+
+        if (!file) {
+            this.clearPaymentReceipt();
+            return;
+        }
+
+        const allowed =
+            new Set([
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ]);
+
+        if (!allowed.has(file.type)) {
+            event.target.value = "";
+
+            this.clearPaymentReceipt();
+
+            this.message(
+                "Payment receipt must be a JPG, PNG or WEBP image.",
+                "error"
+            );
+
+            return;
+        }
+
+        const maximum =
+            5 * 1024 * 1024;
+
+        if (file.size > maximum) {
+            event.target.value = "";
+
+            this.clearPaymentReceipt();
+
+            this.message(
+                "Payment receipt must be 5 MB or smaller.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (this.paymentReceiptPreviewUrl) {
+            URL.revokeObjectURL(
+                this.paymentReceiptPreviewUrl
+            );
+        }
+
+        this.paymentReceiptFile =
+            file;
+
+        this.paymentReceiptPreviewUrl =
+            URL.createObjectURL(file);
+
+        const image =
+            document.getElementById(
+                "guestPaymentReceiptPreviewImage"
+            );
+
+        if (image) {
+            image.src =
+                this.paymentReceiptPreviewUrl;
+        }
+
+        this.text(
+            "guestPaymentReceiptFileName",
+            file.name ||
+                "Payment receipt"
+        );
+
+        this.text(
+            "guestPaymentReceiptFileSize",
+            `${(
+                file.size /
+                1024 /
+                1024
+            ).toFixed(2)} MB`
+        );
+
+        document
+            .getElementById(
+                "guestPaymentReceiptPreview"
+            )
+            ?.classList.remove(
+                "hidden"
+            );
+
+        this.message(
+            "Payment receipt selected. It will be submitted securely with your order.",
+            "success"
+        );
+    },
+
+    clearPaymentReceipt() {
+        if (
+            this.paymentReceiptPreviewUrl
+        ) {
+            URL.revokeObjectURL(
+                this.paymentReceiptPreviewUrl
+            );
+        }
+
+        this.paymentReceiptFile =
+            null;
+
+        this.paymentReceiptPreviewUrl =
+            "";
+
+        const input =
+            document.getElementById(
+                "guestPaymentReceipt"
+            );
+
+        if (input) {
+            input.value = "";
+        }
+
+        const image =
+            document.getElementById(
+                "guestPaymentReceiptPreviewImage"
+            );
+
+        if (image) {
+            image.removeAttribute(
+                "src"
+            );
+        }
+
+        document
+            .getElementById(
+                "guestPaymentReceiptPreview"
+            )
+            ?.classList.add(
+                "hidden"
+            );
+    },
+
+    async uploadPaymentReceipt(
+        orderNumber,
+        guestToken
+    ) {
+        if (!this.paymentReceiptFile) {
+            throw new Error(
+                "Payment receipt is missing."
+            );
+        }
+
+        if (
+            !orderNumber ||
+            !guestToken
+        ) {
+            throw new Error(
+                "Guest order authorization was not returned."
+            );
+        }
+
+        const form =
+            new FormData();
+
+        form.append(
+            "payment_receipt",
+            this.paymentReceiptFile
+        );
+
+        const url =
+            `${API.base}/api/orders/guest/${encodeURIComponent(
+                orderNumber
+            )}/payment-proof?token=${encodeURIComponent(
+                guestToken
+            )}`;
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method: "POST",
+                    body: form
+                }
+            );
+
+        let data = {};
+
+        try {
+            data =
+                await response.json();
+        } catch (_) {
+            data = {};
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                "The order was created, but the payment receipt could not be uploaded."
+            );
+        }
+
+        return data;
+    },
+
     toggleManualPayment() {
         const method =
             document.querySelector(
@@ -692,6 +933,11 @@ const GuestCheckout = {
             method !==
             "cash_on_delivery";
 
+        const mobileWallet =
+            this.paymentReceiptRequired(
+                method
+            );
+
         document
             .getElementById(
                 "manualPaymentFields"
@@ -700,10 +946,37 @@ const GuestCheckout = {
                 "hidden",
                 !manual
             );
+
+        document
+            .getElementById(
+                "guestPaymentReceiptPanel"
+            )
+            ?.classList.toggle(
+                "hidden",
+                !mobileWallet
+            );
+
+        const receiptInput =
+            document.getElementById(
+                "guestPaymentReceipt"
+            );
+
+        if (receiptInput) {
+            receiptInput.required =
+                mobileWallet;
+        }
     },
 
     async submit(event) {
         event.preventDefault();
+
+        if (this.orderCreated) {
+            this.message(
+                "Your order has already been created. Please do not place it again.",
+                "error"
+            );
+            return;
+        }
 
         if (
             !Array.isArray(this.items) ||
@@ -762,6 +1035,61 @@ const GuestCheckout = {
             )?.value ||
             "cash_on_delivery";
 
+        const manual =
+            method !==
+            "cash_on_delivery";
+
+        const mobileWallet =
+            this.paymentReceiptRequired(
+                method
+            );
+
+        const paymentPhone =
+            this.value(
+                "guestPaymentPhone"
+            );
+
+        const transactionId =
+            this.value(
+                "guestTransactionId"
+            );
+
+        if (
+            manual &&
+            !transactionId
+        ) {
+            this.message(
+                "Enter the payment transaction/reference ID.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+            mobileWallet &&
+            !paymentPhone
+        ) {
+            this.message(
+                "Enter the mobile number used to send the payment.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+            mobileWallet &&
+            !this.paymentReceiptFile
+        ) {
+            this.message(
+                "Upload your JazzCash or Easypaisa payment receipt before placing the order.",
+                "error"
+            );
+
+            return;
+        }
+
         const button =
             document.getElementById(
                 "placeGuestOrderButton"
@@ -812,15 +1140,11 @@ const GuestCheckout = {
                             method,
 
                         payment_phone:
-                            this.value(
-                                "guestPaymentPhone"
-                            ) ||
+                            paymentPhone ||
                             null,
 
                         transaction_id:
-                            this.value(
-                                "guestTransactionId"
-                            ) ||
+                            transactionId ||
                             null,
 
                         accept_terms:
@@ -868,6 +1192,44 @@ const GuestCheckout = {
                 `rukhnav_guest_order_${order.order_number}`,
                 token
             );
+
+            /*
+             * Order now exists. Never create it again
+             * if receipt upload subsequently fails.
+             */
+            this.orderCreated = true;
+
+            if (mobileWallet) {
+                this.message(
+                    "Order created. Uploading your payment receipt securely...",
+                    "info"
+                );
+
+                try {
+                    await this.uploadPaymentReceipt(
+                        order.order_number,
+                        token
+                    );
+                } catch (receiptError) {
+                    /*
+                     * The order already exists.
+                     * Never POST /api/orders/guest again
+                     * automatically because that could create
+                     * a duplicate order.
+                     */
+                    this.message(
+                        `Order ${order.order_number} was created successfully, but the payment receipt upload failed. Do not place another order. ${receiptError.message || "Please retry the receipt upload from your order."}`,
+                        "error"
+                    );
+
+                    this.loading(
+                        button,
+                        false
+                    );
+
+                    return;
+                }
+            }
 
             /*
              * The backend has now confirmed the order.

@@ -182,14 +182,105 @@
                 </div>
 
                 <div id="manualPaymentFields" class="checkout-grid hidden">
-                    <label class="checkout-field">
-                        <span>Payment phone</span>
-                        <input id="checkoutPaymentPhone" type="tel">
+                    <label
+                        id="checkoutPaymentPhoneField"
+                        class="checkout-field"
+                    >
+                        <span>Number payment was sent from</span>
+                        <input
+                            id="checkoutPaymentPhone"
+                            type="tel"
+                            inputmode="tel"
+                            autocomplete="tel"
+                            placeholder="03XX XXXXXXX"
+                        >
                     </label>
+
                     <label class="checkout-field">
                         <span>Transaction reference</span>
-                        <input id="checkoutTransactionId" type="text">
+                        <input
+                            id="checkoutTransactionId"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="Enter transaction / reference ID"
+                        >
                     </label>
+                </div>
+
+                <div
+                    id="paymentReceiptPanel"
+                    class="payment-receipt-panel hidden"
+                >
+                    <div class="payment-receipt-heading">
+                        <div>
+                            <strong>
+                                <i class="fa-solid fa-receipt"></i>
+                                Payment receipt
+                            </strong>
+
+                            <p>
+                                Upload the JazzCash or Easypaisa payment screenshot.
+                                JPG, PNG or WEBP, maximum 5 MB.
+                            </p>
+                        </div>
+
+                        <span class="payment-receipt-required">
+                            Required
+                        </span>
+                    </div>
+
+                    <input
+                        id="checkoutPaymentReceipt"
+                        class="payment-receipt-input"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+                    >
+
+                    <label
+                        for="checkoutPaymentReceipt"
+                        class="payment-receipt-picker"
+                    >
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                        <span>
+                            <strong>Choose payment screenshot</strong>
+                            <small>Tap to select an image from your device</small>
+                        </span>
+                    </label>
+
+                    <div
+                        id="paymentReceiptPreview"
+                        class="payment-receipt-preview hidden"
+                    >
+                        <img
+                            id="paymentReceiptPreviewImage"
+                            alt="Selected payment receipt"
+                        >
+
+                        <div>
+                            <strong id="paymentReceiptFileName">
+                                Payment receipt
+                            </strong>
+
+                            <span id="paymentReceiptFileSize"></span>
+
+                            <button
+                                id="removePaymentReceiptButton"
+                                type="button"
+                                class="payment-receipt-remove"
+                            >
+                                <i class="fa-solid fa-trash"></i>
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="payment-receipt-security">
+                        <i class="fa-solid fa-lock"></i>
+                        Receipt images are stored privately and are available
+                        only to authorized RUKHNAV administrators for payment
+                        verification.
+                    </p>
                 </div>
             </article>
 

@@ -520,3 +520,158 @@
         grid-template-columns:1fr;
     }
 }
+
+
+/* =========================================================
+   MANUAL PAYMENT VERIFICATION
+   ========================================================= */
+
+.payment-proof-section {
+    position: relative;
+}
+
+.payment-proof-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .03em;
+}
+
+.payment-proof-status.is-pending {
+    background: rgba(194, 145, 31, .13);
+}
+
+.payment-proof-status.is-verified {
+    background: rgba(38, 132, 84, .13);
+}
+
+.payment-proof-status.is-rejected {
+    background: rgba(180, 52, 52, .12);
+}
+
+.payment-proof-content {
+    display: grid;
+    gap: 16px;
+}
+
+.payment-proof-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.payment-proof-detail {
+    padding: 12px 14px;
+    border: 1px solid rgba(15, 52, 39, .10);
+    border-radius: 10px;
+    background: rgba(248, 247, 242, .68);
+}
+
+.payment-proof-detail span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    opacity: .65;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.payment-proof-detail strong {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+}
+
+.payment-proof-receipt {
+    display: grid;
+    grid-template-columns:
+        minmax(150px, 220px)
+        minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.payment-proof-image-wrap {
+    overflow: hidden;
+    min-height: 170px;
+    border: 1px solid rgba(15, 52, 39, .12);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, .035);
+}
+
+.payment-proof-image {
+    display: block;
+    width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+}
+
+.payment-proof-receipt-info {
+    display: grid;
+    gap: 9px;
+}
+
+.payment-proof-private-note {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.55;
+    opacity: .7;
+}
+
+.payment-proof-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding-top: 4px;
+}
+
+.payment-proof-reject-box {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(180, 52, 52, .06);
+}
+
+.payment-proof-reject-box textarea {
+    width: 100%;
+    min-height: 82px;
+    resize: vertical;
+}
+
+.payment-proof-rejection {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(180, 52, 52, .07);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.payment-proof-empty {
+    padding: 15px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .025);
+    font-size: 12px;
+}
+
+@media (max-width: 700px) {
+
+    .payment-proof-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-proof-receipt {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-proof-image-wrap {
+        min-height: 130px;
+    }
+}

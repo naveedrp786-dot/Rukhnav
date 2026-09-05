@@ -18,6 +18,16 @@ const auth =
         "../middleware/auth"
     );
 
+const orderPaymentProofController =
+    require(
+        "../controllers/orderPaymentProofController"
+    );
+
+const paymentProofUploadHandler =
+    require(
+        "../middleware/paymentProofUploadHandler"
+    );
+
 // =====================================================
 // Public Guest Checkout
 // =====================================================
@@ -39,6 +49,13 @@ router.post(
     "/public-track",
     guestOrderController
         .trackPublicOrder
+);
+
+router.post(
+    "/guest/:orderNumber/payment-proof",
+    paymentProofUploadHandler.single,
+    orderPaymentProofController
+        .uploadGuestProof
 );
 
 router.get(
@@ -63,6 +80,14 @@ router.get(
     auth,
     orderController
         .getMyOrders
+);
+
+router.post(
+    "/:id/payment-proof",
+    auth,
+    paymentProofUploadHandler.single,
+    orderPaymentProofController
+        .uploadCustomerProof
 );
 
 router.get(

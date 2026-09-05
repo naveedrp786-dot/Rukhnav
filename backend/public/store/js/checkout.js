@@ -11,10 +11,18 @@ const Checkout = {
     availableRewardPoints: 0,
     rewardPointsToRedeem: 0,
     rewardPointsDiscount: 0,
+    websiteSettings: {},
+    paymentSettings: {},
+    paymentReceiptFile: null,
+    paymentReceiptPreviewUrl: "",
+    orderCreated: false,
+    paymentProofRetryOrderId: null,
+    paymentProofRetryOrderNumber: "",
     submitting: false,
 
     async init() {
         this.bind();
+        this.restorePaymentProofRetry();
 
         if (!API.isAuthenticated()) {
             this.hide("checkoutLoading");
@@ -62,11 +70,25 @@ const Checkout = {
                     results[2].value;
             }
 
+            if (results[3].status === "fulfilled") {
+                const websiteResponse =
+                    results[3].value || {};
+
+                this.websiteSettings =
+                    websiteResponse.settings ||
+                    websiteResponse;
+
+                this.paymentSettings =
+                    this.websiteSettings.payments ||
+                    {};
+            }
+
             this.prefill();
             this.renderCart();
             this.renderLoyalty();
-            this.updatePaymentInstructions();
+            this.applyPaymentSettings();
             this.calculate();
+            this.updatePaymentInstructions();
 
             this.hide("checkoutLoading");
             this.show("checkoutContent");
@@ -88,6 +110,53 @@ const Checkout = {
                 error.message ||
                 "Unable to load checkout.",
                 "error"
+            );
+        }
+    },
+
+    restorePaymentProofRetry() {
+        try {
+            const raw =
+                sessionStorage.getItem(
+                    "rukhnav_last_order"
+                );
+
+            if (!raw) {
+                return;
+            }
+
+            const saved =
+                JSON.parse(raw);
+
+            if (
+                !saved?.paymentProofUploadFailed ||
+                !saved?.orderId
+            ) {
+                return;
+            }
+
+            this.orderCreated = true;
+
+            this.paymentProofRetryOrderId =
+                saved.orderId;
+
+            this.paymentProofRetryOrderNumber =
+                saved.orderNumber ||
+                String(saved.orderId);
+
+            const button =
+                document.getElementById(
+                    "placeOrderButton"
+                );
+
+            if (button) {
+                button.innerHTML =
+                    '<i class="fa-solid fa-cloud-arrow-up"></i> Retry Receipt Upload';
+            }
+        } catch (error) {
+            console.warn(
+                "Payment receipt retry state could not be restored:",
+                error
             );
         }
     },
@@ -651,6 +720,8 @@ this.calculate();
             this.rewardPointsDiscount
         );
 
+        this.grandTotal = total;
+
         this.text(
             "checkoutRewardUsing",
             `${new Intl.NumberFormat("en-PK")
@@ -696,6 +767,18 @@ this.calculate();
             "checkoutGrandTotal",
             Store.money(total)
         );
+
+        const selectedPaymentMethod =
+            document.querySelector(
+                'input[name="paymentMethod"]:checked'
+            )?.value;
+
+        if (
+            selectedPaymentMethod === "jazzcash" ||
+            selectedPaymentMethod === "easypaisa"
+        ) {
+            this.updatePaymentInstructions();
+        }
     },
 
     async applyCouponPreview() {
@@ -852,55 +935,752 @@ this.calculate();
         }
     },
 
+    applyPaymentSettings() {
+        const settings =
+            this.paymentSettings || {};
+
+        const availability = {
+            cash_on_delivery:
+                settings.cash_on_delivery_enabled !== false,
+
+            easypaisa:
+                settings.easypaisa_enabled !== false,
+
+            jazzcash:
+                settings.jazzcash_enabled !== false,
+
+            bank_transfer:
+                settings.bank_transfer_enabled !== false
+        };
+
+        Object.entries(availability)
+            .forEach(([method, enabled]) => {
+                const input =
+                    document.querySelector(
+                        `input[name="paymentMethod"][value="${method}"]`
+                    );
+
+                if (!input) return;
+
+                const label =
+                    input.closest("label");
+
+                input.disabled = !enabled;
+
+                if (label) {
+                    label.classList.toggle(
+                        "payment-disabled",
+                        !enabled
+                    );
+
+                    label.hidden = !enabled;
+                }
+            });
+
+        const selected =
+            document.querySelector(
+                'input[name="paymentMethod"]:checked'
+            );
+
+        if (selected && !selected.disabled) {
+            return;
+        }
+
+        const firstAvailable =
+            document.querySelector(
+                'input[name="paymentMethod"]:not(:disabled)'
+            );
+
+        if (firstAvailable) {
+            firstAvailable.checked = true;
+        }
+    },
+
+    paymentAccountDetails(method) {
+        const settings =
+            this.paymentSettings || {};
+
+        if (method === "jazzcash") {
+            return {
+                title:
+                    settings.jazzcash_account_title || "",
+                number:
+                    settings.jazzcash_account_number || "",
+                qr:
+                    settings.jazzcash_qr_url || "",
+                instructions:
+                    settings.jazzcash_instructions ||
+                    "Pay using JazzCash, then enter your transaction reference."
+            };
+        }
+
+        if (method === "easypaisa") {
+            return {
+                title:
+                    settings.easypaisa_account_title || "",
+                number:
+                    settings.easypaisa_account_number || "",
+                qr:
+                    settings.easypaisa_qr_url || "",
+                instructions:
+                    settings.easypaisa_instructions ||
+                    "Pay using Easypaisa, then enter your transaction reference."
+            };
+        }
+
+        return {
+            title: "",
+            number: "",
+            qr: "",
+            instructions: ""
+        };
+    },
+
+    async copyPaymentNumber(number, button) {
+        if (!number) return;
+
+        try {
+            await navigator.clipboard.writeText(number);
+
+            const original =
+                button?.innerHTML || "";
+
+            if (button) {
+                button.innerHTML =
+                    '<i class="fa-solid fa-check"></i> Copied';
+
+                setTimeout(() => {
+                    button.innerHTML = original;
+                }, 1500);
+            }
+        } catch (error) {
+            this.message(
+                `Payment number: ${number}`,
+                "info"
+            );
+        }
+    },
+
     updatePaymentInstructions() {
         const method =
             document.querySelector(
                 'input[name="paymentMethod"]:checked'
             )?.value || "cash_on_delivery";
 
-        const manual = method !== "cash_on_delivery";
+        const manual =
+            method !== "cash_on_delivery";
+
+        const mobileWallet =
+            method === "jazzcash" ||
+            method === "easypaisa";
+
+        this.updatePaymentReceiptVisibility(
+            method
+        );
+
         document
             .getElementById("manualPaymentFields")
-            ?.classList.toggle("hidden", !manual);
+            ?.classList.toggle(
+                "hidden",
+                !manual
+            );
 
-        const content = {
-            cash_on_delivery: [
-                "Cash on Delivery selected",
-                "Pay the final order amount to the courier when your parcel is delivered."
-            ],
-            easypaisa: [
-                "Easypaisa selected",
-                "Manual verification: transfer to the Easypaisa account provided by RUKHNAV, then enter the payment phone and transaction reference. Your order remains pending until the payment is verified."
-            ],
-            jazzcash: [
-                "JazzCash selected",
-                "Manual verification: transfer to the JazzCash account provided by RUKHNAV, then enter the payment phone and transaction reference. Your order remains pending until the payment is verified."
-            ],
-            bank_transfer: [
-                "Bank Transfer selected",
-                "Use the RUKHNAV bank account details, then enter your transfer reference for verification."
-            ]
-        }[method] || [
-            "Payment selected",
-            "Follow the payment instructions supplied by RUKHNAV."
-        ];
+        const phoneField =
+            document.getElementById(
+                "checkoutPaymentPhoneField"
+            );
 
-        const box = document.getElementById("paymentInstructions");
-        if (box) {
+        if (phoneField) {
+            phoneField.classList.toggle(
+                "hidden",
+                !mobileWallet
+            );
+        }
+
+        const paymentPhoneInput =
+            document.getElementById(
+                "checkoutPaymentPhone"
+            );
+
+        if (paymentPhoneInput) {
+            paymentPhoneInput.required =
+                mobileWallet;
+        }
+
+        const transactionInput =
+            document.getElementById(
+                "checkoutTransactionId"
+            );
+
+        if (transactionInput) {
+            transactionInput.required =
+                manual;
+        }
+
+        const box =
+            document.getElementById(
+                "paymentInstructions"
+            );
+
+        if (!box) return;
+
+        if (method === "cash_on_delivery") {
             box.innerHTML = `
                 <i class="fa-solid fa-circle-info"></i>
+
                 <div>
-                    <strong>${Components.e(content[0])}</strong>
-                    <p>${Components.e(content[1])}</p>
+                    <strong>
+                        Cash on Delivery selected
+                    </strong>
+
+                    <p>
+                        Pay the final order amount to the
+                        courier when your parcel is delivered.
+                    </p>
                 </div>
             `;
+
+            return;
         }
+
+        if (
+            method === "jazzcash" ||
+            method === "easypaisa"
+        ) {
+            const details =
+                this.paymentAccountDetails(method);
+
+            const brand =
+                method === "jazzcash"
+                    ? "JazzCash"
+                    : "Easypaisa";
+
+            const accountTitle =
+                details.title
+                    ? `
+                        <div class="manual-payment-row">
+                            <span>Account title</span>
+                            <strong>
+                                ${Components.e(details.title)}
+                            </strong>
+                        </div>
+                    `
+                    : "";
+
+            const accountNumber =
+                details.number
+                    ? `
+                        <div class="manual-payment-row">
+                            <span>Account number</span>
+
+                            <div class="manual-payment-copy">
+                                <strong>
+                                    ${Components.e(details.number)}
+                                </strong>
+
+                                <button
+                                    type="button"
+                                    class="payment-copy-button"
+                                    data-payment-copy="${Components.e(details.number)}"
+                                >
+                                    <i class="fa-regular fa-copy"></i>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    `
+                    : `
+                        <div class="manual-payment-warning">
+                            Payment account number has not
+                            been published yet.
+                        </div>
+                    `;
+
+            const qr =
+                details.qr
+                    ? `
+                        <div class="manual-payment-qr">
+                            <img
+                                src="${Components.e(details.qr)}"
+                                alt="${Components.e(brand)} payment QR code"
+                            >
+                            <small>
+                                Scan to pay with ${Components.e(brand)}
+                            </small>
+                        </div>
+                    `
+                    : "";
+
+            box.innerHTML = `
+                <div class="manual-payment-panel">
+
+                    <div class="manual-payment-heading">
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <div>
+                            <strong>
+                                Pay with ${Components.e(brand)}
+                            </strong>
+
+                            <p>
+                                Complete the transfer before
+                                placing your order.
+                            </p>
+                        </div>
+                    </div>
+
+                    ${qr}
+
+                    <div class="manual-payment-account">
+                        ${accountTitle}
+                        ${accountNumber}
+
+                        <div class="manual-payment-row">
+                            <span>Amount to pay</span>
+
+                            <strong>
+                                ${Components.e(
+                                    Store.money(
+                                        Number(
+                                            this.grandTotal || 0
+                                        )
+                                    )
+                                )}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <p class="manual-payment-note">
+                        ${Components.e(details.instructions)}
+                    </p>
+
+                    <p class="manual-payment-verification">
+                        <i class="fa-solid fa-clock"></i>
+                        Your order will remain payment pending
+                        until RUKHNAV verifies the transaction.
+                    </p>
+
+                </div>
+            `;
+
+            box
+                .querySelectorAll(
+                    "[data-payment-copy]"
+                )
+                .forEach(button => {
+                    button.addEventListener(
+                        "click",
+                        () => this.copyPaymentNumber(
+                            button.dataset.paymentCopy,
+                            button
+                        )
+                    );
+                });
+
+            return;
+        }
+
+        if (method === "bank_transfer") {
+            box.innerHTML = `
+                <i class="fa-solid fa-building-columns"></i>
+
+                <div>
+                    <strong>
+                        Bank Transfer selected
+                    </strong>
+
+                    <p>
+                        Transfer the order amount using the
+                        RUKHNAV bank details, then enter your
+                        transaction reference below.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        box.innerHTML = `
+            <i class="fa-solid fa-circle-info"></i>
+
+            <div>
+                <strong>Payment selected</strong>
+                <p>
+                    Follow the payment instructions
+                    supplied by RUKHNAV.
+                </p>
+            </div>
+        `;
+    },
+
+    paymentReceiptRequired(method) {
+        return (
+            method === "jazzcash" ||
+            method === "easypaisa"
+        );
+    },
+
+    updatePaymentReceiptVisibility(method) {
+        const required =
+            this.paymentReceiptRequired(
+                method
+            );
+
+        const panel =
+            document.getElementById(
+                "paymentReceiptPanel"
+            );
+
+        const input =
+            document.getElementById(
+                "checkoutPaymentReceipt"
+            );
+
+        if (panel) {
+            panel.classList.toggle(
+                "hidden",
+                !required
+            );
+        }
+
+        if (input) {
+            input.required =
+                required;
+        }
+    },
+
+    handlePaymentReceiptChange(event) {
+        const file =
+            event?.target?.files?.[0] ||
+            null;
+
+        if (!file) {
+            this.clearPaymentReceipt();
+            return;
+        }
+
+        const allowed =
+            new Set([
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ]);
+
+        if (
+            !allowed.has(
+                file.type
+            )
+        ) {
+            event.target.value = "";
+
+            this.clearPaymentReceipt();
+
+            this.message(
+                "Payment receipt must be a JPG, PNG or WEBP image.",
+                "error"
+            );
+
+            return;
+        }
+
+        const maximum =
+            5 * 1024 * 1024;
+
+        if (file.size > maximum) {
+            event.target.value = "";
+
+            this.clearPaymentReceipt();
+
+            this.message(
+                "Payment receipt must be 5 MB or smaller.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+            this.paymentReceiptPreviewUrl
+        ) {
+            URL.revokeObjectURL(
+                this.paymentReceiptPreviewUrl
+            );
+        }
+
+        this.paymentReceiptFile =
+            file;
+
+        this.paymentReceiptPreviewUrl =
+            URL.createObjectURL(
+                file
+            );
+
+        const preview =
+            document.getElementById(
+                "paymentReceiptPreview"
+            );
+
+        const image =
+            document.getElementById(
+                "paymentReceiptPreviewImage"
+            );
+
+        const name =
+            document.getElementById(
+                "paymentReceiptFileName"
+            );
+
+        const size =
+            document.getElementById(
+                "paymentReceiptFileSize"
+            );
+
+        if (image) {
+            image.src =
+                this.paymentReceiptPreviewUrl;
+        }
+
+        if (name) {
+            name.textContent =
+                file.name ||
+                "Payment receipt";
+        }
+
+        if (size) {
+            size.textContent =
+                `${(
+                    file.size /
+                    1024 /
+                    1024
+                ).toFixed(2)} MB`;
+        }
+
+        preview?.classList.remove(
+            "hidden"
+        );
+
+        this.message(
+            "Payment receipt selected. It will be submitted securely with your order.",
+            "success"
+        );
+    },
+
+    clearPaymentReceipt() {
+        if (
+            this.paymentReceiptPreviewUrl
+        ) {
+            URL.revokeObjectURL(
+                this.paymentReceiptPreviewUrl
+            );
+        }
+
+        this.paymentReceiptFile =
+            null;
+
+        this.paymentReceiptPreviewUrl =
+            "";
+
+        const input =
+            document.getElementById(
+                "checkoutPaymentReceipt"
+            );
+
+        if (input) {
+            input.value = "";
+        }
+
+        const image =
+            document.getElementById(
+                "paymentReceiptPreviewImage"
+            );
+
+        if (image) {
+            image.removeAttribute(
+                "src"
+            );
+        }
+
+        document
+            .getElementById(
+                "paymentReceiptPreview"
+            )
+            ?.classList.add(
+                "hidden"
+            );
+    },
+
+    async uploadCustomerPaymentReceipt(
+        orderId
+    ) {
+        if (
+            !this.paymentReceiptFile
+        ) {
+            throw new Error(
+                "Payment receipt is missing."
+            );
+        }
+
+        if (!orderId) {
+            throw new Error(
+                "Order was created but its ID was not returned for receipt upload."
+            );
+        }
+
+        const token =
+            API.getToken?.() ||
+            "";
+
+        if (!token) {
+            throw new Error(
+                "Your order was created, but your login session is unavailable for receipt upload."
+            );
+        }
+
+        const form =
+            new FormData();
+
+        form.append(
+            "payment_receipt",
+            this.paymentReceiptFile
+        );
+
+        const response =
+            await fetch(
+                `${API.base}/api/orders/${encodeURIComponent(
+                    orderId
+                )}/payment-proof`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    },
+
+                    body: form
+                }
+            );
+
+        let data = {};
+
+        try {
+            data =
+                await response.json();
+        } catch (_) {
+            data = {};
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                "The order was created, but the payment receipt could not be uploaded."
+            );
+        }
+
+        return data;
     },
 
     async submit(event) {
         event.preventDefault();
 
         if (this.submitting) return;
+
+        /*
+         * If an order already exists and only its receipt
+         * upload failed, this button retries the receipt.
+         * It must never POST /api/orders a second time.
+         */
+        if (
+            this.orderCreated &&
+            this.paymentProofRetryOrderId
+        ) {
+            const button =
+                document.getElementById(
+                    "placeOrderButton"
+                );
+
+            if (!this.paymentReceiptFile) {
+                this.message(
+                    "Select the payment receipt, then retry the upload. Your order has already been created.",
+                    "error"
+                );
+                return;
+            }
+
+            this.submitting = true;
+            this.loading(
+                button,
+                true
+            );
+
+            this.message(
+                "Retrying payment receipt upload securely...",
+                "info"
+            );
+
+            try {
+                const paymentProof =
+                    await this
+                        .uploadCustomerPaymentReceipt(
+                            this.paymentProofRetryOrderId
+                        );
+
+                const orderId =
+                    this.paymentProofRetryOrderId;
+
+                const orderNumber =
+                    this.paymentProofRetryOrderNumber ||
+                    String(orderId);
+
+                sessionStorage.setItem(
+                    "rukhnav_last_order",
+                    JSON.stringify({
+                        orderId,
+                        orderNumber,
+                        paymentProof
+                    })
+                );
+
+                this.paymentProofRetryOrderId =
+                    null;
+
+                this.paymentProofRetryOrderNumber =
+                    "";
+
+                location.href =
+                    `order-success.html?id=${encodeURIComponent(orderId)}&order=${encodeURIComponent(orderNumber)}`;
+
+                return;
+            } catch (error) {
+                this.message(
+                    `Your order already exists. The receipt still could not be uploaded. Please check your connection and use Retry Receipt Upload again. ${error.message || ""}`,
+                    "error"
+                );
+
+                this.submitting =
+                    false;
+
+                this.loading(
+                    button,
+                    false
+                );
+
+                if (button) {
+                    button.innerHTML =
+                        '<i class="fa-solid fa-cloud-arrow-up"></i> Retry Receipt Upload';
+                }
+
+                return;
+            }
+        }
+
+        if (this.orderCreated) {
+            this.message(
+                "This order has already been created. Please do not place it again.",
+                "error"
+            );
+            return;
+        }
 
         const fullName = this.get("checkoutFullName");
         const phone = this.get("checkoutPhone");
@@ -929,15 +1709,44 @@ this.calculate();
             return;
         }
 
-        const manual = paymentMethod !== "cash_on_delivery";
-        const paymentPhone = this.get("checkoutPaymentPhone");
-        const transactionId = this.get("checkoutTransactionId");
+        const manual =
+            paymentMethod !== "cash_on_delivery";
 
-        if (manual && (!paymentPhone || !transactionId)) {
+        const mobileWallet =
+            paymentMethod === "jazzcash" ||
+            paymentMethod === "easypaisa";
+
+        const paymentPhone =
+            this.get("checkoutPaymentPhone");
+
+        const transactionId =
+            this.get("checkoutTransactionId");
+
+        if (manual && !transactionId) {
             this.message(
-                "Enter the payment phone and transaction reference for the selected payment method.",
+                "Enter the transaction reference for the selected payment method.",
                 "error"
             );
+            return;
+        }
+
+        if (mobileWallet && !paymentPhone) {
+            this.message(
+                "Enter the mobile number used to send the payment.",
+                "error"
+            );
+            return;
+        }
+
+        if (
+            mobileWallet &&
+            !this.paymentReceiptFile
+        ) {
+            this.message(
+                "Upload your JazzCash or Easypaisa payment receipt before placing the order.",
+                "error"
+            );
+
             return;
         }
 
@@ -989,12 +1798,79 @@ this.calculate();
                 data.orderNumber ||
                 String(orderId || "");
 
+            /*
+             * The backend has created the order.
+             * From this point onward never POST it again.
+             */
+            this.orderCreated = true;
+
+            let paymentProof = null;
+
+            if (mobileWallet) {
+                this.message(
+                    "Order created. Uploading your payment receipt securely...",
+                    "info"
+                );
+
+                try {
+                    paymentProof =
+                        await this
+                            .uploadCustomerPaymentReceipt(
+                                orderId
+                            );
+                } catch (receiptError) {
+                    /*
+                     * CRITICAL:
+                     * The order already exists.
+                     * Never retry POST /api/orders automatically,
+                     * otherwise a duplicate order could be created.
+                     */
+                    this.paymentProofRetryOrderId =
+                        orderId;
+
+                    this.paymentProofRetryOrderNumber =
+                        orderNumber;
+
+                    sessionStorage.setItem(
+                        "rukhnav_last_order",
+                        JSON.stringify({
+                            orderId,
+                            orderNumber,
+                            response: data,
+                            paymentProofUploadFailed:
+                                true
+                        })
+                    );
+
+                    this.message(
+                        `Order ${orderNumber || orderId} was created successfully, but the payment receipt upload failed. Do not place another order. ${receiptError.message || "Please retry the receipt upload from your order."}`,
+                        "error"
+                    );
+
+                    this.submitting =
+                        false;
+
+                    this.loading(
+                        button,
+                        false
+                    );
+
+                    if (button) {
+                        button.innerHTML =
+                            '<i class="fa-solid fa-cloud-arrow-up"></i> Retry Receipt Upload';
+                    }
+
+                    return;
+                }
+            }
+
             sessionStorage.setItem(
                 "rukhnav_last_order",
                 JSON.stringify({
                     orderId,
                     orderNumber,
-                    response: data
+                    response: data,
+                    paymentProof
                 })
             );
 
@@ -1067,5 +1943,38 @@ this.calculate();
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => Checkout.init()
+    () => {
+        const receiptInput =
+            document.getElementById(
+                "checkoutPaymentReceipt"
+            );
+
+        receiptInput?.addEventListener(
+            "change",
+            event =>
+                Checkout
+                    .handlePaymentReceiptChange(
+                        event
+                    )
+        );
+
+        document
+            .getElementById(
+                "removePaymentReceiptButton"
+            )
+            ?.addEventListener(
+                "click",
+                () => {
+                    Checkout
+                        .clearPaymentReceipt();
+
+                    Checkout.message(
+                        "Payment receipt removed.",
+                        "info"
+                    );
+                }
+            );
+
+        Checkout.init();
+    }
 );

@@ -334,3 +334,145 @@
             9px;
     }
 }
+
+
+/* =========================================================
+   PRIVATE MANUAL PAYMENT RECEIPT
+   ========================================================= */
+
+.guest-payment-receipt {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid rgba(31, 92, 66, 0.18);
+    border-radius: 14px;
+    background: rgba(248, 246, 238, 0.72);
+}
+
+.guest-payment-receipt-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 13px;
+}
+
+.guest-payment-receipt-heading > div > strong {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.guest-payment-receipt-heading p {
+    margin: 5px 0 0;
+    font-size: 11px;
+    line-height: 1.5;
+    opacity: 0.72;
+}
+
+.guest-payment-receipt-heading > span {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: rgba(151, 113, 31, 0.12);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.guest-payment-receipt-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.guest-payment-receipt-picker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    min-height: 88px;
+    padding: 15px;
+    border: 1.5px dashed rgba(31, 92, 66, 0.34);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.guest-payment-receipt-picker > i {
+    font-size: 23px;
+}
+
+.guest-payment-receipt-picker > span,
+.guest-payment-receipt-file {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.guest-payment-receipt-preview {
+    display: grid;
+    grid-template-columns: 82px minmax(0, 1fr);
+    align-items: center;
+    gap: 13px;
+    margin-top: 13px;
+    padding: 11px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.75);
+}
+
+.guest-payment-receipt-preview img {
+    width: 82px;
+    height: 82px;
+    border-radius: 9px;
+    object-fit: cover;
+}
+
+.guest-payment-receipt-file > strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.guest-payment-receipt-remove {
+    justify-self: start;
+    margin-top: 3px;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.guest-payment-receipt-security {
+    display: flex;
+    gap: 7px;
+    margin: 11px 0 0;
+    font-size: 10px;
+    line-height: 1.5;
+    opacity: .68;
+}
+
+@media (max-width: 600px) {
+    .guest-payment-receipt {
+        padding: 14px;
+    }
+
+    .guest-payment-receipt-heading {
+        display: grid;
+        gap: 8px;
+    }
+
+    .guest-payment-receipt-heading > span {
+        justify-self: start;
+    }
+
+    .guest-payment-receipt-preview {
+        grid-template-columns: 68px minmax(0,1fr);
+    }
+
+    .guest-payment-receipt-preview img {
+        width: 68px;
+        height: 68px;
+    }
+}

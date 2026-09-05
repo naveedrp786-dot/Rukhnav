@@ -146,3 +146,322 @@
         gap: 5px;
     }
 }
+
+/* =========================================================
+   RUKHNAV MANUAL PAYMENT PANEL
+   JazzCash / Easypaisa
+   ========================================================= */
+
+.manual-payment-panel {
+    width: 100%;
+}
+
+.manual-payment-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.manual-payment-heading > i {
+    margin-top: 4px;
+    font-size: 20px;
+}
+
+.manual-payment-heading strong {
+    display: block;
+    font-size: 17px;
+    margin-bottom: 4px;
+}
+
+.manual-payment-heading p {
+    margin: 0;
+}
+
+.manual-payment-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+    margin: 14px 0 18px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    border-radius: 14px;
+}
+
+.manual-payment-qr img {
+    display: block;
+    width: min(220px, 100%);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
+
+.manual-payment-qr small {
+    font-weight: 600;
+    text-align: center;
+}
+
+.manual-payment-account {
+    display: grid;
+    gap: 0;
+    margin-top: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.manual-payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 13px 15px;
+    background: rgba(255, 255, 255, 0.68);
+}
+
+.manual-payment-row + .manual-payment-row {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.manual-payment-row > span {
+    font-size: 13px;
+    opacity: 0.72;
+}
+
+.manual-payment-row > strong {
+    text-align: right;
+}
+
+.manual-payment-copy {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.payment-copy-button {
+    appearance: none;
+    border: 1px solid currentColor;
+    border-radius: 8px;
+    padding: 6px 10px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.payment-copy-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.manual-payment-note {
+    margin: 16px 0 0;
+    line-height: 1.6;
+}
+
+.manual-payment-verification {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.manual-payment-warning {
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(160, 90, 0, 0.25);
+    border-radius: 10px;
+    background: rgba(255, 190, 70, 0.10);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .manual-payment-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .manual-payment-row > strong {
+        text-align: left;
+    }
+
+    .manual-payment-copy {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .manual-payment-qr img {
+        width: min(190px, 100%);
+    }
+}\n
+/* =====================================================
+   RUKHNAV PRIVATE PAYMENT RECEIPT
+===================================================== */
+
+.payment-receipt-panel {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid rgba(31, 92, 66, 0.18);
+    border-radius: 16px;
+    background: rgba(248, 246, 238, 0.72);
+}
+
+.payment-receipt-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.payment-receipt-heading strong {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.payment-receipt-heading p {
+    margin: 6px 0 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    opacity: 0.76;
+}
+
+.payment-receipt-required {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: rgba(151, 113, 31, 0.12);
+}
+
+.payment-receipt-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.payment-receipt-picker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 96px;
+    padding: 18px;
+    border: 1.5px dashed rgba(31, 92, 66, 0.35);
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition:
+        border-color 160ms ease,
+        transform 160ms ease,
+        background 160ms ease;
+}
+
+.payment-receipt-picker:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.payment-receipt-picker > i {
+    font-size: 1.55rem;
+}
+
+.payment-receipt-picker span {
+    display: grid;
+    gap: 3px;
+}
+
+.payment-receipt-picker small {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.payment-receipt-preview {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.74);
+}
+
+.payment-receipt-preview img {
+    width: 92px;
+    height: 92px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.payment-receipt-preview > div {
+    min-width: 0;
+    display: grid;
+    gap: 5px;
+}
+
+.payment-receipt-preview strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.payment-receipt-preview span {
+    font-size: 0.82rem;
+    opacity: 0.7;
+}
+
+.payment-receipt-remove {
+    justify-self: start;
+    margin-top: 4px;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font: inherit;
+}
+
+.payment-receipt-security {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin: 12px 0 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    opacity: 0.7;
+}
+
+@media (max-width: 640px) {
+    .payment-receipt-heading {
+        display: grid;
+    }
+
+    .payment-receipt-required {
+        justify-self: start;
+    }
+
+    .payment-receipt-preview {
+        grid-template-columns: 72px minmax(0, 1fr);
+    }
+
+    .payment-receipt-preview img {
+        width: 72px;
+        height: 72px;
+    }
+}

@@ -341,6 +341,42 @@ exports.placeGuestOrder = async (
             });
         }
 
+        const requiresPaymentReference =
+            [
+                "jazzcash",
+                "easypaisa",
+                "bank_transfer"
+            ].includes(
+                paymentMethod
+            );
+
+        if (
+            requiresPaymentReference &&
+            !transactionId
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Transaction ID is required for the selected payment method."
+            });
+        }
+
+        if (
+            [
+                "jazzcash",
+                "easypaisa"
+            ].includes(
+                paymentMethod
+            ) &&
+            !paymentPhone
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Payment phone number is required."
+            });
+        }
+
         if (
             !termsAccepted ||
             !privacyAccepted

@@ -148,13 +148,97 @@
                 <div id="manualPaymentFields" class="guest-form-grid hidden">
                     <label class="guest-field">
                         <span>Payment phone</span>
-                        <input id="guestPaymentPhone" type="tel">
+                        <input
+                            id="guestPaymentPhone"
+                            type="tel"
+                            inputmode="tel"
+                            autocomplete="tel"
+                            placeholder="03XX XXXXXXX"
+                        >
                     </label>
 
                     <label class="guest-field">
                         <span>Transaction reference</span>
-                        <input id="guestTransactionId" type="text">
+                        <input
+                            id="guestTransactionId"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="Enter transaction / reference ID"
+                        >
                     </label>
+                </div>
+
+                <div
+                    id="guestPaymentReceiptPanel"
+                    class="guest-payment-receipt hidden"
+                >
+                    <div class="guest-payment-receipt-heading">
+                        <div>
+                            <strong>
+                                <i class="fa-solid fa-receipt"></i>
+                                Payment receipt
+                            </strong>
+
+                            <p>
+                                Upload your JazzCash or Easypaisa payment screenshot.
+                            </p>
+                        </div>
+
+                        <span>Required</span>
+                    </div>
+
+                    <input
+                        id="guestPaymentReceipt"
+                        class="guest-payment-receipt-input"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+                    >
+
+                    <label
+                        for="guestPaymentReceipt"
+                        class="guest-payment-receipt-picker"
+                    >
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                        <span>
+                            <strong>Choose payment screenshot</strong>
+                            <small>JPG, PNG or WEBP • Maximum 5 MB</small>
+                        </span>
+                    </label>
+
+                    <div
+                        id="guestPaymentReceiptPreview"
+                        class="guest-payment-receipt-preview hidden"
+                    >
+                        <img
+                            id="guestPaymentReceiptPreviewImage"
+                            alt="Selected payment receipt"
+                        >
+
+                        <div class="guest-payment-receipt-file">
+                            <strong id="guestPaymentReceiptFileName">
+                                Payment receipt
+                            </strong>
+
+                            <span id="guestPaymentReceiptFileSize"></span>
+
+                            <button
+                                id="removeGuestPaymentReceiptButton"
+                                type="button"
+                                class="guest-payment-receipt-remove"
+                            >
+                                <i class="fa-solid fa-trash"></i>
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="guest-payment-receipt-security">
+                        <i class="fa-solid fa-lock"></i>
+                        Your receipt is stored privately and is available only
+                        to authorized RUKHNAV administrators for payment
+                        verification.
+                    </p>
                 </div>
             </article>
 

@@ -387,17 +387,171 @@
 
 <div class="wmp-panel" data-panel="payments">
 <h2>Payments & Delivery</h2>
+
 <div class="wmp-grid">
-<label class="switch"><input type="checkbox" data-path="payments.cash_on_delivery_enabled"><span>Cash on Delivery</span></label>
-<label class="switch"><input type="checkbox" data-path="payments.bank_transfer_enabled"><span>Bank Transfer</span></label>
-<label class="switch"><input type="checkbox" data-path="payments.easypaisa_enabled"><span>EasyPaisa</span></label>
-<label class="switch"><input type="checkbox" data-path="payments.jazzcash_enabled"><span>JazzCash</span></label>
-<label class="full"><span>Payment Message</span><input data-path="payments.payment_message"></label>
-<label class="switch"><input type="checkbox" data-path="delivery.free_delivery_enabled"><span>Free Delivery</span></label>
-<label><span>Free Delivery Minimum</span><input type="number" data-path="delivery.free_delivery_minimum"></label>
-<label><span>Delivery Charge</span><input type="number" data-path="delivery.standard_delivery_charge"></label>
-<label class="full"><span>Delivery Message</span><input data-path="delivery.delivery_message"></label>
-<label class="full"><span>Return Message</span><input data-path="delivery.return_message"></label>
+
+<label class="switch">
+<input type="checkbox" data-path="payments.cash_on_delivery_enabled">
+<span>Cash on Delivery</span>
+</label>
+
+<label class="switch">
+<input type="checkbox" data-path="payments.bank_transfer_enabled">
+<span>Bank Transfer</span>
+</label>
+
+<label class="full">
+<span>Payment Message</span>
+<input
+    data-path="payments.payment_message"
+    placeholder="Secure and convenient payment options."
+>
+</label>
+
+<div class="full">
+<hr>
+<h3>JazzCash</h3>
+<p>Manage the JazzCash receiving account displayed during checkout.</p>
+</div>
+
+<label class="switch">
+<input type="checkbox" data-path="payments.jazzcash_enabled">
+<span>Enable JazzCash</span>
+</label>
+
+<label>
+<span>JazzCash Account Title</span>
+<input
+    data-path="payments.jazzcash_account_title"
+    placeholder="RUKHNAV"
+>
+</label>
+
+<label>
+<span>JazzCash Account Number</span>
+<input
+    data-path="payments.jazzcash_account_number"
+    placeholder="03XX XXXXXXX"
+>
+</label>
+
+<label class="full">
+<span>JazzCash Payment Instructions</span>
+<textarea
+    rows="3"
+    data-path="payments.jazzcash_instructions"
+    placeholder="Pay using JazzCash, then enter your transaction reference and upload your payment receipt."
+></textarea>
+</label>
+
+<div class="full upload-row">
+<span>JazzCash QR Code</span>
+
+<input
+    data-path="payments.jazzcash_qr_url"
+    placeholder="/uploads/website/jazzcash-qr.png"
+>
+
+<label class="wmp-btn light file-label">
+<i class="fa-solid fa-upload"></i>
+Upload / Replace QR
+
+<input
+    type="file"
+    data-upload-path="payments.jazzcash_qr_url"
+    data-upload-type="JazzCash QR Code"
+    accept="image/png,image/jpeg,image/webp"
+>
+</label>
+</div>
+
+<div class="full">
+<hr>
+<h3>Easypaisa</h3>
+<p>Manage the Easypaisa receiving account displayed during checkout.</p>
+</div>
+
+<label class="switch">
+<input type="checkbox" data-path="payments.easypaisa_enabled">
+<span>Enable Easypaisa</span>
+</label>
+
+<label>
+<span>Easypaisa Account Title</span>
+<input
+    data-path="payments.easypaisa_account_title"
+    placeholder="RUKHNAV"
+>
+</label>
+
+<label>
+<span>Easypaisa Account Number</span>
+<input
+    data-path="payments.easypaisa_account_number"
+    placeholder="03XX XXXXXXX"
+>
+</label>
+
+<label class="full">
+<span>Easypaisa Payment Instructions</span>
+<textarea
+    rows="3"
+    data-path="payments.easypaisa_instructions"
+    placeholder="Pay using Easypaisa, then enter your transaction reference and upload your payment receipt."
+></textarea>
+</label>
+
+<div class="full upload-row">
+<span>Easypaisa QR Code</span>
+
+<input
+    data-path="payments.easypaisa_qr_url"
+    placeholder="/uploads/website/easypaisa-qr.png"
+>
+
+<label class="wmp-btn light file-label">
+<i class="fa-solid fa-upload"></i>
+Upload / Replace QR
+
+<input
+    type="file"
+    data-upload-path="payments.easypaisa_qr_url"
+    data-upload-type="Easypaisa QR Code"
+    accept="image/png,image/jpeg,image/webp"
+>
+</label>
+</div>
+
+<div class="full">
+<hr>
+<h3>Delivery</h3>
+</div>
+
+<label class="switch">
+<input type="checkbox" data-path="delivery.free_delivery_enabled">
+<span>Free Delivery</span>
+</label>
+
+<label>
+<span>Free Delivery Minimum</span>
+<input type="number" data-path="delivery.free_delivery_minimum">
+</label>
+
+<label>
+<span>Delivery Charge</span>
+<input type="number" data-path="delivery.standard_delivery_charge">
+</label>
+
+<label class="full">
+<span>Delivery Message</span>
+<input data-path="delivery.delivery_message">
+</label>
+
+<label class="full">
+<span>Return Message</span>
+<input data-path="delivery.return_message">
+</label>
+
 </div>
 </div>
 

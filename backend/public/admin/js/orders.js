@@ -26,7 +26,8 @@ const state = {
     dateFrom: "",
     dateTo: "",
     loading: false,
-    statusOrder: null
+    statusOrder: null,
+    paymentProofObjectUrl: null
 };
 
 const $ = id => document.getElementById(id);
@@ -82,6 +83,62 @@ async function api(endpoint = "", options = {}) {
     }
 
     return data;
+}
+
+
+async function apiBlob(endpoint = "") {
+    const response =
+        await fetch(
+            `${ORDERS_API}${endpoint}`,
+            {
+                headers: {
+                    Authorization:
+                        token.startsWith("Bearer ")
+                            ? token
+                            : `Bearer ${token}`
+                }
+            }
+        );
+
+    if (response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("admin_token");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("adminToken");
+        sessionStorage.removeItem("admin_token");
+
+        window.location.href =
+            "/admin/login.html";
+
+        throw new Error(
+            "Your admin session has expired."
+        );
+    }
+
+    if (response.status === 403) {
+        throw new Error(
+            "You do not have permission to view this payment receipt."
+        );
+    }
+
+    if (!response.ok) {
+        let message =
+            `Request failed with status ${response.status}.`;
+
+        try {
+            const data =
+                await response.json();
+
+            message =
+                data.message ||
+                message;
+        } catch (_) {}
+
+        throw new Error(message);
+    }
+
+    return response.blob();
 }
 
 
@@ -1483,6 +1540,10 @@ async function openOrderDetails(id) {
 
         populateOrderDetails(data);
 
+        await loadOrderPaymentProof(
+            id
+        );
+
         $("orderDetailsLoading")
             .classList.add("hidden");
 
@@ -1980,6 +2041,532 @@ async function recordCodPayment(
         );
     }
 }
+
+function clearPaymentProofObjectUrl() {
+    if (state.paymentProofObjectUrl) {
+        URL.revokeObjectURL(
+            state.paymentProofObjectUrl
+        );
+
+        state.paymentProofObjectUrl =
+            null;
+    }
+}
+
+
+function paymentProofStatusClass(status) {
+    const value =
+        String(status || "")
+            .trim()
+            .toLowerCase();
+
+    if (value === "verified") {
+        return "is-verified";
+    }
+
+    if (value === "rejected") {
+        return "is-rejected";
+    }
+
+    return "is-pending";
+}
+
+
+async function loadOrderPaymentProof(id) {
+    const section =
+        $("orderPaymentProofSection");
+
+    const target =
+        $("orderPaymentProofContent");
+
+    const statusBadge =
+        $("paymentProofStatus");
+
+    if (
+        !section ||
+        !target ||
+        !statusBadge
+    ) {
+        return;
+    }
+
+    clearPaymentProofObjectUrl();
+
+    section.classList.add("hidden");
+
+    target.textContent =
+        "Loading payment verification...";
+
+    try {
+        const data =
+            await api(
+                `/${encodeURIComponent(
+                    id
+                )}/payment-proof`
+            );
+
+        const proof =
+            data.proof || data.paymentProof;
+
+        if (!proof) {
+            return;
+        }
+
+        section.classList.remove("hidden");
+
+        const status =
+            proof.verification_status ||
+            "Pending";
+
+        statusBadge.textContent =
+            status;
+
+        statusBadge.className =
+            `payment-proof-status ${paymentProofStatusClass(
+                status
+            )}`;
+
+        let receiptUrl = "";
+
+        try {
+            const blob =
+                await apiBlob(
+                    `/${encodeURIComponent(
+                        id
+                    )}/payment-proof/file`
+                );
+
+            state.paymentProofObjectUrl =
+                URL.createObjectURL(blob);
+
+            receiptUrl =
+                state.paymentProofObjectUrl;
+        } catch (receiptError) {
+            console.error(
+                "Payment receipt preview error:",
+                receiptError
+            );
+        }
+
+        const pending =
+            String(status)
+                .toLowerCase() ===
+            "pending";
+
+        const rejected =
+            String(status)
+                .toLowerCase() ===
+            "rejected";
+
+        target.innerHTML = `
+            <div class="payment-proof-grid">
+                <div class="payment-proof-detail">
+                    <span>Payment method</span>
+                    <strong>
+                        ${escapeHtml(
+                            proof.payment_method ||
+                            "—"
+                        )}
+                    </strong>
+                </div>
+
+                <div class="payment-proof-detail">
+                    <span>Payment status</span>
+                    <strong>
+                        ${escapeHtml(
+                            proof.payment_status ||
+                            "Pending"
+                        )}
+                    </strong>
+                </div>
+
+                <div class="payment-proof-detail">
+                    <span>Payment from</span>
+                    <strong>
+                        ${escapeHtml(
+                            proof.payment_phone ||
+                            "—"
+                        )}
+                    </strong>
+                </div>
+
+                <div class="payment-proof-detail">
+                    <span>Transaction reference</span>
+                    <strong>
+                        ${escapeHtml(
+                            proof.transaction_id ||
+                            "—"
+                        )}
+                    </strong>
+                </div>
+
+                <div class="payment-proof-detail">
+                    <span>Order total</span>
+                    <strong>
+                        ${formatMoney(
+                            proof.grand_total || 0
+                        )}
+                    </strong>
+                </div>
+
+                <div class="payment-proof-detail">
+                    <span>Outstanding</span>
+                    <strong>
+                        ${formatMoney(
+                            outstandingOrderBalance(
+                                proof
+                            )
+                        )}
+                    </strong>
+                </div>
+            </div>
+
+            <div class="payment-proof-receipt">
+                <div class="payment-proof-image-wrap">
+                    ${
+                        receiptUrl
+                            ? `
+                                <img
+                                    class="payment-proof-image"
+                                    src="${receiptUrl}"
+                                    alt="Customer payment receipt"
+                                >
+                            `
+                            : `
+                                <div class="payment-proof-empty">
+                                    Receipt preview could not be loaded.
+                                </div>
+                            `
+                    }
+                </div>
+
+                <div class="payment-proof-receipt-info">
+                    <strong>
+                        Customer payment receipt
+                    </strong>
+
+                    <p class="payment-proof-private-note">
+                        This image is loaded through an
+                        authenticated administrator request.
+                        The private storage path is not exposed.
+                    </p>
+
+                    ${
+                        receiptUrl
+                            ? `
+                                <button
+                                    type="button"
+                                    id="openPaymentProofButton"
+                                    class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                                >
+                                    <i class="fa-solid fa-up-right-from-square"></i>
+                                    Open Full Receipt
+                                </button>
+                            `
+                            : ""
+                    }
+                </div>
+            </div>
+
+            ${
+                rejected &&
+                proof.rejection_reason
+                    ? `
+                        <div class="payment-proof-rejection">
+                            <strong>Rejection reason</strong>
+                            <br>
+                            ${escapeHtml(
+                                proof.rejection_reason
+                            )}
+                        </div>
+                    `
+                    : ""
+            }
+
+            ${
+                pending
+                    ? `
+                        <div class="payment-proof-actions">
+                            <button
+                                type="button"
+                                id="verifyPaymentProofButton"
+                                class="primary-btn erp-v5-btn erp-v5-btn--gold"
+                            >
+                                <i class="fa-solid fa-circle-check"></i>
+                                Verify Payment
+                            </button>
+
+                            <button
+                                type="button"
+                                id="showRejectPaymentProofButton"
+                                class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                            >
+                                <i class="fa-solid fa-circle-xmark"></i>
+                                Reject Proof
+                            </button>
+                        </div>
+
+                        <div
+                            id="paymentProofRejectBox"
+                            class="payment-proof-reject-box hidden"
+                        >
+                            <label for="paymentProofRejectReason">
+                                <strong>Reason for rejection</strong>
+                            </label>
+
+                            <textarea
+                                id="paymentProofRejectReason"
+                                maxlength="1000"
+                                placeholder="Explain why this receipt cannot be verified."
+                            ></textarea>
+
+                            <div class="payment-proof-actions">
+                                <button
+                                    type="button"
+                                    id="confirmRejectPaymentProofButton"
+                                    class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                                >
+                                    Confirm Rejection
+                                </button>
+
+                                <button
+                                    type="button"
+                                    id="cancelRejectPaymentProofButton"
+                                    class="secondary-btn erp-v5-btn erp-v5-btn--light"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    `
+                    : ""
+            }
+        `;
+
+        $("openPaymentProofButton")
+            ?.addEventListener(
+                "click",
+                () => {
+                    if (receiptUrl) {
+                        window.open(
+                            receiptUrl,
+                            "_blank",
+                            "noopener,noreferrer"
+                        );
+                    }
+                }
+            );
+
+        $("verifyPaymentProofButton")
+            ?.addEventListener(
+                "click",
+                event =>
+                    verifyOrderPaymentProof(
+                        id,
+                        event.currentTarget
+                    )
+            );
+
+        $("showRejectPaymentProofButton")
+            ?.addEventListener(
+                "click",
+                () => {
+                    $("paymentProofRejectBox")
+                        ?.classList.remove(
+                            "hidden"
+                        );
+
+                    $("paymentProofRejectReason")
+                        ?.focus();
+                }
+            );
+
+        $("cancelRejectPaymentProofButton")
+            ?.addEventListener(
+                "click",
+                () => {
+                    $("paymentProofRejectBox")
+                        ?.classList.add(
+                            "hidden"
+                        );
+                }
+            );
+
+        $("confirmRejectPaymentProofButton")
+            ?.addEventListener(
+                "click",
+                event =>
+                    rejectOrderPaymentProof(
+                        id,
+                        event.currentTarget
+                    )
+            );
+    } catch (error) {
+        /*
+         * A 404 simply means this order has no
+         * manual payment proof. Keep the section hidden.
+         */
+        section.classList.add("hidden");
+
+        if (
+            !String(
+                error.message || ""
+            )
+                .toLowerCase()
+                .includes("not found")
+        ) {
+            console.error(
+                "Payment proof load error:",
+                error
+            );
+        }
+    }
+}
+
+
+async function verifyOrderPaymentProof(
+    orderId,
+    button
+) {
+    if (
+        !window.confirm(
+            "Verify this payment? This will record the payment in RUKHNAV financial records."
+        )
+    ) {
+        return;
+    }
+
+    setButtonLoading(
+        button,
+        true,
+        "Verifying"
+    );
+
+    try {
+        const response =
+            await api(
+                `/${encodeURIComponent(
+                    orderId
+                )}/payment-proof/verify`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({})
+                }
+            );
+
+        showMessage(
+            response.message ||
+            "Payment verified successfully.",
+            "success",
+            false
+        );
+
+        await Promise.all([
+            loadSummary(),
+            loadOrders()
+        ]);
+
+        await openOrderDetails(
+            orderId
+        );
+
+        await Promise.all([
+            loadOrderPaymentProof(
+                orderId
+            ),
+            loadOrderPayments(
+                orderId
+            )
+        ]);
+    } catch (error) {
+        showMessage(
+            error.message ||
+            "Unable to verify payment.",
+            "error",
+            false
+        );
+    } finally {
+        setButtonLoading(
+            button,
+            false
+        );
+    }
+}
+
+
+async function rejectOrderPaymentProof(
+    orderId,
+    button
+) {
+    const reason =
+        $("paymentProofRejectReason")
+            ?.value
+            .trim() ||
+        "";
+
+    if (!reason) {
+        showMessage(
+            "Enter a reason before rejecting the payment proof.",
+            "error",
+            false
+        );
+
+        return;
+    }
+
+    if (
+        !window.confirm(
+            "Reject this payment proof? No payment transaction will be recorded."
+        )
+    ) {
+        return;
+    }
+
+    setButtonLoading(
+        button,
+        true,
+        "Rejecting"
+    );
+
+    try {
+        const response =
+            await api(
+                `/${encodeURIComponent(
+                    orderId
+                )}/payment-proof/reject`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        reason
+                    })
+                }
+            );
+
+        showMessage(
+            response.message ||
+            "Payment proof rejected.",
+            "success",
+            false
+        );
+
+        await loadOrderPaymentProof(
+            orderId
+        );
+    } catch (error) {
+        showMessage(
+            error.message ||
+            "Unable to reject payment proof.",
+            "error",
+            false
+        );
+    } finally {
+        setButtonLoading(
+            button,
+            false
+        );
+    }
+}
+
 
 async function loadOrderPayments(id) {
     const target =
