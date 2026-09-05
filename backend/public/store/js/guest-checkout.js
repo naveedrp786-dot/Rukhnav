@@ -3,6 +3,11 @@
 const GuestCheckout = {
     paymentReceiptFile: null,
     paymentReceiptPreviewUrl: "",
+    websiteSettings: {},
+    paymentSettings: {},
+    orderCreated: false,
+    paymentProofRetryOrderNumber: "",
+    paymentProofRetryToken: "",
     product: null,
     quantity: 1,
 
@@ -16,6 +21,11 @@ const GuestCheckout = {
     async init() {
         this.captureAttribution();
         this.bind();
+
+        await this.loadPaymentSettings();
+
+        this.restorePaymentProofRetry();
+
         this.toggleManualPayment();
 
         const params =
@@ -307,6 +317,611 @@ const GuestCheckout = {
             ?.classList.remove(
                 "hidden"
             );
+    },
+
+    async loadPaymentSettings() {
+        try {
+            const response =
+                await fetch(
+                    "/api/website/settings",
+                    {
+                        headers: {
+                            Accept: "application/json"
+                        }
+                    }
+                );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Website payment settings could not be loaded."
+                );
+            }
+
+            const data =
+                await response.json();
+
+            this.websiteSettings =
+                data?.settings ||
+                data?.data ||
+                data ||
+                {};
+
+            this.paymentSettings =
+                this.websiteSettings.payments ||
+                {};
+
+            this.applyPaymentSettings();
+
+        } catch (error) {
+            console.error(
+                "Guest payment settings:",
+                error
+            );
+
+            this.websiteSettings = {};
+            this.paymentSettings = {};
+        }
+    },
+
+    applyPaymentSettings() {
+        const settings =
+            this.paymentSettings || {};
+
+        const availability = {
+            cash_on_delivery:
+                settings.cash_on_delivery_enabled !== false,
+
+            bank_transfer:
+                settings.bank_transfer_enabled !== false,
+
+            easypaisa:
+                settings.easypaisa_enabled !== false,
+
+            jazzcash:
+                settings.jazzcash_enabled !== false
+        };
+
+        Object.entries(availability)
+            .forEach(([method, enabled]) => {
+                const input =
+                    document.querySelector(
+                        `input[name="guestPaymentMethod"][value="${method}"]`
+                    );
+
+                if (!input) return;
+
+                input.disabled =
+                    !enabled;
+
+                const label =
+                    input.closest("label");
+
+                if (label) {
+                    label.hidden =
+                        !enabled;
+
+                    label.classList.toggle(
+                        "payment-disabled",
+                        !enabled
+                    );
+                }
+            });
+
+        const selected =
+            document.querySelector(
+                'input[name="guestPaymentMethod"]:checked'
+            );
+
+        if (
+            selected &&
+            !selected.disabled
+        ) {
+            return;
+        }
+
+        const firstAvailable =
+            document.querySelector(
+                'input[name="guestPaymentMethod"]:not(:disabled)'
+            );
+
+        if (firstAvailable) {
+            firstAvailable.checked = true;
+        }
+    },
+
+    paymentAccountDetails(method) {
+        const settings =
+            this.paymentSettings || {};
+
+        if (method === "jazzcash") {
+            return {
+                title:
+                    settings.jazzcash_account_title || "",
+                number:
+                    settings.jazzcash_account_number || "",
+                qr:
+                    settings.jazzcash_qr_url || "",
+                instructions:
+                    settings.jazzcash_instructions ||
+                    "Pay using JazzCash, then enter your transaction reference."
+            };
+        }
+
+        if (method === "easypaisa") {
+            return {
+                title:
+                    settings.easypaisa_account_title || "",
+                number:
+                    settings.easypaisa_account_number || "",
+                qr:
+                    settings.easypaisa_qr_url || "",
+                instructions:
+                    settings.easypaisa_instructions ||
+                    "Pay using Easypaisa, then enter your transaction reference."
+            };
+        }
+
+        return {
+            title: "",
+            number: "",
+            qr: "",
+            instructions: ""
+        };
+    },
+
+    async copyPaymentNumber(number, button) {
+        if (!number) return;
+
+        try {
+            await navigator.clipboard.writeText(
+                number
+            );
+
+            const original =
+                button?.innerHTML || "";
+
+            if (button) {
+                button.innerHTML =
+                    '<i class="fa-solid fa-check"></i> Copied';
+
+                setTimeout(() => {
+                    button.innerHTML =
+                        original;
+                }, 1500);
+            }
+
+        } catch (_) {
+            window.prompt(
+                "Copy payment number:",
+                number
+            );
+        }
+    },
+
+    renderPaymentAccountDetails(method) {
+        let box =
+            document.getElementById(
+                "guestPaymentInstructions"
+            );
+
+        if (!box) {
+            const manualFields =
+                document.getElementById(
+                    "manualPaymentFields"
+                );
+
+            if (!manualFields) return;
+
+            box =
+                document.createElement(
+                    "div"
+                );
+
+            box.id =
+                "guestPaymentInstructions";
+
+            box.className =
+                "guest-wallet-details";
+
+            manualFields.parentNode.insertBefore(
+                box,
+                manualFields
+            );
+        }
+
+        if (method === "cash_on_delivery") {
+            box.innerHTML = `
+                <div class="guest-wallet-simple">
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <div>
+                        <strong>
+                            Cash on Delivery selected
+                        </strong>
+
+                        <p>
+                            Pay the final order amount when
+                            your parcel is delivered.
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+        if (
+            method === "jazzcash" ||
+            method === "easypaisa"
+        ) {
+            const details =
+                this.paymentAccountDetails(
+                    method
+                );
+
+            const brand =
+                method === "jazzcash"
+                    ? "JazzCash"
+                    : "Easypaisa";
+
+            const displayedTotal =
+                document.getElementById(
+                    "guestGrandTotal"
+                )?.textContent?.trim() ||
+                "Rs. 0.00";
+
+            const accountTitle =
+                details.title
+                    ? `
+                        <div class="guest-wallet-row">
+                            <span>Account title</span>
+
+                            <strong>
+                                ${Components.e(details.title)}
+                            </strong>
+                        </div>
+                    `
+                    : "";
+
+            const accountNumber =
+                details.number
+                    ? `
+                        <div class="guest-wallet-row">
+                            <span>Account number</span>
+
+                            <div class="guest-wallet-copy">
+                                <strong>
+                                    ${Components.e(details.number)}
+                                </strong>
+
+                                <button
+                                    type="button"
+                                    data-guest-payment-copy="${Components.e(details.number)}"
+                                >
+                                    <i class="fa-regular fa-copy"></i>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    `
+                    : `
+                        <div class="guest-wallet-warning">
+                            Payment account number has not
+                            been published yet.
+                        </div>
+                    `;
+
+            const qr =
+                details.qr
+                    ? `
+                        <div class="guest-wallet-qr">
+                            <img
+                                src="${Components.e(details.qr)}"
+                                alt="${Components.e(brand)} payment QR code"
+                            >
+
+                            <small>
+                                Scan to pay with ${Components.e(brand)}
+                            </small>
+                        </div>
+                    `
+                    : "";
+
+            box.innerHTML = `
+                <div class="guest-wallet-panel">
+
+                    <div class="guest-wallet-heading">
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <div>
+                            <strong>
+                                Pay with ${Components.e(brand)}
+                            </strong>
+
+                            <p>
+                                Complete the transfer before
+                                placing your order.
+                            </p>
+                        </div>
+                    </div>
+
+                    ${qr}
+
+                    <div class="guest-wallet-account">
+                        ${accountTitle}
+                        ${accountNumber}
+
+                        <div class="guest-wallet-row">
+                            <span>Amount to pay</span>
+
+                            <strong>
+                                ${Components.e(displayedTotal)}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <p class="guest-wallet-note">
+                        ${Components.e(details.instructions)}
+                    </p>
+
+                    <p class="guest-wallet-pending">
+                        <i class="fa-solid fa-clock"></i>
+
+                        Your order will remain payment pending
+                        until RUKHNAV verifies the transaction.
+                    </p>
+
+                </div>
+            `;
+
+            box
+                .querySelectorAll(
+                    "[data-guest-payment-copy]"
+                )
+                .forEach(button => {
+                    button.addEventListener(
+                        "click",
+                        () =>
+                            this.copyPaymentNumber(
+                                button.dataset.guestPaymentCopy,
+                                button
+                            )
+                    );
+                });
+
+            return;
+        }
+
+        if (method === "bank_transfer") {
+            box.innerHTML = `
+                <div class="guest-wallet-simple">
+                    <i class="fa-solid fa-building-columns"></i>
+
+                    <div>
+                        <strong>
+                            Bank Transfer selected
+                        </strong>
+
+                        <p>
+                            Transfer the order amount using the
+                            RUKHNAV bank details, then enter your
+                            transaction reference.
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+        box.innerHTML = "";
+    },
+
+    paymentProofRetryStorageKey() {
+        return "rukhnav_guest_payment_proof_retry";
+    },
+
+    restorePaymentProofRetry() {
+        let stored = null;
+
+        try {
+            stored =
+                JSON.parse(
+                    sessionStorage.getItem(
+                        this.paymentProofRetryStorageKey()
+                    ) ||
+                    "null"
+                );
+        } catch (_) {
+            stored = null;
+        }
+
+        if (
+            !stored ||
+            !stored.paymentProofUploadFailed ||
+            !stored.orderNumber ||
+            !stored.token
+        ) {
+            return;
+        }
+
+        this.orderCreated = true;
+
+        this.paymentProofRetryOrderNumber =
+            String(
+                stored.orderNumber
+            );
+
+        this.paymentProofRetryToken =
+            String(
+                stored.token
+            );
+
+        const button =
+            document.getElementById(
+                "placeGuestOrderButton"
+            );
+
+        if (button) {
+            button.innerHTML =
+                '<i class="fa-solid fa-upload"></i> Retry Receipt Upload';
+
+            button.disabled =
+                false;
+        }
+
+        this.message(
+            `Order ${this.paymentProofRetryOrderNumber} already exists. Please select the receipt again if necessary, then tap Retry Receipt Upload.`,
+            "info"
+        );
+    },
+
+    savePaymentProofRetry(
+        orderNumber,
+        token
+    ) {
+        this.paymentProofRetryOrderNumber =
+            String(
+                orderNumber ||
+                ""
+            );
+
+        this.paymentProofRetryToken =
+            String(
+                token ||
+                ""
+            );
+
+        sessionStorage.setItem(
+            this.paymentProofRetryStorageKey(),
+            JSON.stringify({
+                paymentProofUploadFailed:
+                    true,
+
+                orderNumber:
+                    this.paymentProofRetryOrderNumber,
+
+                token:
+                    this.paymentProofRetryToken
+            })
+        );
+    },
+
+    clearPaymentProofRetry() {
+        sessionStorage.removeItem(
+            this.paymentProofRetryStorageKey()
+        );
+
+        this.paymentProofRetryOrderNumber =
+            "";
+
+        this.paymentProofRetryToken =
+            "";
+    },
+
+    async retryPaymentProofUpload(
+        button
+    ) {
+        const orderNumber =
+            this.paymentProofRetryOrderNumber;
+
+        const token =
+            this.paymentProofRetryToken;
+
+        if (
+            !orderNumber ||
+            !token
+        ) {
+            this.message(
+                "The existing guest order could not be restored for receipt upload.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (!this.paymentReceiptFile) {
+            this.message(
+                "Select your payment receipt, then tap Retry Receipt Upload.",
+                "error"
+            );
+
+            return;
+        }
+
+        this.loading(
+            button,
+            true
+        );
+
+        this.message(
+            `Uploading the payment receipt for order ${orderNumber}...`,
+            "info"
+        );
+
+        try {
+            await this.uploadPaymentReceipt(
+                orderNumber,
+                token
+            );
+
+            this.clearPaymentProofRetry();
+
+            if (this.cartMode) {
+                localStorage.removeItem(
+                    Store.cartKey
+                );
+
+                localStorage.setItem(
+                    Store.cartSyncKey,
+                    String(Date.now())
+                );
+
+                try {
+                    await Store.refreshCartCount();
+                } catch (error) {
+                    console.warn(
+                        "Cart counter could not be refreshed:",
+                        error
+                    );
+                }
+            }
+
+            const successUrl =
+                new URL(
+                    "guest-order-success.html",
+                    location.href
+                );
+
+            successUrl.searchParams.set(
+                "order",
+                orderNumber
+            );
+
+            successUrl.searchParams.set(
+                "token",
+                token
+            );
+
+            location.href =
+                successUrl.toString();
+
+        } catch (error) {
+            this.message(
+                `Order ${orderNumber} already exists. Receipt upload failed again. No new order was created. ${error.message || ""}`,
+                "error"
+            );
+
+            this.loading(
+                button,
+                false
+            );
+
+            if (button) {
+                button.innerHTML =
+                    '<i class="fa-solid fa-upload"></i> Retry Receipt Upload';
+            }
+        }
     },
 
     bind() {
@@ -710,6 +1325,20 @@ const GuestCheckout = {
             "guestGrandTotal",
             Store.money(total)
         );
+
+        /*
+         * Refresh the selected wallet panel after the
+         * final checkout total has been rendered.
+         */
+        const selectedPaymentMethod =
+            document.querySelector(
+                'input[name="guestPaymentMethod"]:checked'
+            )?.value ||
+            "cash_on_delivery";
+
+        this.renderPaymentAccountDetails(
+            selectedPaymentMethod
+        );
     },
 
     paymentReceiptRequired(method) {
@@ -929,6 +1558,10 @@ const GuestCheckout = {
             )?.value ||
             "cash_on_delivery";
 
+        this.renderPaymentAccountDetails(
+            method
+        );
+
         const manual =
             method !==
             "cash_on_delivery";
@@ -971,10 +1604,27 @@ const GuestCheckout = {
         event.preventDefault();
 
         if (this.orderCreated) {
+            if (
+                this.paymentProofRetryOrderNumber &&
+                this.paymentProofRetryToken
+            ) {
+                const retryButton =
+                    document.getElementById(
+                        "placeGuestOrderButton"
+                    );
+
+                await this.retryPaymentProofUpload(
+                    retryButton
+                );
+
+                return;
+            }
+
             this.message(
                 "Your order has already been created. Please do not place it again.",
                 "error"
             );
+
             return;
         }
 
@@ -1210,13 +1860,25 @@ const GuestCheckout = {
                         order.order_number,
                         token
                     );
+
+                    this.clearPaymentProofRetry();
                 } catch (receiptError) {
                     /*
                      * The order already exists.
-                     * Never POST /api/orders/guest again
-                     * automatically because that could create
-                     * a duplicate order.
+                     * Persist only the existing order authorization
+                     * in sessionStorage so a reload can retry the
+                     * receipt upload without creating another order.
                      */
+                    this.savePaymentProofRetry(
+                        order.order_number,
+                        token
+                    );
+
+                    if (button) {
+                        button.innerHTML =
+                            '<i class="fa-solid fa-upload"></i> Retry Receipt Upload';
+                    }
+
                     this.message(
                         `Order ${order.order_number} was created successfully, but the payment receipt upload failed. Do not place another order. ${receiptError.message || "Please retry the receipt upload from your order."}`,
                         "error"

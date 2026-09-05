@@ -476,3 +476,160 @@
         height: 68px;
     }
 }
+
+
+/* RUKHNAV GUEST WALLET DETAILS */
+
+.guest-wallet-details {
+    margin: 14px 0;
+}
+
+.guest-wallet-panel,
+.guest-wallet-simple {
+    padding: 16px;
+    border: 1px solid rgba(31, 92, 66, 0.18);
+    border-radius: 14px;
+    background: rgba(248, 246, 238, 0.76);
+}
+
+.guest-wallet-heading,
+.guest-wallet-simple {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+}
+
+.guest-wallet-heading > i,
+.guest-wallet-simple > i {
+    margin-top: 3px;
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.guest-wallet-heading strong,
+.guest-wallet-simple strong {
+    display: block;
+    color: var(--primary);
+}
+
+.guest-wallet-heading p,
+.guest-wallet-simple p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.guest-wallet-qr {
+    display: grid;
+    place-items: center;
+    gap: 8px;
+    margin: 16px 0;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: #fff;
+}
+
+.guest-wallet-qr img {
+    display: block;
+    width: min(220px, 100%);
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
+
+.guest-wallet-qr small {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.guest-wallet-account {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(255,255,255,.72);
+}
+
+.guest-wallet-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 14px;
+}
+
+.guest-wallet-row + .guest-wallet-row {
+    border-top: 1px solid var(--border);
+}
+
+.guest-wallet-row > span {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.guest-wallet-row > strong {
+    color: var(--primary);
+}
+
+.guest-wallet-copy {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.guest-wallet-copy button {
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    padding: 6px 9px;
+    background: transparent;
+    color: var(--primary);
+    font: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.guest-wallet-note {
+    margin: 14px 0 0;
+    color: var(--text);
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.guest-wallet-pending {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.guest-wallet-warning {
+    padding: 11px 13px;
+    border-radius: 10px;
+    background: #fff7dc;
+    color: #6f5712;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+@media (max-width: 600px) {
+    .guest-wallet-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .guest-wallet-copy {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .guest-wallet-qr img {
+        width: min(190px, 100%);
+    }
+}
