@@ -7,7 +7,6 @@ const ProductDetails = {
     quantity: 1,
     activeImageIndex: 0,
     activeTab: "description",
-    placeholderCount: 10,
     reviewData: null,
     reviewsLoading: false,
     reviewEligible: false,
@@ -530,35 +529,6 @@ const ProductDetails = {
         return `${API.base}/uploads/products/${clean}`;
     },
 
-    placeholderImages() {
-        const name =
-            this.product?.product_name ||
-            "RUKHNAV Product";
-
-        return Array.from(
-            {
-                length:
-                    this.placeholderCount
-            },
-            (_, index) => ({
-                id:
-                    `placeholder-${index + 1}`,
-
-                image_url:
-                    `images/product-placeholders/product-placeholder-${String(index + 1).padStart(2, "0")}.svg`,
-
-                image_alt:
-                    `${name} gallery view ${index + 1}`,
-
-                placeholder:
-                    true,
-
-                sort_order:
-                    index + 1
-            })
-        );
-    },
-
     render() {
         const product =
             this.product;
@@ -909,36 +879,9 @@ const ProductDetails = {
             }
         });
 
-        if (
-            unique.length <
-            this.placeholderCount
-        ) {
-            this.placeholderImages()
-                .forEach(image => {
-                    const url =
-                        this.imageUrl(
-                            image.image_url
-                        );
-
-                    if (!seen.has(url)) {
-                        seen.add(url);
-
-                        unique.push({
-                            ...image,
-                            url
-                        });
-                    }
-                });
-        }
-
-        this.images =
-            unique.slice(
-                0,
-                Math.max(
-                    this.placeholderCount,
-                    unique.length
-                )
-            );
+        // The customer gallery contains only real product media
+        // supplied by the backend / ERP Product Media system.
+        this.images = unique;
 
         this.activeImageIndex =
             0;
