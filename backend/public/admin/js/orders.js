@@ -2108,9 +2108,62 @@ async function loadOrderPaymentProof(id) {
         const proof =
             data.proof || data.paymentProof;
 
+        /*
+         * Receipt metadata and order payment metadata are
+         * intentionally returned separately by the API.
+         *
+         * proof   -> private receipt / verification state
+         * payment -> JazzCash/Easypaisa reference, phone,
+         *            totals and payment status
+         */
+        const payment =
+            data.payment || {};
+
         if (!proof) {
             return;
         }
+
+        /*
+         * Preserve the existing renderer below while giving it
+         * the payment fields it expects on the proof object.
+         */
+        Object.assign(
+            proof,
+            {
+                order_number:
+                    payment.order_number,
+
+                payment_method:
+                    payment.payment_method,
+
+                payment_status:
+                    payment.payment_status,
+
+                transaction_id:
+                    payment.transaction_id,
+
+                payment_phone:
+                    payment.payment_phone,
+
+                grand_total:
+                    Number(
+                        payment.grand_total ||
+                        0
+                    ),
+
+                paid_amount:
+                    Number(
+                        payment.paid_amount ||
+                        0
+                    ),
+
+                balance_amount:
+                    Number(
+                        payment.balance_amount ||
+                        0
+                    )
+            }
+        );
 
         section.classList.remove("hidden");
 
