@@ -219,6 +219,8 @@ export default function RukhnavStorefrontApp() {
         originWhitelist={["*"]}
         javaScriptEnabled
         domStorageEnabled
+        cacheEnabled={false}
+        cacheMode="LOAD_NO_CACHE"
         sharedCookiesEnabled
         thirdPartyCookiesEnabled
         allowsBackForwardNavigationGestures
