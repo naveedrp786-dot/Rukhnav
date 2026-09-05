@@ -1662,21 +1662,9 @@ window.CustomerCentre = {
             );
         }
 
-        window.history.pushState(
-            {
-                accountView: target
-            },
-            "",
-            url
-        );
-
-        this.showPanel(
-            target,
-            {
-                updateUrl: false,
-                focusView: true
-            }
-        );
+        // Use a real page navigation for account workspaces.
+        // This is reliable in both normal browsers and Android/iOS WebView.
+        window.location.assign(url.toString());
     },
 
     async showPanel(
