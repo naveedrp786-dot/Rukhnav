@@ -84,13 +84,10 @@ const OrderDetailsPage = {
     printOrder() {
         if (
             window.ReactNativeWebView &&
-            typeof window.ReactNativeWebView.postMessage ===
-                "function"
+            typeof window.ReactNativeWebView.postMessage === "function"
         ) {
             const source =
-                document.getElementById(
-                    "orderDetailsContent"
-                );
+                document.getElementById("orderDetailsContent");
 
             if (!source) {
                 window.print();
@@ -108,87 +105,510 @@ const OrderDetailsPage = {
                     element.remove();
                 });
 
-            const styles = Array.from(
-                document.querySelectorAll(
-                    'link[rel="stylesheet"], style'
-                )
-            )
-                .map(element => {
-                    if (
-                        element.tagName === "LINK"
-                    ) {
-                        const href =
-                            element.href;
-
-                        return href
-                            ? `<link rel="stylesheet" href="${href}">`
-                            : "";
-                    }
-
-                    return element.outerHTML;
-                })
-                .join("\n");
-
             const html = `
                 <!doctype html>
                 <html>
-                    <head>
-                        <meta charset="utf-8">
-                        <meta
-                            name="viewport"
-                            content="width=device-width, initial-scale=1"
-                        >
-                        ${styles}
+                <head>
+                    <meta charset="utf-8">
 
-                        <style>
-                            @page {
-                                size: A4 portrait;
-                                margin: 6mm;
-                            }
+                    <meta
+                        name="viewport"
+                        content="width=device-width, initial-scale=1"
+                    >
 
-                            html,
-                            body {
-                                background: #fff !important;
-                            }
+                    <style>
+                        @page {
+                            size: A4 portrait;
+                            margin: 9mm;
+                        }
 
-                            body {
-                                margin: 0;
-                                padding: 0;
-                            }
+                        * {
+                            box-sizing: border-box;
+                        }
 
-                            #orderDetailsContent {
-                                display: block !important;
-                                max-width: none !important;
-                                margin: 0 !important;
-                                padding: 0 !important;
-                            }
+                        html,
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            width: 100%;
+                            background: #ffffff;
+                            color: #26352d;
+                            font-family:
+                                Arial,
+                                Helvetica,
+                                sans-serif;
+                            font-size: 10px;
+                            line-height: 1.4;
+                        }
 
-                            header,
-                            footer,
-                            nav,
-                            .store-header,
-                            .store-footer,
-                            .rk-global-header,
-                            .rk-global-footer {
-                                display: none !important;
-                            }
+                        #orderDetailsContent {
+                            display: block !important;
+                            width: 100% !important;
+                            max-width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
 
-                            button {
-                                display: none !important;
-                            }
-                        </style>
-                    </head>
+                        .hidden {
+                            display: none !important;
+                        }
 
-                    <body>
-                        ${printable.outerHTML}
-                    </body>
+                        .order-invoice-brand {
+                            width: 100%;
+                            margin: 0 0 10px;
+                            padding: 11px 13px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 14px;
+                            border-radius: 8px;
+                            background: #173f2b;
+                            color: #ffffff;
+                            page-break-inside: avoid;
+                        }
+
+                        .order-invoice-brand-identity {
+                            min-width: 0;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+
+                        .order-invoice-logo {
+                            display: block;
+                            width: auto;
+                            height: 38px;
+                            max-width: 100px;
+                            max-height: 38px;
+                            object-fit: contain;
+                        }
+
+                        #orderInvoiceBrandName {
+                            display: block;
+                            color: #ffffff;
+                            font-size: 18px;
+                            font-weight: 800;
+                            line-height: 1.1;
+                            letter-spacing: 1px;
+                        }
+
+                        #orderInvoiceTagline {
+                            display: block;
+                            margin-top: 3px;
+                            color: #e9dfc7;
+                            font-size: 8px;
+                        }
+
+                        .order-invoice-document {
+                            flex: 0 0 auto;
+                            text-align: right;
+                        }
+
+                        .order-invoice-document strong {
+                            display: block;
+                            color: #d7b66d;
+                            font-size: 11px;
+                            letter-spacing: .8px;
+                        }
+
+                        .order-invoice-document span {
+                            display: block;
+                            margin-top: 2px;
+                            color: #f3ecdc;
+                            font-size: 8px;
+                        }
+
+                        .order-details-header {
+                            margin: 0 0 9px;
+                            padding: 10px 12px;
+                            border: 1px solid #d8ddd8;
+                            border-radius: 7px;
+                            background: #ffffff;
+                            page-break-inside: avoid;
+                        }
+
+                        .order-details-header > div:first-child > span {
+                            display: block;
+                            color: #b8892f;
+                            font-size: 8px;
+                            font-weight: 800;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                        }
+
+                        .order-details-header h1 {
+                            margin: 3px 0;
+                            color: #173f2b;
+                            font-size: 20px;
+                            line-height: 1.15;
+                            word-break: normal;
+                            overflow-wrap: break-word;
+                        }
+
+                        .order-details-header p {
+                            margin: 0;
+                            color: #687168;
+                            font-size: 9px;
+                        }
+
+                        .order-details-actions,
+                        .order-detail-backlinks {
+                            display: none !important;
+                        }
+
+                        .order-status-hero {
+                            margin: 0 0 9px;
+                            padding: 11px 13px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 15px;
+                            border-radius: 7px;
+                            background: #173f2b;
+                            color: #ffffff;
+                            page-break-inside: avoid;
+                        }
+
+                        .order-status-hero span {
+                            color: #d7b66d;
+                            font-size: 8px;
+                            font-weight: 800;
+                            text-transform: uppercase;
+                        }
+
+                        .order-status-hero h2 {
+                            margin: 3px 0;
+                            color: #ffffff;
+                            font-size: 20px;
+                            line-height: 1.1;
+                        }
+
+                        .order-status-hero p {
+                            margin: 0;
+                            color: #edf1ed;
+                            font-size: 8px;
+                        }
+
+                        .order-status-badges {
+                            display: flex;
+                            justify-content: flex-end;
+                            gap: 5px;
+                            flex-wrap: wrap;
+                        }
+
+                        .order-badge {
+                            display: inline-block;
+                            padding: 4px 7px;
+                            border-radius: 999px;
+                            background: #ffffff;
+                            color: #173f2b !important;
+                            font-size: 7px;
+                            font-weight: 800;
+                            white-space: nowrap;
+                        }
+
+                        .order-timeline-card,
+                        .tracking-card,
+                        .order-items-card,
+                        .order-summary-card,
+                        .shipping-card {
+                            border: 1px solid #d8ddd8;
+                            border-radius: 7px;
+                            background: #ffffff;
+                            page-break-inside: avoid;
+                        }
+
+                        .order-timeline-card {
+                            margin: 0 0 9px;
+                            padding: 10px 12px;
+                        }
+
+                        .order-card-heading span {
+                            color: #b8892f;
+                            font-size: 8px;
+                            font-weight: 800;
+                            text-transform: uppercase;
+                        }
+
+                        .order-card-heading h2 {
+                            margin: 2px 0 0;
+                            color: #173f2b;
+                            font-size: 16px;
+                        }
+
+                        .order-timeline {
+                            margin-top: 9px;
+                            display: grid;
+                            grid-template-columns: repeat(4, minmax(0, 1fr));
+                            gap: 6px;
+                        }
+
+                        .timeline-step {
+                            min-width: 0;
+                            padding: 7px;
+                            border: 1px solid #e4e7e3;
+                            border-radius: 5px;
+                            text-align: center;
+                        }
+
+                        .timeline-dot {
+                            display: block;
+                            width: 7px;
+                            height: 7px;
+                            margin: 0 auto 4px;
+                            border-radius: 50%;
+                            background: #c9cfca;
+                        }
+
+                        .timeline-step.complete .timeline-dot,
+                        .timeline-step.active .timeline-dot {
+                            background: #173f2b;
+                        }
+
+                        .timeline-step.cancelled .timeline-dot {
+                            background: #a52a23;
+                        }
+
+                        .timeline-step strong {
+                            display: block;
+                            font-size: 8px;
+                            word-break: normal;
+                        }
+
+                        .timeline-step > span:last-child {
+                            display: block;
+                            margin-top: 2px;
+                            color: #737a73;
+                            font-size: 7px;
+                        }
+
+                        .tracking-card {
+                            margin: 0 0 9px;
+                            padding: 9px 12px;
+                        }
+
+                        .tracking-card h2 {
+                            margin: 2px 0;
+                            font-size: 13px;
+                        }
+
+                        .tracking-card p {
+                            margin: 0;
+                            color: #697169;
+                            font-size: 8px;
+                        }
+
+                        .tracking-actions {
+                            display: none !important;
+                        }
+
+                        .order-details-grid {
+                            width: 100%;
+                            margin: 0;
+                            padding: 0;
+                            display: grid;
+                            grid-template-columns:
+                                minmax(0, 1.55fr)
+                                minmax(210px, .75fr);
+                            gap: 9px;
+                            align-items: start;
+                        }
+
+                        .order-items-card {
+                            overflow: hidden;
+                        }
+
+                        .order-items-card .order-card-heading {
+                            padding: 9px 11px;
+                            border-bottom: 1px solid #e3e6e2;
+                            background: #f8f7f2;
+                        }
+
+                        .order-items-list {
+                            display: block;
+                        }
+
+                        .order-detail-item {
+                            width: 100%;
+                            padding: 9px 11px;
+                            display: grid;
+                            grid-template-columns:
+                                52px
+                                minmax(0,1fr)
+                                78px;
+                            gap: 9px;
+                            align-items: center;
+                            border-bottom: 1px solid #e7e9e6;
+                            page-break-inside: avoid;
+                        }
+
+                        .order-detail-item:last-child {
+                            border-bottom: 0;
+                        }
+
+                        .order-detail-item-image {
+                            width: 52px;
+                            height: 52px;
+                            overflow: hidden;
+                            border-radius: 5px;
+                            background: #f2efe7;
+                        }
+
+                        .order-detail-item-image img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                        }
+
+                        .order-detail-placeholder {
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .order-detail-item h3 {
+                            margin: 0 0 3px;
+                            color: #26352d;
+                            font-size: 10px;
+                            line-height: 1.25;
+                            word-break: normal;
+                            overflow-wrap: break-word;
+                        }
+
+                        .order-detail-item p {
+                            margin: 2px 0;
+                            color: #6f766f;
+                            font-size: 8px;
+                            word-break: normal;
+                        }
+
+                        .order-detail-item-total {
+                            min-width: 0;
+                            text-align: right;
+                        }
+
+                        .order-detail-item-total strong {
+                            display: block;
+                            color: #173f2b;
+                            font-size: 10px;
+                            white-space: nowrap;
+                        }
+
+                        .order-detail-item-total span {
+                            display: block;
+                            margin-top: 2px;
+                            color: #737973;
+                            font-size: 7px;
+                        }
+
+                        .order-sidebar {
+                            min-width: 0;
+                            display: grid;
+                            gap: 9px;
+                        }
+
+                        .order-summary-card,
+                        .shipping-card {
+                            padding: 10px 11px;
+                        }
+
+                        .order-summary-card > span,
+                        .shipping-card > span {
+                            color: #b8892f;
+                            font-size: 8px;
+                            font-weight: 800;
+                            text-transform: uppercase;
+                        }
+
+                        .order-summary-card h2,
+                        .shipping-card h2 {
+                            margin: 2px 0 8px;
+                            color: #173f2b;
+                            font-size: 15px;
+                        }
+
+                        .order-summary-lines,
+                        .order-summary-meta {
+                            display: grid;
+                            gap: 5px;
+                        }
+
+                        .order-summary-lines > div,
+                        .order-summary-meta > div,
+                        .order-summary-total {
+                            min-width: 0;
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: space-between;
+                            gap: 8px;
+                        }
+
+                        .order-summary-lines span,
+                        .order-summary-meta span {
+                            min-width: 0;
+                            color: #727972;
+                            font-size: 7px;
+                            word-break: normal;
+                        }
+
+                        .order-summary-lines strong,
+                        .order-summary-meta strong {
+                            min-width: 65px;
+                            max-width: 120px;
+                            color: #26352d;
+                            font-size: 7px;
+                            text-align: right;
+                            word-break: normal;
+                            overflow-wrap: break-word;
+                        }
+
+                        .order-summary-total {
+                            margin: 8px 0;
+                            padding: 8px 0;
+                            border-top: 2px solid #173f2b;
+                            border-bottom: 2px solid #173f2b;
+                        }
+
+                        .order-summary-total span {
+                            font-weight: 800;
+                        }
+
+                        .order-summary-total strong {
+                            color: #173f2b;
+                            font-size: 14px;
+                            white-space: nowrap;
+                        }
+
+                        .shipping-card p {
+                            margin: 3px 0;
+                            color: #687068;
+                            font-size: 7px;
+                            line-height: 1.4;
+                            word-break: normal;
+                            overflow-wrap: break-word;
+                        }
+
+                        .reorder-button {
+                            display: none !important;
+                        }
+
+                        img {
+                            max-width: 100%;
+                        }
+                    </style>
+                </head>
+
+                <body>
+                    ${printable.outerHTML}
+                </body>
                 </html>
             `;
 
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({
-                    type:
-                        "RUKHNAV_PRINT_ORDER",
+                    type: "RUKHNAV_PRINT_ORDER",
                     html
                 })
             );
