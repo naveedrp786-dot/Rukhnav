@@ -1,5 +1,15 @@
 "use strict";
 
+
+/* RUKHNAV native-app invoice presentation */
+if (
+    window.ReactNativeWebView &&
+    typeof window.ReactNativeWebView.postMessage === "function"
+) {
+    document.documentElement.classList.add("rukhnav-native-app");
+}
+
+
 const OrderDetailsPage = {
     order: null,
     items: [],

@@ -483,3 +483,441 @@
         background:#173f2b !important;
     }
 }
+
+
+/* =========================================================
+   RUKHNAV NATIVE APP — PREMIUM ORDER / INVOICE
+   Applies only inside the React Native WebView.
+   Desktop and normal mobile browser remain unchanged.
+   ========================================================= */
+
+html.rukhnav-native-app .order-details-page {
+    background: #f4f1e8 !important;
+    padding: 12px 0 32px !important;
+}
+
+html.rukhnav-native-app .order-details-content {
+    padding-bottom: 28px !important;
+}
+
+
+/* Invoice identity */
+
+html.rukhnav-native-app .order-invoice-brand {
+    margin: 0 12px 12px !important;
+    padding: 18px 16px !important;
+    border: 0 !important;
+    border-radius: 18px !important;
+    background: #173f2b !important;
+    box-shadow: 0 10px 28px rgba(23,63,43,.16) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    overflow: hidden !important;
+}
+
+html.rukhnav-native-app .order-invoice-brand-identity {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+}
+
+html.rukhnav-native-app .order-invoice-logo {
+    width: 56px !important;
+    height: 56px !important;
+    max-width: 56px !important;
+    max-height: 56px !important;
+    object-fit: contain !important;
+    flex: 0 0 56px !important;
+    border-radius: 10px !important;
+}
+
+html.rukhnav-native-app #orderInvoiceBrandName {
+    display: block !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 19px !important;
+    line-height: 1.05 !important;
+    letter-spacing: 1.4px !important;
+}
+
+html.rukhnav-native-app #orderInvoiceTagline {
+    display: block !important;
+    margin-top: 4px !important;
+    color: #e7dcc0 !important;
+    -webkit-text-fill-color: #e7dcc0 !important;
+    font-size: 8px !important;
+    line-height: 1.35 !important;
+}
+
+html.rukhnav-native-app .order-invoice-document {
+    flex: 0 0 auto !important;
+    text-align: right !important;
+}
+
+html.rukhnav-native-app .order-invoice-document strong {
+    display: block !important;
+    color: #d7b66d !important;
+    -webkit-text-fill-color: #d7b66d !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    letter-spacing: .8px !important;
+}
+
+html.rukhnav-native-app .order-invoice-document span {
+    display: block !important;
+    margin-top: 3px !important;
+    color: #f3ecdc !important;
+    -webkit-text-fill-color: #f3ecdc !important;
+    font-size: 7px !important;
+}
+
+
+/* Order heading */
+
+html.rukhnav-native-app .order-details-header {
+    margin: 0 12px 10px !important;
+    padding: 16px !important;
+    border: 1px solid #ded8ca !important;
+    border-radius: 16px !important;
+    background: #ffffff !important;
+    box-shadow: 0 7px 20px rgba(25,55,39,.06) !important;
+}
+
+html.rukhnav-native-app .order-detail-backlinks {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 7px !important;
+    width: 100% !important;
+    margin-bottom: 14px !important;
+}
+
+html.rukhnav-native-app .order-detail-backlinks a {
+    min-height: 39px !important;
+    padding: 0 8px !important;
+    border: 1px solid #d8d3c7 !important;
+    border-radius: 10px !important;
+    background: #f8f6f0 !important;
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    font-size: 9px !important;
+    text-decoration: none !important;
+}
+
+html.rukhnav-native-app .order-details-header > div:first-child > span {
+    color: #b8892f !important;
+    -webkit-text-fill-color: #b8892f !important;
+    font-size: 8px !important;
+    font-weight: 900 !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+}
+
+html.rukhnav-native-app .order-details-header h1 {
+    margin: 5px 0 4px !important;
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    font-size: 22px !important;
+    line-height: 1.15 !important;
+    overflow-wrap: anywhere !important;
+}
+
+html.rukhnav-native-app .order-details-header p {
+    margin: 0 !important;
+    color: #74766f !important;
+    -webkit-text-fill-color: #74766f !important;
+    font-size: 9px !important;
+}
+
+html.rukhnav-native-app .order-details-actions {
+    width: 100% !important;
+    margin-top: 13px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 7px !important;
+}
+
+html.rukhnav-native-app .order-details-actions .btn {
+    width: 100% !important;
+    min-height: 40px !important;
+    justify-content: center !important;
+    font-size: 9px !important;
+}
+
+
+/* Status */
+
+html.rukhnav-native-app .order-status-hero {
+    margin: 10px 12px !important;
+    padding: 17px 16px !important;
+    border: 0 !important;
+    border-radius: 16px !important;
+    background: #173f2b !important;
+    box-shadow: 0 8px 24px rgba(23,63,43,.14) !important;
+}
+
+html.rukhnav-native-app .order-status-hero > div:first-child > span {
+    color: #d7b66d !important;
+    -webkit-text-fill-color: #d7b66d !important;
+}
+
+html.rukhnav-native-app .order-status-hero h2 {
+    margin: 4px 0 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 25px !important;
+}
+
+html.rukhnav-native-app .order-status-hero p {
+    color: #e9eee9 !important;
+    -webkit-text-fill-color: #e9eee9 !important;
+    font-size: 9px !important;
+}
+
+html.rukhnav-native-app .order-status-badges {
+    margin-top: 11px !important;
+    display: flex !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+}
+
+html.rukhnav-native-app .order-status-badges .order-badge {
+    padding: 6px 9px !important;
+    border-radius: 999px !important;
+    font-size: 8px !important;
+}
+
+
+/* Timeline */
+
+html.rukhnav-native-app .order-timeline-card {
+    margin: 10px 12px !important;
+    padding: 16px !important;
+    border: 1px solid #ded8ca !important;
+    border-radius: 16px !important;
+    background: #ffffff !important;
+    box-shadow: 0 7px 20px rgba(25,55,39,.05) !important;
+}
+
+html.rukhnav-native-app .order-card-heading h2 {
+    margin: 4px 0 0 !important;
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    font-size: 20px !important;
+}
+
+html.rukhnav-native-app .order-timeline {
+    margin-top: 16px !important;
+}
+
+
+/* Main invoice body */
+
+html.rukhnav-native-app .order-details-grid {
+    margin: 10px 12px 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+html.rukhnav-native-app .order-items-card,
+html.rukhnav-native-app .order-summary-card,
+html.rukhnav-native-app .shipping-card {
+    margin: 0 0 10px !important;
+    border: 1px solid #ded8ca !important;
+    border-radius: 16px !important;
+    background: #ffffff !important;
+    box-shadow: 0 7px 20px rgba(25,55,39,.05) !important;
+    overflow: hidden !important;
+}
+
+html.rukhnav-native-app .order-items-card .order-card-heading {
+    padding: 15px 16px !important;
+    background: #faf8f2 !important;
+}
+
+html.rukhnav-native-app .order-detail-item {
+    padding: 14px 15px !important;
+    display: grid !important;
+    grid-template-columns: 64px minmax(0,1fr) !important;
+    gap: 11px !important;
+    align-items: center !important;
+}
+
+html.rukhnav-native-app .order-detail-item-image {
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 11px !important;
+}
+
+html.rukhnav-native-app .order-detail-item h3 {
+    margin: 0 0 4px !important;
+    color: #26352d !important;
+    -webkit-text-fill-color: #26352d !important;
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+}
+
+html.rukhnav-native-app .order-detail-item p {
+    margin: 2px 0 !important;
+    color: #777970 !important;
+    -webkit-text-fill-color: #777970 !important;
+    font-size: 8px !important;
+}
+
+html.rukhnav-native-app .order-detail-item-total {
+    grid-column: 1 / -1 !important;
+    padding-top: 9px !important;
+    border-top: 1px dashed #ded8ca !important;
+    text-align: right !important;
+}
+
+html.rukhnav-native-app .order-detail-item-total strong {
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    font-size: 15px !important;
+}
+
+
+/* Payment summary */
+
+html.rukhnav-native-app .order-summary-card {
+    padding: 17px 16px !important;
+}
+
+html.rukhnav-native-app .order-summary-card > span {
+    color: #b8892f !important;
+    -webkit-text-fill-color: #b8892f !important;
+}
+
+html.rukhnav-native-app .order-summary-card h2 {
+    margin: 4px 0 15px !important;
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    font-size: 21px !important;
+}
+
+html.rukhnav-native-app .order-summary-lines,
+html.rukhnav-native-app .order-summary-meta {
+    gap: 9px !important;
+}
+
+html.rukhnav-native-app .order-summary-lines > div,
+html.rukhnav-native-app .order-summary-meta > div {
+    padding-bottom: 8px !important;
+    border-bottom: 1px solid #eee9df !important;
+}
+
+html.rukhnav-native-app .order-summary-lines span,
+html.rukhnav-native-app .order-summary-meta span {
+    color: #777970 !important;
+    -webkit-text-fill-color: #777970 !important;
+    font-size: 9px !important;
+}
+
+html.rukhnav-native-app .order-summary-lines strong,
+html.rukhnav-native-app .order-summary-meta strong {
+    color: #26352d !important;
+    -webkit-text-fill-color: #26352d !important;
+    font-size: 9px !important;
+}
+
+html.rukhnav-native-app .order-summary-total {
+    margin: 13px 0 !important;
+    padding: 14px 0 !important;
+    border-top: 2px solid #173f2b !important;
+    border-bottom: 2px solid #173f2b !important;
+}
+
+html.rukhnav-native-app .order-summary-total span {
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    font-weight: 800 !important;
+}
+
+html.rukhnav-native-app .order-summary-total strong {
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    font-size: 22px !important;
+}
+
+
+/* Delivery */
+
+html.rukhnav-native-app .shipping-card {
+    padding: 17px 16px !important;
+}
+
+html.rukhnav-native-app .shipping-card > span {
+    color: #b8892f !important;
+    -webkit-text-fill-color: #b8892f !important;
+}
+
+html.rukhnav-native-app .shipping-card h2 {
+    margin: 4px 0 9px !important;
+    color: #173f2b !important;
+    -webkit-text-fill-color: #173f2b !important;
+    font-size: 19px !important;
+}
+
+html.rukhnav-native-app .shipping-card p {
+    color: #6d746d !important;
+    -webkit-text-fill-color: #6d746d !important;
+    font-size: 9px !important;
+    line-height: 1.55 !important;
+}
+
+
+/* Reorder */
+
+html.rukhnav-native-app .reorder-button {
+    width: 100% !important;
+    min-height: 46px !important;
+    margin-top: 2px !important;
+    border-radius: 12px !important;
+    background: #173f2b !important;
+    border-color: #173f2b !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+
+/* Very small Android devices */
+
+@media(max-width:390px) {
+
+    html.rukhnav-native-app .order-invoice-brand {
+        margin-left: 9px !important;
+        margin-right: 9px !important;
+        padding: 15px 13px !important;
+    }
+
+    html.rukhnav-native-app .order-invoice-logo {
+        width: 48px !important;
+        height: 48px !important;
+        max-width: 48px !important;
+        max-height: 48px !important;
+        flex-basis: 48px !important;
+    }
+
+    html.rukhnav-native-app #orderInvoiceBrandName {
+        font-size: 17px !important;
+    }
+
+    html.rukhnav-native-app .order-invoice-document strong {
+        font-size: 8px !important;
+    }
+
+    html.rukhnav-native-app .order-details-header,
+    html.rukhnav-native-app .order-status-hero,
+    html.rukhnav-native-app .order-timeline-card,
+    html.rukhnav-native-app .order-details-grid {
+        margin-left: 9px !important;
+        margin-right: 9px !important;
+    }
+}
