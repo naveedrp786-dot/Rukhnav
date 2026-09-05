@@ -450,3 +450,22 @@ body{
     background:#fff;
     color:var(--primary);
 }
+
+
+/* RUKHNAV TRACK ORDER ACTION FOREGROUND FIX */
+.tracking-result-actions a:first-child,
+.tracking-result-actions a:first-child:link,
+.tracking-result-actions a:first-child:visited,
+.tracking-result-actions a:first-child:hover,
+.tracking-result-actions a:first-child:focus,
+.tracking-result-actions a:first-child:active {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+.tracking-result-actions a:first-child i,
+.tracking-result-actions a:first-child span {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
