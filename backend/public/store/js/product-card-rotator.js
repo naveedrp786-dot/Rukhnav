@@ -17,8 +17,10 @@
 
 (() => {
 
-    const ROTATION_MS = 4000;
-    const FADE_MS = 280;
+    const ROTATION_MS = 5200;
+    const FADE_MS = 700;
+    const STAGGER_MS = 650;
+    const MAX_STAGGER_STEPS = 7;
     const MAX_IMAGES = 5;
 
     const galleryCache = new Map();
@@ -399,6 +401,20 @@
 
         if (!state) {
 
+            /*
+             * Stagger cards so the complete product grid does
+             * not change images at exactly the same moment.
+             *
+             * Product ID keeps the delay stable even when cards
+             * are re-rendered by pagination or CMS updates.
+             */
+
+            const staggerStep =
+                Math.abs(
+                    Number(productId) || 0
+                ) %
+                MAX_STAGGER_STEPS;
+
             state = {
                 index: Math.max(
                     0,
@@ -409,7 +425,11 @@
                 images,
                 timer: null,
                 running: false,
-                visible: true
+                visible: true,
+                firstRotation: true,
+                staggerDelay:
+                    staggerStep *
+                    STAGGER_MS
             };
 
             activeCards.set(
@@ -440,6 +460,17 @@
                 }
 
                 state.running = true;
+
+                const delay =
+                    ROTATION_MS +
+                    (
+                        state.firstRotation
+                            ? state.staggerDelay
+                            : 0
+                    );
+
+                state.firstRotation =
+                    false;
 
                 state.timer =
                     window.setTimeout(
@@ -512,7 +543,7 @@
                             schedule();
 
                         },
-                        ROTATION_MS
+                        delay
                     );
             };
 
