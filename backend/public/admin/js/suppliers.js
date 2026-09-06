@@ -28,10 +28,12 @@ const $ = (id) => document.getElementById(id);
 
 function getToken() {
     return (
-        localStorage.getItem("token") ||
         localStorage.getItem("adminToken") ||
-        sessionStorage.getItem("token") ||
+        localStorage.getItem("admin_token") ||
         sessionStorage.getItem("adminToken") ||
+        sessionStorage.getItem("admin_token") ||
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token") ||
         ""
     );
 }
