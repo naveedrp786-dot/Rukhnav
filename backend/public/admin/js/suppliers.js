@@ -1,12 +1,12 @@
 "use strict";
-const RUKHNAV_ORIGIN = window.RUKHNAV_API_ORIGIN || window.location.origin;
+const SUPPLIERS_ORIGIN = window.RUKHNAV_API_ORIGIN || window.location.origin;
 
 // =========================================
 // RUKHNAV ERP - Supplier Management
 // =========================================
 
 const SUPPLIER_API =
-    RUKHNAV_ORIGIN + "/api/suppliers";
+    SUPPLIERS_ORIGIN + "/api/suppliers";
 
 let suppliers = [];
 let inactiveSupplierList = [];
