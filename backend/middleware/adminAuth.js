@@ -38,6 +38,15 @@ module.exports = (req, res, next) => {
             process.env.JWT_SECRET
         );
 
+        // Security: a customer JWT must never be accepted
+        // by an administrator-only API route.
+        if (decoded.accountType === "customer") {
+            return res.status(403).json({
+                success: false,
+                message: "Administrator access required."
+            });
+        }
+
         req.admin = decoded;
 
         next();

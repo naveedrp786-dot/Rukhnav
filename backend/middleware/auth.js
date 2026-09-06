@@ -54,6 +54,16 @@ module.exports = async (
                 jwtSecret
             );
 
+        // Security: customer-only API routes must never
+        // accept administrator or other JWT types.
+        if (decoded.accountType !== "customer") {
+            return res.status(403).json({
+                success: false,
+                message:
+                    "Customer access required."
+            });
+        }
+
         const sessionHash =
             crypto
                 .createHash("sha256")

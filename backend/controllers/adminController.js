@@ -301,7 +301,8 @@ exports.login = async (req, res) => {
             {
                 id: admin.id,
                 email: admin.email,
-                role: admin.role
+                role: admin.role,
+                accountType: "admin"
             },
             process.env.JWT_SECRET,
             {
