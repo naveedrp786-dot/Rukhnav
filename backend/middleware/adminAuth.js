@@ -38,9 +38,23 @@ module.exports = (req, res, next) => {
             process.env.JWT_SECRET
         );
 
-        // Security: a customer JWT must never be accepted
-        // by an administrator-only API route.
-        if (decoded.accountType === "customer") {
+        // Accept current administrator JWTs and,
+        // temporarily, the legacy administrator token
+        // shape issued before accountType was added.
+        const isCurrentAdmin =
+            decoded.accountType === "admin";
+
+        const isLegacyAdmin =
+            !decoded.accountType &&
+            !decoded.scope &&
+            decoded.id &&
+            decoded.email &&
+            decoded.role;
+
+        if (
+            !isCurrentAdmin &&
+            !isLegacyAdmin
+        ) {
             return res.status(403).json({
                 success: false,
                 message: "Administrator access required."
