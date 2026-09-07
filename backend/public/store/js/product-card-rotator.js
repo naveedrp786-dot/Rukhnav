@@ -269,17 +269,40 @@
     function preload(url) {
 
         if (!url) {
-            return;
+            return Promise.resolve(false);
         }
 
-        const image =
-            new Image();
+        return new Promise(resolve => {
 
-        image.decoding =
-            "async";
+            const image = new Image();
 
-        image.src =
-            url;
+            image.decoding = "async";
+
+            image.onload = async () => {
+
+                try {
+                    await image.decode?.();
+                } catch {
+                    // Image is already loaded; decode support varies.
+                }
+
+                resolve(true);
+            };
+
+            image.onerror = () => {
+                resolve(false);
+            };
+
+            image.src = url;
+
+            /*
+             * Cached images can already be complete before
+             * the load handler gets a chance to run.
+             */
+            if (image.complete && image.naturalWidth > 0) {
+                resolve(true);
+            }
+        });
     }
 
 
@@ -495,10 +518,32 @@
                                     state.images.length
                                 ];
 
-                            preload(
-                                afterNext
-                            );
+                            /*
+                             * IMPORTANT:
+                             * Keep the current image fully visible until
+                             * the next image has completely loaded.
+                             */
+                            const nextReady =
+                                await preload(nextUrl);
 
+                            if (
+                                !nextReady ||
+                                document.hidden ||
+                                !state.visible ||
+                                !card.isConnected
+                            ) {
+                                /*
+                                 * Never remove the current working image
+                                 * because another gallery image failed.
+                                 */
+                                schedule();
+                                return;
+                            }
+
+                            /*
+                             * The browser now has nextUrl ready.
+                             * Only now begin the fade.
+                             */
                             img.classList.add(
                                 "rk-card-image-changing"
                             );
@@ -524,13 +569,12 @@
                                 return;
                             }
 
-                            img.src =
-                                nextUrl;
+                            img.src = nextUrl;
 
                             try {
                                 await img.decode?.();
                             } catch {
-                                // Continue even if decode() is unsupported.
+                                // The preloaded image remains usable.
                             }
 
                             state.index =
@@ -539,6 +583,12 @@
                             img.classList.remove(
                                 "rk-card-image-changing"
                             );
+
+                            /*
+                             * Quietly prepare the following image while
+                             * the customer is viewing this one.
+                             */
+                            preload(afterNext);
 
                             schedule();
 
