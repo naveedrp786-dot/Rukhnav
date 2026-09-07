@@ -37,19 +37,38 @@
     const style = document.createElement("style");
 
     style.textContent = `
-        .product-card .product-image img {
+        .product-card .product-image {
+            position: relative;
+        }
+
+        .product-card .product-image > img {
             transition:
-                opacity ${FADE_MS}ms ease,
                 transform .5s cubic-bezier(.2,.7,.2,1),
                 filter .3s ease;
         }
 
-        .product-card .product-image img.rk-card-image-changing {
+        /*
+         * True two-image crossfade.
+         * The current image never becomes transparent.
+         */
+        .product-card .product-image > img.rk-card-image-next {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             opacity: 0;
+            z-index: 2;
+            pointer-events: none;
+            transition:
+                opacity ${FADE_MS}ms ease;
+        }
+
+        .product-card .product-image > img.rk-card-image-next-visible {
+            opacity: 1;
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .product-card .product-image img {
+            .product-card .product-image > img {
                 transition: none !important;
             }
         }
@@ -541,11 +560,86 @@
                             }
 
                             /*
-                             * The browser now has nextUrl ready.
-                             * Only now begin the fade.
+                             * TRUE CROSSFADE:
+                             *
+                             * Keep the current image fully visible.
+                             * Place the already-loaded next image above it,
+                             * fade that second image in, then make it the
+                             * permanent image.
+                             *
+                             * At no point are both images transparent.
                              */
-                            img.classList.add(
-                                "rk-card-image-changing"
+                            const imageWrap =
+                                img.parentElement;
+
+                            if (!imageWrap) {
+                                schedule();
+                                return;
+                            }
+
+                            /*
+                             * Remove any abandoned overlay from an
+                             * interrupted previous transition.
+                             */
+                            imageWrap
+                                .querySelectorAll(
+                                    ".rk-card-image-next"
+                                )
+                                .forEach(
+                                    element =>
+                                        element.remove()
+                                );
+
+                            const nextImg =
+                                document.createElement("img");
+
+                            nextImg.className =
+                                "rk-card-image-next";
+
+                            nextImg.src =
+                                nextUrl;
+
+                            nextImg.alt =
+                                img.alt || "";
+
+                            nextImg.decoding =
+                                "async";
+
+                            nextImg.loading =
+                                "eager";
+
+                            imageWrap.appendChild(
+                                nextImg
+                            );
+
+                            try {
+                                await nextImg.decode?.();
+                            } catch {
+                                /*
+                                 * preload(nextUrl) already succeeded,
+                                 * so decode failure alone is harmless.
+                                 */
+                            }
+
+                            if (
+                                document.hidden ||
+                                !state.visible ||
+                                !card.isConnected
+                            ) {
+                                nextImg.remove();
+
+                                stopCard(card);
+                                return;
+                            }
+
+                            /*
+                             * Force the browser to commit opacity:0
+                             * before switching to opacity:1.
+                             */
+                            void nextImg.offsetWidth;
+
+                            nextImg.classList.add(
+                                "rk-card-image-next-visible"
                             );
 
                             await new Promise(
@@ -561,32 +655,37 @@
                                 !state.visible ||
                                 !card.isConnected
                             ) {
-                                img.classList.remove(
-                                    "rk-card-image-changing"
-                                );
+                                nextImg.remove();
 
                                 stopCard(card);
                                 return;
                             }
 
-                            img.src = nextUrl;
+                            /*
+                             * The overlay is now fully visible.
+                             * Update the permanent image underneath it.
+                             */
+                            img.src =
+                                nextUrl;
 
                             try {
                                 await img.decode?.();
                             } catch {
-                                // The preloaded image remains usable.
+                                // Already available from preload.
                             }
 
                             state.index =
                                 nextIndex;
 
-                            img.classList.remove(
-                                "rk-card-image-changing"
-                            );
+                            /*
+                             * The permanent image and overlay now show
+                             * the same picture, so removing the overlay
+                             * cannot reveal a blank frame.
+                             */
+                            nextImg.remove();
 
                             /*
-                             * Quietly prepare the following image while
-                             * the customer is viewing this one.
+                             * Prepare the following image quietly.
                              */
                             preload(afterNext);
 
