@@ -54,14 +54,54 @@ document.addEventListener("DOMContentLoaded", async () => {
                 API.products
             );
 
-        const products =
+        let products =
             Array.isArray(response.products)
-                ? response.products
+                ? [...response.products]
                 : Array.isArray(response.data)
-                    ? response.data
+                    ? [...response.data]
                     : Array.isArray(response)
-                        ? response
+                        ? [...response]
                         : [];
+
+        /*
+         * The products API is server-paginated.
+         * Load every remaining page so the homepage,
+         * live search and showcase know about the
+         * complete catalogue.
+         */
+        const totalPages =
+            Number(
+                response.totalPages ||
+                response.total_pages ||
+                1
+            );
+
+        for (
+            let page = 2;
+            page <= totalPages;
+            page++
+        ) {
+            const separator =
+                String(API.products).includes("?")
+                    ? "&"
+                    : "?";
+
+            const nextResponse =
+                await API.get(
+                    `${API.products}${separator}page=${page}`
+                );
+
+            const nextProducts =
+                Array.isArray(nextResponse.products)
+                    ? nextResponse.products
+                    : Array.isArray(nextResponse.data)
+                        ? nextResponse.data
+                        : Array.isArray(nextResponse)
+                            ? nextResponse
+                            : [];
+
+            products.push(...nextProducts);
+        }
 
         const loading =
             document.getElementById(
@@ -117,7 +157,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (grid) {
             grid.innerHTML =
                 products
-                    .slice(0, 10)
                     .map(
                         product =>
                             Store.card(
