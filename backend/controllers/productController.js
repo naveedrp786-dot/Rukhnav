@@ -48,6 +48,7 @@ exports.getProducts = async (req, res) => {
 
     p.status,
     p.is_featured,
+    p.display_order,
     p.stock_quantity,
     p.low_stock_level,
     p.unit,
@@ -148,7 +149,15 @@ conditions.push("p.status != 'Inactive'");
                 break;
 
             default:
-                sql += " ORDER BY p.id DESC";
+                sql += `
+                    ORDER BY
+                        CASE
+                            WHEN p.display_order IS NULL THEN 1
+                            ELSE 0
+                        END,
+                        p.display_order ASC,
+                        p.id DESC
+                `;
 
         }
 
@@ -546,7 +555,19 @@ exports.restoreProduct = async (req, res) => {
         const [result] = await db.query(
             `
             UPDATE products
-            SET status = 'Active'
+            SET
+                status = 'Active',
+                display_order = (
+                    SELECT next_display_order
+                    FROM (
+                        SELECT
+                            COALESCE(
+                                MAX(display_order),
+                                0
+                            ) + 1 AS next_display_order
+                        FROM products
+                    ) AS position_source
+                )
             WHERE id = ?
             `,
             [productId]

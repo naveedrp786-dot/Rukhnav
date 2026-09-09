@@ -444,6 +444,26 @@ exports.addProduct = async (
     try {
         await connection.beginTransaction();
 
+        // Assign every new product to the end of the
+        // manually controlled storefront display order.
+        const [[displayOrderRow]] =
+            await connection.query(
+                `
+                SELECT
+                    COALESCE(
+                        MAX(display_order),
+                        0
+                    ) + 1 AS next_display_order
+                FROM products
+                FOR UPDATE
+                `
+            );
+
+        const displayOrder =
+            Number(
+                displayOrderRow.next_display_order
+            ) || 1;
+
         const [result] =
             await connection.query(
                 `
@@ -458,9 +478,10 @@ exports.addProduct = async (
                     warnings,
                     selling_price,
                     stock_quantity,
-                    status
+                    status,
+                    display_order
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `,
                 [
                     productName,
@@ -472,7 +493,8 @@ exports.addProduct = async (
                     warnings || null,
                     sellingPrice,
                     stockQuantity,
-                    status
+                    status,
+                    displayOrder
                 ]
             );
 
@@ -914,6 +936,173 @@ exports.updateProduct = async (
                     ? undefined
                     : error.message
         });
+    } finally {
+        connection.release();
+    }
+};
+// ==========================================
+// Admin: Reorder Product Storefront Position
+// ==========================================
+exports.reorderProduct = async (req, res) => {
+    const productId =
+        Number.parseInt(req.params.id, 10);
+
+    const requestedPosition =
+        Number.parseInt(
+            req.body.position,
+            10
+        );
+
+    if (
+        !Number.isInteger(productId) ||
+        productId <= 0
+    ) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid product ID."
+        });
+    }
+
+    if (
+        !Number.isInteger(requestedPosition) ||
+        requestedPosition <= 0
+    ) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Position must be a positive whole number."
+        });
+    }
+
+    const connection =
+        await db.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        // Lock all product rows while rebuilding the
+        // storefront ordering.
+        const [products] =
+            await connection.query(
+                `
+                SELECT
+                    id,
+                    product_name,
+                    display_order
+                FROM products
+                WHERE status != 'Inactive'
+                ORDER BY
+                    CASE
+                        WHEN display_order IS NULL THEN 1
+                        ELSE 0
+                    END,
+                    display_order ASC,
+                    id DESC
+                FOR UPDATE
+                `
+            );
+
+        const currentIndex =
+            products.findIndex(
+                product =>
+                    Number(product.id) ===
+                    productId
+            );
+
+        if (currentIndex === -1) {
+            await connection.rollback();
+
+            return res.status(404).json({
+                success: false,
+                message: "Product not found."
+            });
+        }
+
+        const productToMove =
+            products.splice(
+                currentIndex,
+                1
+            )[0];
+
+        // Clamp oversized positions to the end.
+        const finalPosition =
+            Math.min(
+                requestedPosition,
+                products.length + 1
+            );
+
+        products.splice(
+            finalPosition - 1,
+            0,
+            productToMove
+        );
+
+        // Normalize all positions so there can never
+        // be duplicate or missing display positions.
+        for (
+            let index = 0;
+            index < products.length;
+            index += 1
+        ) {
+            const normalizedPosition =
+                index + 1;
+
+            if (
+                Number(
+                    products[index]
+                        .display_order
+                ) !== normalizedPosition
+            ) {
+                await connection.query(
+                    `
+                    UPDATE products
+                    SET display_order = ?
+                    WHERE id = ?
+                    `,
+                    [
+                        normalizedPosition,
+                        products[index].id
+                    ]
+                );
+            }
+        }
+
+        await connection.commit();
+
+        return res.json({
+            success: true,
+            message:
+                "Product position updated successfully.",
+            product: {
+                id: productId,
+                product_name:
+                    productToMove.product_name,
+                display_order:
+                    finalPosition
+            },
+            total_products:
+                products.length
+        });
+
+    } catch (error) {
+        await connection.rollback();
+
+        console.error(
+            "Reorder product error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to update product position.",
+            error:
+                process.env.NODE_ENV ===
+                "production"
+                    ? undefined
+                    : error.message
+        });
+
     } finally {
         connection.release();
     }

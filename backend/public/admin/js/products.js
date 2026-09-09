@@ -338,7 +338,7 @@ async function loadProducts() {
     try {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="8">
+                <td colspan="9">
                     Loading Products...
                 </td>
             </tr>
@@ -363,13 +363,118 @@ async function loadProducts() {
 
         tableBody.innerHTML = `
             <tr>
-                <td colspan="8">
+                <td colspan="9">
                     ${escapeHTML(
                         error.message
                     )}
                 </td>
             </tr>
         `;
+    }
+}
+
+// ==========================================
+// Product Position Helpers
+// ==========================================
+function productFiltersAreActive() {
+    const keyword =
+        String(
+            searchInput?.value || ""
+        ).trim();
+
+    const category =
+        String(
+            categoryFilter?.value || ""
+        ).trim();
+
+    const status =
+        String(
+            statusFilter?.value || ""
+        ).trim();
+
+    return Boolean(
+        keyword ||
+        category ||
+        status
+    );
+}
+
+async function moveProductPosition(
+    productId,
+    direction
+) {
+    if (productFiltersAreActive()) {
+        alert(
+            "Clear product filters before changing storefront positions."
+        );
+        return;
+    }
+
+    const product =
+        loadedProducts.find(
+            item =>
+                Number(item.id) ===
+                Number(productId)
+        );
+
+    if (!product) {
+        alert("Product not found.");
+        return;
+    }
+
+    const currentIndex =
+        loadedProducts.findIndex(
+            item =>
+                Number(item.id) ===
+                Number(productId)
+        );
+
+    if (currentIndex === -1) {
+        alert(
+            "Unable to determine this product's storefront position."
+        );
+        return;
+    }
+
+    const currentPosition =
+        currentIndex + 1;
+
+    const targetPosition =
+        currentPosition + direction;
+
+    if (
+        targetPosition < 1 ||
+        targetPosition >
+            loadedProducts.length
+    ) {
+        return;
+    }
+
+    try {
+        await adminRequest(
+            `${API_URL}/${productId}/position`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    position:
+                        targetPosition
+                })
+            }
+        );
+
+        await loadProducts();
+
+    } catch (error) {
+        console.error(error);
+
+        alert(
+            error.message ||
+            "Unable to change product position."
+        );
     }
 }
 
@@ -419,7 +524,7 @@ function renderProducts(products) {
     if (products.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="8">
+                <td colspan="9">
                     No products found.
                 </td>
             </tr>
@@ -548,6 +653,46 @@ function renderProducts(products) {
                                 )
                             }
                         </span>
+                    </td>
+
+                    <td>
+                        <div class="product-position-control">
+                            <button
+                                type="button"
+                                class="position-btn"
+                                title="Move product up"
+                                aria-label="Move product up"
+                                onclick="moveProductPosition(
+                                    ${product.id},
+                                    -1
+                                )"
+                            >
+                                <i class="fa-solid fa-arrow-up"></i>
+                            </button>
+
+                            <strong class="product-position-number">
+                                ${
+                                    loadedProducts.findIndex(
+                                        item =>
+                                            Number(item.id) ===
+                                            Number(product.id)
+                                    ) + 1
+                                }
+                            </strong>
+
+                            <button
+                                type="button"
+                                class="position-btn"
+                                title="Move product down"
+                                aria-label="Move product down"
+                                onclick="moveProductPosition(
+                                    ${product.id},
+                                    1
+                                )"
+                            >
+                                <i class="fa-solid fa-arrow-down"></i>
+                            </button>
+                        </div>
                     </td>
 
                     <td>

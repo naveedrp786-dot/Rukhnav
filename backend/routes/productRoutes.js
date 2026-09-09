@@ -124,6 +124,16 @@ router.delete(
 );
 
 // ==========================================
+// Protected Product Storefront Reordering
+// ==========================================
+
+router.patch(
+    "/:id/position",
+    adminAuth,
+    productCrudController.reorderProduct
+);
+
+// ==========================================
 // Public Single Product with Full Gallery
 // ==========================================
 
