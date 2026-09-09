@@ -7654,3 +7654,94 @@ span{
             transparent
         );
 }
+
+/* =========================================================
+   RUKHNAV PRODUCTS PAGE — COMPACT FILTER SIDEBAR
+   2026-09-09
+   ========================================================= */
+
+.catalog > .filters {
+  align-self: start;
+  height: auto;
+  min-height: 0;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: sticky;
+  top: 20px;
+}
+
+.catalog > .filters .filter-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 22px;
+}
+
+.catalog > .filters .filter-title h2 {
+  margin: 0;
+}
+
+.catalog > .filters #clearFilters {
+  width: auto;
+  height: auto;
+  min-height: 0;
+  padding: 5px 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.catalog > .filters > label {
+  display: block;
+  margin: 0 0 8px;
+  padding: 0;
+  height: auto;
+  min-height: 0;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.catalog > .filters > select,
+.catalog > .filters > input {
+  display: block;
+  width: 100%;
+  height: 46px;
+  min-height: 46px;
+  max-height: 46px;
+  box-sizing: border-box;
+  margin: 0 0 22px;
+  padding: 0 13px;
+}
+
+.catalog > .filters > input {
+  padding: 10px 13px;
+}
+
+.catalog > .filters #applyFilters {
+  width: 100%;
+  height: 46px;
+  min-height: 46px;
+  max-height: 46px;
+  margin: 4px 0 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+/* Do not force sticky desktop behaviour on the mobile drawer */
+@media (max-width: 900px) {
+  .catalog > .filters {
+    position: fixed;
+    height: auto;
+    min-height: 0;
+    align-self: auto;
+  }
+}
+
