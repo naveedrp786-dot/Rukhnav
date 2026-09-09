@@ -553,6 +553,12 @@ app.get("/", (req, res) => {
 // 404 Handler
 // =====================================================
 
+
+app.use(
+    "/api/contact",
+    require("./routes/contactRoutes")
+);
+
 app.use((req, res) => {
     return res.status(404).json({
         success: false,

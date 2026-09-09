@@ -46,35 +46,137 @@
 <label>Email Address<input id="contactReplyEmail" type="email" required></label>
 <label>Subject<input id="contactSubject" required></label>
 <label>Message<textarea id="contactMessage" rows="6" required></textarea></label>
-<button class="btn primary" type="submit">Prepare Email</button>
+<button id="contactSubmit" class="btn primary" type="submit">Send Message</button>
 <p id="contactStatus"></p>
 </form>
 </section>
 </main>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("contactForm")?.addEventListener("submit", event => {
-        event.preventDefault();
-        const subject = encodeURIComponent(document.getElementById("contactSubject").value);
-        const body = encodeURIComponent(
-            `Name: ${document.getElementById("contactName").value}\n` +
-            `Reply email: ${document.getElementById("contactReplyEmail").value}\n\n` +
-            document.getElementById("contactMessage").value
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+        const form =
+            document.getElementById(
+                "contactForm"
+            );
+
+        if (!form) {
+            return;
+        }
+
+        form.addEventListener(
+            "submit",
+            async event => {
+                event.preventDefault();
+
+                const button =
+                    document.getElementById(
+                        "contactSubmit"
+                    );
+
+                const status =
+                    document.getElementById(
+                        "contactStatus"
+                    );
+
+                const payload = {
+                    name:
+                        document.getElementById(
+                            "contactName"
+                        ).value.trim(),
+
+                    email:
+                        document.getElementById(
+                            "contactReplyEmail"
+                        ).value.trim(),
+
+                    subject:
+                        document.getElementById(
+                            "contactSubject"
+                        ).value.trim(),
+
+                    message:
+                        document.getElementById(
+                            "contactMessage"
+                        ).value.trim()
+                };
+
+                if (status) {
+                    status.textContent =
+                        "Sending your message...";
+                }
+
+                if (button) {
+                    button.disabled = true;
+                    button.textContent =
+                        "Sending...";
+                }
+
+                try {
+                    const response =
+                        await fetch(
+                            "/api/contact",
+                            {
+                                method:
+                                    "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+
+                                    Accept:
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        payload
+                                    )
+                            }
+                        );
+
+                    const data =
+                        await response.json()
+                            .catch(
+                                () => ({})
+                            );
+
+                    if (
+                        !response.ok ||
+                        data.success === false
+                    ) {
+                        throw new Error(
+                            data.message ||
+                            "Unable to send your message."
+                        );
+                    }
+
+                    if (status) {
+                        status.textContent =
+                            data.message ||
+                            "Thank you. Your message has been sent successfully.";
+                    }
+
+                    form.reset();
+
+                } catch (error) {
+                    if (status) {
+                        status.textContent =
+                            error.message ||
+                            "Unable to send your message right now.";
+                    }
+
+                } finally {
+                    if (button) {
+                        button.disabled = false;
+                        button.textContent =
+                            "Send Message";
+                    }
+                }
+            }
         );
-        const form = document.getElementById("contactForm");
-
-        const supportEmail =
-            form?.dataset.supportEmail ||
-            "naveedrp786@gmail.com";
-
-        window.location.href =
-            `mailto:${supportEmail}?subject=${subject}&body=${body}`;
-
-        document.getElementById("contactStatus").textContent =
-            form?.dataset.successText ||
-            "Your email application has been opened.";
-    });
-});
+    }
+);
 </script>
 
 <div id="footer"></div>
