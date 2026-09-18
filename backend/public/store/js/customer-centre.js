@@ -715,31 +715,21 @@ window.CustomerCentre = {
             );
 
             this.showMessage(
-                data.message || "Registration successful. Please verify your account.",
+                data.message || "Account created successfully. You can sign in now.",
                 "success"
             );
 
             form.reset();
 
-            const verificationIdentifier =
-                document.getElementById(
-                    "verificationIdentifier"
-                );
+            // Registration no longer requires OTP verification.
+            // Return the customer directly to the sign-in form.
+            this.showAuthForm("login");
 
-            if (verificationIdentifier) {
-                verificationIdentifier.value =
-                    email || phone;
-            }
+            const loginIdentifier =
+                document.getElementById("loginIdentifier");
 
-            this.showAuthForm("verify");
-
-            if (email) {
-                await this.sendVerificationCode();
-            } else {
-                this.showMessage(
-                    "Your account was created. Mobile verification delivery will be available after SMS service is connected.",
-                    "info"
-                );
+            if (loginIdentifier) {
+                loginIdentifier.value = email || phone;
             }
         } catch (error) {
             this.showMessage(error.message, "error");
@@ -940,12 +930,14 @@ window.CustomerCentre = {
         }
 
     },
-
     async requestReset(event) {
         event.preventDefault();
 
         const identifier =
-            document.getElementById("forgotIdentifier").value.trim();
+            document
+                .getElementById("forgotIdentifier")
+                .value
+                .trim();
 
         if (!identifier) {
             this.showMessage(
@@ -956,47 +948,68 @@ window.CustomerCentre = {
         }
 
         const button =
-            document.getElementById("forgotPasswordButton");
+            document.getElementById(
+                "forgotPasswordButton"
+            );
 
-        this.setLoading(button, true, "Sending Code");
+        this.setLoading(
+            button,
+            true,
+            "Sending Link"
+        );
 
         try {
-            const data = await API.post(
-                API.customer("/password/forgot"),
-                { identifier }
+
+            const data =
+                await API.post(
+                    API.customer(
+                        "/password/forgot"
+                    ),
+                    {
+                        identifier
+                    }
+                );
+
+            /*
+             * The reset authorization is delivered only
+             * through the registered email/WhatsApp.
+             *
+             * Do not redirect to the reset form here and
+             * do not store a reset token in browser storage.
+             */
+
+
+            this.showMessage(
+                data.message ||
+                    "If an account matches those details, a secure password-reset link has been sent.",
+                "success"
             );
 
-            sessionStorage.setItem(
-                "rukhnav_reset_identifier",
-                identifier
-            );
-
-            if (data.expiresInMinutes) {
-                sessionStorage.setItem(
-                    "rukhnav_reset_expiry_minutes",
-                    String(data.expiresInMinutes)
+            const input =
+                document.getElementById(
+                    "forgotIdentifier"
                 );
+
+            if (input) {
+                input.value = "";
             }
 
-            if (data.developmentCode) {
-                sessionStorage.setItem(
-                    "rukhnav_development_reset_code",
-                    String(data.developmentCode)
-                );
-            }
-
-            this.showMessage(data.message, "success");
-
-            setTimeout(() => {
-                location.href =
-                    `reset-password.html?identifier=${encodeURIComponent(identifier)}`;
-            }, 900);
         } catch (error) {
-            this.showMessage(error.message, "error");
+
+            this.showMessage(
+                error.message,
+                "error"
+            );
+
         } finally {
-            this.setLoading(button, false);
+
+            this.setLoading(
+                button,
+                false
+            );
         }
     },
+
 
     async loadCustomerCentre() {
         this.hideViews();

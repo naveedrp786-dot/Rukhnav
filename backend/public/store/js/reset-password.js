@@ -1,171 +1,266 @@
 "use strict";
 
 const ResetPasswordPage = {
-    resendSeconds: 60,
-    resendTimer: null,
 
-    async init() {
-        await this.waitForStore();
+    token: "",
 
-        this.bind();
-        this.prefill();
-        this.startResendTimer();
-    },
+    init() {
 
-    waitForStore() {
-        return new Promise(resolve => {
-            if (Store.settings && Object.keys(Store.settings).length) {
-                resolve();
-                return;
-            }
-
-            document.addEventListener(
-                "rukhnav:store-ready",
-                resolve,
-                { once: true }
-            );
-        });
-    },
-
-    bind() {
-        const otpInputs =
-            [...document.querySelectorAll("#otpFields input")];
-
-        otpInputs.forEach((input, index) => {
-            input.addEventListener("input", () => {
-                input.value =
-                    input.value.replace(/\D/g, "").slice(0, 1);
-
-                if (input.value && index < otpInputs.length - 1) {
-                    otpInputs[index + 1].focus();
-                }
-            });
-
-            input.addEventListener("keydown", event => {
-                if (
-                    event.key === "Backspace" &&
-                    !input.value &&
-                    index > 0
-                ) {
-                    otpInputs[index - 1].focus();
-                }
-            });
-
-            input.addEventListener("paste", event => {
-                event.preventDefault();
-
-                const digits =
-                    event.clipboardData
-                        .getData("text")
-                        .replace(/\D/g, "")
-                        .slice(0, 6)
-                        .split("");
-
-                digits.forEach((digit, digitIndex) => {
-                    if (otpInputs[digitIndex]) {
-                        otpInputs[digitIndex].value = digit;
-                    }
-                });
-
-                otpInputs[Math.min(digits.length, 6) - 1]?.focus();
-            });
-        });
-
-        document.querySelectorAll("[data-password-toggle]")
-            .forEach(button => {
-                button.addEventListener(
-                    "click",
-                    () => this.togglePassword(button)
-                );
-            });
-
-        document.getElementById("newPassword")
-            .addEventListener(
-                "input",
-                event => this.updateStrength(event.target.value)
-            );
-
-        document.getElementById("resetPasswordForm")
-            .addEventListener(
-                "submit",
-                event => this.resetPassword(event)
-            );
-
-        document.getElementById("resendCodeButton")
-            .addEventListener(
-                "click",
-                () => this.resendCode()
-            );
-    },
-
-    prefill() {
-        const params =
-            new URLSearchParams(location.search);
-
-        const identifier =
-            params.get("identifier") ||
-            sessionStorage.getItem("rukhnav_reset_identifier") ||
+        this.token =
+            new URLSearchParams(
+                window.location.search
+            )
+                .get("token")
+                ?.trim() ||
             "";
 
-        document.getElementById("resetIdentifier").value =
-            identifier;
+        /*
+         * Keep the reset credential only in memory.
+         * Remove it from the browser address immediately so
+         * later resource requests/navigation cannot expose it.
+         */
+        if (this.token) {
+            try {
+                window.history.replaceState(
+                    {},
+                    document.title,
+                    window.location.pathname
+                );
+            } catch (_) {}
+        }
 
-        const developmentCode =
-            sessionStorage.getItem("rukhnav_development_reset_code");
+        this.bindEvents();
+        this.bindPasswordToggles();
+        this.validateResetLink();
+        this.updatePasswordStrength();
+    },
 
-        if (developmentCode && /^\d{6}$/.test(developmentCode)) {
-            const inputs =
-                [...document.querySelectorAll("#otpFields input")];
+    bindEvents() {
 
-            developmentCode.split("").forEach((digit, index) => {
-                inputs[index].value = digit;
+        document
+            .getElementById(
+                "resetPasswordForm"
+            )
+            ?.addEventListener(
+                "submit",
+                (event) =>
+                    this.submit(event)
+            );
+
+        document
+            .getElementById(
+                "newPassword"
+            )
+            ?.addEventListener(
+                "input",
+                () =>
+                    this.updatePasswordStrength()
+            );
+    },
+
+    bindPasswordToggles() {
+
+        document
+            .querySelectorAll(
+                "[data-password-toggle]"
+            )
+            .forEach((button) => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const targetId =
+                            button.getAttribute(
+                                "data-password-toggle"
+                            );
+
+                        const input =
+                            document.getElementById(
+                                targetId
+                            );
+
+                        if (!input) {
+                            return;
+                        }
+
+                        const reveal =
+                            input.type ===
+                            "password";
+
+                        input.type =
+                            reveal
+                                ? "text"
+                                : "password";
+
+                        const icon =
+                            button.querySelector("i");
+
+                        if (icon) {
+                            icon.className =
+                                reveal
+                                    ? "fa-regular fa-eye-slash"
+                                    : "fa-regular fa-eye";
+                        }
+                    }
+                );
             });
-
-            this.showMessage(
-                `Development reset code loaded: ${developmentCode}`,
-                "info"
-            );
-        }
-
-        const expiry =
-            sessionStorage.getItem("rukhnav_reset_expiry_minutes");
-
-        if (expiry) {
-            document.getElementById("codeExpiryText").textContent =
-                `Code expires in approximately ${expiry} minute(s).`;
-        }
     },
 
-    code() {
-        return [...document.querySelectorAll("#otpFields input")]
-            .map(input => input.value)
-            .join("");
+    validateResetLink() {
+
+        const valid =
+            /^[a-f0-9]{64}$/i.test(
+                this.token
+            );
+
+        if (valid) {
+            return true;
+        }
+
+        const form =
+            document.getElementById(
+                "resetPasswordForm"
+            );
+
+        if (form) {
+
+            form
+                .querySelectorAll(
+                    "input, button"
+                )
+                .forEach((element) => {
+                    element.disabled = true;
+                });
+        }
+
+        this.showMessage(
+            "This password-reset link is invalid or incomplete. Please request a new reset link.",
+            "error"
+        );
+
+        return false;
     },
 
-    async resetPassword(event) {
-        event.preventDefault();
+    updatePasswordStrength() {
 
-        const identifier =
-            document.getElementById("resetIdentifier").value.trim();
-
-        const code =
-            this.code();
-
-        const newPassword =
-            document.getElementById("newPassword").value;
-
-        const confirmPassword =
-            document.getElementById("confirmNewPassword").value;
-
-        if (!/^\d{6}$/.test(code)) {
-            this.showMessage(
-                "Enter the complete six-digit reset code.",
-                "error"
+        const input =
+            document.getElementById(
+                "newPassword"
             );
+
+        const bar =
+            document.getElementById(
+                "passwordStrengthBar"
+            );
+
+        const text =
+            document.getElementById(
+                "passwordStrengthText"
+            );
+
+        if (
+            !input ||
+            !bar ||
+            !text
+        ) {
             return;
         }
 
-        if (newPassword.length < 8) {
+        const value =
+            input.value || "";
+
+        let score = 0;
+
+        if (value.length >= 8) {
+            score += 1;
+        }
+
+        if (value.length >= 12) {
+            score += 1;
+        }
+
+        if (/[a-z]/.test(value)) {
+            score += 1;
+        }
+
+        if (/[A-Z]/.test(value)) {
+            score += 1;
+        }
+
+        if (/[0-9]/.test(value)) {
+            score += 1;
+        }
+
+        if (/[^A-Za-z0-9]/.test(value)) {
+            score += 1;
+        }
+
+        const percentage =
+            Math.min(
+                100,
+                Math.round(
+                    (score / 6) * 100
+                )
+            );
+
+        bar.style.width =
+            `${percentage}%`;
+
+        if (!value) {
+            text.textContent =
+                "Use at least 8 characters.";
+            return;
+        }
+
+        if (value.length < 8) {
+            text.textContent =
+                "Password must contain at least 8 characters.";
+            return;
+        }
+
+        if (score <= 2) {
+            text.textContent =
+                "Password strength: Basic";
+            return;
+        }
+
+        if (score <= 4) {
+            text.textContent =
+                "Password strength: Good";
+            return;
+        }
+
+        text.textContent =
+            "Password strength: Strong";
+    },
+
+    async submit(event) {
+
+        event.preventDefault();
+
+        if (!this.validateResetLink()) {
+            return;
+        }
+
+        const newPassword =
+            document
+                .getElementById(
+                    "newPassword"
+                )
+                .value;
+
+        const confirmPassword =
+            document
+                .getElementById(
+                    "confirmNewPassword"
+                )
+                .value;
+
+        if (
+            !newPassword ||
+            newPassword.length < 8
+        ) {
             this.showMessage(
                 "New password must contain at least 8 characters.",
                 "error"
@@ -173,7 +268,10 @@ const ResetPasswordPage = {
             return;
         }
 
-        if (newPassword !== confirmPassword) {
+        if (
+            newPassword !==
+            confirmPassword
+        ) {
             this.showMessage(
                 "Password confirmation does not match.",
                 "error"
@@ -182,191 +280,132 @@ const ResetPasswordPage = {
         }
 
         const button =
-            document.getElementById("resetPasswordButton");
+            document.getElementById(
+                "resetPasswordButton"
+            );
 
-        const original =
-            button.innerHTML;
-
-        button.disabled = true;
-        button.innerHTML =
-            '<i class="fa-solid fa-spinner fa-spin"></i> Resetting Password';
+        this.setLoading(
+            button,
+            true
+        );
 
         try {
-            const data = await API.post(
-                API.customer("/password/reset"),
-                {
-                    identifier,
-                    code,
-                    new_password: newPassword,
-                    confirm_password: confirmPassword
-                }
-            );
 
-            API.clearCustomerSession();
+            const data =
+                await API.post(
+                    API.customer(
+                        "/password/reset"
+                    ),
+                    {
+                        token:
+                            this.token,
 
-            sessionStorage.removeItem("rukhnav_reset_identifier");
-            sessionStorage.removeItem("rukhnav_reset_expiry_minutes");
-            sessionStorage.removeItem("rukhnav_development_reset_code");
+                        new_password:
+                            newPassword,
 
-            this.showMessage(data.message, "success");
+                        confirm_password:
+                            confirmPassword
+                    }
+                );
 
-            setTimeout(() => {
-                location.href =
-                    `account.html?identifier=${encodeURIComponent(identifier)}`;
-            }, 1600);
-        } catch (error) {
-            const suffix =
-                error.data?.remainingAttempts !== undefined
-                    ? ` ${error.data.remainingAttempts} attempt(s) remaining.`
-                    : "";
+            this.token = "";
 
             this.showMessage(
-                error.message + suffix,
+                data.message ||
+                    "Password reset successfully.",
+                "success"
+            );
+
+            const form =
+                document.getElementById(
+                    "resetPasswordForm"
+                );
+
+            if (form) {
+                form.reset();
+            }
+
+            setTimeout(() => {
+                window.location.href =
+                    "account.html";
+            }, 1200);
+
+        } catch (error) {
+
+            this.showMessage(
+                error.message,
                 "error"
             );
+
         } finally {
-            button.disabled = false;
-            button.innerHTML = original;
+
+            this.setLoading(
+                button,
+                false
+            );
         }
     },
 
-    async resendCode() {
-        const identifier =
-            document.getElementById("resetIdentifier").value.trim();
+    setLoading(
+        button,
+        loading
+    ) {
 
-        if (!identifier) {
-            this.showMessage(
-                "Enter your email address or mobile number first.",
-                "error"
-            );
+        if (!button) {
             return;
         }
 
-        const button =
-            document.getElementById("resendCodeButton");
+        button.disabled =
+            Boolean(loading);
 
-        button.disabled = true;
+        if (loading) {
 
-        try {
-            const data = await API.post(
-                API.customer("/password/forgot"),
-                { identifier }
-            );
+            button.dataset.originalText =
+                button.innerHTML;
 
-            if (data.developmentCode) {
-                sessionStorage.setItem(
-                    "rukhnav_development_reset_code",
-                    String(data.developmentCode)
-                );
-            }
+            button.innerHTML =
+                `Resetting password
+                <i class="fa-solid fa-spinner fa-spin"></i>`;
 
-            this.showMessage(data.message, "success");
-            this.startResendTimer();
-        } catch (error) {
-            this.showMessage(error.message, "error");
-            button.disabled = false;
+            return;
+        }
+
+        if (
+            button.dataset.originalText
+        ) {
+            button.innerHTML =
+                button.dataset.originalText;
         }
     },
 
-    startResendTimer() {
-        clearInterval(this.resendTimer);
+    showMessage(
+        message,
+        type = "info"
+    ) {
 
-        this.resendSeconds = 60;
-
-        const button =
-            document.getElementById("resendCodeButton");
-
-        const countdown =
-            document.getElementById("resendCountdown");
-
-        button.disabled = true;
-
-        const render = () => {
-            countdown.textContent =
-                String(this.resendSeconds);
-
-            if (this.resendSeconds <= 0) {
-                clearInterval(this.resendTimer);
-                button.disabled = false;
-                button.innerHTML = "Resend code";
-                return;
-            }
-
-            button.innerHTML =
-                `Resend in <span id="resendCountdown">${this.resendSeconds}</span>s`;
-
-            this.resendSeconds -= 1;
-        };
-
-        render();
-
-        this.resendTimer =
-            setInterval(render, 1000);
-    },
-
-    togglePassword(button) {
-        const input =
+        const target =
             document.getElementById(
-                button.dataset.passwordToggle
+                "resetMessage"
             );
 
-        const showing =
-            input.type === "text";
+        if (!target) {
+            return;
+        }
 
-        input.type =
-            showing ? "password" : "text";
+        target.textContent =
+            message || "";
 
-        button.querySelector("i").className =
-            showing
-                ? "fa-regular fa-eye"
-                : "fa-regular fa-eye-slash";
-    },
+        target.className =
+            `reset-message ${type}`;
 
-    updateStrength(password) {
-        let score = 0;
-
-        if (password.length >= 8) score += 1;
-        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1;
-        if (/\d/.test(password)) score += 1;
-        if (/[^A-Za-z0-9]/.test(password)) score += 1;
-
-        const widths = [0, 25, 50, 75, 100];
-        const labels = [
-            "Use at least 8 characters.",
-            "Weak password",
-            "Fair password",
-            "Good password",
-            "Strong password"
-        ];
-
-        const bar =
-            document.getElementById("passwordStrengthBar");
-
-        bar.style.width =
-            `${widths[score]}%`;
-
-        bar.style.background =
-            score < 2
-                ? "#b63a30"
-                : score < 4
-                    ? "#d39b29"
-                    : "#20804a";
-
-        document.getElementById("passwordStrengthText").textContent =
-            labels[score];
-    },
-
-    showMessage(message, type) {
-        const element =
-            document.getElementById("resetMessage");
-
-        element.textContent = message;
-        element.className =
-            `reset-message show ${type}`;
+        target.hidden =
+            !message;
     }
 };
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => ResetPasswordPage.init()
+    () => {
+        ResetPasswordPage.init();
+    }
 );

@@ -377,7 +377,7 @@ exports.register = async (req, res) => {
                     NULL,
                     'Pakistan',
                     NULL,
-                    'Pending Verification',
+                    'Active',
                     ?,
                     CURRENT_TIMESTAMP,
                     1,
@@ -506,17 +506,9 @@ exports.register = async (req, res) => {
             success: true,
 
             message:
-                "Registration successful. Please verify your account.",
+                "Account created successfully. You can sign in now.",
 
-            verificationRequired: true,
-
-            verificationOptions: {
-                email:
-                    Boolean(cleanEmail),
-
-                phone:
-                    Boolean(cleanPhone)
-            },
+            verificationRequired: false,
 
             customer: {
                 id: customerId,
@@ -529,7 +521,7 @@ exports.register = async (req, res) => {
                 referral_code:
                     generatedReferralCode,
                 status:
-                    "Pending Verification"
+                    "Active"
             }
         });
 
@@ -764,64 +756,13 @@ exports.login = async (req, res) => {
         }
 
         // =================================
-// Check Login-Identifier Verification
-// =================================
-
-const identifierVerified =
-    isEmailLogin
-        ? Boolean(
-            customer.email_verified_at
-        )
-        : Boolean(
-            customer.phone_verified_at
-        );
-
-if (
-    shouldEnforceCustomerVerification() &&
-    !identifierVerified
-) {
-    return res.status(403).json({
-        success: false,
-        verificationRequired: true,
-
-        identifierType:
-            isEmailLogin
-                ? "Email"
-                : "Phone",
-
-        verificationMethod:
-            isEmailLogin
-                ? "email"
-                : "phone",
-
-        identifier:
-            isEmailLogin
-                ? customer.email
-                : customer.phone,
-
-        message:
-            isEmailLogin
-                ? "Please verify your email address before logging in."
-                : "Please verify your phone number before logging in."
-    });
-}
-
+        // Account Availability Check
         // =================================
-        // Check Account Status
-        // =================================
-
-        if (
-    shouldEnforceCustomerVerification() &&
-    customer.status ===
-    "Pending Verification"
-) {
-    return res.status(403).json({
-        success: false,
-        verificationRequired: true,
-        message:
-            "Please verify your account before logging in."
-    });
-}
+        //
+        // Email/phone verification is optional.
+        // It must not block normal customer login.
+        // Inactive, Suspended and deletion-state
+        // protections remain enforced below.
 
         if (
             customer.status === "Inactive" ||
