@@ -784,6 +784,163 @@ const ProductDetails = {
             canonicalUrl
         );
 
+        /*
+         * Product structured data.
+         *
+         * Keep this generated from the same live product object
+         * used by the visible product page so search metadata
+         * cannot drift away from customer-visible information.
+         */
+        const structuredData = {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name:
+                product.product_name ||
+                "RUKHNAV product",
+            description:
+                metaDescription,
+            url:
+                canonicalUrl,
+            category:
+                product.category ||
+                undefined,
+            sku:
+                product.sku
+                    ? String(product.sku)
+                    : undefined
+        };
+
+        const structuredImages =
+            [
+                ...(Array.isArray(product.images)
+                    ? product.images.map(
+                        image =>
+                            image?.image_url
+                    )
+                    : []),
+                product.image_url,
+                product.main_image,
+                product.image
+            ]
+                .map(
+                    image =>
+                        this.imageUrl(image)
+                )
+                .filter(Boolean)
+                .map(
+                    image =>
+                        new URL(
+                            image,
+                            window.location.origin
+                        ).href
+                )
+                .filter(
+                    (image, index, images) =>
+                        images.indexOf(image) ===
+                        index
+                );
+
+        if (structuredImages.length > 0) {
+            structuredData.image =
+                structuredImages;
+        }
+
+        const brand =
+            String(
+                product.brand || ""
+            ).trim();
+
+        if (brand) {
+            structuredData.brand = {
+                "@type": "Brand",
+                name: brand
+            };
+        }
+
+        const structuredPrice =
+            this.price(product);
+
+        if (
+            Number.isFinite(
+                structuredPrice
+            ) &&
+            structuredPrice > 0
+        ) {
+            structuredData.offers = {
+                "@type": "Offer",
+                url:
+                    canonicalUrl,
+                priceCurrency:
+                    "PKR",
+                price:
+                    structuredPrice.toFixed(2),
+                availability:
+                    this.stock(product) > 0
+                        ? "https://schema.org/InStock"
+                        : "https://schema.org/OutOfStock",
+                itemCondition:
+                    "https://schema.org/NewCondition"
+            };
+        }
+
+        const ratingValue =
+            Number(
+                product.averageRating
+            );
+
+        const reviewCount =
+            Number(
+                product.totalReviews
+            );
+
+        if (
+            Number.isFinite(ratingValue) &&
+            ratingValue > 0 &&
+            ratingValue <= 5 &&
+            Number.isInteger(reviewCount) &&
+            reviewCount > 0
+        ) {
+            structuredData.aggregateRating = {
+                "@type":
+                    "AggregateRating",
+                ratingValue:
+                    ratingValue,
+                reviewCount:
+                    reviewCount,
+                bestRating:
+                    5,
+                worstRating:
+                    1
+            };
+        }
+
+        let structuredDataScript =
+            document.getElementById(
+                "rukhnav-product-jsonld"
+            );
+
+        if (!structuredDataScript) {
+            structuredDataScript =
+                document.createElement(
+                    "script"
+                );
+
+            structuredDataScript.id =
+                "rukhnav-product-jsonld";
+
+            structuredDataScript.type =
+                "application/ld+json";
+
+            document.head.appendChild(
+                structuredDataScript
+            );
+        }
+
+        structuredDataScript.textContent =
+            JSON.stringify(
+                structuredData
+            );
+
         this.text(
             "pdName",
             product.product_name ||
