@@ -536,6 +536,33 @@ const ProductDetails = {
         document.title =
             `${product.product_name || "Product"} | RUKHNAV`;
 
+        const canonicalUrl =
+            `https://www.rukhnav.store/store/product.html?id=${encodeURIComponent(product.id)}`;
+
+        let canonicalLink =
+            document.querySelector(
+                'link[rel="canonical"]'
+            );
+
+        if (!canonicalLink) {
+            canonicalLink =
+                document.createElement("link");
+
+            canonicalLink.setAttribute(
+                "rel",
+                "canonical"
+            );
+
+            document.head.appendChild(
+                canonicalLink
+            );
+        }
+
+        canonicalLink.setAttribute(
+            "href",
+            canonicalUrl
+        );
+
         this.text(
             "pdName",
             product.product_name ||
