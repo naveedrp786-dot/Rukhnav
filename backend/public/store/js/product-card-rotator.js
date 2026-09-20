@@ -128,13 +128,36 @@
 
         const link =
             card.querySelector(
-                '.product-image[href*="product.html?id="]'
+                ".product-image"
             );
 
         if (!link) {
             return null;
         }
 
+        /*
+         * Preferred path:
+         * catalog links now expose the public SEO slug,
+         * while the numeric product ID remains available
+         * internally for gallery/API operations.
+         */
+        const internalId =
+            Number.parseInt(
+                link.dataset.productId,
+                10
+            );
+
+        if (
+            Number.isInteger(internalId) &&
+            internalId > 0
+        ) {
+            return internalId;
+        }
+
+        /*
+         * Backward compatibility:
+         * older product.html?id= URLs still work.
+         */
         try {
 
             const url =
@@ -143,17 +166,17 @@
                     window.location.href
                 );
 
-            const id =
+            const legacyId =
                 Number.parseInt(
                     url.searchParams.get("id"),
                     10
                 );
 
             return (
-                Number.isInteger(id) &&
-                id > 0
+                Number.isInteger(legacyId) &&
+                legacyId > 0
             )
-                ? id
+                ? legacyId
                 : null;
 
         } catch {

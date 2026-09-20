@@ -604,6 +604,7 @@ app.get("/sitemap.xml", async (req, res, next) => {
             `
             SELECT
                 id,
+                slug,
                 updated_at
             FROM products
             WHERE status != 'Inactive'
@@ -633,7 +634,7 @@ app.get("/sitemap.xml", async (req, res, next) => {
 
         for (const product of products) {
             const productUrl =
-                `${baseUrl}/store/product.html?id=${encodeURIComponent(product.id)}`;
+                `${baseUrl}/store/product/${encodeURIComponent(product.slug)}`;
 
             const lines = [
                 "  <url>",
@@ -671,6 +672,21 @@ app.get("/sitemap.xml", async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
+});
+
+// ============================================================
+// RUKHNAV SEO — PRETTY PRODUCT URL
+// Stage 1G-C2-B1
+// ============================================================
+
+app.get("/store/product/:slug", (req, res) => {
+    return res.sendFile(
+        path.join(
+            frontendPublicRoot,
+            "store",
+            "product.html"
+        )
+    );
 });
 
 // ============================================================

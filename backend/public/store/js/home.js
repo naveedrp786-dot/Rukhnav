@@ -404,10 +404,13 @@ function initializeProductShowcase(products = []) {
             /*
              * Canonical storefront product page.
              */
+            link.dataset.productId =
+                String(product.id);
+
             link.href =
-                `product.html?id=${
-                    encodeURIComponent(product.id)
-                }`;
+                product.slug
+                    ? `product/${encodeURIComponent(product.slug)}`
+                    : `product.html?id=${encodeURIComponent(product.id)}`;
 
             const imageUrl =
                 getImage(product);

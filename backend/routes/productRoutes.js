@@ -71,6 +71,15 @@ router.get(
 );
 
 // ==========================================
+// Public Single Product by Slug
+// ==========================================
+
+router.get(
+    "/slug/:slug",
+    productController.getProductBySlug
+);
+
+// ==========================================
 // Public Product Gallery
 // ==========================================
 

@@ -24,6 +24,7 @@ exports.getProducts = async (req, res) => {
         SELECT
 
     p.id,
+    p.slug,
     p.product_name,
     p.category,
     p.brand,
@@ -220,6 +221,47 @@ conditions.push("p.status != 'Inactive'");
 
     }
 
+};
+
+// ==========================
+// Get Product By Slug
+// ==========================
+exports.getProductBySlug = async (req, res) => {
+    try {
+        const slug = String(req.params.slug || "").trim();
+
+        if (!slug) {
+            return res.status(400).json({
+                success: false,
+                message: "Product slug is required"
+            });
+        }
+
+        const [product] = await db.query(
+            "SELECT * FROM products WHERE slug = ? LIMIT 1",
+            [slug]
+        );
+
+        if (product.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+
+        return res.json({
+            success: true,
+            product: product[0]
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 };
 
 // ==========================

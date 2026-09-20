@@ -885,7 +885,12 @@ window.Store = {
             <article class="product-card">
                 <a
                     class="product-image"
-                    href="product.html?id=${encodeURIComponent(id)}"
+                    data-product-id="${Components.e(id)}"
+                    href="${
+                    product.slug
+                        ? `product/${encodeURIComponent(product.slug)}`
+                        : `product.html?id=${encodeURIComponent(id)}`
+                }"
                 >
                     ${
                         image
@@ -917,7 +922,11 @@ window.Store = {
                         ${Components.e(category)}
                     </small>
 
-                    <a href="product.html?id=${encodeURIComponent(id)}">
+                    <a href="${
+                    product.slug
+                        ? `product/${encodeURIComponent(product.slug)}`
+                        : `product.html?id=${encodeURIComponent(id)}`
+                }">
                         ${Components.e(name)}
                     </a>
 

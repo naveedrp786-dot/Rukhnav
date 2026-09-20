@@ -15,32 +15,88 @@ const ProductDetails = {
     async init() {
         this.bind();
 
-        const productId =
+        const params =
+            new URLSearchParams(location.search);
+
+        const pathParts =
+            location.pathname
+                .split("/")
+                .filter(Boolean);
+
+        const prettyProductIndex =
+            pathParts.indexOf("product");
+
+        const prettySlug =
+            prettyProductIndex >= 0 &&
+            pathParts[prettyProductIndex + 1]
+                ? decodeURIComponent(
+                    pathParts[
+                        prettyProductIndex + 1
+                    ]
+                )
+                : "";
+
+        const legacyProductId =
             Number.parseInt(
-                new URLSearchParams(
-                    location.search
-                ).get("id"),
+                params.get("id"),
                 10
             );
 
         if (
-            !Number.isInteger(productId) ||
-            productId <= 0
+            !prettySlug &&
+            (
+                !Number.isInteger(
+                    legacyProductId
+                ) ||
+                legacyProductId <= 0
+            )
         ) {
             this.fail(
-                "A valid product ID is required."
+                "A valid product URL is required."
             );
             return;
         }
 
         try {
+            const productRequest =
+                prettySlug
+                    ? API.get(
+                        `/api/products/slug/${encodeURIComponent(prettySlug)}`
+                    )
+                    : API.get(
+                        API.product(legacyProductId)
+                    );
+
             const results =
                 await Promise.allSettled([
-                    API.get(
-                        API.product(productId)
-                    ),
-                    API.get(
-                        `/api/product-media/public/${productId}`
+                    productRequest,
+                    productRequest.then(
+                        result => {
+                            const resolvedProduct =
+                                result?.product ||
+                                result?.data?.product ||
+                                result;
+
+                            const resolvedId =
+                                Number(
+                                    resolvedProduct?.id
+                                );
+
+                            if (
+                                !Number.isInteger(
+                                    resolvedId
+                                ) ||
+                                resolvedId <= 0
+                            ) {
+                                throw new Error(
+                                    "Resolved product ID is invalid."
+                                );
+                            }
+
+                            return API.get(
+                                `/api/product-media/public/${resolvedId}`
+                            );
+                        }
                     ),
                     API.get(
                         "/api/products"
@@ -758,7 +814,9 @@ const ProductDetails = {
         );
 
         const canonicalUrl =
-            `https://www.rukhnav.store/store/product.html?id=${encodeURIComponent(product.id)}`;
+            product.slug
+                ? `https://www.rukhnav.store/store/product/${encodeURIComponent(product.slug)}`
+                : `https://www.rukhnav.store/store/product.html?id=${encodeURIComponent(product.id)}`;
 
         let canonicalLink =
             document.querySelector(
@@ -3012,7 +3070,11 @@ const ProductDetails = {
 
         return `
             <article class="pd-card">
-                <a href="product.html?id=${encodeURIComponent(product.id)}">
+                <a href="${
+                    product.slug
+                        ? `product/${encodeURIComponent(product.slug)}`
+                        : `product.html?id=${encodeURIComponent(product.id)}`
+                }">
                     <div class="pd-card-image">
                         <img
                             src="${Components.e(image)}"
