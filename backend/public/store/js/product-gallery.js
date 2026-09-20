@@ -529,12 +529,233 @@ const ProductDetails = {
         return `${API.base}/uploads/products/${clean}`;
     },
 
+    seoDescription(product = this.product) {
+        const name =
+            String(
+                product?.product_name ||
+                "RUKHNAV product"
+            ).trim();
+
+        const category =
+            String(
+                product?.category ||
+                "product"
+            ).trim();
+
+        let description =
+            String(
+                product?.description ||
+                ""
+            );
+
+        description =
+            description
+                .replace(
+                    /^\s*English\s*:\s*/i,
+                    ""
+                )
+                .split(
+                    /(?:اردو\s*:|Urdu\s*:)/i
+                )[0]
+                .replace(
+                    /[\u{1F000}-\u{1FAFF}]/gu,
+                    " "
+                )
+                .replace(
+                    /[\u2600-\u27BF]/g,
+                    " "
+                )
+                .replace(
+                    /[\u0600-\u06FF]+/g,
+                    " "
+                )
+                .replace(
+                    /\s*\|\s*:\s*/g,
+                    " "
+                )
+                .replace(
+                    /\s*\|\s*(?=[A-Za-z])/g,
+                    " | "
+                )
+                .replace(
+                    /^\s*\|\s*|\s*\|\s*$/g,
+                    ""
+                )
+                .replace(
+                    /\s+/g,
+                    " "
+                )
+                .trim();
+
+        /*
+         * Removing embedded Urdu can occasionally leave
+         * the same English product name twice in a row.
+         * Collapse only that exact leading duplication.
+         */
+        const normalizedName =
+            name
+                .replace(
+                    /\s*-\s*\d+\s*ml\s*$/i,
+                    ""
+                )
+                .trim();
+
+        if (normalizedName) {
+            const escapedName =
+                normalizedName.replace(
+                    /[.*+?^${}()|[\]\\]/g,
+                    "\\$&"
+                );
+
+            const brandedName =
+                `RUKHNAV ${normalizedName}`;
+
+            const escapedBrandedName =
+                brandedName.replace(
+                    /[.*+?^${}()|[\]\\]/g,
+                    "\\$&"
+                );
+
+            const repeatedBrandedName =
+                new RegExp(
+                    `^(${escapedBrandedName})\\s+\\1(?=\\s|$)`,
+                    "i"
+                );
+
+            const repeatedName =
+                new RegExp(
+                    `^(${escapedName})\\s+\\1(?=\\s|$)`,
+                    "i"
+                );
+
+            description =
+                description
+                    .replace(
+                        repeatedBrandedName,
+                        "$1"
+                    )
+                    .replace(
+                        repeatedName,
+                        "$1"
+                    );
+        }
+
+        if (
+            !description ||
+            description.length < 40
+        ) {
+            description =
+                `Shop ${name} from RUKHNAV. Explore our ${category} collection with convenient online ordering.`;
+        }
+
+        const maxLength =
+            155;
+
+        if (
+            description.length >
+            maxLength
+        ) {
+            const candidate =
+                description.slice(
+                    0,
+                    maxLength + 1
+                );
+
+            const sentenceMatches =
+                [
+                    ...candidate.matchAll(
+                        /[.!?](?=\s|$)/g
+                    )
+                ];
+
+            const usefulSentence =
+                sentenceMatches
+                    .map(
+                        match =>
+                            match.index + 1
+                    )
+                    .filter(
+                        end =>
+                            end >= 70 &&
+                            end <= maxLength
+                    )
+                    .pop();
+
+            if (usefulSentence) {
+                description =
+                    candidate
+                        .slice(
+                            0,
+                            usefulSentence
+                        )
+                        .trim();
+            } else {
+                const lastSpace =
+                    candidate.lastIndexOf(
+                        " ",
+                        maxLength
+                    );
+
+                description =
+                    (
+                        lastSpace >= 100
+                            ? candidate.slice(
+                                0,
+                                lastSpace
+                            )
+                            : candidate.slice(
+                                0,
+                                maxLength
+                            )
+                    )
+                        .replace(
+                            /[\\s,;:\\-–—]+$/g,
+                            ""
+                        )
+                        .trim();
+            }
+        }
+
+        return description;
+    },
+
     render() {
         const product =
             this.product;
 
         document.title =
             `${product.product_name || "Product"} | RUKHNAV`;
+
+        const metaDescription =
+            this.seoDescription(
+                product
+            );
+
+        let descriptionMeta =
+            document.querySelector(
+                'meta[name="description"]'
+            );
+
+        if (!descriptionMeta) {
+            descriptionMeta =
+                document.createElement(
+                    "meta"
+                );
+
+            descriptionMeta.setAttribute(
+                "name",
+                "description"
+            );
+
+            document.head.appendChild(
+                descriptionMeta
+            );
+        }
+
+        descriptionMeta.setAttribute(
+            "content",
+            metaDescription
+        );
 
         const canonicalUrl =
             `https://www.rukhnav.store/store/product.html?id=${encodeURIComponent(product.id)}`;
