@@ -550,6 +550,134 @@ app.get("/", (req, res) => {
 });
 
 // =====================================================
+
+// ============================================================
+// RUKHNAV SEO — ROBOTS + SITEMAP
+// Stage 1B-B
+// ============================================================
+
+app.get("/robots.txt", (req, res) => {
+    const baseUrl = "https://www.rukhnav.store";
+
+    res.type("text/plain");
+
+    return res.send(
+        [
+            "User-agent: *",
+            "Allow: /",
+            "Disallow: /admin/",
+            "Disallow: /api/",
+            "Disallow: /store/account.html",
+            "Disallow: /store/cart.html",
+            "Disallow: /store/checkout.html",
+            "Disallow: /store/orders.html",
+            "Disallow: /store/order-details.html",
+            "Disallow: /store/reset-password.html",
+            "",
+            `Sitemap: ${baseUrl}/sitemap.xml`,
+            ""
+        ].join("\n")
+    );
+});
+
+app.get("/sitemap.xml", async (req, res, next) => {
+    try {
+        const db = require("./config/db");
+
+        const baseUrl =
+            "https://www.rukhnav.store";
+
+        const staticPages = [
+            "/store/index.html",
+            "/store/products.html",
+            "/store/about.html",
+            "/store/contact.html",
+            "/store/faq.html",
+            "/store/reviews.html",
+            "/store/shipping-policy.html",
+            "/store/refund-policy.html",
+            "/store/privacy-policy.html",
+            "/store/terms.html",
+            "/store/cookie-policy.html"
+        ];
+
+        const [products] = await db.query(
+            `
+            SELECT
+                id,
+                updated_at
+            FROM products
+            WHERE status != 'Inactive'
+            ORDER BY id ASC
+            `
+        );
+
+        const escapeXml = (value) =>
+            String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&apos;");
+
+        const urls = [];
+
+        for (const page of staticPages) {
+            urls.push(
+                [
+                    "  <url>",
+                    `    <loc>${escapeXml(baseUrl + page)}</loc>`,
+                    "  </url>"
+                ].join("\n")
+            );
+        }
+
+        for (const product of products) {
+            const productUrl =
+                `${baseUrl}/store/product.html?id=${encodeURIComponent(product.id)}`;
+
+            const lines = [
+                "  <url>",
+                `    <loc>${escapeXml(productUrl)}</loc>`
+            ];
+
+            if (product.updated_at) {
+                const date =
+                    new Date(product.updated_at);
+
+                if (!Number.isNaN(date.getTime())) {
+                    lines.push(
+                        `    <lastmod>${date.toISOString()}</lastmod>`
+                    );
+                }
+            }
+
+            lines.push("  </url>");
+
+            urls.push(lines.join("\n"));
+        }
+
+        const xml = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+            ...urls,
+            "</urlset>",
+            ""
+        ].join("\n");
+
+        res.type("application/xml");
+
+        return res.send(xml);
+
+    } catch (error) {
+        return next(error);
+    }
+});
+
+// ============================================================
+// END RUKHNAV SEO — ROBOTS + SITEMAP
+// ============================================================
+
 // 404 Handler
 // =====================================================
 
