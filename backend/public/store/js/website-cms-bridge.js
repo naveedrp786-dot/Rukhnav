@@ -3245,6 +3245,20 @@ body.rk-home .store-header{
     },
 
     applySEO(settings) {
+        const path =
+            window.location.pathname
+                .split("/")
+                .pop()
+                .toLowerCase();
+
+        const isHomePage =
+            path === "" ||
+            path === "index.html";
+
+        if (!isHomePage) {
+            return;
+        }
+
         const seo =
             settings.seo || {};
 

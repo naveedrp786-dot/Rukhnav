@@ -267,9 +267,21 @@ window.Theme = {
                 }
             );
 
-        document.title =
-            seo.site_title ||
-            branding.brand_name ||
-            document.title;
+        const path =
+            window.location.pathname
+                .split("/")
+                .pop()
+                .toLowerCase();
+
+        const isHomePage =
+            path === "" ||
+            path === "index.html";
+
+        if (isHomePage) {
+            document.title =
+                seo.site_title ||
+                branding.brand_name ||
+                document.title;
+        }
     }
 };
