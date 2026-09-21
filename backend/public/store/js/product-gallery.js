@@ -779,10 +779,70 @@ const ProductDetails = {
         const product =
             this.product;
 
+        /*
+         * Search-facing metadata overrides for selected products.
+         *
+         * These values affect the browser/search/social metadata only.
+         * Customer-visible product names, H1 content, descriptions,
+         * slugs, pricing and product records remain unchanged.
+         */
+        const seoMetadataOverrides = {
+            "sunsation-herbal-shampoo-100-ml": {
+                title:
+                    "Herbal Hair Shampoo 100ml in Pakistan | SUNSATION RUKHNAV",
+                description:
+                    "Shop SUNSATION Herbal Hair Shampoo 100ml online in Pakistan from RUKHNAV. A herbal hair-care formula for gentle cleansing and everyday hair care."
+            },
+
+            "sunsation-herbal-shampoo-200-ml": {
+                title:
+                    "Herbal Hair Shampoo 200ml in Pakistan | SUNSATION RUKHNAV",
+                description:
+                    "Shop SUNSATION Herbal Hair Shampoo 200ml online in Pakistan from RUKHNAV. A herbal hair-care formula for gentle cleansing and everyday hair care."
+            },
+
+            "herbal-hair-oil-100-ml": {
+                title:
+                    "Herbal Hair Oil 100ml in Pakistan | RUKHNAV",
+                description:
+                    "Shop RUKHNAV Herbal Hair Oil 100ml online in Pakistan. A nourishing herbal hair-care blend for the hair and scalp and a regular hair-care routine."
+            },
+
+            "whitening-cream-40-grm": {
+                title:
+                    "Whitening Cream 40g in Pakistan | Herbal RUKHNAV",
+                description:
+                    "Shop RUKHNAV Whitening Cream 40g online in Pakistan. This herbal brightening formula moisturizes and nourishes the skin while supporting its natural glow."
+            },
+
+            "herbal-neem-face-wash-130ml": {
+                title:
+                    "Herbal Neem Face Wash 130ml in Pakistan | RUKHNAV",
+                description:
+                    "Shop RUKHNAV Herbal Neem Face Wash 130ml online in Pakistan. A refreshing herbal cleanser with neem for removing dirt, excess oil and everyday impurities."
+            },
+
+            "charcoal-facewash-130ml": {
+                title:
+                    "Herbal Charcoal Face Wash 130ml in Pakistan | RUKHNAV",
+                description:
+                    "Shop RUKHNAV Herbal Charcoal Face Wash 130ml online in Pakistan. A refreshing cleanser with activated charcoal and herbal extracts for everyday cleansing."
+            }
+        };
+
+        const seoOverride =
+            product.slug
+                ? seoMetadataOverrides[
+                    String(product.slug)
+                ]
+                : undefined;
+
         document.title =
+            seoOverride?.title ||
             `${product.product_name || "Product"} | RUKHNAV`;
 
         const metaDescription =
+            seoOverride?.description ||
             this.seoDescription(
                 product
             );
