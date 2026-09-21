@@ -972,6 +972,135 @@ const ProductDetails = {
             };
         }
 
+        /*
+         * Social sharing metadata.
+         *
+         * Keep Open Graph and Twitter metadata synchronized
+         * with the same live product object used for the page,
+         * canonical URL and structured data.
+         */
+        const socialTitle =
+            `${product.product_name || "Product"} | RUKHNAV`;
+
+        const socialImage =
+            structuredImages.length > 0
+                ? structuredImages[0]
+                : "";
+
+        const setMeta = (
+            selector,
+            attribute,
+            name,
+            content
+        ) => {
+
+            if (!content) {
+                return;
+            }
+
+            let meta =
+                document.querySelector(
+                    selector
+                );
+
+            if (!meta) {
+                meta =
+                    document.createElement(
+                        "meta"
+                    );
+
+                meta.setAttribute(
+                    attribute,
+                    name
+                );
+
+                document.head.appendChild(
+                    meta
+                );
+            }
+
+            meta.setAttribute(
+                "content",
+                content
+            );
+        };
+
+        setMeta(
+            'meta[property="og:type"]',
+            "property",
+            "og:type",
+            "product"
+        );
+
+        setMeta(
+            'meta[property="og:site_name"]',
+            "property",
+            "og:site_name",
+            "RUKHNAV"
+        );
+
+        setMeta(
+            'meta[property="og:title"]',
+            "property",
+            "og:title",
+            socialTitle
+        );
+
+        setMeta(
+            'meta[property="og:description"]',
+            "property",
+            "og:description",
+            metaDescription
+        );
+
+        setMeta(
+            'meta[property="og:url"]',
+            "property",
+            "og:url",
+            canonicalUrl
+        );
+
+        if (socialImage) {
+            setMeta(
+                'meta[property="og:image"]',
+                "property",
+                "og:image",
+                socialImage
+            );
+        }
+
+        setMeta(
+            'meta[name="twitter:card"]',
+            "name",
+            "twitter:card",
+            socialImage
+                ? "summary_large_image"
+                : "summary"
+        );
+
+        setMeta(
+            'meta[name="twitter:title"]',
+            "name",
+            "twitter:title",
+            socialTitle
+        );
+
+        setMeta(
+            'meta[name="twitter:description"]',
+            "name",
+            "twitter:description",
+            metaDescription
+        );
+
+        if (socialImage) {
+            setMeta(
+                'meta[name="twitter:image"]',
+                "name",
+                "twitter:image",
+                socialImage
+            );
+        }
+
         let structuredDataScript =
             document.getElementById(
                 "rukhnav-product-jsonld"
@@ -3072,8 +3201,8 @@ const ProductDetails = {
             <article class="pd-card">
                 <a href="${
                     product.slug
-                        ? `product/${encodeURIComponent(product.slug)}`
-                        : `product.html?id=${encodeURIComponent(product.id)}`
+                        ? `/store/product/${encodeURIComponent(product.slug)}`
+                        : `/store/product.html?id=${encodeURIComponent(product.id)}`
                 }">
                     <div class="pd-card-image">
                         <img
