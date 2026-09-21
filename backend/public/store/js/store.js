@@ -888,8 +888,8 @@ window.Store = {
                     data-product-id="${Components.e(id)}"
                     href="${
                     product.slug
-                        ? `product/${encodeURIComponent(product.slug)}`
-                        : `product.html?id=${encodeURIComponent(id)}`
+                        ? `/store/product/${encodeURIComponent(product.slug)}`
+                        : `/store/product.html?id=${encodeURIComponent(id)}`
                 }"
                 >
                     ${
@@ -924,8 +924,8 @@ window.Store = {
 
                     <a href="${
                     product.slug
-                        ? `product/${encodeURIComponent(product.slug)}`
-                        : `product.html?id=${encodeURIComponent(id)}`
+                        ? `/store/product/${encodeURIComponent(product.slug)}`
+                        : `/store/product.html?id=${encodeURIComponent(id)}`
                 }">
                         ${Components.e(name)}
                     </a>

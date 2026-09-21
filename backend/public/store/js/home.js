@@ -409,8 +409,8 @@ function initializeProductShowcase(products = []) {
 
             link.href =
                 product.slug
-                    ? `product/${encodeURIComponent(product.slug)}`
-                    : `product.html?id=${encodeURIComponent(product.id)}`;
+                    ? `/store/product/${encodeURIComponent(product.slug)}`
+                    : `/store/product.html?id=${encodeURIComponent(product.id)}`;
 
             const imageUrl =
                 getImage(product);
