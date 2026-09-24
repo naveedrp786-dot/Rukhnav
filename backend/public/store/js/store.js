@@ -305,33 +305,11 @@ window.Store = {
 
         if (navigation) {
 
-            const categoryLinks =
-                categories
-                    .map(
-                        category => `
-                            <a href="${Components.e(
-                                this.categoryUrl(
-                                    category.category_name
-                                )
-                            )}">
-                                ${Components.e(
-                                    category.category_name
-                                )}
-                            </a>
-                        `
-                    )
-                    .join("");
-
             navigation.innerHTML = `
                 <a href="products.html">
                     All Products
                 </a>
 
-                ${categoryLinks}
-
-                <a href="products.html?sort=newest">
-                    New Arrivals
-                </a>
 
                 <a href="rewards.html">
                     Rewards

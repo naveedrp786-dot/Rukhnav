@@ -494,8 +494,8 @@
          * Keep it in the shared header on every page.
          */
         bindLiveHomeSearch();
-        createUtilityStrip();
-        createPromoCards();
+        /* Stage 1G-J: homepage utility strip removed. */
+        // Stage 1G-F: homepage promo cards disabled
     }
 
 

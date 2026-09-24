@@ -7745,3 +7745,471 @@ span{
   }
 }
 
+
+/* ==========================================================
+   RUKHNAV HOMEPAGE — PRODUCT SHOWCASE + CUSTOMER ACCOUNT
+   2026-09-24
+   ========================================================== */
+
+.rk-home-entry {
+    width: min(1440px, calc(100% - 32px));
+    margin: 24px auto 30px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.7fr);
+    gap: 20px;
+    align-items: stretch;
+}
+
+.rk-home-entry-showcase {
+    min-width: 0;
+    display: flex;
+}
+
+.rk-home-entry .rk-product-showcase {
+    width: 100%;
+    margin: 0;
+}
+
+.rk-home-account-panel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    min-width: 0;
+    border: 1px solid rgba(22, 55, 38, 0.12);
+    border-radius: 24px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(190, 225, 202, 0.42),
+            transparent 42%
+        ),
+        #ffffff;
+    box-shadow: 0 16px 42px rgba(26, 54, 38, 0.09);
+}
+
+.rk-home-account-state {
+    width: 100%;
+    padding: 34px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.rk-home-account-state.hidden {
+    display: none;
+}
+
+.rk-home-account-eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #577461;
+}
+
+.rk-home-account-panel h2 {
+    margin: 0 0 12px;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+    line-height: 1.08;
+    color: #173525;
+}
+
+.rk-home-account-panel p {
+    margin: 0 0 24px;
+    color: #66756c;
+    line-height: 1.65;
+}
+
+.rk-home-account-actions {
+    display: grid;
+    gap: 11px;
+}
+
+.rk-home-account-primary,
+.rk-home-account-secondary {
+    min-height: 48px;
+    padding: 12px 18px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease;
+}
+
+.rk-home-account-primary {
+    background: #173525;
+    color: #ffffff;
+    box-shadow: 0 9px 20px rgba(23, 53, 37, 0.18);
+}
+
+.rk-home-account-secondary {
+    border: 1px solid rgba(23, 53, 37, 0.2);
+    background: #ffffff;
+    color: #173525;
+}
+
+.rk-home-account-primary:hover,
+.rk-home-account-secondary:hover {
+    transform: translateY(-1px);
+}
+
+.rk-home-account-text-link {
+    padding: 8px 4px 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #345c43;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.rk-home-account-benefits {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(23, 53, 37, 0.1);
+    display: grid;
+    gap: 10px;
+}
+
+.rk-home-account-benefits span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #52645a;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.rk-home-account-benefits i {
+    width: 18px;
+    color: #547a60;
+    text-align: center;
+}
+
+@media (max-width: 980px) {
+    .rk-home-entry {
+        grid-template-columns: minmax(0, 1fr) minmax(270px, 0.62fr);
+    }
+
+    .rk-home-account-state {
+        padding: 26px 22px;
+    }
+}
+
+@media (max-width: 760px) {
+    .rk-home-entry {
+        width: min(100% - 20px, 680px);
+        margin-top: 12px;
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .rk-home-entry-showcase {
+        width: 100%;
+    }
+
+    .rk-home-account-panel {
+        border-radius: 18px;
+    }
+
+    .rk-home-account-state {
+        padding: 24px 20px;
+    }
+
+    .rk-home-account-panel h2 {
+        font-size: 1.7rem;
+    }
+
+    .rk-home-account-benefits {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .rk-home-account-benefits span {
+        flex-direction: column;
+        text-align: center;
+        font-size: 0.78rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .rk-home-account-benefits {
+        grid-template-columns: 1fr;
+    }
+
+    .rk-home-account-benefits span {
+        flex-direction: row;
+        text-align: left;
+    }
+}
+
+/* ==========================================================
+   RUKHNAV HOMEPAGE — STAGE 1E SHOPPING PRIORITY
+   Products directly below showcase.
+   Compact category navigation beside Products heading.
+   ========================================================== */
+
+.rk-home-account-primary,
+.rk-home-account-primary:link,
+.rk-home-account-primary:visited {
+    color: #ffffff !important;
+}
+
+.rk-home-account-primary i,
+.rk-home-account-primary span {
+    color: #ffffff !important;
+}
+
+.rk-home-account-primary:hover,
+.rk-home-account-primary:focus,
+.rk-home-account-primary:active {
+    color: #ffffff !important;
+}
+
+.rk-products-title-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 14px;
+}
+
+
+
+/* ==========================================================
+   RUKHNAV — STAGE 1G-J
+   FINAL DESKTOP SHOWCASE LAYOUT
+   Utility strip removed at JS source.
+   ========================================================== */
+
+@media (min-width: 1000px) {
+
+    /*
+     * Entire top row:
+     * flexible animation area + fixed account panel.
+     */
+    .rk-home-entry {
+        width: min(1440px, calc(100% - 32px)) !important;
+        grid-template-columns:
+            minmax(0, 1fr)
+            355px !important;
+        gap: 24px !important;
+        align-items: stretch !important;
+    }
+
+
+    /*
+     * Left side now has only the showcase.
+     */
+    .rk-home-entry-showcase {
+        display: flex !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+
+
+    /*
+     * Fill the entire available left column.
+     */
+    .rk-home-entry-showcase > #productShowcase,
+    #productShowcase.rk-product-showcase {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        flex: 1 1 100% !important;
+    }
+
+
+    /*
+     * Use full card width for image + information.
+     */
+    #productShowcase .rk-showcase-main {
+        width: 100% !important;
+        max-width: none !important;
+
+        grid-template-columns:
+            minmax(390px, 48%)
+            minmax(0, 52%) !important;
+
+        min-height: 400px !important;
+        align-items: stretch !important;
+    }
+
+
+    /*
+     * Larger product visual.
+     */
+    #productShowcase .rk-showcase-picture {
+        width: 100% !important;
+        height: 400px !important;
+        padding: 26px 36px !important;
+    }
+
+
+    #productShowcase .rk-showcase-picture img {
+        width: 100% !important;
+        max-width: 560px !important;
+        height: 345px !important;
+        object-fit: contain !important;
+        object-position: center !important;
+    }
+
+
+    /*
+     * Product information uses remaining space.
+     */
+    #productShowcase .rk-showcase-copy {
+        width: 100% !important;
+        min-width: 0 !important;
+
+        padding:
+            38px
+            62px
+            38px
+            34px !important;
+
+        justify-content: center !important;
+    }
+
+
+    #productShowcase .rk-showcase-copy h1 {
+        width: auto !important;
+        max-width: 100% !important;
+        font-size:
+            clamp(36px, 3.2vw, 56px) !important;
+        line-height: 1 !important;
+    }
+
+
+    /*
+     * Account remains on right.
+     */
+    .rk-home-account-panel {
+        width: 355px !important;
+        min-width: 355px !important;
+        max-width: 355px !important;
+    }
+}
+
+
+/*
+ * Defensive rule:
+ * even if old cached JS somehow attempted to create it,
+ * never display the removed homepage utility strip.
+ */
+.rk-home-entry-showcase > .rk-commerce-utility,
+.rk-commerce-utility {
+    display: none !important;
+}
+
+
+@media (max-width: 999px) {
+
+    .rk-home-entry {
+        grid-template-columns:
+            minmax(0, 1fr) !important;
+    }
+
+    .rk-home-account-panel {
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+}
+
+
+
+/* ==========================================================
+   RUKHNAV — STAGE 1G-J4
+   FINAL MOBILE ACCOUNT HEADING FIT
+   ========================================================== */
+
+@media (max-width: 600px) {
+
+    /*
+     * Give the heading slightly more usable horizontal room.
+     * Account remains full-width and stacked below showcase.
+     */
+    #homeAccountPanel .rk-home-account-state {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    /*
+     * Exact guest/customer account heading.
+     * Fixed mobile size avoids viewport-dependent wrapping.
+     */
+    #homeAccountPanel h2 {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+
+        font-size: 16px !important;
+        line-height: 1.15 !important;
+        letter-spacing: -0.25px !important;
+
+        white-space: nowrap !important;
+        overflow: visible !important;
+    }
+}
+
+@media (max-width: 360px) {
+
+    #homeAccountPanel h2 {
+        font-size: 15px !important;
+        letter-spacing: -0.35px !important;
+    }
+}
+
+
+
+/* ==========================================================
+   RUKHNAV — STAGE 1G-K4
+   CLEAN PRODUCT SHOWCASE CONTENT
+   ========================================================== */
+
+/*
+ * Homepage animation is a product discovery card.
+ * Keep detailed description on the actual product page.
+ */
+#productShowcase .rk-showcase-description,
+#productShowcase #showcaseDescription {
+    display: none !important;
+}
+
+/*
+ * Mobile product names should remain prominent without
+ * dominating the compact animation card.
+ */
+@media (max-width: 600px) {
+
+    #productShowcase .rk-showcase-copy h1,
+    #productShowcase #showcaseName {
+        font-size: 20px !important;
+        line-height: 1.04 !important;
+        letter-spacing: -0.35px !important;
+    }
+}
+
+@media (max-width: 360px) {
+
+    #productShowcase .rk-showcase-copy h1,
+    #productShowcase #showcaseName {
+        font-size: 18px !important;
+    }
+}

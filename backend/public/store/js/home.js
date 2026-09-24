@@ -220,6 +220,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
+
 /* =========================================================
    LIVE HOMEPAGE PRODUCT SHOWCASE
    ========================================================= */
@@ -706,3 +707,71 @@ function initializeProductShowcase(products = []) {
     render(0);
     scheduleNext();
 }
+
+/* =========================================================
+   HOMEPAGE CUSTOMER ACCOUNT PANEL
+   ========================================================= */
+
+function initializeHomepageAccountPanel() {
+    const guest =
+        document.getElementById("homeAccountGuest");
+
+    const customer =
+        document.getElementById("homeAccountCustomer");
+
+    const greeting =
+        document.getElementById("homeAccountGreeting");
+
+    if (!guest || !customer) {
+        return;
+    }
+
+    const authenticated =
+        window.API &&
+        typeof API.isAuthenticated === "function" &&
+        API.isAuthenticated();
+
+    if (!authenticated) {
+        guest.classList.remove("hidden");
+        customer.classList.add("hidden");
+        return;
+    }
+
+    const record =
+        typeof API.customerRecord === "function"
+            ? API.customerRecord()
+            : null;
+
+    const fullName =
+        String(
+            record?.full_name ||
+            record?.name ||
+            [
+                record?.first_name,
+                record?.last_name
+            ]
+                .filter(Boolean)
+                .join(" ") ||
+            ""
+        ).trim();
+
+    const firstName =
+        fullName
+            ? fullName.split(/\s+/)[0]
+            : "";
+
+    if (greeting) {
+        greeting.textContent =
+            firstName
+                ? `Welcome back, ${firstName}`
+                : "Welcome back";
+    }
+
+    guest.classList.add("hidden");
+    customer.classList.remove("hidden");
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeHomepageAccountPanel
+);

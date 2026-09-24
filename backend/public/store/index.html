@@ -25,6 +25,12 @@
          Products are populated from /api/products by home.js
          ===================================================== -->
     <section
+        class="rk-home-entry"
+        aria-label="Featured products and customer account"
+    >
+        <div class="rk-home-entry-showcase">
+
+    <section
         id="productShowcase"
         class="rk-product-showcase"
         aria-label="Featured RUKHNAV products"
@@ -101,6 +107,138 @@
 
     </section>
 
+        </div>
+
+        <aside
+            id="homeAccountPanel"
+            class="rk-home-account-panel"
+            aria-label="RUKHNAV customer account"
+        >
+            <div
+                id="homeAccountGuest"
+                class="rk-home-account-state"
+            >
+                <span class="rk-home-account-eyebrow">
+                    YOUR RUKHNAV
+                </span>
+
+                <h2>Shop better with your account</h2>
+
+                <p>
+                    Sign in to manage your orders, rewards,
+                    saved products and account details.
+                </p>
+
+                <div class="rk-home-account-actions">
+                    <a
+                        class="rk-home-account-primary"
+                        href="/store/account.html"
+                    >
+                        <i class="fa-regular fa-user"></i>
+                        Log In
+                    </a>
+
+                    <a
+                        class="rk-home-account-secondary"
+                        href="/store/account.html?mode=register"
+                    >
+                        <i class="fa-solid fa-user-plus"></i>
+                        Create Account
+                    </a>
+                </div>
+
+                <div class="rk-home-account-benefits">
+                    <span>
+                        <i class="fa-solid fa-box"></i>
+                        Track orders
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-medal"></i>
+                        Earn rewards
+                    </span>
+
+                    <span>
+                        <i class="fa-regular fa-heart"></i>
+                        Save favourites
+                    </span>
+                </div>
+            </div>
+
+            <div
+                id="homeAccountCustomer"
+                class="rk-home-account-state hidden"
+            >
+                <span class="rk-home-account-eyebrow">
+                    YOUR RUKHNAV
+                </span>
+
+                <h2 id="homeAccountGreeting">
+                    Welcome back
+                </h2>
+
+                <p>
+                    Your orders, rewards and account details
+                    are only a click away.
+                </p>
+
+                <div class="rk-home-account-actions">
+                    <a
+                        class="rk-home-account-primary"
+                        href="/store/account.html"
+                    >
+                        <i class="fa-regular fa-user"></i>
+                        My Account
+                    </a>
+
+                    <a
+                        class="rk-home-account-secondary"
+                        href="/store/orders.html"
+                    >
+                        <i class="fa-solid fa-box"></i>
+                        My Orders
+                    </a>
+
+                    <a
+                        class="rk-home-account-text-link"
+                        href="/store/account.html#rewards"
+                    >
+                        <i class="fa-solid fa-medal"></i>
+                        View My Rewards
+                    </a>
+                </div>
+            </div>
+        </aside>
+    </section>
+
+    <!-- PRODUCTS — PRIMARY SHOPPING CONTENT -->
+<section class="home-products-section">
+        <div class="home-section-title">
+            <h2>Products</h2>
+
+            <a href="/store/products.html">
+                See all
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div id="homeLoading" class="state">
+            <div class="spinner"></div>
+            <p>Loading products</p>
+        </div>
+
+        <div id="homeEmpty" class="state hidden">
+            <i class="fa-solid fa-box-open"></i>
+            <h3>No products available</h3>
+        </div>
+
+        <div
+            id="homeProducts"
+            class="products hidden"
+        ></div>
+    </section>
+
+
     <!-- =====================================================
          HOMEPAGE PRODUCT SEARCH
          The shared storefront search form is moved here by
@@ -155,68 +293,11 @@
          Existing Store.renderHomepageCategories() can still
          replace these with live ERP categories.
          ===================================================== -->
-    <section class="home-shop-shortcuts">
-        <div class="home-section-title">
-            <h2>Shop</h2>
 
-            <a href="products.html">
-                See all
-            </a>
-        </div>
-
-        <div class="categories">
-            <a href="products.html?category=Hair%20Care">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <b>Hair Care</b>
-            </a>
-
-            <a href="products.html?category=Skin%20Care">
-                <i class="fa-solid fa-droplet"></i>
-                <b>Skin Care</b>
-            </a>
-
-            <a href="products.html?category=Herbal">
-                <i class="fa-solid fa-leaf"></i>
-                <b>Herbal</b>
-            </a>
-
-            <a href="products.html?sort=newest">
-                <i class="fa-solid fa-sparkles"></i>
-                <b>New Arrivals</b>
-            </a>
-        </div>
-    </section>
-
-
-    <!-- =====================================================
+<!-- =====================================================
          PRODUCTS — PRIMARY HOMEPAGE CONTENT
          ===================================================== -->
-    <section class="home-products-section">
 
-        <div class="home-section-title">
-            <h2>Products</h2>
-
-            <a href="products.html">
-                See all
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-
-        <div id="homeLoading" class="state">
-            <div class="spinner"></div>
-            <p>Loading products</p>
-        </div>
-
-        <div id="homeEmpty" class="state hidden">
-            <i class="fa-solid fa-box-open"></i>
-            <h3>No products available</h3>
-        </div>
-
-        <div id="homeProducts"
-             class="products hidden">
-        </div>
-
-    </section>
 
 </main>
 
