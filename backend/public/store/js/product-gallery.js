@@ -997,7 +997,25 @@ const ProductDetails = {
                         ? "https://schema.org/InStock"
                         : "https://schema.org/OutOfStock",
                 itemCondition:
-                    "https://schema.org/NewCondition"
+                    "https://schema.org/NewCondition",
+                shippingDetails: {
+                    "@type":
+                        "OfferShippingDetails",
+                    shippingRate: {
+                        "@type":
+                            "MonetaryAmount",
+                        value:
+                            "250.00",
+                        currency:
+                            "PKR"
+                    },
+                    shippingDestination: {
+                        "@type":
+                            "DefinedRegion",
+                        addressCountry:
+                            "PK"
+                    }
+                }
             };
         }
 
