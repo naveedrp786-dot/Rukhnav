@@ -145,7 +145,7 @@ window.Components = {
                 </option>
 
                 <option>
-                    Skin Care
+                    Face Care
                 </option>
 
                 <option>
@@ -319,13 +319,10 @@ window.Components = {
                 Hair Care
             </a>
 
-            <a href="products.html?category=Skin%20Care">
-                Skin Care
+            <a href="/store/category/face-care">
+                Face Care
             </a>
 
-            <a href="products.html?category=Herbal">
-                Herbal
-            </a>
 
             <a href="account.html#rewards">
                 Rewards
@@ -644,8 +641,8 @@ window.Components = {
                     Hair Care
                 </a>
 
-                <a href="products.html?category=Skin%20Care">
-                    Skin Care
+                <a href="/store/category/face-care">
+                    Face Care
                 </a>
 
                 <a href="account.html#rewards">

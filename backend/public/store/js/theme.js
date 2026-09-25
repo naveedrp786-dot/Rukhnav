@@ -55,9 +55,9 @@ window.Theme = {
                 sort_order: 2
             },
             {
-                label: "Skin Care",
+                label: "Face Care",
                 url:
-                    "products.html?category=Skin%20Care",
+                    "/store/category/face-care",
                 enabled: true,
                 sort_order: 3
             },
@@ -65,7 +65,7 @@ window.Theme = {
                 label: "Herbal",
                 url:
                     "products.html?category=Herbal",
-                enabled: true,
+                enabled: false,
                 sort_order: 4
             },
             {
