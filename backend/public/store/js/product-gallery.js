@@ -869,6 +869,22 @@ const ProductDetails = {
                     "Handmade Tassel Border - 8 Pcs | RUKHNAV",
                 description:
                     "Shop an 8-piece handmade tassel border set from RUKHNAV, crafted to add a stylish, colourful and elegant finishing touch to dresses and dupattas."
+            },
+            "hand-made-event-signage-4-pcs-single-pack": {
+                title: "Handmade Event Signage - 4 Pcs | RUKHNAV",
+                description: "Shop handmade event signage from RUKHNAV for Mehndi, Sehrabandi, Mayo and other special occasions. Mention your occasion requirements at checkout."
+            },
+            "customised-key-chain-1-pcs-31": {
+                title: "Customised Key Chain | RUKHNAV",
+                description: "Shop a customised key chain from RUKHNAV, personalised with your name, photo or special message. A thoughtful personalised gift for someone special."
+            },
+            "sweet-pickers-20-pcs": {
+                title: "Customised Sweet Pickers - 20 Pcs | RUKHNAV",
+                description: "Shop 20 customised sweet pickers from RUKHNAV for celebrations and special events. Personalise them with your name, message, colours or theme."
+            },
+            "sequence-border-without-box": {
+                title: "Handmade Sequin Border | RUKHNAV",
+                description: "Shop a handmade sequin border from RUKHNAV, crafted to add sparkle and an elegant finishing touch to dresses and dupattas. Choose your preferred colour at checkout."
             }
         };
 
