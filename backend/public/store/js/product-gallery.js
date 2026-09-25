@@ -827,6 +827,48 @@ const ProductDetails = {
                     "Herbal Charcoal Face Wash 130ml in Pakistan | RUKHNAV",
                 description:
                     "Shop RUKHNAV Herbal Charcoal Face Wash 130ml online in Pakistan. A refreshing cleanser with activated charcoal and herbal extracts for everyday cleansing."
+            },
+
+            "handmade-crochet-cardigan": {
+                title:
+                    "Handmade Crochet Cardigan | RUKHNAV",
+                description:
+                    "Shop a handmade crochet cardigan from RUKHNAV, carefully crafted for a cozy, stylish and unique look. Choose your preferred colour at checkout."
+            },
+
+            "corchet-yarn-frock": {
+                title:
+                    "Handmade Crochet Yarn Frock | RUKHNAV",
+                description:
+                    "Shop a handmade crochet yarn frock from RUKHNAV, beautifully crafted for a charming, comfortable and unique look. Choose your preferred colour at checkout."
+            },
+
+            "corchet-yarn-frock-navy-blue": {
+                title:
+                    "Handmade Crochet Yarn Frock - Navy Blue | RUKHNAV",
+                description:
+                    "Shop a handmade crochet yarn frock in navy blue from RUKHNAV, handcrafted for a stylish, comfortable and adorable look. Colour can be requested at checkout."
+            },
+
+            "hand-made-ear-rings-1-pcs": {
+                title:
+                    "Handmade Earrings | RUKHNAV",
+                description:
+                    "Shop handmade earrings from RUKHNAV, carefully crafted to add a unique, elegant and stylish touch to your look. Choose your preferred colour at checkout."
+            },
+
+            "sequence-dopatta": {
+                title:
+                    "Handmade Sequin Dupatta | RUKHNAV",
+                description:
+                    "Shop a handmade sequin dupatta from RUKHNAV, beautifully embellished to add graceful sparkle and traditional charm. Choose your preferred colour at checkout."
+            },
+
+            "tassal-8-pcs-without-box": {
+                title:
+                    "Handmade Tassel Border - 8 Pcs | RUKHNAV",
+                description:
+                    "Shop an 8-piece handmade tassel border set from RUKHNAV, crafted to add a stylish, colourful and elegant finishing touch to dresses and dupattas."
             }
         };
 
