@@ -589,6 +589,10 @@ app.get("/sitemap.xml", async (req, res, next) => {
         const staticPages = [
             "/store/index.html",
             "/store/products.html",
+            "/store/category/hair-care",
+            "/store/category/face-care",
+            "/store/category/fashion",
+            "/store/category/decoration",
             "/store/about.html",
             "/store/contact.html",
             "/store/faq.html",
@@ -678,6 +682,114 @@ app.get("/sitemap.xml", async (req, res, next) => {
 // RUKHNAV SEO — PRETTY PRODUCT URL
 // Stage 1G-C2-B1
 // ============================================================
+
+
+// STAGE 3C CATEGORY LANDING ROUTES
+const seoCategoryLandingPages = Object.freeze({
+    "hair-care": Object.freeze({
+        label: "Hair Care",
+        title: "Herbal Hair Care Products | RUKHNAV",
+        description:
+            "Shop RUKHNAV hair care products including herbal shampoo and herbal hair oil for gentle cleansing, nourishment and everyday hair care.",
+        intro:
+            "Explore RUKHNAV hair care products, including herbal shampoos and herbal hair oil for everyday cleansing, nourishment and regular hair care."
+    }),
+
+    "face-care": Object.freeze({
+        label: "Face Care",
+        title: "Herbal Face Care Products | RUKHNAV",
+        description:
+            "Shop RUKHNAV face care products including herbal neem face wash, charcoal face wash and whitening cream for everyday skin care.",
+        intro:
+            "Explore RUKHNAV face care products, including herbal neem face wash, charcoal face wash and whitening cream for everyday skin care."
+    }),
+
+    "fashion": Object.freeze({
+        label: "Fashion",
+        title: "Handmade Fashion & Crochet Products | RUKHNAV",
+        description:
+            "Shop handmade fashion products from RUKHNAV including crochet clothing, earrings, sequin dupattas, borders and colourful tassel designs.",
+        intro:
+            "Discover handmade RUKHNAV fashion pieces including crochet clothing, earrings, sequin dupattas, decorative borders and colourful tassel designs."
+    }),
+
+    "decoration": Object.freeze({
+        label: "Decoration",
+        title: "Customised Event Decoration Products | RUKHNAV",
+        description:
+            "Shop customised event decoration products from RUKHNAV including handmade event signage, grazing items and personalised sweet pickers.",
+        intro:
+            "Explore customised RUKHNAV decoration products for celebrations and special occasions, including event signage, grazing items and personalised sweet pickers."
+    })
+});
+
+const escapeCategoryHtml = (value) =>
+    String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+app.get("/store/category/:categorySlug", async (req, res, next) => {
+    try {
+        const categorySlug = String(
+            req.params.categorySlug || ""
+        ).trim().toLowerCase();
+
+        const category =
+            seoCategoryLandingPages[categorySlug];
+
+        if (!category) {
+            return next();
+        }
+
+        const categoryTemplatePath =
+            path.join(
+                __dirname,
+                "public",
+                "store",
+                "category.html"
+            );
+
+        let html =
+            await require("fs").promises.readFile(
+                categoryTemplatePath,
+                "utf8"
+            );
+
+        const canonical =
+            `https://www.rukhnav.store/store/category/${categorySlug}`;
+
+        const replacements = {
+            "__CATEGORY_TITLE__":
+                escapeCategoryHtml(category.title),
+
+            "__CATEGORY_DESCRIPTION__":
+                escapeCategoryHtml(category.description),
+
+            "__CATEGORY_CANONICAL__":
+                escapeCategoryHtml(canonical),
+
+            "__CATEGORY_LABEL__":
+                escapeCategoryHtml(category.label),
+
+            "__CATEGORY_INTRO__":
+                escapeCategoryHtml(category.intro)
+        };
+
+        for (const [token, value] of Object.entries(replacements)) {
+            html = html.split(token).join(value);
+        }
+
+        res.type("html");
+
+        return res.send(html);
+
+    } catch (error) {
+        return next(error);
+    }
+});
 
 app.get("/store/product/:slug", (req, res) => {
     return res.sendFile(

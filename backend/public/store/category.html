@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <base href="/store/">
+
+    <title>__CATEGORY_TITLE__</title>
+
+    <meta
+        name="description"
+        content="__CATEGORY_DESCRIPTION__"
+    >
+
+    <link
+        id="categoryCanonical"
+        rel="canonical"
+        href="__CATEGORY_CANONICAL__"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="RUKHNAV">
+
+    <meta
+        id="categoryOgTitle"
+        property="og:title"
+        content="__CATEGORY_TITLE__"
+    >
+
+    <meta
+        id="categoryOgDescription"
+        property="og:description"
+        content="__CATEGORY_DESCRIPTION__"
+    >
+
+    <meta
+        id="categoryOgUrl"
+        property="og:url"
+        content="__CATEGORY_CANONICAL__"
+    >
+
+    <meta name="twitter:card" content="summary">
+
+    <meta
+        id="categoryTwitterTitle"
+        name="twitter:title"
+        content="__CATEGORY_TITLE__"
+    >
+
+    <meta
+        id="categoryTwitterDescription"
+        name="twitter:description"
+        content="__CATEGORY_DESCRIPTION__"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/commerce-pro.css">
+</head>
+
+<body>
+
+    <header id="header"></header>
+
+    <main class="container">
+
+        <section
+            class="category-landing"
+            aria-labelledby="categoryTitle"
+        >
+
+            <nav
+                class="category-breadcrumb"
+                aria-label="Breadcrumb"
+            >
+                <a href="/store/">Home</a>
+                <span aria-hidden="true">›</span>
+
+                <a href="/store/products.html">
+                    All Products
+                </a>
+
+                <span aria-hidden="true">›</span>
+
+                <span id="categoryBreadcrumbCurrent">
+                    __CATEGORY_LABEL__
+                </span>
+            </nav>
+
+            <header class="category-landing-header">
+
+                <p class="category-eyebrow">
+                    RUKHNAV COLLECTION
+                </p>
+
+                <h1 id="categoryTitle">
+                    __CATEGORY_LABEL__
+                </h1>
+
+                <p id="categoryIntro">
+                    __CATEGORY_INTRO__
+                </p>
+
+            </header>
+
+            <section
+                class="category-products-section"
+                aria-labelledby="categoryProductsHeading"
+            >
+
+                <div class="section-heading">
+
+                    <h2 id="categoryProductsHeading">
+                        Shop __CATEGORY_LABEL__
+                    </h2>
+
+                    <a href="/store/products.html">
+                        View all products
+                    </a>
+
+                </div>
+
+                <div
+                    id="categoryLoading"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Loading products...
+                </div>
+
+                <div
+                    id="categoryError"
+                    hidden
+                    role="alert"
+                ></div>
+
+                <div
+                    id="categoryProducts"
+                    class="products-grid"
+                ></div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+    <footer id="footer"></footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/category-landing.js"></script>
+
+</body>
+</html>
