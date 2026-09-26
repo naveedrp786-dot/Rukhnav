@@ -3374,7 +3374,7 @@ const ProductDetails = {
                         Add
                     </button>
 
-                    <a href="guest-checkout.html?product_id=${encodeURIComponent(product.id)}&quantity=1">
+                    <a href="/store/guest-checkout.html?product_id=${encodeURIComponent(product.id)}&quantity=1">
                         <i class="fa-solid fa-bolt"></i>
                         Buy
                     </a>
@@ -3484,7 +3484,7 @@ const ProductDetails = {
          */
         if (API.isAuthenticated()) {
             location.href =
-                "checkout.html";
+                "/store/checkout.html";
             return;
         }
 
@@ -3507,7 +3507,7 @@ const ProductDetails = {
         }
 
         location.href =
-            "guest-checkout.html?source=cart";
+            "/store/guest-checkout.html?source=cart";
     },
 
     async buyNow() {
@@ -3536,7 +3536,7 @@ const ProductDetails = {
                 await Store.refreshCartCount?.();
 
                 location.href =
-                    "checkout.html";
+                    "/store/checkout.html";
 
             } catch (error) {
                 Store.toast(
@@ -3556,8 +3556,8 @@ const ProductDetails = {
 
         const checkout =
             new URL(
-                "guest-checkout.html",
-                location.href
+                "/store/guest-checkout.html",
+                location.origin
             );
 
         checkout.searchParams.set(
