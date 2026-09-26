@@ -137,7 +137,7 @@
             <article class="product-card">
 
                 <a
-                    class="product-card-image"
+                    class="product-image"
                     href="${href}"
                     aria-label="${name}"
                 >
@@ -155,9 +155,9 @@
                     }
                 </a>
 
-                <div class="product-card-body">
+                <div class="product-body">
 
-                    <h3 class="product-card-title">
+                    <h3 class="product-card-title product-name">
                         <a href="${href}">
                             ${name}
                         </a>
@@ -166,7 +166,7 @@
                     ${
                         price
                             ? `
-                                <p class="product-card-price">
+                                <p class="price">
                                     ${escapeHtml(price)}
                                 </p>
                               `
