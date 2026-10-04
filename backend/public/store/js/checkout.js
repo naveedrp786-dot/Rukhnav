@@ -422,6 +422,61 @@ this.calculate();
         this.loyalty.membership_level ||
         "Bronze";
 
+    /*
+     * Keep checkout simple for ordinary customers.
+     *
+     * Bronze / Silver:
+     *   coupon remains available, but membership/reward
+     *   information is hidden from the checkout UI.
+     *
+     * Gold / Platinum:
+     *   membership benefits and reward redemption remain
+     *   visible.
+     *
+     * Backend loyalty validation remains authoritative.
+     */
+    const loyaltyEligible =
+        ["gold", "platinum"].includes(
+            String(level)
+                .trim()
+                .toLowerCase()
+        );
+
+    /*
+     * Hide the complete membership/reward sections for
+     * Bronze and Silver customers.
+     *
+     * Coupon entry remains visible for every customer.
+     */
+    const loyaltyPanel =
+        document.getElementById(
+            "loyaltyPanel"
+        );
+
+    const rewardRedemption =
+        document.querySelector(
+            ".reward-redemption"
+        );
+
+    if (loyaltyPanel) {
+        loyaltyPanel.hidden =
+            !loyaltyEligible;
+    }
+
+    if (rewardRedemption) {
+        rewardRedemption.hidden =
+            !loyaltyEligible;
+    }
+
+    /*
+     * Ordinary customers must not carry a reward redemption
+     * value after membership eligibility is evaluated.
+     */
+    if (!loyaltyEligible) {
+        this.rewardPointsToRedeem = 0;
+        this.rewardPointsDiscount = 0;
+    }
+
     const points = Number(
         this.loyalty.availablePoints ??
         this.loyalty.available_points ??

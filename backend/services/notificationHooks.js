@@ -6,6 +6,10 @@ const queueService =
 const customerNotificationService =
     require("./customerNotificationService");
 
+const {
+    sendEmail
+} = require("./emailService");
+
 function formatPaymentMethod(value) {
     const raw =
         String(value || "")
@@ -94,6 +98,141 @@ function customerRegistered({
     );
 }
 
+function sendOwnerOrderEmail({
+    orderId,
+    orderNumber,
+    grandTotal,
+    orderStatus = "Pending",
+    paymentMethod = "",
+    paymentStatus = "",
+    customerName = "",
+    customerEmail = "",
+    customerPhone = ""
+}) {
+    const recipient =
+        String(
+            process.env.ORDER_NOTIFICATION_EMAIL ||
+            process.env.CONTACT_ADMIN_EMAIL ||
+            process.env.EMAIL_USER ||
+            ""
+        ).trim();
+
+    if (!recipient) {
+        console.warn(
+            "[Owner Order Email] No notification email configured."
+        );
+
+        return Promise.resolve(false);
+    }
+
+    const safeOrderNumber =
+        String(orderNumber || orderId || "");
+
+    const safeCustomerName =
+        String(customerName || "Customer");
+
+    const formattedPayment =
+        formatPaymentMethod(paymentMethod);
+
+    const total =
+        Number(grandTotal || 0).toFixed(2);
+
+    const baseUrl =
+        String(
+            process.env.FRONTEND_URL ||
+            process.env.APP_BASE_URL ||
+            "https://www.rukhnav.store"
+        ).replace(/\/+$/, "");
+
+    const adminOrderUrl =
+        `${baseUrl}/admin/`;
+
+    const subject =
+        `New RUKHNAV Order ${safeOrderNumber} — Rs. ${total}`;
+
+    const textBody = [
+        "A new customer order has been placed.",
+        "",
+        `Order: ${safeOrderNumber}`,
+        `Customer: ${safeCustomerName}`,
+        `Phone: ${customerPhone || "-"}`,
+        `Email: ${customerEmail || "-"}`,
+        `Total: Rs. ${total}`,
+        `Payment: ${formattedPayment || "-"}`,
+        `Payment status: ${paymentStatus || "-"}`,
+        `Order status: ${orderStatus || "Pending"}`,
+        "",
+        `Admin: ${adminOrderUrl}`
+    ].join("\\n");
+
+    const htmlBody = `
+        <div style="font-family:Arial,sans-serif;line-height:1.6;color:#222">
+            <h2 style="margin-bottom:16px">New RUKHNAV Order</h2>
+
+            <table style="border-collapse:collapse;width:100%;max-width:620px">
+                <tr>
+                    <td style="padding:7px 0"><strong>Order</strong></td>
+                    <td style="padding:7px 0">${safeOrderNumber}</td>
+                </tr>
+                <tr>
+                    <td style="padding:7px 0"><strong>Customer</strong></td>
+                    <td style="padding:7px 0">${safeCustomerName}</td>
+                </tr>
+                <tr>
+                    <td style="padding:7px 0"><strong>Phone</strong></td>
+                    <td style="padding:7px 0">${customerPhone || "-"}</td>
+                </tr>
+                <tr>
+                    <td style="padding:7px 0"><strong>Email</strong></td>
+                    <td style="padding:7px 0">${customerEmail || "-"}</td>
+                </tr>
+                <tr>
+                    <td style="padding:7px 0"><strong>Total</strong></td>
+                    <td style="padding:7px 0"><strong>Rs. ${total}</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:7px 0"><strong>Payment</strong></td>
+                    <td style="padding:7px 0">${formattedPayment || "-"}</td>
+                </tr>
+                <tr>
+                    <td style="padding:7px 0"><strong>Payment status</strong></td>
+                    <td style="padding:7px 0">${paymentStatus || "-"}</td>
+                </tr>
+                <tr>
+                    <td style="padding:7px 0"><strong>Order status</strong></td>
+                    <td style="padding:7px 0">${orderStatus || "Pending"}</td>
+                </tr>
+            </table>
+
+            <p style="margin-top:22px">
+                <a href="${adminOrderUrl}">
+                    Open RUKHNAV Admin
+                </a>
+            </p>
+        </div>
+    `;
+
+    /*
+     * This notification is informational only.
+     * sendEmail already handles provider failures safely.
+     */
+    return Promise.resolve(
+        sendEmail({
+            to: recipient,
+            subject,
+            text: textBody,
+            html: htmlBody
+        })
+    ).catch(error => {
+        console.error(
+            "[Owner Order Email]",
+            error.message
+        );
+
+        return false;
+    });
+}
+
 function orderPlaced({
     customerId,
     orderId,
@@ -109,6 +248,28 @@ function orderPlaced({
     customerEmail = "",
     customerPhone = ""
 }) {
+    /*
+     * Owner notification is deliberately independent from
+     * the customer notification queue. Neither is allowed
+     * to affect an already committed order.
+     */
+    sendOwnerOrderEmail({
+        orderId,
+        orderNumber,
+        grandTotal,
+        orderStatus,
+        paymentMethod,
+        paymentStatus,
+        customerName,
+        customerEmail,
+        customerPhone
+    }).catch(error => {
+        console.error(
+            "[Owner Order Email]",
+            error.message
+        );
+    });
+
     return safeQueue(
         queueService
             .queueCustomerEvent({

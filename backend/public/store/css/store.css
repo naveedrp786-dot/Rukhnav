@@ -8213,3 +8213,61 @@ span{
         font-size: 18px !important;
     }
 }
+
+/* =========================================================
+   RUKHNAV PRODUCTS — MOBILE FILTER DRAWER FIX
+   2026-10-04
+
+   Desktop remains unchanged.
+   On mobile the filter panel must remain closed until the
+   customer explicitly taps the Filters button.
+   ========================================================= */
+
+@media (max-width: 920px) {
+  .catalog > .filters {
+    display: none;
+    position: static;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .catalog > .filters.open {
+    display: grid;
+    position: static;
+  }
+
+  .catalog > .filter-mobile {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 650px) {
+  .catalog {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .catalog-main {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .catalog-main .products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .catalog-main .product-card {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .catalog-main .products {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
