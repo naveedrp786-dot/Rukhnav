@@ -8245,7 +8245,7 @@ span{
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 920px) {
   .catalog {
     grid-template-columns: minmax(0, 1fr);
   }
