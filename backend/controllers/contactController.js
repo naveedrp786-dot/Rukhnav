@@ -4,6 +4,10 @@ const {
     sendEmail
 } = require("../services/emailService");
 
+const {
+    getOwnerEmail
+} = require("../services/ownerActivityNotificationService");
+
 function escapeHtml(value = "") {
     return String(value)
         .replace(/&/g, "&amp;")
@@ -92,8 +96,19 @@ exports.sendContactMessage = async (
         }
 
         const adminEmail =
-            process.env.CONTACT_ADMIN_EMAIL ||
-            "naveedrp786@gmail.com";
+            getOwnerEmail();
+
+        if (!adminEmail) {
+            console.error(
+                "Contact form owner email is not configured."
+            );
+
+            return res.status(503).json({
+                success: false,
+                message:
+                    "Contact email is temporarily unavailable."
+            });
+        }
 
         const html = `
             <div style="

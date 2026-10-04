@@ -1,5 +1,10 @@
 "use strict";
 
+const {
+    queueOwnerActivity
+} = require("../services/ownerActivityNotificationService");
+
+
 const paymentService =
     require("../services/paymentService");
 
@@ -165,6 +170,32 @@ exports.uploadCustomerProof =
                             req.file
                     });
 
+            queueOwnerActivity({
+                type: "PAYMENT_PROOF_UPLOADED",
+                title: "Payment Proof Uploaded",
+                customerName:
+                    req.user?.full_name ||
+                    req.user?.name ||
+                    "",
+                customerEmail:
+                    req.user?.email || "",
+                customerPhone:
+                    req.user?.phone || "",
+                reference:
+                    `Order ID ${orderId}`,
+                details: [
+                    {
+                        label: "Customer type",
+                        value: "Registered"
+                    },
+                    {
+                        label: "Proof ID",
+                        value:
+                            result.proof?.id || "-"
+                    }
+                ]
+            });
+
             return res.json({
                 success: true,
 
@@ -300,6 +331,28 @@ exports.uploadGuestProof =
                         file:
                             req.file
                     });
+
+            queueOwnerActivity({
+                type: "PAYMENT_PROOF_UPLOADED",
+                title: "Guest Payment Proof Uploaded",
+                reference:
+                    orderNumber,
+                details: [
+                    {
+                        label: "Customer type",
+                        value: "Guest"
+                    },
+                    {
+                        label: "Order ID",
+                        value: rows[0].id
+                    },
+                    {
+                        label: "Proof ID",
+                        value:
+                            result.proof?.id || "-"
+                    }
+                ]
+            });
 
             return res.json({
                 success: true,

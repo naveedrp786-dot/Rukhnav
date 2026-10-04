@@ -1,5 +1,10 @@
 "use strict";
 
+const {
+    queueOwnerActivity
+} = require("../services/ownerActivityNotificationService");
+
+
 const db =
     require("../config/db");
 
@@ -878,6 +883,43 @@ exports.createEvent = async (
                 result.insertId,
                 customerId
             );
+
+        queueOwnerActivity({
+            type: "CUSTOMER_EVENT_CREATED",
+            title: "Customer Event Created",
+            customerName:
+                req.user?.full_name ||
+                req.user?.name ||
+                "",
+            customerEmail:
+                req.user?.email || "",
+            customerPhone:
+                req.user?.phone || "",
+            reference:
+                `Event #${result.insertId}`,
+            details: [
+                {
+                    label: "Event",
+                    value: data.event_name
+                },
+                {
+                    label: "Type",
+                    value: data.event_type
+                },
+                {
+                    label: "Date",
+                    value: data.event_date
+                },
+                {
+                    label: "Recurrence",
+                    value: data.recurrence
+                },
+                {
+                    label: "Reminder days",
+                    value: data.reminder_days
+                }
+            ]
+        });
 
         return res.status(201).json({
             success: true,

@@ -1,5 +1,10 @@
 "use strict";
 
+const {
+    queueOwnerActivity
+} = require("../services/ownerActivityNotificationService");
+
+
 const fs = require("fs");
 const path = require("path");
 const db = require("../config/db");
@@ -273,6 +278,39 @@ exports.addReview = async (req, res) => {
         }
 
         await connection.commit();
+
+        queueOwnerActivity({
+            type: "REVIEW_SUBMITTED",
+            title: "New Product Review",
+            customerName:
+                req.user?.full_name ||
+                req.user?.name ||
+                "",
+            customerEmail:
+                req.user?.email || "",
+            customerPhone:
+                req.user?.phone || "",
+            reference:
+                `Review #${result.insertId}`,
+            details: [
+                {
+                    label: "Product ID",
+                    value: productId
+                },
+                {
+                    label: "Rating",
+                    value: `${rating}/5`
+                },
+                {
+                    label: "Status",
+                    value: status
+                },
+                {
+                    label: "Comment",
+                    value: comment
+                }
+            ]
+        });
 
         const review = await getOneReview(connection, result.insertId);
         const imageMap = await fetchImages(connection, [result.insertId]);
@@ -643,6 +681,32 @@ exports.reportReview = async (req, res) => {
             `INSERT INTO review_reports (review_id, reporter_customer_id, reason, details) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE reason=VALUES(reason), details=VALUES(details), status='Pending', updated_at=CURRENT_TIMESTAMP`,
             [reviewId, reporterId, reason, details]
         );
+
+        queueOwnerActivity({
+            type: "REVIEW_REPORTED",
+            title: "Product Review Reported",
+            customerName:
+                req.user?.full_name ||
+                req.user?.name ||
+                "",
+            customerEmail:
+                req.user?.email || "",
+            customerPhone:
+                req.user?.phone || "",
+            reference:
+                `Review #${reviewId}`,
+            details: [
+                {
+                    label: "Reason",
+                    value: reason
+                },
+                {
+                    label: "Details",
+                    value: details || "-"
+                }
+            ]
+        });
+
         return res.status(201).json({success:true,message:"Review report submitted."});
     } catch { return res.status(500).json({success:false,message:"Unable to report review."}); }
 };
