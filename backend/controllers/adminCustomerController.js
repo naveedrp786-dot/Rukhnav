@@ -1470,208 +1470,6 @@ exports.updateCustomer = async (
 };
 
 // =====================================================
-// Admin Reset Customer Password
-// PATCH /api/admin/customers/:id/reset-password
-// =====================================================
-
-exports.resetCustomerPassword = async (
-    req,
-    res
-) => {
-    let connection;
-
-    try {
-        const customerId =
-            Number.parseInt(
-                req.params.id,
-                10
-            );
-
-        const newPassword =
-            typeof req.body.new_password ===
-                "string"
-                ? req.body.new_password
-                : "";
-
-        const confirmPassword =
-            typeof req.body.confirm_password ===
-                "string"
-                ? req.body.confirm_password
-                : "";
-
-        if (
-            !Number.isInteger(customerId) ||
-            customerId <= 0
-        ) {
-            return errorResponse(
-                res,
-                "A valid customer ID is required.",
-                400
-            );
-        }
-
-        if (newPassword.length < 8) {
-            return errorResponse(
-                res,
-                "New password must contain at least 8 characters.",
-                400
-            );
-        }
-
-        if (
-            confirmPassword &&
-            newPassword !== confirmPassword
-        ) {
-            return errorResponse(
-                res,
-                "Password confirmation does not match.",
-                400
-            );
-        }
-
-        connection =
-            await db.getConnection();
-
-        await connection.beginTransaction();
-
-        const [customerRows] =
-            await connection.query(
-                `
-                SELECT
-                    id,
-                    full_name,
-                    email,
-                    phone,
-                    status
-                FROM customers
-                WHERE id = ?
-                  AND deleted_at IS NULL
-                LIMIT 1
-                FOR UPDATE
-                `,
-                [customerId]
-            );
-
-        if (customerRows.length === 0) {
-            await connection.rollback();
-
-            return errorResponse(
-                res,
-                "Customer was not found.",
-                404
-            );
-        }
-
-        const hashedPassword =
-            await bcrypt.hash(
-                newPassword,
-                10
-            );
-
-        await connection.query(
-            `
-            UPDATE customers
-            SET
-                password = ?,
-                password_changed_at =
-                    CURRENT_TIMESTAMP,
-                failed_login_attempts = 0,
-                account_locked_until = NULL,
-                updated_at =
-                    CURRENT_TIMESTAMP
-            WHERE id = ?
-              AND deleted_at IS NULL
-            `,
-            [
-                hashedPassword,
-                customerId
-            ]
-        );
-
-        /*
-         * Revoke all active customer sessions.
-         * The customer must sign in again with
-         * the new password.
-         */
-        await connection.query(
-            `
-            UPDATE customer_sessions
-            SET
-                revoked_at =
-                    CURRENT_TIMESTAMP
-            WHERE customer_id = ?
-              AND revoked_at IS NULL
-            `,
-            [customerId]
-        );
-
-        await connection.commit();
-
-        logger.info(
-            `Customer password reset by admin: customer=${customerId}, admin=${
-                req.admin?.id ||
-                req.user?.id ||
-                "unknown"
-            }`
-        );
-
-        return successResponse(
-            res,
-            "Customer password reset successfully. The customer has been logged out from all devices.",
-            {
-                customer: {
-                    id:
-                        customerRows[0].id,
-
-                    full_name:
-                        customerRows[0]
-                            .full_name,
-
-                    email:
-                        customerRows[0].email,
-
-                    phone:
-                        customerRows[0].phone
-                }
-            }
-        );
-
-    } catch (error) {
-        if (connection) {
-            try {
-                await connection.rollback();
-            } catch (rollbackError) {
-                logger.error(
-                    `Reset-password rollback error: ${
-                        rollbackError.message
-                    }`
-                );
-            }
-        }
-
-        logger.error(
-            `Admin reset customer password error: ${
-                error.stack ||
-                error.message
-            }`
-        );
-
-        return errorResponse(
-            res,
-            "Unable to reset customer password.",
-            500,
-            error
-        );
-
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-};
-
-
-// =====================================================
 // Update Customer Status
 // PATCH /api/admin/customers/:id/status
 // =====================================================
@@ -4042,5 +3840,234 @@ exports.updateAccountDeletionRequestStatus = async (
         if (connection) {
             connection.release();
         }
+    }
+};
+
+// =========================================
+// List Pending Password Recovery Requests
+// =========================================
+
+exports.listPasswordRecoveryRequests = async (
+    req,
+    res
+) => {
+
+    try {
+
+        await db.query(`
+            UPDATE customer_password_recovery_requests
+            SET status = 'Expired'
+            WHERE status = 'Pending'
+              AND expires_at <= CURRENT_TIMESTAMP
+        `);
+
+        const [rows] = await db.query(`
+            SELECT
+                r.id,
+                r.customer_id,
+                r.status,
+                r.requested_at,
+                r.expires_at,
+                c.full_name,
+                c.email,
+                c.phone
+
+            FROM customer_password_recovery_requests r
+
+            INNER JOIN customers c
+                ON c.id = r.customer_id
+
+            WHERE r.status = 'Pending'
+
+            ORDER BY r.requested_at ASC
+        `);
+
+        return res.json({
+            success: true,
+            requests: rows
+        });
+
+    } catch (error) {
+
+        console.error(
+            "List password recovery requests error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to load password-recovery requests."
+        });
+    }
+};
+
+
+// =========================================
+// Approve Password Recovery Request
+// =========================================
+
+exports.approvePasswordRecoveryRequest = async (
+    req,
+    res
+) => {
+
+    const requestId =
+        Number(req.params.requestId);
+
+    const ownershipVerified =
+        req.body?.ownership_verified === true;
+
+    const adminId =
+        Number(
+            req.admin?.id ||
+            req.user?.id ||
+            0
+        );
+
+    if (
+        !Number.isInteger(requestId) ||
+        requestId <= 0 ||
+        !Number.isInteger(adminId) ||
+        adminId <= 0
+    ) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Invalid password-recovery approval request."
+        });
+    }
+
+    if (!ownershipVerified) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Confirm that customer ownership was independently verified through the registered mobile number before approval."
+        });
+    }
+
+    const connection =
+        await db.getConnection();
+
+    try {
+
+        await connection.beginTransaction();
+
+        const [rows] =
+            await connection.query(`
+                SELECT
+                    id,
+                    customer_id,
+                    status,
+                    expires_at
+
+                FROM customer_password_recovery_requests
+
+                WHERE id = ?
+
+                LIMIT 1
+
+                FOR UPDATE
+            `, [
+                requestId
+            ]);
+
+        if (!rows.length) {
+
+            await connection.rollback();
+
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Password-recovery request not found."
+            });
+        }
+
+        const recovery =
+            rows[0];
+
+        if (
+            recovery.status !== "Pending"
+        ) {
+
+            await connection.rollback();
+
+            return res.status(409).json({
+                success: false,
+                message:
+                    "This password-recovery request is no longer pending."
+            });
+        }
+
+        if (
+            new Date(
+                recovery.expires_at
+            ).getTime() <= Date.now()
+        ) {
+
+            await connection.query(`
+                UPDATE customer_password_recovery_requests
+                SET status = 'Expired'
+                WHERE id = ?
+            `, [
+                requestId
+            ]);
+
+            await connection.commit();
+
+            return res.status(410).json({
+                success: false,
+                message:
+                    "This password-recovery request has expired."
+            });
+        }
+
+        await connection.query(`
+            UPDATE customer_password_recovery_requests
+
+            SET
+                status = 'Approved',
+                approved_at = CURRENT_TIMESTAMP,
+                approved_by_admin_id = ?,
+                expires_at = DATE_ADD(
+                    CURRENT_TIMESTAMP,
+                    INTERVAL 15 MINUTE
+                )
+
+            WHERE id = ?
+              AND status = 'Pending'
+        `, [
+            adminId,
+            requestId
+        ]);
+
+        await connection.commit();
+
+        return res.json({
+            success: true,
+            message:
+                "Password-recovery request approved."
+        });
+
+    } catch (error) {
+
+        try {
+            await connection.rollback();
+        } catch (_) {}
+
+        console.error(
+            "Approve password recovery request error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to approve password-recovery request."
+        });
+
+    } finally {
+
+        connection.release();
     }
 };

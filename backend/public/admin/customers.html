@@ -109,6 +109,90 @@
                     aria-live="polite"
                 ></div>
 
+                <section
+                    id="passwordRecoveryPanel"
+                    class="password-recovery-panel"
+                    aria-labelledby="passwordRecoveryTitle"
+                >
+
+                    <div class="password-recovery-panel-header">
+
+                        <div>
+                            <span class="modal-label">
+                                Account Security
+                            </span>
+
+                            <h2 id="passwordRecoveryTitle">
+                                Pending Password Recovery
+                            </h2>
+
+                            <p>
+                                Mobile-number password recovery
+                                requests waiting for verification
+                                and approval.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="refreshPasswordRecoveryButton"
+                            class="secondary-btn erp-v5-btn"
+                        >
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh
+                        </button>
+
+                    </div>
+
+                    <div
+                        class="password-recovery-warning"
+                        role="note"
+                    >
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <div>
+                            <strong>
+                                Verify ownership before approving
+                            </strong>
+
+                            <p>
+                                Contact the customer independently
+                                through the registered mobile number.
+                                Approve only after you are satisfied
+                                that the person requesting recovery
+                                owns the customer account.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        id="passwordRecoveryMessage"
+                        class="hidden"
+                        aria-live="polite"
+                    ></div>
+
+                    <div
+                        id="passwordRecoveryLoading"
+                        class="password-recovery-state"
+                    >
+                        Loading pending requests...
+                    </div>
+
+                    <div
+                        id="passwordRecoveryEmpty"
+                        class="password-recovery-state hidden"
+                    >
+                        No pending mobile password-recovery requests.
+                    </div>
+
+                    <div
+                        id="passwordRecoveryList"
+                        class="password-recovery-list hidden"
+                    ></div>
+
+                </section>
+
+
                 <!-- =====================================
                      Customer Summary Cards
                 ====================================== -->
@@ -1126,16 +1210,6 @@
 
                 </button>
 
-                <button
-                    type="button"
-                    id="resetCustomerPasswordButton"
-                    class="secondary-btn erp-v5-btn customer-security-button"
-                >
-
-                    <i class="fa-solid fa-key"></i>
-                    Reset Password
-
-                </button>
 
                 <button
                     type="button"
@@ -2149,214 +2223,6 @@
 
     </div>
 
-
-    <!-- =====================================
-         Reset Customer Password Modal
-    ====================================== -->
-
-    <div
-        id="resetCustomerPasswordModal"
-        class="customer-modal"
-        aria-hidden="true"
-    >
-
-        <div class="customer-modal-overlay"></div>
-
-        <div
-            class="customer-modal-dialog security-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="resetCustomerPasswordTitle"
-        >
-
-            <div class="customer-modal-header">
-
-                <div>
-
-                    <span class="modal-label">
-                        Customer Security
-                    </span>
-
-                    <h2 id="resetCustomerPasswordTitle">
-                        Reset Customer Password
-                    </h2>
-
-                    <p id="resetPasswordCustomerName">
-                        Customer
-                    </p>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="modal-close-button"
-                    data-close-modal="resetCustomerPasswordModal"
-                    aria-label="Close password reset"
-                >
-
-                    <i class="fa-solid fa-xmark"></i>
-
-                </button>
-
-            </div>
-
-            <form id="resetCustomerPasswordForm">
-
-                <div class="customer-modal-body">
-
-                    <input
-                        type="hidden"
-                        id="resetPasswordCustomerId"
-                    >
-
-                    <div class="security-warning">
-
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-
-                        <div>
-
-                            <strong>
-                                This action signs the customer out everywhere
-                            </strong>
-
-                            <p>
-                                All active customer sessions will be revoked.
-                                The customer must sign in again using the new
-                                password.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="security-password-grid">
-
-                        <div class="erp-v5-field">
-
-                            <label for="newCustomerPassword">
-
-                                New Password
-                                <span class="required">*</span>
-
-                            </label>
-
-                            <div class="security-password-field">
-
-                                <input
-                                    type="password"
-                                    id="newCustomerPassword"
-                                    minlength="8"
-                                    autocomplete="new-password"
-                                    placeholder="Minimum 8 characters"
-                                    required
-                                >
-
-                                <button
-                                    type="button"
-                                    class="password-visibility-button"
-                                    data-password-target="newCustomerPassword"
-                                    aria-label="Show new password"
-                                >
-
-                                    <i class="fa-regular fa-eye"></i>
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                        <div class="erp-v5-field">
-
-                            <label for="confirmCustomerPassword">
-
-                                Confirm Password
-                                <span class="required">*</span>
-
-                            </label>
-
-                            <div class="security-password-field">
-
-                                <input
-                                    type="password"
-                                    id="confirmCustomerPassword"
-                                    minlength="8"
-                                    autocomplete="new-password"
-                                    placeholder="Repeat the new password"
-                                    required
-                                >
-
-                                <button
-                                    type="button"
-                                    class="password-visibility-button"
-                                    data-password-target="confirmCustomerPassword"
-                                    aria-label="Show confirmed password"
-                                >
-
-                                    <i class="fa-regular fa-eye"></i>
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div
-                        id="passwordStrength"
-                        class="password-strength"
-                    >
-
-                        <span class="password-strength-bar"></span>
-
-                        <div>
-
-                            <strong>Password strength</strong>
-
-                            <small>
-                                Enter at least 8 characters.
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="customer-modal-footer">
-
-                    <button
-                        type="button"
-                        class="secondary-btn erp-v5-btn erp-v5-btn--light"
-                        data-close-modal="resetCustomerPasswordModal"
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        type="submit"
-                        id="confirmResetCustomerPasswordButton"
-                        class="primary-btn erp-v5-btn security-danger-action"
-                    >
-
-                        <i class="fa-solid fa-key"></i>
-                        Reset Password
-
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
-    </div>
-
-    <!-- Shared Component Loader -->
-    <script src="/admin/js/componentLoader.js"></script>
-
-    <!-- Customers Page Logic -->
     <!-- =====================================================
          Customer Referral Network Modal
     ====================================================== -->

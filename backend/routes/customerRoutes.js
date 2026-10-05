@@ -75,6 +75,12 @@ router.post(
 );
 
 router.post(
+    "/password/recovery/status",
+    customerAuthController
+        .checkMobilePasswordRecovery
+);
+
+router.post(
     "/password/reset",
     customerAuthController
         .resetPassword
@@ -230,6 +236,13 @@ router.post(
     auth,
     customerAccountController
         .cancelAccountDeletion
+);
+
+// Same-browser claim after administrator approval
+router.post(
+    "/password/recovery/claim",
+    customerAuthController
+        .claimMobilePasswordRecovery
 );
 
 module.exports = router;

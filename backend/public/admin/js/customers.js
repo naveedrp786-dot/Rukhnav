@@ -235,21 +235,6 @@ const elements = {
     customerVerificationButton:
         document.getElementById(
             "customerVerificationButton"
-        ),
-
-    resetCustomerPasswordModal:
-        document.getElementById(
-            "resetCustomerPasswordModal"
-        ),
-
-    resetCustomerPasswordForm:
-        document.getElementById(
-            "resetCustomerPasswordForm"
-        ),
-
-    resetCustomerPasswordButton:
-        document.getElementById(
-            "resetCustomerPasswordButton"
         )
 };
 
@@ -2381,11 +2366,6 @@ function populateCustomerDetails(customer) {
             "customerVerificationButton"
         );
 
-    const resetPasswordButton =
-        document.getElementById(
-            "resetCustomerPasswordButton"
-        );
-
     const analyticsButton =
         document.getElementById(
             "customerAnalyticsButton"
@@ -2411,10 +2391,7 @@ function populateCustomerDetails(customer) {
             String(customerId);
     }
 
-    if (resetPasswordButton) {
-        resetPasswordButton.dataset.customerId =
-            String(customerId);
-    }
+
 }
 
 /* =====================================================
@@ -4343,297 +4320,6 @@ async function saveCustomerVerification(
     }
 }
 
-function passwordStrengthLevel(
-    password
-) {
-    let score = 0;
-
-    if (password.length >= 8) {
-        score += 1;
-    }
-
-    if (password.length >= 12) {
-        score += 1;
-    }
-
-    if (/[A-Z]/.test(password)) {
-        score += 1;
-    }
-
-    if (/[a-z]/.test(password)) {
-        score += 1;
-    }
-
-    if (/\d/.test(password)) {
-        score += 1;
-    }
-
-    if (/[^A-Za-z0-9]/.test(password)) {
-        score += 1;
-    }
-
-    return Math.min(
-        4,
-        Math.floor(score / 1.5)
-    );
-}
-
-function updatePasswordStrength() {
-    const password =
-        document.getElementById(
-            "newCustomerPassword"
-        )?.value || "";
-
-    const strength =
-        document.getElementById(
-            "passwordStrength"
-        );
-
-    if (!strength) {
-        return;
-    }
-
-    const level =
-        passwordStrengthLevel(
-            password
-        );
-
-    const labels = [
-        "Enter at least 8 characters.",
-        "Weak password",
-        "Fair password",
-        "Good password",
-        "Strong password"
-    ];
-
-    strength.dataset.level =
-        String(level);
-
-    const description =
-        strength.querySelector(
-            "small"
-        );
-
-    if (description) {
-        description.textContent =
-            labels[level];
-    }
-}
-
-async function openResetCustomerPassword(
-    customerId
-) {
-    try {
-        const customer =
-            await ensureSecurityCustomer(
-                customerId
-            );
-
-        const id =
-            customer.id ||
-            customer.customer_id;
-
-        const resetPasswordCustomerIdInput =
-            document.getElementById(
-                "resetPasswordCustomerId"
-            );
-
-        if (resetPasswordCustomerIdInput) {
-            resetPasswordCustomerIdInput.value =
-                String(id);
-        }
-
-        setTextContent(
-            "resetPasswordCustomerName",
-            `${getCustomerName(customer)} · Customer #${id}`
-        );
-
-        const form =
-            elements.resetCustomerPasswordForm;
-
-        form?.reset();
-
-        updatePasswordStrength();
-
-        closeModal(
-            elements.customerDetailsModal
-        );
-
-        openModal(
-            elements.resetCustomerPasswordModal
-        );
-
-        setTimeout(
-            () =>
-                document.getElementById(
-                    "newCustomerPassword"
-                )?.focus(),
-            50
-        );
-    } catch (error) {
-        showMessage(
-            error.message ||
-            "Unable to open password reset.",
-            "error",
-            false
-        );
-    }
-}
-
-async function resetCustomerPassword(
-    event
-) {
-    event.preventDefault();
-
-    const customerId =
-        document.getElementById(
-            "resetPasswordCustomerId"
-        )?.value;
-
-    const newPassword =
-        document.getElementById(
-            "newCustomerPassword"
-        )?.value || "";
-
-    const confirmPassword =
-        document.getElementById(
-            "confirmCustomerPassword"
-        )?.value || "";
-
-    const button =
-        document.getElementById(
-            "confirmResetCustomerPasswordButton"
-        );
-
-    if (!customerId) {
-        showMessage(
-            "Customer ID is missing.",
-            "error",
-            false
-        );
-
-        return;
-    }
-
-    if (newPassword.length < 8) {
-        showMessage(
-            "New password must contain at least 8 characters.",
-            "error",
-            false
-        );
-
-        return;
-    }
-
-    if (
-        newPassword !==
-        confirmPassword
-    ) {
-        showMessage(
-            "Password confirmation does not match.",
-            "error",
-            false
-        );
-
-        return;
-    }
-
-    setButtonLoading(
-        button,
-        true,
-        "Resetting"
-    );
-
-    try {
-        const data =
-            await apiRequest(
-                `/${encodeURIComponent(customerId)}/reset-password`,
-                {
-                    method:
-                        "PATCH",
-
-                    body:
-                        JSON.stringify({
-                            new_password:
-                                newPassword,
-
-                            confirm_password:
-                                confirmPassword
-                        })
-                }
-            );
-
-        closeModal(
-            elements.resetCustomerPasswordModal
-        );
-
-        elements.resetCustomerPasswordForm
-            ?.reset();
-
-        showMessage(
-            data.message ||
-            "Customer password reset successfully. The customer has been logged out from all devices.",
-            "success",
-            false
-        );
-    } catch (error) {
-        showMessage(
-            error.message ||
-            "Unable to reset customer password.",
-            "error",
-            false
-        );
-    } finally {
-        setButtonLoading(
-            button,
-            false
-        );
-    }
-}
-
-function togglePasswordVisibility(
-    button
-) {
-    const targetId =
-        button.dataset
-            .passwordTarget;
-
-    const input =
-        document.getElementById(
-            targetId
-        );
-
-    if (!input) {
-        return;
-    }
-
-    const visible =
-        input.type ===
-        "text";
-
-    input.type =
-        visible
-            ? "password"
-            : "text";
-
-    const icon =
-        button.querySelector("i");
-
-    if (icon) {
-        icon.className =
-            visible
-                ? "fa-regular fa-eye"
-                : "fa-regular fa-eye-slash";
-    }
-
-    button.setAttribute(
-        "aria-label",
-        visible
-            ? "Show password"
-            : "Hide password"
-    );
-}
-
 /* =====================================================
    Modal Event Binding
 ===================================================== */
@@ -4789,32 +4475,10 @@ function bindModalEvents() {
             }
         );
 
-    elements.resetCustomerPasswordButton
-        ?.addEventListener(
-            "click",
-            event => {
-                const customerId =
-                    event.currentTarget
-                        .dataset.customerId;
-
-                if (customerId) {
-                    openResetCustomerPassword(
-                        customerId
-                    );
-                }
-            }
-        );
-
     elements.customerVerificationForm
         ?.addEventListener(
             "submit",
             saveCustomerVerification
-        );
-
-    elements.resetCustomerPasswordForm
-        ?.addEventListener(
-            "submit",
-            resetCustomerPassword
         );
 
     document
@@ -4833,15 +4497,6 @@ function bindModalEvents() {
         ?.addEventListener(
             "change",
             updateVerificationPreview
-        );
-
-    document
-        .getElementById(
-            "newCustomerPassword"
-        )
-        ?.addEventListener(
-            "input",
-            updatePasswordStrength
         );
 
     document
@@ -4894,4 +4549,440 @@ async function initialiseCustomersPage() {
 document.addEventListener(
     "DOMContentLoaded",
     initialiseCustomersPage
+);
+/* =====================================================
+   Mobile Password Recovery Approval
+===================================================== */
+
+function getPasswordRecoveryElements() {
+    return {
+        panel:
+            document.getElementById(
+                "passwordRecoveryPanel"
+            ),
+
+        list:
+            document.getElementById(
+                "passwordRecoveryList"
+            ),
+
+        loading:
+            document.getElementById(
+                "passwordRecoveryLoading"
+            ),
+
+        empty:
+            document.getElementById(
+                "passwordRecoveryEmpty"
+            ),
+
+        message:
+            document.getElementById(
+                "passwordRecoveryMessage"
+            ),
+
+        refresh:
+            document.getElementById(
+                "refreshPasswordRecoveryButton"
+            )
+    };
+}
+
+function showPasswordRecoveryMessage(
+    message,
+    type = "info"
+) {
+    const { message: box } =
+        getPasswordRecoveryElements();
+
+    if (!box) {
+        return;
+    }
+
+    box.className =
+        `password-recovery-message ${type}`;
+
+    box.textContent =
+        String(message || "");
+
+    box.classList.remove("hidden");
+}
+
+function clearPasswordRecoveryMessage() {
+    const { message } =
+        getPasswordRecoveryElements();
+
+    if (!message) {
+        return;
+    }
+
+    message.textContent = "";
+    message.className = "hidden";
+}
+
+function formatRecoveryDate(value) {
+    if (!value) {
+        return "Unknown";
+    }
+
+    const date =
+        new Date(value);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return String(value);
+    }
+
+    return date.toLocaleString();
+}
+
+function renderPasswordRecoveryRequests(
+    requests
+) {
+    const {
+        list,
+        loading,
+        empty
+    } = getPasswordRecoveryElements();
+
+    loading?.classList.add("hidden");
+
+    if (!list || !empty) {
+        return;
+    }
+
+    const safeRequests =
+        Array.isArray(requests)
+            ? requests
+            : [];
+
+    if (safeRequests.length === 0) {
+
+        list.innerHTML = "";
+        list.classList.add("hidden");
+        empty.classList.remove("hidden");
+
+        return;
+    }
+
+    empty.classList.add("hidden");
+    list.classList.remove("hidden");
+
+    list.innerHTML =
+        safeRequests.map(request => {
+
+            const requestId =
+                Number(request.id);
+
+            const customerId =
+                Number(request.customer_id);
+
+            const name =
+                escapeHtml(
+                    request.full_name ||
+                    "Unnamed Customer"
+                );
+
+            const phone =
+                escapeHtml(
+                    request.phone ||
+                    "No registered mobile"
+                );
+
+            const email =
+                escapeHtml(
+                    request.email ||
+                    "No email"
+                );
+
+            const requestedAt =
+                escapeHtml(
+                    formatRecoveryDate(
+                        request.requested_at
+                    )
+                );
+
+            const expiresAt =
+                escapeHtml(
+                    formatRecoveryDate(
+                        request.expires_at
+                    )
+                );
+
+            return `
+                <article
+                    class="password-recovery-request"
+                    data-recovery-request-id="${requestId}"
+                >
+
+                    <div class="password-recovery-request-main">
+
+                        <div>
+                            <span class="modal-label">
+                                Customer #${customerId}
+                            </span>
+
+                            <h3>${name}</h3>
+
+                            <p>
+                                <strong>Registered mobile:</strong>
+                                ${phone}
+                            </p>
+
+                            <p>
+                                <strong>Email:</strong>
+                                ${email}
+                            </p>
+                        </div>
+
+                        <div class="password-recovery-times">
+                            <span>
+                                Requested
+                                <strong>${requestedAt}</strong>
+                            </span>
+
+                            <span>
+                                Pending until
+                                <strong>${expiresAt}</strong>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <label
+                        class="password-recovery-verification"
+                    >
+                        <input
+                            type="checkbox"
+                            class="password-recovery-verified"
+                            data-request-id="${requestId}"
+                        >
+
+                        <span>
+                            I independently verified that this
+                            customer owns the registered mobile
+                            number shown above.
+                        </span>
+                    </label>
+
+                    <div class="password-recovery-actions">
+
+                        <button
+                            type="button"
+                            class="primary-btn erp-v5-btn erp-v5-btn--gold password-recovery-approve"
+                            data-request-id="${requestId}"
+                            disabled
+                        >
+                            <i class="fa-solid fa-check"></i>
+                            Approve Recovery
+                        </button>
+
+                    </div>
+
+                </article>
+            `;
+        }).join("");
+}
+
+async function loadPasswordRecoveryRequests() {
+
+    const {
+        panel,
+        list,
+        loading,
+        empty
+    } = getPasswordRecoveryElements();
+
+    if (!panel) {
+        return;
+    }
+
+    clearPasswordRecoveryMessage();
+
+    loading?.classList.remove("hidden");
+    list?.classList.add("hidden");
+    empty?.classList.add("hidden");
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/password-recovery-requests"
+            );
+
+        renderPasswordRecoveryRequests(
+            data.requests
+        );
+
+    } catch (error) {
+
+        loading?.classList.add("hidden");
+
+        showPasswordRecoveryMessage(
+            error.message ||
+            "Unable to load password-recovery requests.",
+            "error"
+        );
+    }
+}
+
+async function approvePasswordRecoveryRequest(
+    requestId,
+    button
+) {
+    const article =
+        button.closest(
+            ".password-recovery-request"
+        );
+
+    const checkbox =
+        article?.querySelector(
+            ".password-recovery-verified"
+        );
+
+    if (!checkbox?.checked) {
+
+        showPasswordRecoveryMessage(
+            "Verify customer ownership through the registered mobile number and confirm the verification checkbox before approval.",
+            "error"
+        );
+
+        return;
+    }
+
+    const confirmed =
+        window.confirm(
+            "Approve this password-recovery request?\n\nOnly continue if you independently verified the customer through the registered mobile number."
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    setButtonLoading(
+        button,
+        true,
+        "Approving"
+    );
+
+    try {
+
+        const data =
+            await apiRequest(
+                `/password-recovery-requests/${encodeURIComponent(requestId)}/approve`,
+                {
+                    method: "PATCH",
+
+                    body:
+                        JSON.stringify({
+                            ownership_verified:
+                                true
+                        })
+                }
+            );
+
+        showPasswordRecoveryMessage(
+            data.message ||
+            "Password-recovery request approved.",
+            "success"
+        );
+
+        await loadPasswordRecoveryRequests();
+
+    } catch (error) {
+
+        showPasswordRecoveryMessage(
+            error.message ||
+            "Unable to approve password-recovery request.",
+            "error"
+        );
+
+    } finally {
+
+        setButtonLoading(
+            button,
+            false
+        );
+    }
+}
+
+function bindPasswordRecoveryEvents() {
+
+    const {
+        list,
+        refresh
+    } = getPasswordRecoveryElements();
+
+    refresh?.addEventListener(
+        "click",
+        loadPasswordRecoveryRequests
+    );
+
+    list?.addEventListener(
+        "change",
+        event => {
+
+            const checkbox =
+                event.target.closest(
+                    ".password-recovery-verified"
+                );
+
+            if (!checkbox) {
+                return;
+            }
+
+            const article =
+                checkbox.closest(
+                    ".password-recovery-request"
+                );
+
+            const button =
+                article?.querySelector(
+                    ".password-recovery-approve"
+                );
+
+            if (button) {
+                button.disabled =
+                    !checkbox.checked;
+            }
+        }
+    );
+
+    list?.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    ".password-recovery-approve"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            const requestId =
+                button.dataset.requestId;
+
+            if (!requestId) {
+                return;
+            }
+
+            approvePasswordRecoveryRequest(
+                requestId,
+                button
+            );
+        }
+    );
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+        bindPasswordRecoveryEvents();
+        loadPasswordRecoveryRequests();
+    }
 );

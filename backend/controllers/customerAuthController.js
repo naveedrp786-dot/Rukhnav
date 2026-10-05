@@ -587,6 +587,28 @@ exports.verifyAccount = async (
 
 };
 
+
+// =========================================
+// Mobile Password Recovery Approval
+// =========================================
+
+const MOBILE_RECOVERY_SECRET_BYTES = 32;
+const MOBILE_RECOVERY_REQUEST_MINUTES = 30;
+const MOBILE_RECOVERY_APPROVAL_MINUTES = 15;
+
+function hashRecoverySecret(secret) {
+    return crypto
+        .createHash("sha256")
+        .update(String(secret || ""))
+        .digest("hex");
+}
+
+function isRecoverySecretValid(secret) {
+    return /^[a-f0-9]{64}$/i.test(
+        String(secret || "").trim()
+    );
+}
+
 // =========================================
 // Request Password Reset Code
 // =========================================
@@ -628,6 +650,45 @@ exports.requestPasswordReset = async (
             !customer ||
             customer.deleted_at
         ) {
+
+            /*
+             * Keep mobile recovery outwardly indistinguishable
+             * whether the supplied phone belongs to an account.
+             *
+             * This dummy browser secret is intentionally NOT
+             * persisted anywhere.
+             */
+            if (
+                identifierData.type === "Phone"
+            ) {
+
+                const dummyRecoverySecret =
+                    crypto
+                        .randomBytes(
+                            MOBILE_RECOVERY_SECRET_BYTES
+                        )
+                        .toString("hex");
+
+                res.set(
+                    "Cache-Control",
+                    "no-store"
+                );
+
+                return res.json({
+                    success: true,
+                    message:
+                        "Your mobile password-recovery request is waiting for RUKHNAV administrator approval.",
+                    recovery:
+                        "admin_approval",
+                    mobileRecoveryPending:
+                        true,
+                    recoverySecret:
+                        dummyRecoverySecret,
+                    expiresInMinutes:
+                        MOBILE_RECOVERY_REQUEST_MINUTES
+                });
+            }
+
             return res.json({
                 success: true,
                 message: genericMessage
@@ -650,9 +711,128 @@ exports.requestPasswordReset = async (
                 "Password reset request throttled."
             );
 
+            if (identifierData.type === "Phone") {
+
+                /*
+                 * Enumeration resistance:
+                 *
+                 * A throttled registered phone must have the
+                 * same outward response shape as every other
+                 * syntactically valid mobile recovery request.
+                 *
+                 * This secret is deliberately NOT stored.
+                 */
+                const dummyRecoverySecret =
+                    crypto
+                        .randomBytes(
+                            MOBILE_RECOVERY_SECRET_BYTES
+                        )
+                        .toString("hex");
+
+                res.set(
+                    "Cache-Control",
+                    "no-store"
+                );
+
+                return res.json({
+                    success: true,
+                    message:
+                        "Your mobile password-recovery request is waiting for RUKHNAV Admin approval.",
+                    recovery:
+                        "admin_approval",
+                    mobileRecoveryPending:
+                        true,
+                    recoverySecret:
+                        dummyRecoverySecret,
+                    expiresInMinutes:
+                        MOBILE_RECOVERY_REQUEST_MINUTES
+                });
+            }
+
             return res.json({
                 success: true,
                 message: genericMessage
+            });
+        }
+
+        /*
+         * Mobile-number password recovery requires administrator
+         * approval. Do not create a usable password-reset token yet.
+         *
+         * The browser receives the raw recovery secret. Only its
+         * SHA-256 hash is stored server-side.
+         */
+        if (identifierData.type === "Phone") {
+
+            res.set(
+                "Cache-Control",
+                "no-store"
+            );
+
+            const recoverySecret =
+                crypto
+                    .randomBytes(
+                        MOBILE_RECOVERY_SECRET_BYTES
+                    )
+                    .toString("hex");
+
+            const recoverySecretHash =
+                hashRecoverySecret(
+                    recoverySecret
+                );
+
+            await db.query(`
+                UPDATE customer_password_recovery_requests
+
+                SET
+                    status = 'Cancelled',
+                    cancelled_at = CURRENT_TIMESTAMP
+
+                WHERE customer_id = ?
+                AND status IN (
+                    'Pending',
+                    'Approved'
+                )
+            `, [
+                customer.id
+            ]);
+
+            await db.query(`
+                INSERT INTO customer_password_recovery_requests (
+                    customer_id,
+                    request_token_hash,
+                    status,
+                    requested_at,
+                    expires_at
+                )
+
+                VALUES (
+                    ?,
+                    ?,
+                    'Pending',
+                    CURRENT_TIMESTAMP,
+                    DATE_ADD(
+                        CURRENT_TIMESTAMP,
+                        INTERVAL ? MINUTE
+                    )
+                )
+            `, [
+                customer.id,
+                recoverySecretHash,
+                MOBILE_RECOVERY_REQUEST_MINUTES
+            ]);
+
+            return res.json({
+                success: true,
+                message:
+                    "Your mobile password-recovery request is waiting for RUKHNAV administrator approval.",
+                recovery:
+                    "admin_approval",
+                mobileRecoveryPending:
+                    true,
+                recoverySecret,
+                expiresInMinutes:
+                    MOBILE_RECOVERY_REQUEST_MINUTES
             });
         }
 
@@ -895,53 +1075,6 @@ exports.requestPasswordReset = async (
 
                 console.error(
                     "Password reset email delivery failed."
-                );
-
-                return res.json({
-                    success: true,
-                    message: genericMessage
-                });
-            }
-        }
-
-        /*
-         * Phone reset link through WhatsApp.
-         */
-        if (identifierData.type === "Phone") {
-
-            try {
-
-                await sendWhatsApp({
-                    to:
-                        identifierData.value,
-
-                    message:
-                        `Reset your RUKHNAV password using this secure link:\n\n` +
-                        `${resetUrl}\n\n` +
-                        `This link expires in ${PASSWORD_RESET_EXPIRY_MINUTES} minutes ` +
-                        `and can only be used once. ` +
-                        `If you did not request this reset, ignore this message.`
-                });
-
-            } catch (deliveryError) {
-
-                await db.query(`
-                    UPDATE customer_auth_codes
-
-                    SET status = 'Cancelled'
-
-                    WHERE customer_id = ?
-                    AND identifier = ?
-                    AND purpose = 'Password Reset'
-                    AND status = 'Pending'
-                `, [
-                    customer.id,
-                    identifierData.value
-                ]);
-
-                console.error(
-                    "Password reset WhatsApp delivery failed:",
-                    deliveryError
                 );
 
                 return res.json({
@@ -1727,3 +1860,379 @@ function getRequestIp(req) {
     );
 
 }
+
+// =========================================
+// Check Mobile Password Recovery Status
+// =========================================
+
+exports.checkMobilePasswordRecovery = async (
+    req,
+    res
+) => {
+
+    res.set(
+        "Cache-Control",
+        "no-store"
+    );
+
+    try {
+
+        const recoverySecret =
+            String(
+                req.body.recovery_secret ||
+                req.body.recoverySecret ||
+                ""
+            ).trim();
+
+        if (
+            !isRecoverySecretValid(
+                recoverySecret
+            )
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Invalid password-recovery request."
+            });
+        }
+
+        const recoverySecretHash =
+            hashRecoverySecret(
+                recoverySecret
+            );
+
+        const [rows] =
+            await db.query(`
+                SELECT
+                    id,
+                    customer_id,
+                    status,
+                    expires_at,
+                    approved_at
+
+                FROM customer_password_recovery_requests
+
+                WHERE request_token_hash = ?
+
+                LIMIT 1
+            `, [
+                recoverySecretHash
+            ]);
+
+        if (!rows.length) {
+
+            /*
+             * A syntactically valid but unknown recovery secret
+             * must not reveal whether the original phone number
+             * belonged to a customer account.
+             */
+            return res.json({
+                success: true,
+                status: "Pending"
+            });
+        }
+
+        const recovery =
+            rows[0];
+
+        if (
+            recovery.status === "Pending" &&
+            new Date(recovery.expires_at).getTime() <=
+                Date.now()
+        ) {
+
+            await db.query(`
+                UPDATE customer_password_recovery_requests
+
+                SET status = 'Expired'
+
+                WHERE id = ?
+                AND status = 'Pending'
+            `, [
+                recovery.id
+            ]);
+
+            return res.json({
+                success: true,
+                status: "Expired"
+            });
+        }
+
+        return res.json({
+            success: true,
+            status:
+                recovery.status
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Check mobile password recovery error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to check password-recovery request."
+        });
+    }
+};
+
+// =========================================
+// Claim Approved Mobile Password Recovery
+// =========================================
+
+exports.claimMobilePasswordRecovery = async (
+    req,
+    res
+) => {
+
+    res.set(
+        "Cache-Control",
+        "no-store"
+    );
+
+    const recoverySecret =
+        String(
+            req.body.recovery_secret ||
+            req.body.recoverySecret ||
+            ""
+        ).trim();
+
+    if (
+        !isRecoverySecretValid(
+            recoverySecret
+        )
+    ) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Invalid password-recovery request."
+        });
+    }
+
+    const recoverySecretHash =
+        hashRecoverySecret(
+            recoverySecret
+        );
+
+    const connection =
+        await db.getConnection();
+
+    try {
+
+        await connection.beginTransaction();
+
+        const [rows] =
+            await connection.query(`
+                SELECT
+                    id,
+                    customer_id,
+                    status,
+                    expires_at
+
+                FROM customer_password_recovery_requests
+
+                WHERE request_token_hash = ?
+
+                LIMIT 1
+
+                FOR UPDATE
+            `, [
+                recoverySecretHash
+            ]);
+
+        if (!rows.length) {
+
+            await connection.rollback();
+
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Password-recovery request not found."
+            });
+        }
+
+        const recovery =
+            rows[0];
+
+        if (
+            recovery.status !== "Approved"
+        ) {
+
+            await connection.rollback();
+
+            return res.status(409).json({
+                success: false,
+                status:
+                    recovery.status,
+                message:
+                    "Password-recovery request is not approved."
+            });
+        }
+
+        if (
+            new Date(
+                recovery.expires_at
+            ).getTime() <= Date.now()
+        ) {
+
+            await connection.query(`
+                UPDATE customer_password_recovery_requests
+                SET status = 'Expired'
+                WHERE id = ?
+            `, [
+                recovery.id
+            ]);
+
+            await connection.commit();
+
+            return res.status(410).json({
+                success: false,
+                status: "Expired",
+                message:
+                    "Password-recovery approval has expired."
+            });
+        }
+
+        const [customers] =
+            await connection.query(`
+                SELECT
+                    id,
+                    phone
+
+                FROM customers
+
+                WHERE id = ?
+                  AND deleted_at IS NULL
+
+                LIMIT 1
+
+                FOR UPDATE
+            `, [
+                recovery.customer_id
+            ]);
+
+        if (!customers.length) {
+
+            await connection.rollback();
+
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Customer account is unavailable."
+            });
+        }
+
+        const customer =
+            customers[0];
+
+        const rawResetToken =
+            crypto
+                .randomBytes(
+                    PASSWORD_RESET_TOKEN_BYTES
+                )
+                .toString("hex");
+
+        const resetTokenHash =
+            crypto
+                .createHash("sha256")
+                .update(rawResetToken)
+                .digest("hex");
+
+        await connection.query(`
+            UPDATE customer_auth_codes
+
+            SET status = 'Cancelled'
+
+            WHERE customer_id = ?
+              AND purpose = 'Password Reset'
+              AND status = 'Pending'
+        `, [
+            customer.id
+        ]);
+
+        await connection.query(`
+            INSERT INTO customer_auth_codes (
+                customer_id,
+                identifier,
+                identifier_type,
+                purpose,
+                code_hash,
+                status,
+                attempts,
+                max_attempts,
+                expires_at,
+                requested_ip
+            )
+
+            VALUES (
+                ?,
+                ?,
+                'Phone',
+                'Password Reset',
+                ?,
+                'Pending',
+                0,
+                1,
+                DATE_ADD(
+                    CURRENT_TIMESTAMP,
+                    INTERVAL ? MINUTE
+                ),
+                ?
+            )
+        `, [
+            customer.id,
+            customer.phone,
+            resetTokenHash,
+            MOBILE_RECOVERY_APPROVAL_MINUTES,
+            getRequestIp(req)
+        ]);
+
+        await connection.query(`
+            UPDATE customer_password_recovery_requests
+
+            SET
+                status = 'Used',
+                used_at = CURRENT_TIMESTAMP
+
+            WHERE id = ?
+              AND status = 'Approved'
+        `, [
+            recovery.id
+        ]);
+
+        await connection.commit();
+
+        return res.json({
+            success: true,
+            status: "Used",
+            resetToken:
+                rawResetToken,
+            expiresInMinutes:
+                MOBILE_RECOVERY_APPROVAL_MINUTES
+        });
+
+    } catch (error) {
+
+        try {
+            await connection.rollback();
+        } catch (_) {}
+
+        console.error(
+            "Claim mobile password recovery error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message:
+                "Unable to continue password recovery."
+        });
+
+    } finally {
+
+        connection.release();
+    }
+};

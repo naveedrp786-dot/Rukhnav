@@ -2168,3 +2168,164 @@
             repeat(2, minmax(0, 1fr));
     }
 }
+
+/* =====================================================
+   Password Recovery Approval
+===================================================== */
+
+.password-recovery-panel {
+    margin: 20px 0 24px;
+    padding: 20px;
+    border: 1px solid var(--erp-border, #e5e7eb);
+    border-radius: 16px;
+    background: #fff;
+}
+
+.password-recovery-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.password-recovery-panel-header h2 {
+    margin: 4px 0 6px;
+}
+
+.password-recovery-panel-header p {
+    margin: 0;
+    color: #6b7280;
+}
+
+.password-recovery-warning {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #fff7ed;
+}
+
+.password-recovery-warning > i {
+    margin-top: 3px;
+}
+
+.password-recovery-warning strong,
+.password-recovery-warning p {
+    display: block;
+}
+
+.password-recovery-warning p {
+    margin: 4px 0 0;
+}
+
+.password-recovery-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.password-recovery-request {
+    padding: 16px;
+    border: 1px solid var(--erp-border, #e5e7eb);
+    border-radius: 14px;
+    background: #fafafa;
+}
+
+.password-recovery-request-main {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(180px, .45fr);
+    gap: 18px;
+}
+
+.password-recovery-request h3 {
+    margin: 4px 0 10px;
+}
+
+.password-recovery-request p {
+    margin: 5px 0;
+}
+
+.password-recovery-times {
+    display: grid;
+    gap: 10px;
+}
+
+.password-recovery-times span,
+.password-recovery-times strong {
+    display: block;
+}
+
+.password-recovery-times span {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.password-recovery-times strong {
+    margin-top: 3px;
+    color: #111827;
+}
+
+.password-recovery-verification {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    cursor: pointer;
+}
+
+.password-recovery-verification input {
+    margin-top: 3px;
+}
+
+.password-recovery-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+
+.password-recovery-state,
+.password-recovery-message {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+
+.password-recovery-state {
+    background: #f3f4f6;
+}
+
+.password-recovery-message.info {
+    background: #eff6ff;
+}
+
+.password-recovery-message.success {
+    background: #ecfdf5;
+}
+
+.password-recovery-message.error {
+    background: #fef2f2;
+}
+
+@media (max-width: 720px) {
+    .password-recovery-panel-header {
+        display: grid;
+    }
+
+    .password-recovery-request-main {
+        grid-template-columns: 1fr;
+    }
+
+    .password-recovery-actions {
+        justify-content: stretch;
+    }
+
+    .password-recovery-actions button {
+        width: 100%;
+    }
+}
