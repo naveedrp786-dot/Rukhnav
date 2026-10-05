@@ -73,6 +73,22 @@ router.patch(
 );
 
 // =====================================================
+// Password Recovery Approval Workflow
+// Static routes MUST remain before /:id routes.
+// =====================================================
+router.get(
+    "/password-recovery-requests",
+    adminCustomerController
+        .listPasswordRecoveryRequests
+);
+
+router.patch(
+    "/password-recovery-requests/:requestId/approve",
+    adminCustomerController
+        .approvePasswordRecoveryRequest
+);
+
+// =====================================================
 // Get Customer Analytics
 // GET /api/admin/customers/:id/analytics
 // =====================================================
@@ -169,19 +185,6 @@ router.delete(
     "/:id",
     adminCustomerController
         .deleteCustomer
-);
-
-// Password recovery approval workflow
-router.get(
-    "/password-recovery-requests",
-    adminCustomerController
-        .listPasswordRecoveryRequests
-);
-
-router.patch(
-    "/password-recovery-requests/:requestId/approve",
-    adminCustomerController
-        .approvePasswordRecoveryRequest
 );
 
 module.exports = router;
