@@ -15,6 +15,12 @@ const {
     "../services/notificationProviderService"
 );
 
+const {
+    queueOwnerActivity
+} = require(
+    "../services/ownerActivityNotificationService"
+);
+
 // =========================================
 // Configuration
 // =========================================
@@ -783,6 +789,54 @@ exports.requestPasswordReset = async (
                     recoverySecret
                 );
 
+            /*
+             * RETURN-LATER RECOVERY:
+             *
+             * If Admin already approved this customer's
+             * recovery and that approval is still valid,
+             * do NOT replace it with another Pending
+             * request.
+             *
+             * The customer may close the browser, return
+             * later, enter the registered mobile again,
+             * and continue to the OTP possession check.
+             */
+            const [approvedRecoveryRows] =
+                await db.query(`
+                    SELECT
+                        id,
+                        expires_at
+
+                    FROM customer_password_recovery_requests
+
+                    WHERE customer_id = ?
+                      AND status = 'Approved'
+                      AND expires_at > CURRENT_TIMESTAMP
+
+                    ORDER BY approved_at DESC, id DESC
+
+                    LIMIT 1
+                `, [
+                    customer.id
+                ]);
+
+            if (approvedRecoveryRows.length) {
+
+                return res.json({
+                    success: true,
+                    message:
+                        "Your password-recovery request has been approved. Continue with mobile verification.",
+                    recovery:
+                        "admin_approved",
+                    mobileRecoveryApproved:
+                        true,
+                    otpRequired:
+                        true,
+                    expiresInMinutes:
+                        MOBILE_RECOVERY_REQUEST_MINUTES
+                });
+            }
+
             await db.query(`
                 UPDATE customer_password_recovery_requests
 
@@ -823,6 +877,54 @@ exports.requestPasswordReset = async (
                 recoverySecretHash,
                 MOBILE_RECOVERY_REQUEST_MINUTES
             ]);
+
+            /*
+             * Informational owner alert.
+             *
+             * Fire-and-forget: email delivery must never
+             * fail the customer's recovery request.
+             *
+             * SECURITY:
+             * Never include OTP, password, raw recovery
+             * secret, or reset token.
+             */
+            queueOwnerActivity({
+                type:
+                    "PASSWORD_RECOVERY_REQUESTED",
+                title:
+                    "Mobile Password Recovery Requested",
+                customerName:
+                    customer.full_name ||
+                    customer.name ||
+                    "",
+                customerEmail:
+                    customer.email ||
+                    "",
+                customerPhone:
+                    identifierData.value,
+                reference:
+                    `Customer #${customer.id}`,
+                details: [
+                    {
+                        label:
+                            "Customer ID",
+                        value:
+                            customer.id
+                    },
+                    {
+                        label:
+                            "Recovery method",
+                        value:
+                            "Registered mobile number"
+                    },
+                    {
+                        label:
+                            "Admin action",
+                        value:
+                            "Independently verify customer ownership before approving this recovery request."
+                    }
+                ]
+            });
 
             return res.json({
                 success: true,

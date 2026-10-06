@@ -984,64 +984,108 @@ window.CustomerCentre = {
                 );
 
             /*
-             * EMAIL RECOVERY
+             * APPROVED MOBILE RECOVERY
              *
-             * Keep the existing secure email-link flow.
+             * Admin approval already exists. Keep the
+             * registered mobile number in the field and
+             * continue directly to the OTP possession
+             * verification stage.
              */
             if (
-                data.recovery !==
-                    "admin_approval" ||
-                !data.mobileRecoveryPending
+                data.recovery ===
+                    "admin_approved" &&
+                data.mobileRecoveryApproved &&
+                data.otpRequired
             ) {
-                this.showMessage(
-                    data.message ||
-                    "If an account matches those details, a secure password-reset link has been sent.",
-                    "success"
-                );
-
-                const input =
-                    document.getElementById(
-                        "forgotIdentifier"
+                document
+                    .getElementById(
+                        "mobileRecoveryWaiting"
+                    )
+                    ?.classList.add(
+                        "hidden"
                     );
 
-                if (input) {
-                    input.value = "";
+                document
+                    .getElementById(
+                        "mobileRecoveryOtpPanel"
+                    )
+                    ?.classList.remove(
+                        "hidden"
+                    );
+
+                if (button) {
+                    button.textContent =
+                        "Recovery approved";
                 }
+
+                this.showMessage(
+                    data.message ||
+                    "Your recovery request is approved. Request the OTP sent to your registered mobile number.",
+                    "success"
+                );
 
                 return;
             }
 
             /*
-             * MOBILE RECOVERY
-             *
-             * No recovery credential is retained in the browser.
-             * The customer may leave and return later.
+             * PENDING MOBILE RECOVERY
              */
-            document
-                .getElementById(
-                    "mobileRecoveryWaiting"
-                )
-                ?.classList.remove(
-                    "hidden"
+            if (
+                data.recovery ===
+                    "admin_approval" &&
+                data.mobileRecoveryPending
+            ) {
+                document
+                    .getElementById(
+                        "mobileRecoveryWaiting"
+                    )
+                    ?.classList.remove(
+                        "hidden"
+                    );
+
+                document
+                    .getElementById(
+                        "mobileRecoveryOtpPanel"
+                    )
+                    ?.classList.remove(
+                        "hidden"
+                    );
+
+                if (button) {
+                    button.textContent =
+                        "Recovery request submitted";
+                }
+
+                this.showMessage(
+                    "Your mobile password-recovery request was submitted. After RUKHNAV Admin verifies and approves it, you may request an OTP using your registered mobile number.",
+                    "info"
                 );
 
-            document
-                .getElementById(
-                    "mobileRecoveryOtpPanel"
-                )
-                ?.classList.remove(
-                    "hidden"
-                );
-
-            if (button) {
-                button.textContent =
-                    "Recovery request submitted";
+                return;
             }
 
+            /*
+             * EMAIL / NEUTRAL RECOVERY RESPONSE
+             *
+             * Preserve the existing secure email-link
+             * and account-enumeration-safe behavior.
+             */
             this.showMessage(
-                "Your mobile password-recovery request was submitted. After RUKHNAV Admin verifies and approves it, you may request an OTP using your registered mobile number.",
-                "info"
+                data.message ||
+                "If an account matches those details, a secure password-reset link has been sent.",
+                "success"
             );
+
+            const input =
+                document.getElementById(
+                    "forgotIdentifier"
+                );
+
+            if (input) {
+                input.value = "";
+            }
+
+            return;
 
         } catch (error) {
             this.showMessage(
