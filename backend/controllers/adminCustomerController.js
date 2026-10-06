@@ -3912,6 +3912,9 @@ exports.approvePasswordRecoveryRequest = async (
     res
 ) => {
 
+    const approvedRecoveryMinutes =
+        24 * 60;
+
     const requestId =
         Number(req.params.requestId);
 
@@ -4031,13 +4034,14 @@ exports.approvePasswordRecoveryRequest = async (
                 approved_by_admin_id = ?,
                 expires_at = DATE_ADD(
                     CURRENT_TIMESTAMP,
-                    INTERVAL 15 MINUTE
+                    INTERVAL ? MINUTE
                 )
 
             WHERE id = ?
               AND status = 'Pending'
         `, [
             adminId,
+            approvedRecoveryMinutes,
             requestId
         ]);
 

@@ -338,12 +338,61 @@
                     aria-live="polite"
                 >
                     <strong>
-                        Waiting for RUKHNAV Admin approval
+                        RUKHNAV Admin approval required
                     </strong>
                     <br>
-                    Keep this page open. Once your request is
-                    verified and approved, you will automatically
-                    continue to the secure password reset page.
+                    Your request remains available for up to 24 hours.
+                    You may leave this page and return later.
+                    After approval, enter your registered mobile number
+                    again and request your recovery OTP.
+                </div>
+
+                <div
+                    id="mobileRecoveryOtpPanel"
+                    class="hidden"
+                >
+                    <p class="recovery-security-note">
+                        Already approved by RUKHNAV Admin?
+                        Send a six-digit recovery code to your
+                        registered WhatsApp number.
+                    </p>
+
+                    <button
+                        id="sendRecoveryOtpButton"
+                        class="btn secondary centre-submit"
+                        type="button"
+                    >
+                        Send Recovery OTP
+                    </button>
+
+                    <label for="mobileRecoveryOtp">
+                        Six-digit recovery code
+                    </label>
+
+                    <div class="centre-input">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <input
+                            id="mobileRecoveryOtp"
+                            type="text"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            maxlength="6"
+                            pattern="[0-9]{6}"
+                            placeholder="6-digit code"
+                        >
+                    </div>
+
+                    <button
+                        id="verifyRecoveryOtpButton"
+                        class="btn primary centre-submit"
+                        type="button"
+                    >
+                        Verify Recovery OTP
+                    </button>
+
+                    <p class="recovery-security-note">
+                        The OTP expires after 10 minutes.
+                    </p>
                 </div>
 
                 <button id="backToLogin" type="button" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to sign in</button>
@@ -1254,7 +1303,7 @@
 <script src="js/theme.js"></script>
 <script src="js/components.js?v=20260903-four-actions-2"></script><script src="js/customer-notifications.js?v=20260901-notification-reader-1"></script>
 <script src="js/store.js?v=20260902-category-icons-1"></script>
-<script src="js/customer-centre.js?v=20260904-registration-name-1"></script>
+<script src="js/customer-centre.js?v=20261006-mobile-recovery-otp-1"></script>
 <script src="js/profile-preferences.js?v=20260902-contact-load-fix-1"></script>
 <script src="js/account-modules.js?v=20260904-account-auth-view-1"></script>
 <script src="js/demo-visuals.js?v=20260827-2"></script>

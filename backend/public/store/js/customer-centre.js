@@ -172,6 +172,20 @@ window.CustomerCentre = {
             });
 
         document
+            .getElementById("sendRecoveryOtpButton")
+            ?.addEventListener(
+                "click",
+                () => this.requestMobileRecoveryOtp()
+            );
+
+        document
+            .getElementById("verifyRecoveryOtpButton")
+            ?.addEventListener(
+                "click",
+                () => this.verifyMobileRecoveryOtp()
+            );
+
+        document
             .getElementById("verificationBackToLogin")
             ?.addEventListener("click", () => {
                 this.showAuthForm("login");
@@ -935,9 +949,7 @@ window.CustomerCentre = {
 
         const identifier =
             document
-                .getElementById(
-                    "forgotIdentifier"
-                )
+                .getElementById("forgotIdentifier")
                 ?.value
                 .trim() || "";
 
@@ -961,7 +973,6 @@ window.CustomerCentre = {
         );
 
         try {
-
             const data =
                 await API.post(
                     API.customer(
@@ -975,17 +986,13 @@ window.CustomerCentre = {
             /*
              * EMAIL RECOVERY
              *
-             * Preserve the existing automatic secure-link
-             * workflow exactly. No browser reset token is
-             * expected for this branch.
+             * Keep the existing secure email-link flow.
              */
             if (
                 data.recovery !==
                     "admin_approval" ||
-                !data.mobileRecoveryPending ||
-                !data.recoverySecret
+                !data.mobileRecoveryPending
             ) {
-
                 this.showMessage(
                     data.message ||
                     "If an account matches those details, a secure password-reset link has been sent.",
@@ -1007,56 +1014,36 @@ window.CustomerCentre = {
             /*
              * MOBILE RECOVERY
              *
-             * Keep this high-entropy secret only in the
-             * current JavaScript runtime.
-             *
-             * Do not place it in:
-             *   localStorage
-             *   sessionStorage
-             *   cookies
-             *   URL
+             * No recovery credential is retained in the browser.
+             * The customer may leave and return later.
              */
-            this.mobileRecoverySecret =
-                String(
-                    data.recoverySecret
-                );
-
-            this.mobileRecoveryStartedAt =
-                Date.now();
-
-            const waiting =
-                document.getElementById(
+            document
+                .getElementById(
                     "mobileRecoveryWaiting"
+                )
+                ?.classList.remove(
+                    "hidden"
                 );
 
-            waiting?.classList.remove(
-                "hidden"
-            );
-
-            const input =
-                document.getElementById(
-                    "forgotIdentifier"
+            document
+                .getElementById(
+                    "mobileRecoveryOtpPanel"
+                )
+                ?.classList.remove(
+                    "hidden"
                 );
-
-            if (input) {
-                input.disabled = true;
-            }
 
             if (button) {
-                button.disabled = true;
                 button.textContent =
-                    "Waiting for approval";
+                    "Recovery request submitted";
             }
 
             this.showMessage(
-                "Your mobile password-recovery request is waiting for RUKHNAV Admin approval.",
+                "Your mobile password-recovery request was submitted. After RUKHNAV Admin verifies and approves it, you may request an OTP using your registered mobile number.",
                 "info"
             );
 
-            this.startMobileRecoveryPolling();
-
         } catch (error) {
-
             this.showMessage(
                 error.message ||
                 "Unable to request password reset.",
@@ -1064,203 +1051,140 @@ window.CustomerCentre = {
             );
 
         } finally {
-
-            /*
-             * For mobile recovery the button remains locked
-             * while waiting. Email/error paths return it to
-             * normal.
-             */
-            if (!this.mobileRecoverySecret) {
-                this.setLoading(
-                    button,
-                    false
-                );
-            }
+            this.setLoading(
+                button,
+                false
+            );
         }
     },
 
-    stopMobileRecoveryPolling() {
+    async requestMobileRecoveryOtp() {
+        const phone =
+            document
+                .getElementById(
+                    "forgotIdentifier"
+                )
+                ?.value
+                .trim() || "";
 
-        if (this.mobileRecoveryTimer) {
-
-            clearTimeout(
-                this.mobileRecoveryTimer
+        if (!phone) {
+            this.showMessage(
+                "Enter your registered mobile number first.",
+                "error"
             );
-
-            this.mobileRecoveryTimer =
-                null;
-        }
-    },
-
-    resetMobileRecoveryUI() {
-
-        this.stopMobileRecoveryPolling();
-
-        const waiting =
-            document.getElementById(
-                "mobileRecoveryWaiting"
-            );
-
-        waiting?.classList.add(
-            "hidden"
-        );
-
-        const input =
-            document.getElementById(
-                "forgotIdentifier"
-            );
-
-        if (input) {
-            input.disabled = false;
+            return;
         }
 
         const button =
             document.getElementById(
-                "forgotPasswordButton"
+                "sendRecoveryOtpButton"
             );
 
-        if (button) {
-            button.disabled = false;
-            button.textContent =
-                "Send secure reset link";
-        }
-
-        this.mobileRecoverySecret =
-            "";
-
-        this.mobileRecoveryStartedAt =
-            0;
-    },
-
-    startMobileRecoveryPolling() {
-
-        this.stopMobileRecoveryPolling();
-
-        const poll = async () => {
-
-            const recoverySecret =
-                this.mobileRecoverySecret;
-
-            if (!recoverySecret) {
-                return;
-            }
-
-            /*
-             * Same-browser waiting ceiling.
-             *
-             * Dummy secrets intentionally remain Pending
-             * server-side so account existence is not
-             * disclosed.
-             */
-            if (
-                Date.now() -
-                    this.mobileRecoveryStartedAt >
-                30 * 60 * 1000
-            ) {
-
-                this.showMessage(
-                    "This password-recovery request has expired. Please start again.",
-                    "error"
-                );
-
-                this.resetMobileRecoveryUI();
-                return;
-            }
-
-            try {
-
-                const data =
-                    await API.post(
-                        API.customer(
-                            "/password/recovery/status"
-                        ),
-                        {
-                            recoverySecret
-                        }
-                    );
-
-                if (
-                    data.status ===
-                    "Approved"
-                ) {
-
-                    this.stopMobileRecoveryPolling();
-
-                    await this.claimMobilePasswordRecovery();
-                    return;
-                }
-
-                if (
-                    [
-                        "Expired",
-                        "Cancelled",
-                        "Used"
-                    ].includes(
-                        data.status
-                    )
-                ) {
-
-                    this.showMessage(
-                        data.status ===
-                            "Expired"
-                            ? "This password-recovery request has expired. Please start again."
-                            : "This password-recovery request is no longer available. Please start again.",
-                        "error"
-                    );
-
-                    this.resetMobileRecoveryUI();
-                    return;
-                }
-
-            } catch (error) {
-
-                /*
-                 * A temporary network failure must not
-                 * destroy the same-browser recovery secret.
-                 */
-                console.warn(
-                    "Mobile recovery status check failed:",
-                    error
-                );
-            }
-
-            if (
-                this.mobileRecoverySecret
-            ) {
-                this.mobileRecoveryTimer =
-                    setTimeout(
-                        poll,
-                        5000
-                    );
-            }
-        };
-
-        poll();
-    },
-
-    async claimMobilePasswordRecovery() {
-
-        const recoverySecret =
-            this.mobileRecoverySecret;
-
-        if (!recoverySecret) {
-            return;
-        }
-
-        this.showMessage(
-            "Approval received. Preparing your secure password reset...",
-            "success"
+        this.setLoading(
+            button,
+            true,
+            "Sending OTP"
         );
 
         try {
-
             const data =
                 await API.post(
                     API.customer(
-                        "/password/recovery/claim"
+                        "/password/recovery/otp/request"
                     ),
                     {
-                        recoverySecret
+                        identifier: phone
+                    }
+                );
+
+            document
+                .getElementById(
+                    "mobileRecoveryOtpPanel"
+                )
+                ?.classList.remove(
+                    "hidden"
+                );
+
+            this.showMessage(
+                data.message ||
+                "If an approved recovery request is available, a recovery OTP will be sent to the registered mobile number.",
+                "success"
+            );
+
+            document
+                .getElementById(
+                    "mobileRecoveryOtp"
+                )
+                ?.focus();
+
+        } catch (error) {
+            this.showMessage(
+                error.message ||
+                "Unable to send the recovery OTP.",
+                "error"
+            );
+
+        } finally {
+            this.setLoading(
+                button,
+                false
+            );
+        }
+    },
+
+    async verifyMobileRecoveryOtp() {
+        const phone =
+            document
+                .getElementById(
+                    "forgotIdentifier"
+                )
+                ?.value
+                .trim() || "";
+
+        const code =
+            document
+                .getElementById(
+                    "mobileRecoveryOtp"
+                )
+                ?.value
+                .trim() || "";
+
+        if (!phone) {
+            this.showMessage(
+                "Enter your registered mobile number.",
+                "error"
+            );
+            return;
+        }
+
+        if (!/^[0-9]{6}$/.test(code)) {
+            this.showMessage(
+                "Enter the six-digit recovery code.",
+                "error"
+            );
+            return;
+        }
+
+        const button =
+            document.getElementById(
+                "verifyRecoveryOtpButton"
+            );
+
+        this.setLoading(
+            button,
+            true,
+            "Verifying"
+        );
+
+        try {
+            const data =
+                await API.post(
+                    API.customer(
+                        "/password/recovery/otp/verify"
+                    ),
+                    {
+                        identifier: phone,
+                        code
                     }
                 );
 
@@ -1281,19 +1205,6 @@ window.CustomerCentre = {
                 );
             }
 
-            /*
-             * Clear the browser recovery credential before
-             * transferring control to the existing secure
-             * reset-password page.
-             */
-            this.stopMobileRecoveryPolling();
-
-            this.mobileRecoverySecret =
-                "";
-
-            this.mobileRecoveryStartedAt =
-                0;
-
             window.location.replace(
                 "/store/reset-password.html?token=" +
                 encodeURIComponent(
@@ -1302,18 +1213,16 @@ window.CustomerCentre = {
             );
 
         } catch (error) {
-
-            /*
-             * Claim is intentionally single-use.
-             * Do not attempt to reuse an uncertain claim.
-             */
             this.showMessage(
                 error.message ||
-                "Unable to continue password recovery. Please start a new request.",
+                "Unable to verify the recovery OTP.",
                 "error"
             );
 
-            this.resetMobileRecoveryUI();
+            this.setLoading(
+                button,
+                false
+            );
         }
     },
 

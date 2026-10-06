@@ -593,8 +593,10 @@ exports.verifyAccount = async (
 // =========================================
 
 const MOBILE_RECOVERY_SECRET_BYTES = 32;
-const MOBILE_RECOVERY_REQUEST_MINUTES = 30;
-const MOBILE_RECOVERY_APPROVAL_MINUTES = 15;
+const MOBILE_RECOVERY_REQUEST_MINUTES = 24 * 60;
+const MOBILE_RECOVERY_RESET_TOKEN_MINUTES = 15;
+const MOBILE_RECOVERY_OTP_PURPOSE =
+    "Account Recovery";
 
 function hashRecoverySecret(secret) {
     return crypto
@@ -1980,10 +1982,10 @@ exports.checkMobilePasswordRecovery = async (
 };
 
 // =========================================
-// Claim Approved Mobile Password Recovery
+// Request OTP For Approved Mobile Recovery
 // =========================================
 
-exports.claimMobilePasswordRecovery = async (
+exports.requestMobilePasswordRecoveryOtp = async (
     req,
     res
 ) => {
@@ -1993,38 +1995,58 @@ exports.claimMobilePasswordRecovery = async (
         "no-store"
     );
 
-    const recoverySecret =
-        String(
-            req.body.recovery_secret ||
-            req.body.recoverySecret ||
+    const identifierData =
+        identifyAndNormalize(
+            req.body.identifier ||
+            req.body.phone ||
             ""
-        ).trim();
+        );
+
+    /*
+     * Keep ineligible/nonexistent-account responses
+     * neutral to avoid account enumeration.
+     */
+    const neutralResponse = () =>
+        res.json({
+            success: true,
+            message:
+                "If an approved password-recovery request is available, a verification code will be sent to the registered mobile number."
+        });
 
     if (
-        !isRecoverySecretValid(
-            recoverySecret
-        )
+        !identifierData.value ||
+        identifierData.type !== "Phone"
     ) {
-        return res.status(400).json({
-            success: false,
-            message:
-                "Invalid password-recovery request."
-        });
+        return neutralResponse();
     }
-
-    const recoverySecretHash =
-        hashRecoverySecret(
-            recoverySecret
-        );
 
     const connection =
         await db.getConnection();
+
+    let code = null;
+    let customer = null;
 
     try {
 
         await connection.beginTransaction();
 
-        const [rows] =
+        customer =
+            await findCustomer(
+                connection,
+                identifierData
+            );
+
+        if (
+            !customer ||
+            customer.deleted_at
+        ) {
+
+            await connection.rollback();
+
+            return neutralResponse();
+        }
+
+        const [recoveryRows] =
             await connection.query(`
                 SELECT
                     id,
@@ -2034,99 +2056,367 @@ exports.claimMobilePasswordRecovery = async (
 
                 FROM customer_password_recovery_requests
 
-                WHERE request_token_hash = ?
+                WHERE customer_id = ?
+                  AND status = 'Approved'
+                  AND expires_at > CURRENT_TIMESTAMP
+
+                ORDER BY id DESC
 
                 LIMIT 1
 
                 FOR UPDATE
             `, [
-                recoverySecretHash
+                customer.id
             ]);
 
-        if (!rows.length) {
+        if (!recoveryRows.length) {
 
             await connection.rollback();
 
-            return res.status(404).json({
-                success: false,
-                message:
-                    "Password-recovery request not found."
-            });
+            return neutralResponse();
         }
 
-        const recovery =
-            rows[0];
-
         if (
-            recovery.status !== "Approved"
+            !isSimulationMode() &&
+            !process.env.WASENDER_API_TOKEN
         ) {
 
             await connection.rollback();
 
-            return res.status(409).json({
-                success: false,
-                status:
-                    recovery.status,
-                message:
-                    "Password-recovery request is not approved."
-            });
+            console.error(
+                "Mobile password recovery OTP unavailable: WASENDER_API_TOKEN is not configured."
+            );
+
+            return neutralResponse();
         }
+
+        const requestAllowed =
+            await checkRequestLimit(
+                customer.id,
+                customer.phone,
+                MOBILE_RECOVERY_OTP_PURPOSE
+            );
+
+        if (!requestAllowed) {
+
+            await connection.rollback();
+
+            console.warn(
+                "Mobile password recovery OTP request rate-limited."
+            );
+
+            return neutralResponse();
+        }
+
+        /*
+         * Password recovery OTPs use crypto.randomInt()
+         * rather than Math.random().
+         */
+        const minimum =
+            10 ** (OTP_LENGTH - 1);
+
+        const maximumExclusive =
+            10 ** OTP_LENGTH;
+
+        code =
+            String(
+                crypto.randomInt(
+                    minimum,
+                    maximumExclusive
+                )
+            );
+
+        const codeHash =
+            await bcrypt.hash(
+                code,
+                PASSWORD_SALT_ROUNDS
+            );
+
+        await connection.query(`
+            UPDATE customer_auth_codes
+
+            SET status = 'Cancelled'
+
+            WHERE customer_id = ?
+              AND identifier = ?
+              AND purpose = ?
+              AND status = 'Pending'
+        `, [
+            customer.id,
+            customer.phone,
+            MOBILE_RECOVERY_OTP_PURPOSE
+        ]);
+
+        await connection.query(`
+            INSERT INTO customer_auth_codes (
+                customer_id,
+                identifier,
+                identifier_type,
+                purpose,
+                code_hash,
+                status,
+                attempts,
+                max_attempts,
+                expires_at,
+                requested_ip
+            )
+
+            VALUES (
+                ?,
+                ?,
+                'Phone',
+                ?,
+                ?,
+                'Pending',
+                0,
+                ?,
+                DATE_ADD(
+                    CURRENT_TIMESTAMP,
+                    INTERVAL ? MINUTE
+                ),
+                ?
+            )
+        `, [
+            customer.id,
+            customer.phone,
+            MOBILE_RECOVERY_OTP_PURPOSE,
+            codeHash,
+            MAX_OTP_ATTEMPTS,
+            OTP_EXPIRY_MINUTES,
+            getRequestIp(req)
+        ]);
+
+        await connection.commit();
+
+    } catch (error) {
+
+        try {
+            await connection.rollback();
+        } catch (_) {}
+
+        console.error(
+            "Request mobile password recovery OTP error:",
+            error
+        );
+
+        return neutralResponse();
+
+    } finally {
+
+        connection.release();
+    }
+
+    /*
+     * Send only after the database transaction succeeds.
+     * If delivery fails, invalidate the pending OTP.
+     */
+    try {
+
+        await sendWhatsApp({
+            to:
+                customer.phone,
+
+            message:
+                `Your RUKHNAV password recovery code is ${code}. ` +
+                `This code expires in ${OTP_EXPIRY_MINUTES} minutes. ` +
+                "Do not share this code with anyone."
+        });
+
+    } catch (deliveryError) {
+
+        await db.query(`
+            UPDATE customer_auth_codes
+
+            SET status = 'Cancelled'
+
+            WHERE customer_id = ?
+              AND identifier = ?
+              AND purpose = ?
+              AND status = 'Pending'
+        `, [
+            customer.id,
+            customer.phone,
+            MOBILE_RECOVERY_OTP_PURPOSE
+        ]);
+
+        console.error(
+            "Mobile password recovery OTP delivery error:",
+            deliveryError
+        );
+
+        return neutralResponse();
+    }
+
+    const response = {
+        success: true,
+        otpRequired: true,
+        expiresInMinutes:
+            OTP_EXPIRY_MINUTES,
+        message:
+            "A verification code has been sent to your registered WhatsApp number."
+    };
+
+    if (
+        process.env.NODE_ENV !==
+        "production"
+    ) {
+        response.developmentCode =
+            code;
+    }
+
+    return res.json(response);
+};
+
+
+// =========================================
+// Verify OTP For Approved Mobile Recovery
+// =========================================
+
+exports.verifyMobilePasswordRecoveryOtp = async (
+    req,
+    res
+) => {
+
+    res.set(
+        "Cache-Control",
+        "no-store"
+    );
+
+    const identifierData =
+        identifyAndNormalize(
+            req.body.identifier ||
+            req.body.phone ||
+            ""
+        );
+
+    const submittedCode =
+        String(
+            req.body.code ||
+            req.body.otp ||
+            ""
+        ).trim();
+
+    if (
+        !identifierData.value ||
+        identifierData.type !== "Phone" ||
+        !isValidCode(submittedCode)
+    ) {
+
+        return res.status(400).json({
+            success: false,
+            message:
+                "A valid mobile number and six-digit verification code are required."
+        });
+    }
+
+    const connection =
+        await db.getConnection();
+
+    try {
+
+        await connection.beginTransaction();
+
+        const customer =
+            await findCustomer(
+                connection,
+                identifierData
+            );
 
         if (
-            new Date(
-                recovery.expires_at
-            ).getTime() <= Date.now()
+            !customer ||
+            customer.deleted_at
         ) {
 
-            await connection.query(`
-                UPDATE customer_password_recovery_requests
-                SET status = 'Expired'
-                WHERE id = ?
-            `, [
-                recovery.id
-            ]);
+            await connection.rollback();
 
-            await connection.commit();
-
-            return res.status(410).json({
+            return res.status(400).json({
                 success: false,
-                status: "Expired",
                 message:
-                    "Password-recovery approval has expired."
+                    "The verification code is invalid or expired."
             });
         }
 
-        const [customers] =
+        const [recoveryRows] =
             await connection.query(`
                 SELECT
                     id,
-                    phone
+                    customer_id,
+                    status,
+                    expires_at
 
-                FROM customers
+                FROM customer_password_recovery_requests
 
-                WHERE id = ?
-                  AND deleted_at IS NULL
+                WHERE customer_id = ?
+                  AND status = 'Approved'
+                  AND expires_at > CURRENT_TIMESTAMP
+
+                ORDER BY id DESC
 
                 LIMIT 1
 
                 FOR UPDATE
             `, [
-                recovery.customer_id
+                customer.id
             ]);
 
-        if (!customers.length) {
+        if (!recoveryRows.length) {
 
             await connection.rollback();
 
-            return res.status(404).json({
+            return res.status(400).json({
                 success: false,
                 message:
-                    "Customer account is unavailable."
+                    "The verification code is invalid or expired."
             });
         }
 
-        const customer =
-            customers[0];
+        const authCode =
+            await getLatestPendingCode(
+                connection,
+                customer.id,
+                customer.phone,
+                MOBILE_RECOVERY_OTP_PURPOSE
+            );
+
+        if (!authCode) {
+
+            await connection.rollback();
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "The verification code is invalid or expired."
+            });
+        }
+
+        const validation =
+            await validateCode(
+                connection,
+                authCode,
+                submittedCode
+            );
+
+        if (!validation.valid) {
+
+            await connection.commit();
+
+            return res
+                .status(
+                    validation.statusCode
+                )
+                .json({
+                    success: false,
+                    message:
+                        validation.message,
+                    remainingAttempts:
+                        validation.remainingAttempts
+                });
+        }
+
+        /*
+         * OTP has now proved possession of the
+         * registered mobile number.
+         */
 
         const rawResetToken =
             crypto
@@ -2141,6 +2431,23 @@ exports.claimMobilePasswordRecovery = async (
                 .update(rawResetToken)
                 .digest("hex");
 
+        await connection.query(`
+            UPDATE customer_auth_codes
+
+            SET
+                status = 'Used',
+                used_at = CURRENT_TIMESTAMP
+
+            WHERE id = ?
+              AND status = 'Pending'
+        `, [
+            authCode.id
+        ]);
+
+        /*
+         * Only one active Password Reset authorization
+         * may remain for this customer.
+         */
         await connection.query(`
             UPDATE customer_auth_codes
 
@@ -2186,32 +2493,49 @@ exports.claimMobilePasswordRecovery = async (
             customer.id,
             customer.phone,
             resetTokenHash,
-            MOBILE_RECOVERY_APPROVAL_MINUTES,
+            MOBILE_RECOVERY_RESET_TOKEN_MINUTES,
             getRequestIp(req)
         ]);
 
-        await connection.query(`
-            UPDATE customer_password_recovery_requests
+        /*
+         * Recovery authorization is single-use.
+         */
+        const [recoveryUpdate] =
+            await connection.query(`
+                UPDATE customer_password_recovery_requests
 
-            SET
-                status = 'Used',
-                used_at = CURRENT_TIMESTAMP
+                SET
+                    status = 'Used',
+                    used_at = CURRENT_TIMESTAMP
 
-            WHERE id = ?
-              AND status = 'Approved'
-        `, [
-            recovery.id
-        ]);
+                WHERE id = ?
+                  AND status = 'Approved'
+            `, [
+                recoveryRows[0].id
+            ]);
+
+        if (
+            Number(
+                recoveryUpdate.affectedRows ||
+                0
+            ) !== 1
+        ) {
+
+            throw new Error(
+                "Approved recovery could not be consumed."
+            );
+        }
 
         await connection.commit();
 
         return res.json({
             success: true,
+            verified: true,
             status: "Used",
             resetToken:
                 rawResetToken,
             expiresInMinutes:
-                MOBILE_RECOVERY_APPROVAL_MINUTES
+                MOBILE_RECOVERY_RESET_TOKEN_MINUTES
         });
 
     } catch (error) {
@@ -2221,14 +2545,14 @@ exports.claimMobilePasswordRecovery = async (
         } catch (_) {}
 
         console.error(
-            "Claim mobile password recovery error:",
+            "Verify mobile password recovery OTP error:",
             error
         );
 
         return res.status(500).json({
             success: false,
             message:
-                "Unable to continue password recovery."
+                "Unable to verify password-recovery code."
         });
 
     } finally {
