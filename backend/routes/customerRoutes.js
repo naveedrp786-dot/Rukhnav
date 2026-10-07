@@ -81,18 +81,6 @@ router.post(
 );
 
 router.post(
-    "/password/recovery/otp/request",
-    customerAuthController
-        .requestMobilePasswordRecoveryOtp
-);
-
-router.post(
-    "/password/recovery/otp/verify",
-    customerAuthController
-        .verifyMobilePasswordRecoveryOtp
-);
-
-router.post(
     "/password/reset",
     customerAuthController
         .resetPassword

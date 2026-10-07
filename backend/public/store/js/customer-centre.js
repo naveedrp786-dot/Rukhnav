@@ -1,6 +1,140 @@
 "use strict";
 
 window.CustomerCentre = {
+
+    mobileRecoverySecretKey:
+        "rukhnav_mobile_password_recovery_secret",
+
+    storeMobileRecoverySecret(secret) {
+
+        const value =
+            String(secret || "").trim();
+
+        if (!/^[a-f0-9]{64}$/i.test(value)) {
+            return false;
+        }
+
+        sessionStorage.setItem(
+            this.mobileRecoverySecretKey,
+            value
+        );
+
+        return true;
+    },
+
+    getMobileRecoverySecret() {
+
+        return String(
+            sessionStorage.getItem(
+                this.mobileRecoverySecretKey
+            ) || ""
+        ).trim();
+    },
+
+    clearMobileRecoverySecret() {
+
+        sessionStorage.removeItem(
+            this.mobileRecoverySecretKey
+        );
+    },
+
+    async claimMobilePasswordRecovery() {
+
+        const recoverySecret =
+            this.getMobileRecoverySecret();
+
+        if (
+            !/^[a-f0-9]{64}$/i.test(
+                recoverySecret
+            )
+        ) {
+            return {
+                handled: false
+            };
+        }
+
+        const data =
+            await API.post(
+                API.customer(
+                    "/password/recovery/status"
+                ),
+                {
+                    recoverySecret
+                }
+            );
+
+        if (data.status === "Pending") {
+
+            document
+                .getElementById(
+                    "mobileRecoveryWaiting"
+                )
+                ?.classList.remove(
+                    "hidden"
+                );
+
+            this.showMessage(
+                "Your password-recovery request is still waiting for RUKHNAV Admin approval.",
+                "info"
+            );
+
+            return {
+                handled: true,
+                status: "Pending"
+            };
+        }
+
+        const resetToken =
+            String(
+                data.resetToken || ""
+            ).trim();
+
+        if (
+            data.status === "Used" &&
+            /^[a-f0-9]{64}$/i.test(
+                resetToken
+            )
+        ) {
+
+            this.clearMobileRecoverySecret();
+
+            window.location.replace(
+                "/store/reset-password.html?token=" +
+                encodeURIComponent(
+                    resetToken
+                )
+            );
+
+            return {
+                handled: true,
+                status: "Reset"
+            };
+        }
+
+        if (
+            data.status === "Expired" ||
+            data.status === "Cancelled" ||
+            data.status === "Used"
+        ) {
+
+            this.clearMobileRecoverySecret();
+
+            return {
+                handled: false,
+                status:
+                    data.status
+            };
+        }
+
+        return {
+            handled: true,
+            status:
+                String(
+                    data.status || ""
+                )
+        };
+    },
+
     customer: null,
     loyalty: null,
     referralSummary: null,
@@ -170,20 +304,6 @@ window.CustomerCentre = {
             ?.addEventListener("click", () => {
                 this.showAuthForm("login");
             });
-
-        document
-            .getElementById("sendRecoveryOtpButton")
-            ?.addEventListener(
-                "click",
-                () => this.requestMobileRecoveryOtp()
-            );
-
-        document
-            .getElementById("verifyRecoveryOtpButton")
-            ?.addEventListener(
-                "click",
-                () => this.verifyMobileRecoveryOtp()
-            );
 
         document
             .getElementById("verificationBackToLogin")
@@ -945,19 +1065,24 @@ window.CustomerCentre = {
 
     },
     async requestReset(event) {
+
         event.preventDefault();
 
         const identifier =
             document
-                .getElementById("forgotIdentifier")
+                .getElementById(
+                    "forgotIdentifier"
+                )
                 ?.value
                 .trim() || "";
 
         if (!identifier) {
+
             this.showMessage(
                 "Enter your email address or mobile number.",
                 "error"
             );
+
             return;
         }
 
@@ -969,10 +1094,48 @@ window.CustomerCentre = {
         this.setLoading(
             button,
             true,
-            "Sending"
+            "Checking"
         );
 
         try {
+
+            /*
+             * If this browser already owns a private mobile
+             * recovery secret, check that authorization first.
+             *
+             * This prevents re-submitting the mobile number
+             * from cancelling an already-approved request.
+             */
+            const existingSecret =
+                this.getMobileRecoverySecret();
+
+            if (
+                /^[a-f0-9]{64}$/i.test(
+                    existingSecret
+                )
+            ) {
+
+                const claim =
+                    await this
+                        .claimMobilePasswordRecovery();
+
+                if (claim.handled) {
+
+                    if (button) {
+                        button.textContent =
+                            claim.status === "Pending"
+                                ? "Waiting for approval"
+                                : "Continue";
+                    }
+
+                    return;
+                }
+            }
+
+            /*
+             * No usable browser-held recovery authorization.
+             * Submit a fresh password-recovery request.
+             */
             const data =
                 await API.post(
                     API.customer(
@@ -983,69 +1146,33 @@ window.CustomerCentre = {
                     }
                 );
 
-            /*
-             * APPROVED MOBILE RECOVERY
-             *
-             * Admin approval already exists. Keep the
-             * registered mobile number in the field and
-             * continue directly to the OTP possession
-             * verification stage.
-             */
-            if (
-                data.recovery ===
-                    "admin_approved" &&
-                data.mobileRecoveryApproved &&
-                data.otpRequired
-            ) {
-                document
-                    .getElementById(
-                        "mobileRecoveryWaiting"
-                    )
-                    ?.classList.add(
-                        "hidden"
-                    );
-
-                document
-                    .getElementById(
-                        "mobileRecoveryOtpPanel"
-                    )
-                    ?.classList.remove(
-                        "hidden"
-                    );
-
-                if (button) {
-                    button.textContent =
-                        "Recovery approved";
-                }
-
-                this.showMessage(
-                    data.message ||
-                    "Your recovery request is approved. Request the OTP sent to your registered mobile number.",
-                    "success"
-                );
-
-                return;
-            }
-
-            /*
-             * PENDING MOBILE RECOVERY
-             */
             if (
                 data.recovery ===
                     "admin_approval" &&
                 data.mobileRecoveryPending
             ) {
-                document
-                    .getElementById(
-                        "mobileRecoveryWaiting"
+
+                const recoverySecret =
+                    String(
+                        data.recoverySecret ||
+                        data.recovery_secret ||
+                        ""
+                    ).trim();
+
+                if (
+                    !this.storeMobileRecoverySecret(
+                        recoverySecret
                     )
-                    ?.classList.remove(
-                        "hidden"
+                ) {
+
+                    throw new Error(
+                        "Secure recovery authorization was not returned."
                     );
+                }
 
                 document
                     .getElementById(
-                        "mobileRecoveryOtpPanel"
+                        "mobileRecoveryWaiting"
                     )
                     ?.classList.remove(
                         "hidden"
@@ -1057,7 +1184,7 @@ window.CustomerCentre = {
                 }
 
                 this.showMessage(
-                    "Your mobile password-recovery request was submitted. After RUKHNAV Admin verifies and approves it, you may request an OTP using your registered mobile number.",
+                    "Your mobile password-recovery request was submitted. After RUKHNAV Admin verifies and approves it, enter your registered mobile number again in this same browser session.",
                     "info"
                 );
 
@@ -1065,10 +1192,7 @@ window.CustomerCentre = {
             }
 
             /*
-             * EMAIL / NEUTRAL RECOVERY RESPONSE
-             *
-             * Preserve the existing secure email-link
-             * and account-enumeration-safe behavior.
+             * Existing email recovery remains unchanged.
              */
             this.showMessage(
                 data.message ||
@@ -1085,9 +1209,8 @@ window.CustomerCentre = {
                 input.value = "";
             }
 
-            return;
-
         } catch (error) {
+
             this.showMessage(
                 error.message ||
                 "Unable to request password reset.",
@@ -1095,173 +1218,6 @@ window.CustomerCentre = {
             );
 
         } finally {
-            this.setLoading(
-                button,
-                false
-            );
-        }
-    },
-
-    async requestMobileRecoveryOtp() {
-        const phone =
-            document
-                .getElementById(
-                    "forgotIdentifier"
-                )
-                ?.value
-                .trim() || "";
-
-        if (!phone) {
-            this.showMessage(
-                "Enter your registered mobile number first.",
-                "error"
-            );
-            return;
-        }
-
-        const button =
-            document.getElementById(
-                "sendRecoveryOtpButton"
-            );
-
-        this.setLoading(
-            button,
-            true,
-            "Sending OTP"
-        );
-
-        try {
-            const data =
-                await API.post(
-                    API.customer(
-                        "/password/recovery/otp/request"
-                    ),
-                    {
-                        identifier: phone
-                    }
-                );
-
-            document
-                .getElementById(
-                    "mobileRecoveryOtpPanel"
-                )
-                ?.classList.remove(
-                    "hidden"
-                );
-
-            this.showMessage(
-                data.message ||
-                "If an approved recovery request is available, a recovery OTP will be sent to the registered mobile number.",
-                "success"
-            );
-
-            document
-                .getElementById(
-                    "mobileRecoveryOtp"
-                )
-                ?.focus();
-
-        } catch (error) {
-            this.showMessage(
-                error.message ||
-                "Unable to send the recovery OTP.",
-                "error"
-            );
-
-        } finally {
-            this.setLoading(
-                button,
-                false
-            );
-        }
-    },
-
-    async verifyMobileRecoveryOtp() {
-        const phone =
-            document
-                .getElementById(
-                    "forgotIdentifier"
-                )
-                ?.value
-                .trim() || "";
-
-        const code =
-            document
-                .getElementById(
-                    "mobileRecoveryOtp"
-                )
-                ?.value
-                .trim() || "";
-
-        if (!phone) {
-            this.showMessage(
-                "Enter your registered mobile number.",
-                "error"
-            );
-            return;
-        }
-
-        if (!/^[0-9]{6}$/.test(code)) {
-            this.showMessage(
-                "Enter the six-digit recovery code.",
-                "error"
-            );
-            return;
-        }
-
-        const button =
-            document.getElementById(
-                "verifyRecoveryOtpButton"
-            );
-
-        this.setLoading(
-            button,
-            true,
-            "Verifying"
-        );
-
-        try {
-            const data =
-                await API.post(
-                    API.customer(
-                        "/password/recovery/otp/verify"
-                    ),
-                    {
-                        identifier: phone,
-                        code
-                    }
-                );
-
-            const resetToken =
-                String(
-                    data.resetToken ||
-                    data.token ||
-                    ""
-                ).trim();
-
-            if (
-                !/^[a-f0-9]{64}$/i.test(
-                    resetToken
-                )
-            ) {
-                throw new Error(
-                    "Secure reset authorization was not returned."
-                );
-            }
-
-            window.location.replace(
-                "/store/reset-password.html?token=" +
-                encodeURIComponent(
-                    resetToken
-                )
-            );
-
-        } catch (error) {
-            this.showMessage(
-                error.message ||
-                "Unable to verify the recovery OTP.",
-                "error"
-            );
 
             this.setLoading(
                 button,
@@ -1269,7 +1225,6 @@ window.CustomerCentre = {
             );
         }
     },
-
 
     async loadCustomerCentre() {
         this.hideViews();
