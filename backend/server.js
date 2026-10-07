@@ -791,14 +791,334 @@ app.get("/store/category/:categorySlug", async (req, res, next) => {
     }
 });
 
-app.get("/store/product/:slug", (req, res) => {
-    return res.sendFile(
-        path.join(
-            frontendPublicRoot,
-            "store",
-            "product.html"
-        )
-    );
+const productSeoMetadataOverrides = Object.freeze({
+    "sunsation-herbal-shampoo-100-ml": Object.freeze({
+        title:
+            "Herbal Hair Shampoo 100ml in Pakistan | SUNSATION RUKHNAV",
+        description:
+            "Shop SUNSATION Herbal Hair Shampoo 100ml online in Pakistan from RUKHNAV. A herbal hair-care formula for gentle cleansing and everyday hair care."
+    }),
+
+    "sunsation-herbal-shampoo-200-ml": Object.freeze({
+        title:
+            "Herbal Hair Shampoo 200ml in Pakistan | SUNSATION RUKHNAV",
+        description:
+            "Shop SUNSATION Herbal Hair Shampoo 200ml online in Pakistan from RUKHNAV. A herbal hair-care formula for gentle cleansing and everyday hair care."
+    }),
+
+    "herbal-hair-oil-100-ml": Object.freeze({
+        title:
+            "Herbal Hair Oil 100ml in Pakistan | RUKHNAV",
+        description:
+            "Shop RUKHNAV Herbal Hair Oil 100ml online in Pakistan. A nourishing herbal hair-care blend for the hair and scalp and a regular hair-care routine."
+    }),
+
+    "whitening-cream-40-grm": Object.freeze({
+        title:
+            "Whitening Cream 40g in Pakistan | Herbal RUKHNAV",
+        description:
+            "Shop RUKHNAV Whitening Cream 40g online in Pakistan. This herbal brightening formula moisturizes and nourishes the skin while supporting its natural glow."
+    }),
+
+    "herbal-neem-face-wash-130ml": Object.freeze({
+        title:
+            "Herbal Neem Face Wash 130ml in Pakistan | RUKHNAV",
+        description:
+            "Shop RUKHNAV Herbal Neem Face Wash 130ml online in Pakistan. A refreshing herbal cleanser with neem for removing dirt, excess oil and everyday impurities."
+    }),
+
+    "charcoal-facewash-130ml": Object.freeze({
+        title:
+            "Herbal Charcoal Face Wash 130ml in Pakistan | RUKHNAV",
+        description:
+            "Shop RUKHNAV Herbal Charcoal Face Wash 130ml online in Pakistan. A refreshing cleanser with activated charcoal and herbal extracts for everyday cleansing."
+    }),
+
+    "handmade-crochet-cardigan": Object.freeze({
+        title:
+            "Handmade Crochet Cardigan | RUKHNAV",
+        description:
+            "Shop a handmade crochet cardigan from RUKHNAV, carefully crafted for a cozy, stylish and unique look. Choose your preferred colour at checkout."
+    }),
+
+    "corchet-yarn-frock": Object.freeze({
+        title:
+            "Handmade Crochet Yarn Frock | RUKHNAV",
+        description:
+            "Shop a handmade crochet yarn frock from RUKHNAV, beautifully crafted for a charming, comfortable and unique look. Choose your preferred colour at checkout."
+    }),
+
+    "corchet-yarn-frock-navy-blue": Object.freeze({
+        title:
+            "Handmade Crochet Yarn Frock - Navy Blue | RUKHNAV",
+        description:
+            "Shop a handmade crochet yarn frock in navy blue from RUKHNAV, handcrafted for a stylish, comfortable and adorable look. Colour can be requested at checkout."
+    }),
+
+    "hand-made-ear-rings-1-pcs": Object.freeze({
+        title:
+            "Handmade Earrings | RUKHNAV",
+        description:
+            "Shop handmade earrings from RUKHNAV, carefully crafted to add a unique, elegant and stylish touch to your look. Choose your preferred colour at checkout."
+    }),
+
+    "sequence-dopatta": Object.freeze({
+        title:
+            "Handmade Sequin Dupatta | RUKHNAV",
+        description:
+            "Shop a handmade sequin dupatta from RUKHNAV, beautifully embellished to add graceful sparkle and traditional charm. Choose your preferred colour at checkout."
+    }),
+
+    "tassal-8-pcs-without-box": Object.freeze({
+        title:
+            "Handmade Tassel Border - 8 Pcs | RUKHNAV",
+        description:
+            "Shop an 8-piece handmade tassel border set from RUKHNAV, crafted to add a stylish, colourful and elegant finishing touch to dresses and dupattas."
+    }),
+
+    "hand-made-event-signage-4-pcs-single-pack": Object.freeze({
+        title:
+            "Handmade Event Signage - 4 Pcs | RUKHNAV",
+        description:
+            "Shop handmade event signage from RUKHNAV for Mehndi, Sehrabandi, Mayo and other special occasions. Mention your occasion requirements at checkout."
+    }),
+
+    "customised-key-chain-1-pcs-31": Object.freeze({
+        title:
+            "Customised Key Chain | RUKHNAV",
+        description:
+            "Shop a customised key chain from RUKHNAV, personalised with your name, photo or special message. A thoughtful personalised gift for someone special."
+    }),
+
+    "sweet-pickers-20-pcs": Object.freeze({
+        title:
+            "Customised Sweet Pickers - 20 Pcs | RUKHNAV",
+        description:
+            "Shop 20 customised sweet pickers from RUKHNAV for celebrations and special events. Personalise them with your name, message, colours or theme."
+    }),
+
+    "sequence-border-without-box": Object.freeze({
+        title:
+            "Handmade Sequin Border | RUKHNAV",
+        description:
+            "Shop a handmade sequin border from RUKHNAV, crafted to add sparkle and an elegant finishing touch to dresses and dupattas. Choose your preferred colour at checkout."
+    })
+});
+
+const escapeProductSeoHtml = (value) =>
+    String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+const productSeoDescription = (product) => {
+    const text =
+        String(product.description || "")
+            .replace(/\s+/g, " ")
+            .trim();
+
+    if (text) {
+        return text.length <= 160
+            ? text
+            : `${text.slice(0, 157).trim()}...`;
+    }
+
+    return `Shop ${product.product_name || "RUKHNAV product"} online from RUKHNAV.`;
+};
+
+const safeProductSeoJson = (value) =>
+    JSON.stringify(value)
+        .replace(/</g, "\\u003c")
+        .replace(/>/g, "\\u003e")
+        .replace(/&/g, "\\u0026");
+
+app.get("/store/product/:slug", async (req, res, next) => {
+    try {
+        const db = require("./config/db");
+
+        const requestedSlug =
+            String(req.params.slug || "").trim();
+
+        if (!requestedSlug) {
+            return res.sendFile(
+                path.join(
+                    frontendPublicRoot,
+                    "store",
+                    "product.html"
+                )
+            );
+        }
+
+        const [rows] = await db.query(
+            `
+            SELECT
+                id,
+                product_name,
+                slug,
+                description,
+                category,
+                sku,
+                brand,
+                selling_price,
+                stock_quantity,
+                image,
+                status
+            FROM products
+            WHERE slug = ?
+              AND status != 'Inactive'
+            LIMIT 1
+            `,
+            [requestedSlug]
+        );
+
+        const product = rows[0];
+
+        if (!product) {
+            return res.sendFile(
+                path.join(
+                    frontendPublicRoot,
+                    "store",
+                    "product.html"
+                )
+            );
+        }
+
+        const templatePath =
+            path.join(
+                frontendPublicRoot,
+                "store",
+                "product.html"
+            );
+
+        let html =
+            await require("fs").promises.readFile(
+                templatePath,
+                "utf8"
+            );
+
+        const override =
+            productSeoMetadataOverrides[
+                String(product.slug || "")
+            ];
+
+        const title =
+            override?.title ||
+            `${product.product_name || "Product"} | RUKHNAV`;
+
+        const description =
+            override?.description ||
+            productSeoDescription(product);
+
+        const canonical =
+            `https://www.rukhnav.store/store/product/${encodeURIComponent(product.slug)}`;
+
+        const price =
+            Number(product.selling_price);
+
+        const stock =
+            Number(product.stock_quantity || 0);
+
+        const schema = {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name:
+                product.product_name ||
+                "RUKHNAV product",
+            description,
+            url: canonical,
+            category:
+                product.category ||
+                undefined,
+            sku:
+                product.sku
+                    ? String(product.sku)
+                    : undefined
+        };
+
+        const brand =
+            String(product.brand || "").trim();
+
+        if (brand) {
+            schema.brand = {
+                "@type": "Brand",
+                name: brand
+            };
+        }
+
+        if (
+            Number.isFinite(price) &&
+            price > 0
+        ) {
+            schema.offers = {
+                "@type": "Offer",
+                url: canonical,
+                priceCurrency: "PKR",
+                price: price.toFixed(2),
+                availability:
+                    stock > 0
+                        ? "https://schema.org/InStock"
+                        : "https://schema.org/OutOfStock",
+                itemCondition:
+                    "https://schema.org/NewCondition"
+            };
+        }
+
+        const seoHead = [
+            `<title>${escapeProductSeoHtml(title)}</title>`,
+            "",
+            `    <meta name="description" content="${escapeProductSeoHtml(description)}">`,
+            "",
+            `    <link rel="canonical" href="${escapeProductSeoHtml(canonical)}">`,
+            "",
+            '    <meta property="og:type" content="product">',
+            `    <meta property="og:title" content="${escapeProductSeoHtml(title)}">`,
+            `    <meta property="og:description" content="${escapeProductSeoHtml(description)}">`,
+            `    <meta property="og:url" content="${escapeProductSeoHtml(canonical)}">`,
+            "",
+            '    <meta name="twitter:card" content="summary">',
+            `    <meta name="twitter:title" content="${escapeProductSeoHtml(title)}">`,
+            `    <meta name="twitter:description" content="${escapeProductSeoHtml(description)}">`,
+            "",
+            '    <script id="rukhnav-product-jsonld" type="application/ld+json">',
+            safeProductSeoJson(schema),
+            "    </script>"
+        ].join("\n");
+
+        const genericHeadPattern =
+            /<title>Product Details \| RUKHNAV<\/title>[\s\S]*?<meta\s+name="description"\s+content="View RUKHNAV product information, customer reviews and verified customer photos\."\s*>/;
+
+        if (!genericHeadPattern.test(html)) {
+            throw new Error(
+                "Product SEO template contract not found."
+            );
+        }
+
+        html =
+            html.replace(
+                genericHeadPattern,
+                seoHead
+            );
+
+        res.type("html");
+
+        return res.send(html);
+
+    } catch (error) {
+        console.error(
+            "Product SEO enrichment failed:",
+            error.message
+        );
+
+        return res.sendFile(
+            path.join(
+                frontendPublicRoot,
+                "store",
+                "product.html"
+            )
+        );
+    }
 });
 
 // ============================================================
