@@ -149,10 +149,12 @@ const ORDER_WORKFLOW = Object.freeze({
     ],
 
     "Confirmed": [
-        "Processing",
-        "Cancelled"
+        "Delivered"
     ],
 
+    // Legacy / advanced shipment statuses remain understood
+    // so historical orders and shipment-managed orders continue
+    // to display and operate safely.
     "Processing": [
         "Packed",
         "Cancelled"
@@ -201,12 +203,6 @@ const ORDER_WORKFLOW = Object.freeze({
 const ORDER_WORKFLOW_STEPS = Object.freeze([
     "Pending",
     "Confirmed",
-    "Processing",
-    "Packed",
-    "Ready For Pickup",
-    "Handed To Courier",
-    "In Transit",
-    "Out For Delivery",
     "Delivered"
 ]);
 
@@ -230,6 +226,21 @@ function normalizedOrderStatus(
                 : String(value || "Pending")
         )
     );
+}
+
+function adminOrderStatusLabel(status) {
+    const normalized =
+        normalizedOrderStatus(status);
+
+    if (normalized === "Pending") {
+        return "Received";
+    }
+
+    if (normalized === "Confirmed") {
+        return "Approved";
+    }
+
+    return normalized;
 }
 
 function allowedNextStatuses(
@@ -343,7 +354,7 @@ function renderWorkflowTimeline(
                             </span>
 
                             <strong>
-                                ${escapeHtml(step)}
+                                ${escapeHtml(adminOrderStatusLabel(step))}
                             </strong>
                         </div>
                     `;
@@ -391,7 +402,7 @@ function renderStatusTransitionPreview(
     if (!selectedStatus) {
         preview.innerHTML = `
             <span class="transition-status current">
-                ${escapeHtml(current)}
+                ${escapeHtml(adminOrderStatusLabel(current))}
             </span>
 
             <i class="fa-solid fa-arrow-right"></i>
@@ -412,7 +423,7 @@ function renderStatusTransitionPreview(
         <i class="fa-solid fa-arrow-right"></i>
 
         <span class="transition-status next">
-            ${escapeHtml(selectedStatus)}
+            ${escapeHtml(adminOrderStatusLabel(selectedStatus))}
         </span>
     `;
 }
