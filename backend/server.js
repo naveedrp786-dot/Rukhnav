@@ -211,6 +211,9 @@ const customerPaymentsRoutes =
 const websiteCmsRoutes =
     require("./routes/websiteCmsRoutes");
 
+const blogRoutes =
+    require("./routes/blogRoutes");
+
 const publicWebsiteRoutes =
     require("./routes/publicWebsiteRoutes");
 
@@ -556,6 +559,11 @@ app.get("/", (req, res) => {
 // Stage 1B-B
 // ============================================================
 
+app.use("/api/blog", blogRoutes);
+
+const blogPublicPages = require("./routes/blogPublicPages");
+app.use("/blog", blogPublicPages);
+
 app.get("/robots.txt", (req, res) => {
     const baseUrl = "https://www.rukhnav.store";
 
@@ -601,7 +609,8 @@ app.get("/sitemap.xml", async (req, res, next) => {
             "/store/refund-policy.html",
             "/store/privacy-policy.html",
             "/store/terms.html",
-            "/store/cookie-policy.html"
+            "/store/cookie-policy.html",
+            "/blog"
         ];
 
         const [products] = await db.query(
@@ -659,6 +668,59 @@ app.get("/sitemap.xml", async (req, res, next) => {
             lines.push("  </url>");
 
             urls.push(lines.join("\n"));
+        }
+
+        // BLOG SITEMAP ENTRIES
+        // Keep the existing store sitemap available before
+        // the optional blog migration has been executed.
+        try {
+            const [blogArticles] = await db.query(
+                `SELECT slug, updated_at
+                 FROM blog_articles
+                 WHERE status = 'published'
+                   AND published_at <= NOW()
+                 ORDER BY id ASC`
+            );
+
+            for (const article of blogArticles) {
+                if (
+                    typeof article.slug !== "string" ||
+                    !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(article.slug)
+                ) {
+                    continue;
+                }
+
+                const articleUrl =
+                    `${baseUrl}/blog/${encodeURIComponent(article.slug)}`;
+
+                const lines = [
+                    "  <url>",
+                    `    <loc>${escapeXml(articleUrl)}</loc>`
+                ];
+
+                if (article.updated_at) {
+                    const date = new Date(article.updated_at);
+
+                    if (!Number.isNaN(date.getTime())) {
+                        lines.push(
+                            `    <lastmod>${date.toISOString()}</lastmod>`
+                        );
+                    }
+                }
+
+                lines.push("  </url>");
+                urls.push(lines.join("\n"));
+            }
+        } catch (blogError) {
+            if (
+                blogError &&
+                blogError.code === "ER_NO_SUCH_TABLE"
+            ) {
+                // Blog tables are not installed yet.
+                // Preserve the existing product sitemap.
+            } else {
+                throw blogError;
+            }
         }
 
         const xml = [

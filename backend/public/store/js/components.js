@@ -336,6 +336,10 @@ window.Components = {
                 Track Order
             </a>
 
+            <a href="/blog">
+                Beauty Blog
+            </a>
+
             <a href="contact.html">
                 Help
             </a>
@@ -539,6 +543,10 @@ window.Components = {
             Account
         </a>
 
+        <a href="/blog">
+            Beauty Blog
+        </a>
+
         <a href="about.html">
             About RUKHNAV
         </a>
@@ -618,6 +626,10 @@ window.Components = {
 
                 <a href="faq.html">
                     Frequently Asked Questions
+                </a>
+
+                <a href="/blog">
+                    Beauty Blog
                 </a>
 
             </div>
